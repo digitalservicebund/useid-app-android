@@ -1,6 +1,7 @@
 package com.example.idprototype.idCardInterface
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
@@ -18,13 +19,15 @@ class IDCardManager {
 
     // TODO: Check if we need to create a new instance for every operation. https://github.com/ecsec/open-ecard/blob/v2master/doc/integration/init.rst
     private val openECard = OpeneCard.createInstance()
+    private var androidContextManager: AndroidContextManager? = null
+
+    fun handleNFCIntent(intent: Intent) = androidContextManager?.onNewIntent(intent)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     fun startIdentification(context: Context, tokenURL: String): Flow<Event> = callbackFlow {
-
-        val androidContextManager = openECard.context(context)
+        androidContextManager = openECard.context(context)
         var activationController: ActivationController? = null
-        androidContextManager.initializeContext(object: StartServiceHandler {
+        androidContextManager?.initializeContext(object: StartServiceHandler {
             override fun onSuccess(p0: ActivationSource?) {
                 if (p0 == null) {
                     Log.e(logTag, "onSuccess called without parameter.")
@@ -44,9 +47,16 @@ class IDCardManager {
                             return
                         }
 
+                        // TODO: Handle each case appropriately
                         when(p0.resultCode) {
-                            ActivationResultCode.OK -> TODO()
-                            ActivationResultCode.REDIRECT -> TODO()
+                            ActivationResultCode.OK -> trySend(Event.AuthenticationSuccessful)
+                                .onClosed { Log.e(logTag, "Tried to send value to closed channel.") }
+                                .onFailure { Log.e(logTag, "Sending value to channel failed: ${it?.message}") }
+                                .onSuccess { Log.d(logTag, "Value emitted to flow successfully.") }
+                            ActivationResultCode.REDIRECT -> trySend(Event.AuthenticationSuccessful)
+                                .onClosed { Log.e(logTag, "Tried to send value to closed channel.") }
+                                .onFailure { Log.e(logTag, "Sending value to channel failed: ${it?.message}") }
+                                .onSuccess { Log.d(logTag, "Value emitted to flow successfully.") }
                             ActivationResultCode.CLIENT_ERROR -> TODO()
                             ActivationResultCode.INTERRUPTED -> TODO()
                             ActivationResultCode.INTERNAL_ERROR -> TODO()
@@ -135,14 +145,29 @@ class IDCardManager {
                             return
                         }
 
-                        val readAttributes = //TODO
-                        val eidServerData = EIDServerData(
+                        val readAttributes = p0.readAccessAttributes.map { it ->
+                            try {
+                                Pair(Attribute.valueOf(it.name), it.isRequired)
+                            } catch (e: IllegalArgumentException) {
+                                throw IDCardManagerException.UnexpectedReadAttribute(e.message)
+                            }
+                        }.toMap()
+
+                        val eidServerData = EIDAuthenticationRequest(
                             p0.issuer,
                             p0.issuerUrl,
                             p0.subject,
                             p0.subjectUrl,
-                            p0.validity
+                            p0.validity,
+                            readAttributes
                         )
+
+                        val confirmationCallback: (Map<Attribute, Boolean>) -> Unit = { p2.enterAttributeSelection(it.toSelectableItems(), listOf()) }
+
+                        trySend(Event.RequestAuthenticationRequestConfirmation(eidServerData, confirmationCallback))
+                            .onClosed { Log.e(logTag, "Tried to send value to closed channel.") }
+                            .onFailure { Log.e(logTag, "Sending value to channel failed: ${it?.message}") }
+                            .onSuccess { Log.d(logTag, "Value emitted to flow successfully.") }
                     }
 
                     override fun onCardAuthenticationSuccessful() {
@@ -165,7 +190,7 @@ class IDCardManager {
             Log.d(logTag, "Closing flow channel.")
 
             activationController?.cancelOngoingAuthentication()
-            androidContextManager.terminateContext(object: StopServiceHandler {
+            androidContextManager?.terminateContext(object: StopServiceHandler {
                 override fun onSuccess() {
                     Log.d(logTag, "Terminated context successfully.")
                 }
@@ -180,25 +205,25 @@ class IDCardManager {
 
 // TR-03110 (Part 4), Section 2.2.3
 enum class Attribute {
-    DG1,
-    DG2,
-    DG3,
-    DG4,
-    DG5,
-    DG6,
-    DG7,
-    DG8,
-    DG9,
+    DG01,
+    DG02,
+    DG03,
+    DG04,
+    DG05,
+    DG06,
+    DG07,
+    DG08,
+    DG09,
     DG10,
     DG13,
     DG17,
     DG19,
-    RESTRICTED_VERIFICATION,
+    RESTRICTED_IDENTIFICATION,
     AGE_VERIFICATION
 }
 
 // TODO: Add terms
-data class EIDServerData(
+data class EIDAuthenticationRequest(
     val issuer: String,
     val issuerURL: String,
     val subject: String,
@@ -208,6 +233,7 @@ data class EIDServerData(
 )
 
 sealed class Event {
+    class RequestAuthenticationRequestConfirmation(val request: EIDAuthenticationRequest, val confirmationCallback: (Map<Attribute, Boolean>) -> Unit): Event()
     object RequestCardInsertion: Event()
     object CardInteractionComplete: Event()
     object CardRecognized: Event()
@@ -218,7 +244,15 @@ sealed class Event {
 
 sealed class IDCardManagerException(message: String? = null): CancellationException(message) {
     class FrameworkError(message: String? = null): IDCardManagerException(message)
+    class UnexpectedReadAttribute(message: String? = null): IDCardManagerException(message)
     class Failure(message: String?) : IDCardManagerException(message)
 }
 
 fun ServiceErrorResponse.errorDescription(): String = "${statusCode.ordinal} - ${statusCode.name}: ${errorMessage}"
+fun Map<Attribute, Boolean>.toSelectableItems(): List<SelectableItem> = map { object: SelectableItem {
+    override fun getName(): String = it.key.name
+    override fun getText(): String = ""
+    override fun isChecked(): Boolean = it.value
+    override fun setChecked(p0: Boolean) { }
+    override fun isRequired(): Boolean = false
+} }
