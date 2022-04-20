@@ -13,7 +13,8 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
     }
 
     override fun requestCardInsertion(p0: NFCOverlayMessageHandler?) {
-        TODO("Not yet implemented")
+        Log.e(logTag, "Requesting card insertion with overlay message handler not implemented.")
+        channel.close(IDCardInteractionException.FrameworkError)
     }
 
     override fun onCardInteractionComplete() {
@@ -32,34 +33,61 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
     }
 
     override fun onCanRequest(p0: ConfirmPasswordOperation?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onPinRequest(p0: ConfirmPasswordOperation?) {
-        Log.d(logTag, "Requesting PIN.")
+        Log.d(logTag, "Requesting CAN.")
 
         if (p0 == null) {
-            channel.close(IDCardManagerException.FrameworkError)
+            channel.close(IDCardInteractionException.FrameworkError)
             return
         }
 
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestPIN { p0.confirmPassword(it) })
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestCAN { p0.confirmPassword(it) })
+    }
+
+    override fun onPinRequest(p0: ConfirmPasswordOperation?) {
+        Log.d(logTag, "Requesting PIN without attempts.")
+
+        if (p0 == null) {
+            channel.close(IDCardInteractionException.FrameworkError)
+            return
+        }
+
+        onGeneralPinRequest(null, p0)
     }
 
     override fun onPinRequest(p0: Int, p1: ConfirmPasswordOperation?) {
-        TODO("Not yet implemented")
+        Log.d(logTag, "Requesting PIN with attempts.")
+
+        if (p1 == null) {
+            channel.close(IDCardInteractionException.FrameworkError)
+            return
+        }
+
+        onGeneralPinRequest(p0, p1)
+    }
+
+    private fun onGeneralPinRequest(attempts: Int?, pinCallback: ConfirmPasswordOperation) {
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestPIN(attempts) { pinCallback.confirmPassword(it) })
     }
 
     override fun onPinCanRequest(p0: ConfirmPinCanOperation?) {
-        TODO("Not yet implemented")
+        Log.d(logTag, "Requesting PIN and CAN.")
+
+        if (p0 == null) {
+            channel.close(IDCardInteractionException.FrameworkError)
+            return
+        }
+
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestPINAndCAN { pin, can -> p0.confirmPassword(pin, can) })
     }
 
     override fun onCardBlocked() {
-        TODO("Not yet implemented")
+        Log.w(logTag, "Card blocked.")
+        channel.close(IDCardInteractionException.CardBlocked)
     }
 
     override fun onCardDeactivated() {
-        TODO("Not yet implemented")
+        Log.w(logTag, "Card deactivated.")
+        channel.close(IDCardInteractionException.CardDeactivated)
     }
 
     override fun onServerData(
@@ -67,14 +95,16 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
         p1: String?,
         p2: ConfirmAttributeSelectionOperation?
     ) {
+        Log.d(logTag, "Requesting to confirm server data.")
+
         if (p0 == null || p1 == null || p2 == null) {
-            channel.close(IDCardManagerException.FrameworkError)
+            channel.close(IDCardInteractionException.FrameworkError)
             return
         }
 
         val readAttributes =
             try { p0.readAccessAttributes.reduceToMap() }
-            catch (e: IDCardManagerException.UnexpectedReadAttribute) {
+            catch (e: IDCardInteractionException.UnexpectedReadAttribute) {
                 channel.close(e)
                 return
             }

@@ -14,7 +14,8 @@ class PINManagementInteractionHandler(private val channel: SendChannel<EIDIntera
     }
 
     override fun requestCardInsertion(p0: NFCOverlayMessageHandler?) {
-        TODO("Not yet implemented")
+        Log.e(logTag, "Requesting card insertion with overlay message handler not implemented.")
+        channel.close(IDCardInteractionException.FrameworkError)
     }
 
     override fun onCardInteractionComplete() {
@@ -33,36 +34,57 @@ class PINManagementInteractionHandler(private val channel: SendChannel<EIDIntera
     }
 
     override fun onPinChangeable(p0: ConfirmOldSetNewPasswordOperation?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onPinChangeable(p0: Int, p1: ConfirmOldSetNewPasswordOperation?) {
-        Log.d(logTag, "Request old and new PIN.")
-        if (p1 == null) {
-            channel.close(IDCardManagerException.FrameworkError)
+        Log.d(logTag, "Request old and new PIN without arrempts.")
+        if (p0 == null) {
+            channel.close(IDCardInteractionException.FrameworkError)
             return
         }
 
-        val pinCallback: (oldPin: String, newPin: String) -> Unit = { oldPin, newPin ->
-            p1.confirmPassword(oldPin, newPin)
+        onGeneralPinChangeable(null, p0)
+    }
+
+    override fun onPinChangeable(p0: Int, p1: ConfirmOldSetNewPasswordOperation?) {
+        Log.d(logTag, "Request old and new PIN with arrempts.")
+        if (p1 == null) {
+            channel.close(IDCardInteractionException.FrameworkError)
+            return
         }
 
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestChangedPIN(p0, pinCallback))
+        onGeneralPinChangeable(p0, p1)
+    }
+
+    private fun onGeneralPinChangeable(attempts: Int?, pinCallback: ConfirmOldSetNewPasswordOperation) {
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestChangedPIN(attempts) { oldPin, newPin -> pinCallback.confirmPassword(oldPin, newPin) })
     }
 
     override fun onPinCanNewPinRequired(p0: ConfirmPinCanNewPinOperation?) {
-        TODO("Not yet implemented")
+        Log.d(logTag, "Request CAN and old and new PIN.")
+        if (p0 == null) {
+            channel.close(IDCardInteractionException.FrameworkError)
+            return
+        }
+
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestCANAndChangedPIN { oldPin, can, newPin -> p0.confirmChangePassword(oldPin, can, newPin) })
     }
 
     override fun onPinBlocked(p0: ConfirmPasswordOperation?) {
-        TODO("Not yet implemented")
+        Log.d(logTag, "Request PUK.")
+
+        if (p0 == null) {
+            channel.close(IDCardInteractionException.FrameworkError)
+            return
+        }
+
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestPUK { p0.confirmPassword(it) })
     }
 
     override fun onCardPukBlocked() {
-        TODO("Not yet implemented")
+        Log.w(logTag, "Card blocked.")
+        channel.close(IDCardInteractionException.CardBlocked)
     }
 
     override fun onCardDeactivated() {
-        TODO("Not yet implemented")
+        Log.w(logTag, "Card deactivated.")
+        channel.close(IDCardInteractionException.CardDeactivated)
     }
 }

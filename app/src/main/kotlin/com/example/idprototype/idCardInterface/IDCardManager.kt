@@ -1,7 +1,7 @@
 package com.example.idprototype.idCardInterface
 
 import android.content.Context
-import android.content.Intent
+import android.nfc.Tag
 import android.util.Log
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
@@ -10,12 +10,6 @@ import kotlinx.coroutines.flow.callbackFlow
 import org.openecard.android.activation.AndroidContextManager
 import org.openecard.android.activation.OpeneCard
 import org.openecard.mobile.activation.*
-
-sealed class IDCardManagerException: CancellationException() {
-    object FrameworkError: IDCardManagerException()
-    object UnexpectedReadAttribute: IDCardManagerException()
-    class ProcessFailed(val resultCode: ActivationResultCode) : IDCardManagerException()
-}
 
 class IDCardManager {
     private val logTag = javaClass.canonicalName!!
@@ -28,8 +22,7 @@ class IDCardManager {
         object PINManagement: Task()
     }
 
-    // TODO: As we might need to handle more intents in the future switch to androidContectManager.onNewIntent(Tag) instead
-    fun handleNFCIntent(intent: Intent) = androidContextManager?.onNewIntent(intent)
+    fun handleNFCTag(tag: Tag) = androidContextManager?.onNewIntent(tag) ?: Log.d(logTag, "Ignoring NFC tag because no ID card related process is running.")
 
     fun identify(context: Context, tokenURL: String): Flow<EIDInteractionEvent> = executeTask(context, Task.EAC(tokenURL))
     fun changePin(context: Context): Flow<EIDInteractionEvent> = executeTask(context, Task.PINManagement)
@@ -45,7 +38,7 @@ class IDCardManager {
         override fun onAuthenticationCompletion(p0: ActivationResult?) {
             Log.d(logTag, "Process completed.")
             if (p0 == null) {
-                channel.close(IDCardManagerException.FrameworkError)
+                channel.close(IDCardInteractionException.FrameworkError)
                 return
             }
 
@@ -58,7 +51,7 @@ class IDCardManager {
                     channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfully)
                     channel.close()
                 }
-                else -> channel.close(IDCardManagerException.ProcessFailed(p0.resultCode))
+                else -> channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode))
             }
         }
     }
@@ -72,7 +65,7 @@ class IDCardManager {
             override fun onSuccess(p0: ActivationSource?) {
                 if (p0 == null) {
                     Log.e(logTag, "onSuccess called without parameter.")
-                    cancel(IDCardManagerException.FrameworkError)
+                    cancel(IDCardInteractionException.FrameworkError)
                     return
                 }
 
@@ -105,6 +98,8 @@ class IDCardManager {
                     Log.e(logTag, "Failed to terminate context: ${p0?.errorDescription()}")
                 }
             })
+
+            androidContextManager = null
         }
     }
 }

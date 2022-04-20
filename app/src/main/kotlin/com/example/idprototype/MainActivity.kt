@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.nfc.NfcAdapter
+import android.nfc.Tag
+import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -25,7 +27,6 @@ import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
     private var nfcAdapter: NfcAdapter? = null
-//    private var androidContextManager: AndroidContextManager? = null
     private val idCardManager = IDCardManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,43 +88,23 @@ class MainActivity : ComponentActivity() {
         foregroundDispatch(this)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        Log.d("DEBUG", "On new intent!")
 
-        intent?.let { idCardManager.handleNFCIntent(it) }
+        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
+        if (tag != null) {
+            Log.d("DEBUG", "Passing tag to IDCardManager.")
+            idCardManager.handleNFCTag(tag)
 
-//        if (androidContextManager != null) {
-//            Log.d("DEBUG", "Android context manager is set. Handing intent over.")
-//            androidContextManager?.onNewIntent(intent)
-//            return
-//        }
-//
-//        var resultString = ""
-//
-//        val tagFromIntent: Tag? = intent?.getParcelableExtra(NfcAdapter.EXTRA_TAG)
-//        val nfc = IsoDep.get(tagFromIntent) //NfcA.get(tagFromIntent)
-//
-//        nfc.connect()
-//        if (nfc.isConnected) {
-//            Log.d("DEBUG", "Connected to tag.")
-//            val maxLength = nfc.maxTransceiveLength
-//            Log.d("DEBUG", "APDU length: $maxLength.")
-//            val extendedSupported = nfc.isExtendedLengthApduSupported
-//            Log.d("DEBUG", "APDU extended length supported: $extendedSupported.")
-//        } else {
-//            Log.d("DEBUG", "Not connected to tag.")
-//        }
-//
-//        nfc.close()
-
-        Log.d("DEBUG", "On new intent done.")
+        }
     }
 
     private fun foregroundDispatch(activity: Activity) {
         val intent = Intent(activity.applicationContext, activity.javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         nfcAdapter?.enableForegroundDispatch(activity, nfcPendingIntent, null, null)
+
+        // TODO: Disable foreground dispatch on finish
     }
 
     private fun checkNFC(context: Context) {
