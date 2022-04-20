@@ -5,45 +5,23 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.nfc.NfcAdapter
-import android.nfc.Tag
-import android.nfc.tech.IsoDep
-import android.nfc.tech.NfcA
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.idprototype.idCardInterface.Attribute
-import com.example.idprototype.idCardInterface.Event
+import com.example.idprototype.idCardInterface.EIDInteractionEvent
 import com.example.idprototype.idCardInterface.IDCardManager
 import com.example.idprototype.ui.theme.IDPrototypeTheme
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import org.openecard.android.activation.AndroidContextManager
-import org.openecard.android.activation.OpeneCard
-import org.openecard.common.OpenecardProperties
-import org.openecard.mobile.activation.*
-import org.openecard.mobile.ui.BoxItemImpl
-import kotlin.coroutines.coroutineContext
 
 class MainActivity : ComponentActivity() {
     private var nfcAdapter: NfcAdapter? = null
@@ -162,21 +140,24 @@ class MainActivity : ComponentActivity() {
         val urlString = "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
 
         CoroutineScope(Dispatchers.IO).launch {
-            idCardManager.startIdentification(context, urlString).collect { event ->
+            idCardManager.identify(context, urlString).collect { event ->
                 when(event) {
-                    Event.AuthenticationSuccessful -> Log.d("DEBUG", "Authentication successful.")
-                    Event.CardInteractionComplete -> Log.d("DEBUG", "Card interaction complete.")
-                    Event.CardRecognized -> Log.d("DEBUG", "Card recognized.")
-                    Event.CardRemoved -> Log.d("DEBUG", "Card removed.")
-                    is Event.RequestAuthenticationRequestConfirmation -> {
+                    EIDInteractionEvent.AuthenticationStarted -> Log.d("DEBUG", "Authentication started.")
+                    EIDInteractionEvent.AuthenticationSuccessful -> Log.d("DEBUG", "Authentication successful.")
+                    EIDInteractionEvent.ProcessCompletedSuccessfully -> Log.d("DEBUG", "Process completed successfully.")
+                    EIDInteractionEvent.CardInteractionComplete -> Log.d("DEBUG", "Card interaction complete.")
+                    EIDInteractionEvent.CardRecognized -> Log.d("DEBUG", "Card recognized.")
+                    EIDInteractionEvent.CardRemoved -> Log.d("DEBUG", "Card removed.")
+                    is EIDInteractionEvent.RequestAuthenticationRequestConfirmation -> {
                         Log.d("DEBUG", "Confirm server data...")
                         event.confirmationCallback(Attribute.values().map { Pair(it, true) }.toMap())
                     }
-                    Event.RequestCardInsertion -> Log.d("DEBUG", "Insert card!")
-                    is Event.RequestPIN -> {
+                    EIDInteractionEvent.RequestCardInsertion -> Log.d("DEBUG", "Insert card!")
+                    is EIDInteractionEvent.RequestPIN -> {
                         Log.d("DEBUG", "Entering PIN...")
                         event.pinCallback("123456")
                     }
+                    else -> Log.e("DEBUG", "Collected unexpected event.")
                 }
             }
             Log.d("DEBUG", "Start identification returned.")
@@ -186,6 +167,22 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun pinManagement(context: Context) {
-
+        CoroutineScope(Dispatchers.IO).launch {
+            idCardManager.changePin(context).collect { event ->
+                when(event) {
+                    EIDInteractionEvent.PINManagementStarted -> Log.d("DEBUG", "PIN management started.")
+                    EIDInteractionEvent.ProcessCompletedSuccessfully -> Log.d("DEBUG", "Process completed successfully.")
+                    EIDInteractionEvent.CardInteractionComplete -> Log.d("DEBUG", "Card interaction complete.")
+                    EIDInteractionEvent.CardRecognized -> Log.d("DEBUG", "Card recognized.")
+                    EIDInteractionEvent.CardRemoved -> Log.d("DEBUG", "Card removed.")
+                    EIDInteractionEvent.RequestCardInsertion -> Log.d("DEBUG", "Insert card!")
+                    is EIDInteractionEvent.RequestChangedPIN -> {
+                        Log.d("DEBUG", "Entering old and new PIN...")
+                        event.pinCallback("123456", "000000")
+                    }
+                    else -> Log.e("DEBUG", "Collected unexpected event.")
+                }
+            }
+        }
     }
 }
