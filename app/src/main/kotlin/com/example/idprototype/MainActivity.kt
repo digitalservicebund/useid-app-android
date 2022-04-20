@@ -16,7 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.idprototype.idCardInterface.Attribute
+import com.example.idprototype.idCardInterface.IDCardAttribute
 import com.example.idprototype.idCardInterface.EIDInteractionEvent
 import com.example.idprototype.idCardInterface.IDCardManager
 import com.example.idprototype.ui.theme.IDPrototypeTheme
@@ -150,7 +150,7 @@ class MainActivity : ComponentActivity() {
                     EIDInteractionEvent.CardRemoved -> Log.d("DEBUG", "Card removed.")
                     is EIDInteractionEvent.RequestAuthenticationRequestConfirmation -> {
                         Log.d("DEBUG", "Confirm server data...")
-                        event.confirmationCallback(Attribute.values().map { Pair(it, true) }.toMap())
+                        event.confirmationCallback(IDCardAttribute.values().map { Pair(it, true) }.toMap())
                     }
                     EIDInteractionEvent.RequestCardInsertion -> Log.d("DEBUG", "Insert card!")
                     is EIDInteractionEvent.RequestPIN -> {
