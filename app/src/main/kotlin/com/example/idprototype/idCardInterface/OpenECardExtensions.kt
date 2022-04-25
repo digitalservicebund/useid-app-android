@@ -9,7 +9,7 @@ fun List<SelectableItem>.reduceToMap(): Map<IDCardAttribute, Boolean> = map { it
     try {
         Pair(IDCardAttribute.valueOf(it.name), it.isRequired)
     } catch (e: IllegalArgumentException) {
-        throw IDCardInteractionException.UnexpectedReadAttribute(e)
+        throw IDCardInteractionException.UnexpectedReadAttribute(e.message)
     }
 }.toMap()
 

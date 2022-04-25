@@ -38,16 +38,12 @@ class IDCardManager {
         override fun onAuthenticationCompletion(p0: ActivationResult?) {
             Log.d(logTag, "Process completed.")
             if (p0 == null) {
-                channel.close(IDCardInteractionException.FrameworkError)
+                channel.close(IDCardInteractionException.FrameworkError())
                 return
             }
 
             when(p0.resultCode) {
-                ActivationResultCode.OK -> {
-                    channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfully)
-                    channel.close()
-                }
-                ActivationResultCode.REDIRECT -> {
+                ActivationResultCode.OK, ActivationResultCode.REDIRECT -> {
                     channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfully)
                     channel.close()
                 }
@@ -65,7 +61,7 @@ class IDCardManager {
             override fun onSuccess(p0: ActivationSource?) {
                 if (p0 == null) {
                     Log.e(logTag, "onSuccess called without parameter.")
-                    cancel(IDCardInteractionException.FrameworkError)
+                    cancel(IDCardInteractionException.FrameworkError())
                     return
                 }
 
@@ -79,9 +75,9 @@ class IDCardManager {
             override fun onFailure(p0: ServiceErrorResponse?) {
                 Log.e(
                     logTag,
-                    "Failure. Error code: ${p0?.errorMessage ?: "n/a"}, Error message: ${p0?.errorMessage ?: "n/a"}"
+                    "Failure. ${p0?.errorDescription() ?: "n/a"}"
                 )
-                cancel(CancellationException(p0?.errorDescription()))
+                cancel(IDCardInteractionException.FrameworkError(p0?.errorDescription()))
             }
         })
 

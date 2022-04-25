@@ -5,11 +5,11 @@ sealed class EIDInteractionEvent {
     object CardInteractionComplete: EIDInteractionEvent()
     object CardRecognized: EIDInteractionEvent()
     object CardRemoved: EIDInteractionEvent()
-    object ProcessCompletedSuccessfully: EIDInteractionEvent()
     class RequestCAN(val canCallback: (String) -> Unit): EIDInteractionEvent()
     class RequestPIN(val attempts: Int?, val pinCallback: (String) -> Unit): EIDInteractionEvent()
     class RequestPINAndCAN(val pinCANCallback: (pin: String, can: String) -> Unit): EIDInteractionEvent()
     class RequestPUK(val pukCallback: (String) -> Unit): EIDInteractionEvent()
+    object ProcessCompletedSuccessfully: EIDInteractionEvent()
 
     object AuthenticationStarted: EIDInteractionEvent()
     class RequestAuthenticationRequestConfirmation(val request: EIDAuthenticationRequest, val confirmationCallback: (Map<IDCardAttribute, Boolean>) -> Unit): EIDInteractionEvent()

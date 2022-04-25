@@ -14,7 +14,7 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
 
     override fun requestCardInsertion(p0: NFCOverlayMessageHandler?) {
         Log.e(logTag, "Requesting card insertion with overlay message handler not implemented.")
-        channel.close(IDCardInteractionException.FrameworkError)
+        channel.close(IDCardInteractionException.FrameworkError())
     }
 
     override fun onCardInteractionComplete() {
@@ -36,18 +36,18 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
         Log.d(logTag, "Requesting CAN.")
 
         if (p0 == null) {
-            channel.close(IDCardInteractionException.FrameworkError)
+            channel.close(IDCardInteractionException.FrameworkError())
             return
         }
 
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestCAN { p0.confirmPassword(it) })
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestCAN(p0::confirmPassword))
     }
 
     override fun onPinRequest(p0: ConfirmPasswordOperation?) {
         Log.d(logTag, "Requesting PIN without attempts.")
 
         if (p0 == null) {
-            channel.close(IDCardInteractionException.FrameworkError)
+            channel.close(IDCardInteractionException.FrameworkError())
             return
         }
 
@@ -58,26 +58,26 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
         Log.d(logTag, "Requesting PIN with attempts.")
 
         if (p1 == null) {
-            channel.close(IDCardInteractionException.FrameworkError)
+            channel.close(IDCardInteractionException.FrameworkError())
             return
         }
 
         onGeneralPinRequest(p0, p1)
     }
 
-    private fun onGeneralPinRequest(attempts: Int?, pinCallback: ConfirmPasswordOperation) {
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestPIN(attempts) { pinCallback.confirmPassword(it) })
+    private fun onGeneralPinRequest(attempts: Int?, confirmPasswordOperation: ConfirmPasswordOperation) {
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestPIN(attempts, confirmPasswordOperation::confirmPassword))
     }
 
     override fun onPinCanRequest(p0: ConfirmPinCanOperation?) {
         Log.d(logTag, "Requesting PIN and CAN.")
 
         if (p0 == null) {
-            channel.close(IDCardInteractionException.FrameworkError)
+            channel.close(IDCardInteractionException.FrameworkError())
             return
         }
 
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestPINAndCAN { pin, can -> p0.confirmPassword(pin, can) })
+        channel.trySendClosingOnError(EIDInteractionEvent.RequestPINAndCAN(p0::confirmPassword))
     }
 
     override fun onCardBlocked() {
@@ -98,7 +98,7 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
         Log.d(logTag, "Requesting to confirm server data.")
 
         if (p0 == null || p1 == null || p2 == null) {
-            channel.close(IDCardInteractionException.FrameworkError)
+            channel.close(IDCardInteractionException.FrameworkError())
             return
         }
 
