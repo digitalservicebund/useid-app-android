@@ -43,8 +43,12 @@ class IDCardManager {
             }
 
             when(p0.resultCode) {
-                ActivationResultCode.OK, ActivationResultCode.REDIRECT -> {
-                    channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfully)
+                ActivationResultCode.OK -> {
+                    channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfully(null))
+                    channel.close()
+                }
+                ActivationResultCode.REDIRECT -> {
+                    channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfully(p0.redirectUrl))
                     channel.close()
                 }
                 else -> channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode))
