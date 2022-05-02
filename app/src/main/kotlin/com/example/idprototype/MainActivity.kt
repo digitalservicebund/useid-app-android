@@ -17,10 +17,7 @@ import androidx.annotation.MainThread
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -33,10 +30,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.idprototype.idCardInterface.IDCardAttribute
 import com.example.idprototype.idCardInterface.EIDInteractionEvent
+import com.example.idprototype.idCardInterface.IDCardInteractionException
 import com.example.idprototype.idCardInterface.IDCardManager
 import com.example.idprototype.ui.theme.IDPrototypeTheme
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onCompletion
 
 class MainActivity : ComponentActivity() {
     private var nfcAdapter: NfcAdapter? = null
@@ -85,7 +85,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun foregroundDispatch(activity: Activity) {
-        val intent = Intent(activity.applicationContext, activity.javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        val intent = Intent(
+            activity.applicationContext,
+            activity.javaClass
+        ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         nfcAdapter?.enableForegroundDispatch(activity, nfcPendingIntent, null, null)
 
@@ -93,15 +96,55 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun identify(context: Context, pin: String) {
-        val urlString = "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
+        val urlString =
+            "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
 
         CoroutineScope(Dispatchers.IO).launch {
-            idCardManager.identify(context, urlString).collect { event ->
-                when(event) {
+            idCardManager.identify(context, urlString).onCompletion { error ->
+                if (error != null) {
+                    if (error is IDCardInteractionException) {
+                        when (error) {
+                            is IDCardInteractionException.FrameworkError -> Toast.makeText(
+                                context,
+                                "Framework error: ${error.message}.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            IDCardInteractionException.CardDeactivated -> Toast.makeText(
+                                context,
+                                "Error: ID card deactivated.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            IDCardInteractionException.CardBlocked -> Toast.makeText(
+                                context,
+                                "Error: ID card blocked.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            is IDCardInteractionException.ProcessFailed -> Toast.makeText(
+                                context,
+                                "Error: Process failed: ${error.resultCode.name}.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            is IDCardInteractionException.UnexpectedReadAttribute -> Toast.makeText(
+                                context,
+                                "Error: Unexpected attribute to be read from ID card: ${error.message}.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Error: ${error.message} ${error.cause}.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }.collect { event ->
+                when (event) {
                     EIDInteractionEvent.AuthenticationStarted -> {
                         Log.d("DEBUG", "Authentication started.")
                         MainScope().launch {
-                            Toast.makeText(context, "Authentication started.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Authentication started.", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                     EIDInteractionEvent.AuthenticationSuccessful -> {
@@ -124,25 +167,43 @@ class MainActivity : ComponentActivity() {
                     EIDInteractionEvent.CardRecognized -> {
                         Log.d("DEBUG", "Card recognized.")
                         MainScope().launch {
-                            Toast.makeText(context, "Please keep ID card attached!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Please keep ID card attached!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                    EIDInteractionEvent.CardRemoved -> Log.d("DEBUG", "Card removed.")
+                    EIDInteractionEvent.CardRemoved -> {
+                        Log.d("DEBUG", "Card removed.")
+                        MainScope().launch {
+                            Toast.makeText(
+                                context,
+                                "Connection to ID card lost.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                     is EIDInteractionEvent.RequestAuthenticationRequestConfirmation -> {
                         Log.d("DEBUG", "Confirm server data...")
-                        event.confirmationCallback(IDCardAttribute.values().map { Pair(it, true) }.toMap())
+                        event.confirmationCallback(IDCardAttribute.values().map { Pair(it, true) }
+                            .toMap())
                     }
                     EIDInteractionEvent.RequestCardInsertion -> {
                         Log.d("DEBUG", "Insert card!")
                         MainScope().launch {
-                            Toast.makeText(context, "Please attach ID card to the device.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Please attach ID card to the device.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                     is EIDInteractionEvent.RequestPIN -> {
                         Log.d("DEBUG", "Enter PIN...")
                         event.pinCallback(pin)
                     }
-                    else -> Log.e("DEBUG", "Collected unexpected event.")
+                    else -> Log.e("DEBUG", "Collected unexpected event: $event")
                 }
             }
             Log.d("DEBUG", "Start identification returned.")
@@ -153,13 +214,57 @@ class MainActivity : ComponentActivity() {
 
     private fun pinManagement(context: Context, pin: String, newPIN: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            idCardManager.changePin(context).collect { event ->
-                when(event) {
-                    EIDInteractionEvent.PINManagementStarted -> Log.d("DEBUG", "PIN management started.")
+            idCardManager.changePin(context).onCompletion { error ->
+                if (error != null) {
+                    MainScope().launch {
+                        if (error is IDCardInteractionException) {
+                            when (error) {
+                                is IDCardInteractionException.FrameworkError -> Toast.makeText(
+                                    context,
+                                    "Framework error: ${error.message}.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                IDCardInteractionException.CardDeactivated -> Toast.makeText(
+                                    context,
+                                    "Error: ID card deactivated.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                IDCardInteractionException.CardBlocked -> Toast.makeText(
+                                    context,
+                                    "Error: ID card blocked.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                is IDCardInteractionException.ProcessFailed -> Toast.makeText(
+                                    context,
+                                    "Error: Process failed: ${error.resultCode.name}.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                is IDCardInteractionException.UnexpectedReadAttribute -> Toast.makeText(
+                                    context,
+                                    "Error: Unexpected attribute to be read from ID card: ${error.message}.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Error: ${error.message} ${error.cause}.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+            }.collect { event ->
+                when (event) {
+                    EIDInteractionEvent.PINManagementStarted -> Log.d(
+                        "DEBUG",
+                        "PIN management started."
+                    )
                     is EIDInteractionEvent.ProcessCompletedSuccessfully -> {
                         Log.d("DEBUG", "Process completed successfully.")
                         MainScope().launch {
-                            Toast.makeText(context, "PIN changed successfully.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "PIN changed successfully.", Toast.LENGTH_SHORT)
+                                .show()
                         }
                     }
                     EIDInteractionEvent.CardInteractionComplete -> {
@@ -168,14 +273,31 @@ class MainActivity : ComponentActivity() {
                     EIDInteractionEvent.CardRecognized -> {
                         Log.d("DEBUG", "Card recognized.")
                         MainScope().launch {
-                            Toast.makeText(context, "Please keep ID card attached!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Please keep ID card attached!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                    EIDInteractionEvent.CardRemoved -> Log.d("DEBUG", "Card removed.")
+                    EIDInteractionEvent.CardRemoved -> {
+                        Log.d("DEBUG", "Card removed.")
+                        MainScope().launch {
+                            Toast.makeText(
+                                context,
+                                "Connection to ID card lost.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                     EIDInteractionEvent.RequestCardInsertion -> {
                         Log.d("DEBUG", "Insert card!")
                         MainScope().launch {
-                            Toast.makeText(context, "Please attach ID card to the device.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                "Please attach ID card to the device.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                     is EIDInteractionEvent.RequestChangedPIN -> {
@@ -211,19 +333,23 @@ fun SimpleUI(
         ) {
             IDActionRow(
                 action = {
-                localSoftwareKeyboardController?.hide()
+                    localSoftwareKeyboardController?.hide()
                     onIdentificationButtonClicked(identificationPINValue)
-                         },
+                },
                 actionLabel = "Identify",
                 pinValueChanged = { identificationPINValue = it },
                 additionalValueChanged = null
             )
-            Divider(color = Color.Black, thickness = 2.dp, modifier = Modifier.padding(vertical = 50.dp))
+            Divider(
+                color = Color.Black,
+                thickness = 2.dp,
+                modifier = Modifier.padding(vertical = 50.dp)
+            )
             IDActionRow(
                 action = {
                     localSoftwareKeyboardController?.hide()
                     onPINManagementButtonClicked(pinManagementPINValue, pinManagementNewPINValue)
-                         },
+                },
                 actionLabel = "Reset PIN",
                 pinValueChanged = { pinManagementPINValue = it },
                 additionalValueChanged = { pinManagementNewPINValue = it }
@@ -259,6 +385,7 @@ fun IDActionRow(
         }
         Button(
             onClick = action,
+            colors = ButtonDefaults.buttonColors(backgroundColor = Color(179, 201, 214)),
             modifier = Modifier
                 .width(140.dp)
                 .padding(end = 10.dp)
@@ -290,11 +417,20 @@ fun PINEntryField(label: String, onValueChanged: (String) -> Unit) {
 @Preview
 @Composable
 fun IDActionRowPreview() {
-    IDActionRow(action = { }, actionLabel = "Test", pinValueChanged = { }, additionalValueChanged = null)
+    IDActionRow(
+        action = { },
+        actionLabel = "Test",
+        pinValueChanged = { },
+        additionalValueChanged = null
+    )
 }
 
 @Preview
 @Composable
 fun IDActionRowPreviewWithAdditionalValue() {
-    IDActionRow(action = { }, actionLabel = "Test", pinValueChanged = { }, additionalValueChanged = {})
+    IDActionRow(
+        action = { },
+        actionLabel = "Test",
+        pinValueChanged = { },
+        additionalValueChanged = {})
 }
