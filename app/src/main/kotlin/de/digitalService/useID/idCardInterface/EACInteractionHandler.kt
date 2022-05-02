@@ -1,4 +1,4 @@
-package com.example.idprototype.idCardInterface
+package de.digitalService.useID.idCardInterface
 
 import android.util.Log
 import kotlinx.coroutines.channels.SendChannel
@@ -66,7 +66,12 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
     }
 
     private fun onGeneralPinRequest(attempts: Int?, confirmPasswordOperation: ConfirmPasswordOperation) {
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestPIN(attempts, confirmPasswordOperation::confirmPassword))
+        channel.trySendClosingOnError(
+            EIDInteractionEvent.RequestPIN(
+                attempts,
+                confirmPasswordOperation::confirmPassword
+            )
+        )
     }
 
     override fun onPinCanRequest(p0: ConfirmPinCanOperation?) {
@@ -121,7 +126,12 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
 
         val confirmationCallback: (Map<IDCardAttribute, Boolean>) -> Unit = { p2.enterAttributeSelection(it.toSelectableItems(), listOf()) }
 
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestAuthenticationRequestConfirmation(eidServerData, confirmationCallback))
+        channel.trySendClosingOnError(
+            EIDInteractionEvent.RequestAuthenticationRequestConfirmation(
+                eidServerData,
+                confirmationCallback
+            )
+        )
     }
 
     override fun onCardAuthenticationSuccessful() {

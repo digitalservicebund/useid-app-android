@@ -1,4 +1,4 @@
-package com.example.idprototype.idCardInterface
+package de.digitalService.useID.idCardInterface
 
 import android.util.Log
 import kotlinx.coroutines.channels.SendChannel
@@ -54,7 +54,12 @@ class PINManagementInteractionHandler(private val channel: SendChannel<EIDIntera
     }
 
     private fun onGeneralPinChangeable(attempts: Int?, pinCallback: ConfirmOldSetNewPasswordOperation) {
-        channel.trySendClosingOnError(EIDInteractionEvent.RequestChangedPIN(attempts, pinCallback::confirmPassword))
+        channel.trySendClosingOnError(
+            EIDInteractionEvent.RequestChangedPIN(
+                attempts,
+                pinCallback::confirmPassword
+            )
+        )
     }
 
     override fun onPinCanNewPinRequired(p0: ConfirmPinCanNewPinOperation?) {

@@ -1,4 +1,4 @@
-package com.example.idprototype.idCardInterface
+package de.digitalService.useID.idCardInterface
 
 // TR-03110 (Part 4), Section 2.2.3
 enum class IDCardAttribute {

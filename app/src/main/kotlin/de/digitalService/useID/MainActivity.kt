@@ -1,4 +1,4 @@
-package com.example.idprototype
+package de.digitalService.useID
 
 import android.app.Activity
 import android.app.PendingIntent
@@ -28,11 +28,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.idprototype.idCardInterface.IDCardAttribute
-import com.example.idprototype.idCardInterface.EIDInteractionEvent
-import com.example.idprototype.idCardInterface.IDCardInteractionException
-import com.example.idprototype.idCardInterface.IDCardManager
-import com.example.idprototype.ui.theme.IDPrototypeTheme
+import de.digitalService.useID.idCardInterface.IDCardAttribute
+import de.digitalService.useID.idCardInterface.EIDInteractionEvent
+import de.digitalService.useID.idCardInterface.IDCardInteractionException
+import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.ui.theme.IDPrototypeTheme
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect

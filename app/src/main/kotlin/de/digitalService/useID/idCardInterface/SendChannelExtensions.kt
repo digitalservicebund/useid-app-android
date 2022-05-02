@@ -1,4 +1,4 @@
-package com.example.idprototype.idCardInterface
+package de.digitalService.useID.idCardInterface
 
 import android.util.Log
 import kotlinx.coroutines.channels.SendChannel
