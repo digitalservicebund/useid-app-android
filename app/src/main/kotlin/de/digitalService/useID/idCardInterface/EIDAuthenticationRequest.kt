@@ -1,4 +1,4 @@
-package com.example.idprototype.idCardInterface
+package de.digitalService.useID.idCardInterface
 
 data class EIDAuthenticationRequest(
     val issuer: String,

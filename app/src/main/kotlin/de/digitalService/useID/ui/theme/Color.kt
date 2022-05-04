@@ -1,4 +1,4 @@
-package com.example.idprototype.ui.theme
+package de.digitalService.useID.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

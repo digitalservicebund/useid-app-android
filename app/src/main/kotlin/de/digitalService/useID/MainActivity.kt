@@ -1,4 +1,4 @@
-package com.example.idprototype
+package de.digitalService.useID
 
 import android.app.Activity
 import android.app.PendingIntent
@@ -18,10 +18,10 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.idprototype.idCardInterface.IDCardAttribute
-import com.example.idprototype.idCardInterface.EIDInteractionEvent
-import com.example.idprototype.idCardInterface.IDCardManager
-import com.example.idprototype.ui.theme.IDPrototypeTheme
+import de.digitalService.useID.idCardInterface.IDCardAttribute
+import de.digitalService.useID.idCardInterface.EIDInteractionEvent
+import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 
@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            IDPrototypeTheme {
+            UseIDTheme {
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,

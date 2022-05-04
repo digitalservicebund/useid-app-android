@@ -13,5 +13,5 @@ dependencyResolutionManagement {
         maven { url "https://mvn.ecsec.de/repository/openecard-public" }
     }
 }
-rootProject.name = "IDPrototype"
+rootProject.name = "UseID"
 include ':app'

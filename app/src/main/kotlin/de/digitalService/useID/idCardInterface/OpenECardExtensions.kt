@@ -1,4 +1,4 @@
-package com.example.idprototype.idCardInterface
+package de.digitalService.useID.idCardInterface
 
 import org.openecard.mobile.activation.SelectableItem
 import org.openecard.mobile.activation.ServiceErrorResponse

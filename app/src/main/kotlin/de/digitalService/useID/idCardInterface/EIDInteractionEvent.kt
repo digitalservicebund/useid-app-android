@@ -1,4 +1,4 @@
-package com.example.idprototype.idCardInterface
+package de.digitalService.useID.idCardInterface
 
 sealed class EIDInteractionEvent {
     object RequestCardInsertion: EIDInteractionEvent()

@@ -1,4 +1,4 @@
-package com.example.idprototype
+package de.digitalService.useID
 
 import org.junit.Test
 
