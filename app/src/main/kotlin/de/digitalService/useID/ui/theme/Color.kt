@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.theme
 
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 
 val Blue100 = Color(0xFFF2F6F8)
@@ -26,3 +27,18 @@ val Yellow600 = Color(0xFFF2DC5D)
 
 val Red200 = Color(0xFFF9E5EC)
 val Red900 = Color(0xFF8E001B)
+
+val UseIDLightColorPalette = lightColorScheme(
+    primary = Blue800,
+    onPrimary = Color.White,
+    inversePrimary = Blue900,
+    secondary = Blue200,
+    onSecondary = Blue900,
+    tertiary = Blue400,
+    background = Color.White,
+    surface = Blue100,
+    error = Red900,
+    onBackground = Black,
+    onSurface = Black,
+    onError = Color.White
+)
