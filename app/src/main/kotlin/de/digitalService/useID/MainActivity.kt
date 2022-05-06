@@ -10,20 +10,29 @@ import android.nfc.Tag
 import android.nfc.tech.IsoDep
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.MainThread
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -98,44 +107,47 @@ class MainActivity : ComponentActivity() {
     private fun identify(context: Context, pin: String) {
         val urlString =
             "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
+//        val urlString = "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.mtg.de%2Feid-soap-server%2FeIDSOAP%3Fapplicant%3D42CCFBA6EE0D4E1A"
 
         CoroutineScope(Dispatchers.IO).launch {
             idCardManager.identify(context, urlString).onCompletion { error ->
-                if (error != null) {
-                    if (error is IDCardInteractionException) {
-                        when (error) {
-                            is IDCardInteractionException.FrameworkError -> Toast.makeText(
+                MainScope().launch {
+                    if (error != null) {
+                        if (error is IDCardInteractionException) {
+                            when (error) {
+                                is IDCardInteractionException.FrameworkError -> Toast.makeText(
+                                    context,
+                                    "Framework error: ${error.message}.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                IDCardInteractionException.CardDeactivated -> Toast.makeText(
+                                    context,
+                                    "Error: ID card deactivated.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                IDCardInteractionException.CardBlocked -> Toast.makeText(
+                                    context,
+                                    "Error: ID card blocked.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                is IDCardInteractionException.ProcessFailed -> Toast.makeText(
+                                    context,
+                                    "Error: Process failed: ${error.resultCode.name}.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                is IDCardInteractionException.UnexpectedReadAttribute -> Toast.makeText(
+                                    context,
+                                    "Error: Unexpected attribute to be read from ID card: ${error.message}.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        } else {
+                            Toast.makeText(
                                 context,
-                                "Framework error: ${error.message}.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            IDCardInteractionException.CardDeactivated -> Toast.makeText(
-                                context,
-                                "Error: ID card deactivated.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            IDCardInteractionException.CardBlocked -> Toast.makeText(
-                                context,
-                                "Error: ID card blocked.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            is IDCardInteractionException.ProcessFailed -> Toast.makeText(
-                                context,
-                                "Error: Process failed: ${error.resultCode.name}.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            is IDCardInteractionException.UnexpectedReadAttribute -> Toast.makeText(
-                                context,
-                                "Error: Unexpected attribute to be read from ID card: ${error.message}.",
+                                "Error: ${error.message} ${error.cause}.",
                                 Toast.LENGTH_LONG
                             ).show()
                         }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Error: ${error.message} ${error.cause}.",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
                 }
             }.collect { event ->
@@ -179,7 +191,7 @@ class MainActivity : ComponentActivity() {
                         MainScope().launch {
                             Toast.makeText(
                                 context,
-                                "Connection to ID card lost.",
+                                "Disconnected from ID card.",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -285,7 +297,7 @@ class MainActivity : ComponentActivity() {
                         MainScope().launch {
                             Toast.makeText(
                                 context,
-                                "Connection to ID card lost.",
+                                "Disconnected from ID card.",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -311,7 +323,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SimpleUI(
     onIdentificationButtonClicked: (String) -> Unit,
@@ -324,36 +336,55 @@ fun SimpleUI(
     val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
 
     IDPrototypeTheme {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxSize()
-        ) {
-            IDActionRow(
-                action = {
-                    localSoftwareKeyboardController?.hide()
-                    onIdentificationButtonClicked(identificationPINValue)
-                },
-                actionLabel = "Identify",
-                pinValueChanged = { identificationPINValue = it },
-                additionalValueChanged = null
-            )
-            Divider(
-                color = Color.Black,
-                thickness = 2.dp,
-                modifier = Modifier.padding(vertical = 50.dp)
-            )
-            IDActionRow(
-                action = {
-                    localSoftwareKeyboardController?.hide()
-                    onPINManagementButtonClicked(pinManagementPINValue, pinManagementNewPINValue)
-                },
-                actionLabel = "Reset PIN",
-                pinValueChanged = { pinManagementPINValue = it },
-                additionalValueChanged = { pinManagementNewPINValue = it }
-            )
+        Scaffold {
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .padding(10.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_ds_wortmarke),
+                    contentDescription = "",
+                    modifier = Modifier.padding(top = 10.dp)
+                )
+                Spacer(modifier = Modifier.height(25.dp))
+                Text("Identification\ntechnical prototype", style = MaterialTheme.typography.h1)
+                Spacer(modifier = Modifier.height(25.dp))
+                IDActionRow(
+                    action = {
+                        localSoftwareKeyboardController?.hide()
+                        onIdentificationButtonClicked(identificationPINValue)
+                    },
+                    title = "Identification with test ID",
+                    firstLabel = "Enter PIN",
+                    actionLabel = "Identify",
+                    pinValueChanged = { identificationPINValue = it },
+                    additionalValueChanged = null
+                )
+                Divider(
+                    color = Color.LightGray,
+                    thickness = 1.dp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 40.dp)
+                )
+                IDActionRow(
+                    action = {
+                        localSoftwareKeyboardController?.hide()
+                        onPINManagementButtonClicked(
+                            pinManagementPINValue,
+                            pinManagementNewPINValue
+                        )
+                    },
+                    title = "Change PIN with personal ID or test ID",
+                    firstLabel = "Enter current PIN",
+                    actionLabel = "Reset PIN",
+                    pinValueChanged = { pinManagementPINValue = it },
+                    additionalValueChanged = { pinManagementNewPINValue = it }
+                )
+            }
         }
     }
 }
@@ -369,28 +400,36 @@ fun SimpleUIPreview() {
 
 @Composable
 fun IDActionRow(
+    title: String,
     action: () -> Unit,
     actionLabel: String,
+    firstLabel: String,
     pinValueChanged: (String) -> Unit,
     additionalValueChanged: ((String) -> Unit)?
 ) {
-    Row(
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.Start,
         modifier = Modifier.fillMaxWidth()
     ) {
-        PINEntryField("PIN", onValueChanged = pinValueChanged)
+        Text(title, style = MaterialTheme.typography.h5)
+        Spacer(modifier = Modifier.height(15.dp))
+        PINEntryField(firstLabel, onValueChanged = pinValueChanged)
         additionalValueChanged?.let {
-            PINEntryField(label = "New PIN", onValueChanged = it)
+            PINEntryField(label = "Enter new PIN", onValueChanged = it)
         }
         Button(
             onClick = action,
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color(179, 201, 214)),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Black,
+                contentColor = Color.White
+            ),
+            shape = RectangleShape,
             modifier = Modifier
-                .width(140.dp)
-                .padding(end = 10.dp)
+                .fillMaxWidth()
+                .height(70.dp)
+                .padding(top = 20.dp)
         ) {
-            Text(actionLabel)
+            Text(actionLabel, style = MaterialTheme.typography.button)
         }
     }
 }
@@ -406,11 +445,15 @@ fun PINEntryField(label: String, onValueChanged: (String) -> Unit) {
                 onValueChanged(it.text)
             }
         },
-        label = { Text(label) },
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+
+        ),
+        label = { Text(label, style = MaterialTheme.typography.subtitle1) },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword),
+        shape = RectangleShape,
         modifier = Modifier
-            .width(120.dp)
-            .padding(10.dp)
+            .fillMaxWidth()
+            .padding(top = 10.dp)
     )
 }
 
@@ -420,6 +463,8 @@ fun IDActionRowPreview() {
     IDActionRow(
         action = { },
         actionLabel = "Test",
+        title = "Title",
+        firstLabel = "Enter PIN",
         pinValueChanged = { },
         additionalValueChanged = null
     )
@@ -431,6 +476,8 @@ fun IDActionRowPreviewWithAdditionalValue() {
     IDActionRow(
         action = { },
         actionLabel = "Test",
+        title = "Title",
+        firstLabel = "Enter PIN",
         pinValueChanged = { },
         additionalValueChanged = {})
 }
