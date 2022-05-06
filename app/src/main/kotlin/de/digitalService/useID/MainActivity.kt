@@ -37,6 +37,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
@@ -336,54 +338,57 @@ fun SimpleUI(
     val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
 
     IDPrototypeTheme {
-        Scaffold {
-            Column(
-                horizontalAlignment = Alignment.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .padding(10.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_ds_wortmarke),
-                    contentDescription = "",
-                    modifier = Modifier.padding(top = 10.dp)
-                )
-                Spacer(modifier = Modifier.height(25.dp))
-                Text("Identification\ntechnical prototype", style = MaterialTheme.typography.h1)
-                Spacer(modifier = Modifier.height(25.dp))
-                IDActionRow(
-                    action = {
-                        localSoftwareKeyboardController?.hide()
-                        onIdentificationButtonClicked(identificationPINValue)
-                    },
-                    title = "Identification with test ID",
-                    firstLabel = "Enter PIN",
-                    actionLabel = "Identify",
-                    pinValueChanged = { identificationPINValue = it },
-                    additionalValueChanged = null
-                )
-                Divider(
-                    color = Color.LightGray,
-                    thickness = 1.dp,
+        ProvideWindowInsets {
+            Scaffold {
+                Column(
+                    horizontalAlignment = Alignment.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 40.dp)
-                )
-                IDActionRow(
-                    action = {
-                        localSoftwareKeyboardController?.hide()
-                        onPINManagementButtonClicked(
-                            pinManagementPINValue,
-                            pinManagementNewPINValue
-                        )
-                    },
-                    title = "Change PIN with personal ID or test ID",
-                    firstLabel = "Enter current PIN",
-                    actionLabel = "Reset PIN",
-                    pinValueChanged = { pinManagementPINValue = it },
-                    additionalValueChanged = { pinManagementNewPINValue = it }
-                )
+                        .verticalScroll(rememberScrollState())
+                        .navigationBarsWithImePadding()
+                        .padding(10.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_ds_wortmarke),
+                        contentDescription = "",
+                        modifier = Modifier.padding(top = 10.dp)
+                    )
+                    Spacer(modifier = Modifier.height(25.dp))
+                    Text("Identification\ntechnical prototype", style = MaterialTheme.typography.h1)
+                    Spacer(modifier = Modifier.height(25.dp))
+                    IDActionRow(
+                        action = {
+                            localSoftwareKeyboardController?.hide()
+                            onIdentificationButtonClicked(identificationPINValue)
+                        },
+                        title = "Identification with test ID",
+                        firstLabel = "Enter PIN",
+                        actionLabel = "Identify",
+                        pinValueChanged = { identificationPINValue = it },
+                        additionalValueChanged = null
+                    )
+                    Divider(
+                        color = Color.LightGray,
+                        thickness = 1.dp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 40.dp)
+                    )
+                    IDActionRow(
+                        action = {
+                            localSoftwareKeyboardController?.hide()
+                            onPINManagementButtonClicked(
+                                pinManagementPINValue,
+                                pinManagementNewPINValue
+                            )
+                        },
+                        title = "Change PIN with personal ID or test ID",
+                        firstLabel = "Enter current PIN",
+                        actionLabel = "Reset PIN",
+                        pinValueChanged = { pinManagementPINValue = it },
+                        additionalValueChanged = { pinManagementNewPINValue = it }
+                    )
+                }
             }
         }
     }
