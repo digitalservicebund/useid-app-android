@@ -1,7 +1,9 @@
 package de.digitalService.useID
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -15,7 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +27,18 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import de.digitalService.useID.ui.theme.UseIDTheme
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,17 +52,32 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UseIDApp() {
+    val navController = rememberNavController()
+    var shouldShowBackButton by remember { mutableStateOf(false) }
+
+    navController.addOnDestinationChangedListener(object: NavController.OnDestinationChangedListener {
+        override fun onDestinationChanged(
+            controller: NavController,
+            destination: NavDestination,
+            arguments: Bundle?
+        ) {
+            shouldShowBackButton = controller.previousBackStackEntry != null
+        }
+    })
+
     UseIDTheme {
         Scaffold(
             topBar = {
                 SmallTopAppBar(
                     title = { },
                     navigationIcon = {
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
+                        if (shouldShowBackButton) {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
                         }
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(
@@ -59,34 +87,52 @@ fun UseIDApp() {
                 )
             }
         ) { paddingValues ->
-            FirstTimeUserPINLetterScreen(topPadding = paddingValues.calculateTopPadding())
+            AppNavHost(navController = navController, modifier = Modifier
+                .padding(top = paddingValues.calculateTopPadding())
+                .fillMaxWidth())
+        }
+    }
+}
+
+enum class Screens {
+    FIRST_TIME_USER_CHECK,
+    FIRST_TIME_USER_PIN_LETTER_CHECK
+}
+
+@Composable
+fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
+    NavHost(navController = navController, startDestination = Screens.FIRST_TIME_USER_CHECK.name, modifier = modifier) {
+        composable(Screens.FIRST_TIME_USER_CHECK.name) {
+            FirstTimeUserCheckScreen(firstTimeUserHandler = { }, experiencedUserHandler = { navController.navigate(Screens.FIRST_TIME_USER_PIN_LETTER_CHECK.name) })
+        }
+
+        composable(Screens.FIRST_TIME_USER_PIN_LETTER_CHECK.name) {
+            FirstTimeUserPINLetterScreen()
         }
     }
 }
 
 @Composable
-fun FirstTimeUserCheckScreen(topPadding: Dp) {
+fun FirstTimeUserCheckScreen(firstTimeUserHandler: () -> Unit, experiencedUserHandler: () -> Unit) {
     OnboardingScreen(
         title = "Haben Sie Ihren Online-Ausweis bereits benutzt?",
         body = "Folgende Dokumente bieten die Funktion an:\nDeutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger",
         imageID = R.drawable.eids,
         imageScaling = ContentScale.Inside,
-        topPadding = topPadding,
-        primaryButtonAction = { },
+        primaryButtonAction = experiencedUserHandler,
         primaryButtonLabel = "Ja, ich habe es bereits genutzt",
-        secondaryButtonAction = { },
+        secondaryButtonAction = firstTimeUserHandler,
         secondaryButtonLabel = "Nein, jetzt Online-Ausweis einrichten"
     )
 }
 
 @Composable
-fun FirstTimeUserPINLetterScreen(topPadding: Dp) {
+fun FirstTimeUserPINLetterScreen() {
     OnboardingScreen(
         title = "Haben Sie noch Ihren PIN-Brief?",
         body = "Der PIN-Brief wurde Ihnen nach der Beantragung des Ausweises zugesandt.",
         imageID = R.drawable.pin_brief,
         imageScaling = ContentScale.FillWidth,
-        topPadding = topPadding,
         primaryButtonAction = { },
         primaryButtonLabel = "Ja, PIN-Brief vorhanden",
         secondaryButtonAction = { },
@@ -95,12 +141,17 @@ fun FirstTimeUserPINLetterScreen(topPadding: Dp) {
 }
 
 @Composable
-fun OnboardingScreen(title: String, body: String, @DrawableRes imageID: Int, imageScaling: ContentScale, primaryButtonLabel: String, primaryButtonAction: () -> Unit, secondaryButtonLabel: String, secondaryButtonAction: () -> Unit, topPadding: Dp) {
-    Column(
-        modifier = Modifier
-            .padding(top = topPadding)
-            .fillMaxHeight()
-    ) {
+fun OnboardingScreen(
+    title: String,
+    body: String,
+    @DrawableRes imageID: Int,
+    imageScaling: ContentScale,
+    primaryButtonLabel: String,
+    primaryButtonAction: () -> Unit,
+    secondaryButtonLabel: String,
+    secondaryButtonAction: () -> Unit
+) {
+    Column {
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -127,11 +178,19 @@ fun OnboardingScreen(title: String, body: String, @DrawableRes imageID: Int, ima
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(start = 20.dp, top = 20.dp, end = 20.dp, bottom = 20.dp)
+                .padding(20.dp)
         ) {
-            BundButton(type = ButtonType.PRIMARY, onClick = primaryButtonAction, label = primaryButtonLabel)
+            BundButton(
+                type = ButtonType.PRIMARY,
+                onClick = primaryButtonAction,
+                label = primaryButtonLabel
+            )
             Spacer(modifier = Modifier.height(15.dp))
-            BundButton(type = ButtonType.SECONDARY, onClick = secondaryButtonAction, label = secondaryButtonLabel)
+            BundButton(
+                type = ButtonType.SECONDARY,
+                onClick = secondaryButtonAction,
+                label = secondaryButtonLabel
+            )
         }
     }
 }
