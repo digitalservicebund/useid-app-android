@@ -8,11 +8,13 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.rememberNavController
+import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +43,7 @@ fun UseIDApp() {
                             IconButton(onClick = { navController.popBackStack() }) {
                                 Icon(
                                     imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = "Back"
+                                    contentDescription = stringResource(id = R.string.navigation_back)
                                 )
                             }
                         }
