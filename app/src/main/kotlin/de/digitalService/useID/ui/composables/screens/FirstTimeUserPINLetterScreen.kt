@@ -7,16 +7,14 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun FirstTimeUserPINLetterScreen() {
+fun FirstTimeUserPINLetterScreen(transportPINAvailableHandler: () -> Unit, noPINAvailable: () -> Unit) {
     OnboardingScreen(
         title = "Haben Sie noch Ihren PIN-Brief?",
         body = "Der PIN-Brief wurde Ihnen nach der Beantragung des Ausweises zugesandt.",
         imageID = R.drawable.pin_brief,
         imageScaling = ContentScale.FillWidth,
-        primaryButtonAction = { },
-        primaryButtonLabel = "Ja, PIN-Brief vorhanden",
-        secondaryButtonAction = { },
-        secondaryButtonLabel = "Nein, neuen PIN-Brief bestellen"
+        primaryButton = BundButtonConfig(title = "Nein, neuen PIN-Brief bestellen", action = noPINAvailable),
+        secondaryButton = BundButtonConfig(title = "Ja, PIN-Brief vorhanden", action = transportPINAvailableHandler)
     )
 }
 
@@ -24,6 +22,6 @@ fun FirstTimeUserPINLetterScreen() {
 @Preview
 fun PreviewFirstTimeUserPINLetterScreen() {
     UseIDTheme {
-        FirstTimeUserPINLetterScreen()
+        FirstTimeUserPINLetterScreen({ }, { })
     }
 }

@@ -13,10 +13,8 @@ fun FirstTimeUserCheckScreen(firstTimeUserHandler: () -> Unit, experiencedUserHa
         body = "Folgende Dokumente bieten die Funktion an:\nDeutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger",
         imageID = R.drawable.eids,
         imageScaling = ContentScale.Inside,
-        primaryButtonAction = experiencedUserHandler,
-        primaryButtonLabel = "Ja, ich habe es bereits genutzt",
-        secondaryButtonAction = firstTimeUserHandler,
-        secondaryButtonLabel = "Nein, jetzt Online-Ausweis einrichten"
+        primaryButton = BundButtonConfig(title = "Nein, jetzt Online-Ausweis einrichten", action = firstTimeUserHandler),
+        secondaryButton = BundButtonConfig(title = "Ja, ich habe es bereits genutzt", action = experiencedUserHandler)
     )
 }
 

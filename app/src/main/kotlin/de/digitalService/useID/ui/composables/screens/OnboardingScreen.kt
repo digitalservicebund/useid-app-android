@@ -22,16 +22,19 @@ import de.digitalService.useID.ui.composables.BundButton
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.theme.UseIDTheme
 
+class BundButtonConfig(
+    val title: String,
+    val action: () -> Unit
+)
+
 @Composable
 fun OnboardingScreen(
     title: String,
     body: String,
     @DrawableRes imageID: Int,
     imageScaling: ContentScale,
-    primaryButtonLabel: String,
-    primaryButtonAction: () -> Unit,
-    secondaryButtonLabel: String,
-    secondaryButtonAction: () -> Unit
+    primaryButton: BundButtonConfig? = null,
+    secondaryButton: BundButtonConfig? = null
 ) {
     Column {
         Column(
@@ -62,34 +65,66 @@ fun OnboardingScreen(
             modifier = Modifier
                 .padding(20.dp)
         ) {
-            BundButton(
-                type = ButtonType.PRIMARY,
-                onClick = primaryButtonAction,
-                label = primaryButtonLabel
-            )
-            Spacer(modifier = Modifier.height(15.dp))
-            BundButton(
-                type = ButtonType.SECONDARY,
-                onClick = secondaryButtonAction,
-                label = secondaryButtonLabel
-            )
+            secondaryButton?.let {
+                BundButton(
+                    type = ButtonType.SECONDARY,
+                    onClick = it.action,
+                    label = it.title
+                )
+                Spacer(modifier = Modifier.height(15.dp))
+            }
+            primaryButton?.let {
+                BundButton(
+                    type = ButtonType.PRIMARY,
+                    onClick = it.action,
+                    label = it.title
+                )
+            }
         }
     }
 }
 
 @Composable
 @Preview
-fun PreviewOnboardingScreen() {
+fun PreviewOnboardingScreenTwoButtons() {
     UseIDTheme {
         OnboardingScreen(
             title = "Title",
             body = "Body",
             imageID = R.drawable.eids,
             imageScaling = ContentScale.FillWidth,
-            primaryButtonLabel = "Primary Button",
-            primaryButtonAction = { },
-            secondaryButtonLabel = "Secondary Button",
-            secondaryButtonAction = { }
+            primaryButton = BundButtonConfig("Primary button", { }),
+            secondaryButton = BundButtonConfig("Secondary button", { })
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewOnboardingScreenOneButton() {
+    UseIDTheme {
+        OnboardingScreen(
+            title = "Title",
+            body = "Body",
+            imageID = R.drawable.eids,
+            imageScaling = ContentScale.FillWidth,
+            primaryButton = BundButtonConfig("Primary button", { }),
+            secondaryButton = null
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewOnboardingScreenNoButton() {
+    UseIDTheme {
+        OnboardingScreen(
+            title = "Title",
+            body = "Body",
+            imageID = R.drawable.eids,
+            imageScaling = ContentScale.FillWidth,
+            primaryButton = null,
+            secondaryButton = null
         )
     }
 }
