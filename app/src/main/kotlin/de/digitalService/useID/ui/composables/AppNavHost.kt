@@ -5,10 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import de.digitalService.useID.ui.composables.screens.FirstTimeUserCheckScreen
-import de.digitalService.useID.ui.composables.screens.FirstTimeUserPINLetterScreen
-import de.digitalService.useID.ui.composables.screens.ResetPINScreen
-import de.digitalService.useID.ui.composables.screens.Screens
+import de.digitalService.useID.ui.composables.screens.*
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -26,12 +23,16 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
 
         composable(Screens.FIRST_TIME_USER_PIN_LETTER_CHECK.name) {
             FirstTimeUserPINLetterScreen(
-                transportPINAvailableHandler = { },
+                transportPINAvailableHandler = { navController.navigate(Screens.TRANSPORT_PIN_SCREEN.name) },
                 noPINAvailable = { navController.navigate(Screens.RESET_PIN_SCREEN.name) })
         }
 
         composable(Screens.RESET_PIN_SCREEN.name) {
             ResetPINScreen()
+        }
+
+        composable(Screens.TRANSPORT_PIN_SCREEN.name) {
+            TransportPINScreen()
         }
     }
 }
