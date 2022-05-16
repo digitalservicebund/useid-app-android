@@ -13,4 +13,5 @@
     <string name="firstTimeUser_transportPIN_error">Inkorrekte Transport-PIN</string>
     <string name="firstTimeUser_transportPIN_tryAgain">Versuchen Sie es erneut.</string>
     <string name="firstTimeUser_transportPIN_switchToPersonalPIN">Klicken Sie hier, wenn Ihre PIN 6-stellig ist</string>
+    <string name="firstTimeUser_transportPIN_PINTextFieldDescription">Eingabefeld Transport-PIN %1$s</string>
 </resources>

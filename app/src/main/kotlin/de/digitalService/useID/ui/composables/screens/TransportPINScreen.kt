@@ -5,9 +5,11 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,15 +18,18 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.focus.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.*
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.Placeholder
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,7 +47,9 @@ fun TransportPINScreen() {
     val focusRequester = remember { FocusRequester() }
     val keyboardManager = LocalSoftwareKeyboardController.current
 
-    Column {
+    val pinEntryDescription = stringResource(id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription, pinInput.map { "$it " })
+
+    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
             text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
             style = MaterialTheme.typography.titleLarge
@@ -51,20 +58,21 @@ fun TransportPINScreen() {
         Box {
             Image(
                 painter = painterResource(id = R.drawable.transport_pin),
-                contentDescription = "",
+                contentDescription = null,
                 alignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 40.dp)
+                    .padding(horizontal = 20.dp)
             )
             Box(modifier = Modifier
                 .width(240.dp)
                 .height(56.dp)
-                .align(Alignment.Center)) {
+                .align(Alignment.Center)
+                .focusable(false)
+        ) {
                 TextField(
                     value = pinInput,
                     onValueChange = {
-                        Log.d("DEBUG", "PIN Text field: $it.")
                         if (it.length < 6) {
                             pinInput = it
                         }
@@ -77,7 +85,16 @@ fun TransportPINScreen() {
                         disabledIndicatorColor = Color.Transparent,
                     ),
                     visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword),
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (pinInput.length != 5) {
+                                Log.d("DEBUG", "PIN input too short.")
+                            } else {
+                                Log.d("DEBUG", "Proceed to next screen.")
+                            }
+                        }
+                    ),
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxWidth()
@@ -89,10 +106,16 @@ fun TransportPINScreen() {
                     modifier = Modifier
                         .align(Alignment.Center)
                         .fillMaxSize()
-                        .clickable(enabled = true, onClick = {
-                            focusRequester.requestFocus()
-                            keyboardManager?.show()
-                        })
+                        .clickable(
+                            enabled = true,
+                            onClick = {
+                                focusRequester.requestFocus()
+                                keyboardManager?.show()
+                            }
+                        )
+                        .semantics(mergeDescendants = true) {
+                            stateDescription = pinEntryDescription
+                        }
                 ) {
 
                 }
