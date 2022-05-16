@@ -37,17 +37,12 @@ import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.PINDigitField
 import de.digitalService.useID.ui.composables.PINDigitRow
+import de.digitalService.useID.ui.composables.TransportPINEntryField
 import de.digitalService.useID.ui.theme.UseIDTheme
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun TransportPINScreen() {
-    var pinInput by remember { mutableStateOf("") }
-
     val focusRequester = remember { FocusRequester() }
-    val keyboardManager = LocalSoftwareKeyboardController.current
-
-    val pinEntryDescription = stringResource(id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription, pinInput.map { "$it " })
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
@@ -55,81 +50,11 @@ fun TransportPINScreen() {
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(40.dp))
-        Box {
-            Image(
-                painter = painterResource(id = R.drawable.transport_pin),
-                contentDescription = null,
-                alignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-            )
-            Box(modifier = Modifier
-                .width(240.dp)
-                .height(56.dp)
-                .align(Alignment.Center)
-                .focusable(false)
-        ) {
-                TextField(
-                    value = pinInput,
-                    onValueChange = {
-                        if (it.length < 6) {
-                            pinInput = it
-                        }
-                    },
-                    shape = MaterialTheme.shapes.small,
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            if (pinInput.length != 5) {
-                                Log.d("DEBUG", "PIN input too short.")
-                            } else {
-                                Log.d("DEBUG", "Proceed to next screen.")
-                            }
-                        }
-                    ),
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester)
-                )
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    contentColor = MaterialTheme.colorScheme.background,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .fillMaxSize()
-                        .clickable(
-                            enabled = true,
-                            onClick = {
-                                focusRequester.requestFocus()
-                                keyboardManager?.show()
-                            }
-                        )
-                        .semantics(mergeDescendants = true) {
-                            stateDescription = pinEntryDescription
-                        }
-                ) {
-
-                }
-                PINDigitRow(
-                    input = pinInput, modifier = Modifier
-                        .align(Alignment.Center)
-                        .width(240.dp)
-                )
-            }
-        }
+        TransportPINEntryField(onDone = { }, focusRequester = focusRequester, modifier = Modifier.padding(horizontal = 20.dp))
     }
 
     LaunchedEffect(Unit) {
-        // A bug in Material 3 (1.0.0-alpha11) prevents this from showing the keyboard automatically.
+        // A bug in Material 3 (1.0.0-alpha11) prevents this from showing the keyboard automatically sometimes.
         focusRequester.requestFocus()
     }
 }
