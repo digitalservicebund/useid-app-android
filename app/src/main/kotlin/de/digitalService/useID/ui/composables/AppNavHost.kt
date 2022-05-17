@@ -32,7 +32,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         composable(Screens.TRANSPORT_PIN_SCREEN.name) {
-            TransportPINScreen()
+            TransportPINScreen(null)
         }
     }
 }
