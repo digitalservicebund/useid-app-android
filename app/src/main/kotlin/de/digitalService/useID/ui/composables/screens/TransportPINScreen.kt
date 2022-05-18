@@ -36,6 +36,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.PINDigitField
 import de.digitalService.useID.ui.composables.PINDigitRow
@@ -44,7 +46,7 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import de.digitalService.useID.ui.theme.UseIDTypography
 
 @Composable
-fun TransportPINScreen(attempts: Int?) {
+fun TransportPINScreen(viewModel: TransportPINScreenViewModelInterface) {
     val focusRequester = remember { FocusRequester() }
     val resources = LocalContext.current.resources
 
@@ -56,7 +58,8 @@ fun TransportPINScreen(attempts: Int?) {
         Spacer(modifier = Modifier.height(40.dp))
         TransportPINEntryField(onDone = { }, focusRequester = focusRequester, modifier = Modifier.padding(horizontal = 20.dp))
 
-        attempts?.let { attempts ->
+        if (viewModel.shouldShowTransportPINError) {
+            val attempts = viewModel.displayedAttempts
             Spacer(modifier = Modifier.height(40.dp))
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(id = R.string.firstTimeUser_transportPIN_error_incorrectPIN), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
@@ -81,11 +84,27 @@ fun TransportPINScreen(attempts: Int?) {
     }
 }
 
+interface TransportPINScreenViewModelInterface {
+    val shouldShowTransportPINError: Boolean
+    val displayedAttempts: Int
+}
+
+class TransportPINScreenViewModel(val navController: NavController, val attempts: Int?): ViewModel(), TransportPINScreenViewModelInterface {
+    override val shouldShowTransportPINError: Boolean = attempts?.let { attempts < 3 } ?: false
+    override val displayedAttempts: Int = attempts ?: 3
+}
+
+//region Preview
+private class PreviewTransportPINScreenViewModel(
+    override val shouldShowTransportPINError: Boolean,
+    override val displayedAttempts: Int
+): TransportPINScreenViewModelInterface
+
 @Preview
 @Composable
 fun PreviewTransportPINScreenWithoutAttempts() {
     UseIDTheme {
-        TransportPINScreen(null)
+        TransportPINScreen(PreviewTransportPINScreenViewModel(false, 0))
     }
 }
 
@@ -93,7 +112,7 @@ fun PreviewTransportPINScreenWithoutAttempts() {
 @Composable
 fun PreviewTransportPINScreenNullAttempts() {
     UseIDTheme {
-        TransportPINScreen(0)
+        TransportPINScreen(PreviewTransportPINScreenViewModel(true, 0))
     }
 }
 
@@ -101,7 +120,7 @@ fun PreviewTransportPINScreenNullAttempts() {
 @Composable
 fun PreviewTransportPINScreenOneAttempt() {
     UseIDTheme {
-        TransportPINScreen(1)
+        TransportPINScreen(PreviewTransportPINScreenViewModel(true, 1))
     }
 }
 
@@ -109,6 +128,7 @@ fun PreviewTransportPINScreenOneAttempt() {
 @Composable
 fun PreviewTransportPINScreenTwoAttempts() {
     UseIDTheme {
-        TransportPINScreen(2)
+        TransportPINScreen(PreviewTransportPINScreenViewModel(true, 2))
     }
 }
+//endregion

@@ -11,20 +11,11 @@ import de.digitalService.useID.ui.composables.screens.*
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = Screens.FIRST_TIME_USER_CHECK.name, modifier = modifier) {
         composable(Screens.FIRST_TIME_USER_CHECK.name) {
-            FirstTimeUserCheckScreen(
-                firstTimeUserHandler = {
-                    navController.navigate(
-                        Screens.FIRST_TIME_USER_PIN_LETTER_CHECK.name
-                    )
-                },
-                experiencedUserHandler = { }
-            )
+            FirstTimeUserCheckScreen(FirstTimeUserCheckScreenViewModel(navController))
         }
 
         composable(Screens.FIRST_TIME_USER_PIN_LETTER_CHECK.name) {
-            FirstTimeUserPINLetterScreen(
-                transportPINAvailableHandler = { navController.navigate(Screens.TRANSPORT_PIN_SCREEN.name) },
-                noPINAvailable = { navController.navigate(Screens.RESET_PIN_SCREEN.name) })
+            FirstTimeUserPINLetterScreen(FirstTimeUserPINLetterScreenViewModel(navController))
         }
 
         composable(Screens.RESET_PIN_SCREEN.name) {
@@ -32,7 +23,8 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         composable(Screens.TRANSPORT_PIN_SCREEN.name) {
-            TransportPINScreen(null)
+            val viewModel = TransportPINScreenViewModel(navController, attempts = null)
+            TransportPINScreen(viewModel)
         }
     }
 }
