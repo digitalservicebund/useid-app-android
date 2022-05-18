@@ -27,12 +27,12 @@ interface FirstTimeUserPINLetterScreenViewModelInterface {
 }
 
 class FirstTimeUserPINLetterScreenViewModel(val navController: NavController): ViewModel(), FirstTimeUserPINLetterScreenViewModelInterface {
-    override fun onTransportPINAvailable() { navController.navigate(Screens.TRANSPORT_PIN_SCREEN.name) }
-    override fun onNoPINAvailable() { navController.navigate(Screens.RESET_PIN_SCREEN.name) }
+    override fun onTransportPINAvailable() { navController.navigate(Screen.TransportPIN.parameterizedRoute()) }
+    override fun onNoPINAvailable() { navController.navigate(Screen.ResetPIN.parameterizedRoute()) }
 }
 
 //region Preview
-class PreviewFirstTimeUserPINLetterScreenViewModel: FirstTimeUserPINLetterScreenViewModelInterface {
+private class PreviewFirstTimeUserPINLetterScreenViewModel: FirstTimeUserPINLetterScreenViewModelInterface {
     override fun onTransportPINAvailable() { }
     override fun onNoPINAvailable() { }
 }

@@ -28,7 +28,7 @@ interface FirstTimeUserCheckScreenViewModelInterface {
 
 class FirstTimeUserCheckScreenViewModel(val navController: NavController): ViewModel(), FirstTimeUserCheckScreenViewModelInterface {
     override fun onFirstTimeUsage() {
-        navController.navigate(Screens.FIRST_TIME_USER_PIN_LETTER_CHECK.name)
+        navController.navigate(Screen.FirstTimeUserPINLetterCheck.parameterizedRoute())
     }
 
     override fun onNonFirstTimeUsage() {
@@ -36,7 +36,7 @@ class FirstTimeUserCheckScreenViewModel(val navController: NavController): ViewM
 }
 
 //region Preview
-class PreviewFirstTimeUserCheckScreenViewModel(): FirstTimeUserCheckScreenViewModelInterface {
+private class PreviewFirstTimeUserCheckScreenViewModel(): FirstTimeUserCheckScreenViewModelInterface {
     override fun onFirstTimeUsage() { }
     override fun onNonFirstTimeUsage() { }
 }

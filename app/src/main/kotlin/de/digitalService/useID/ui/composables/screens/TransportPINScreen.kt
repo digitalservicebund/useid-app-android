@@ -56,7 +56,7 @@ fun TransportPINScreen(viewModel: TransportPINScreenViewModelInterface) {
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(40.dp))
-        TransportPINEntryField(onDone = { }, focusRequester = focusRequester, modifier = Modifier.padding(horizontal = 20.dp))
+        TransportPINEntryField(onDone = viewModel::onTransportPINEntered, focusRequester = focusRequester, modifier = Modifier.padding(horizontal = 20.dp))
 
         if (viewModel.shouldShowTransportPINError) {
             val attempts = viewModel.displayedAttempts
@@ -87,18 +87,26 @@ fun TransportPINScreen(viewModel: TransportPINScreenViewModelInterface) {
 interface TransportPINScreenViewModelInterface {
     val shouldShowTransportPINError: Boolean
     val displayedAttempts: Int
+
+    fun onTransportPINEntered(pin: String)
 }
 
 class TransportPINScreenViewModel(val navController: NavController, val attempts: Int?): ViewModel(), TransportPINScreenViewModelInterface {
     override val shouldShowTransportPINError: Boolean = attempts?.let { attempts < 3 } ?: false
     override val displayedAttempts: Int = attempts ?: 3
+
+    override fun onTransportPINEntered(pin: String) {
+        navController.navigate(Screen.SetPINIntro.parameterizedRoute(pin))
+    }
 }
 
 //region Preview
 private class PreviewTransportPINScreenViewModel(
     override val shouldShowTransportPINError: Boolean,
     override val displayedAttempts: Int
-): TransportPINScreenViewModelInterface
+): TransportPINScreenViewModelInterface {
+    override fun onTransportPINEntered(pin: String) { }
+}
 
 @Preview
 @Composable

@@ -7,24 +7,38 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import de.digitalService.useID.ui.composables.screens.*
 
+sealed class NavigationException: Exception() {
+    object MissingArgumentException: NavigationException()
+}
+
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
-    NavHost(navController = navController, startDestination = Screens.FIRST_TIME_USER_CHECK.name, modifier = modifier) {
-        composable(Screens.FIRST_TIME_USER_CHECK.name) {
+    NavHost(navController = navController, startDestination = Screen.FirstTimeUserCheck.routeTemplate, modifier = modifier) {
+        composable(Screen.FirstTimeUserCheck.routeTemplate) {
             FirstTimeUserCheckScreen(FirstTimeUserCheckScreenViewModel(navController))
         }
 
-        composable(Screens.FIRST_TIME_USER_PIN_LETTER_CHECK.name) {
+        composable(Screen.FirstTimeUserPINLetterCheck.routeTemplate) {
             FirstTimeUserPINLetterScreen(FirstTimeUserPINLetterScreenViewModel(navController))
         }
 
-        composable(Screens.RESET_PIN_SCREEN.name) {
+        composable(Screen.ResetPIN.routeTemplate) {
             ResetPINScreen()
         }
 
-        composable(Screens.TRANSPORT_PIN_SCREEN.name) {
+        composable(Screen.TransportPIN.routeTemplate) {
             val viewModel = TransportPINScreenViewModel(navController, attempts = null)
             TransportPINScreen(viewModel)
+        }
+
+        composable(Screen.SetPINIntro.routeTemplate,
+            arguments = Screen.SetPINIntro.namedNavArguments
+        ) { entry ->
+            val arguments = entry.arguments ?: throw NavigationException.MissingArgumentException
+
+            val pin = Screen.SetPINIntro.pin(arguments)
+            val viewModel = SetPINIntroScreenViewModel(navController, pin)
+            SetPINIntroScreen(viewModel)
         }
     }
 }
