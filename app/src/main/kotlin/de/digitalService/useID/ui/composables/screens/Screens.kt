@@ -54,6 +54,10 @@ sealed class Screen: ScreenInterface {
         fun parameterizedRoute(pin: String): String = "$screenName/$pin"
     }
 
+    object SetPIN : Screen() {
+        fun parameterizedRoute(): String = screenName
+    }
+
     inline fun <reified T: Enum<T>> routeWithParameters(route: String): String = route + "/" + enumValues<T>().joinToString(
         "/"
     ) { "{${it.name}}" }

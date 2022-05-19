@@ -13,7 +13,7 @@ sealed class NavigationException: Exception() {
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
-    NavHost(navController = navController, startDestination = Screen.FirstTimeUserCheck.routeTemplate, modifier = modifier) {
+    NavHost(navController = navController, startDestination = Screen.SetPIN.routeTemplate, modifier = modifier) {
         composable(Screen.FirstTimeUserCheck.routeTemplate) {
             FirstTimeUserCheckScreen(FirstTimeUserCheckScreenViewModel(navController))
         }
@@ -39,6 +39,11 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             val pin = Screen.SetPINIntro.pin(arguments)
             val viewModel = SetPINIntroScreenViewModel(navController, pin)
             SetPINIntroScreen(viewModel)
+        }
+
+        composable(Screen.SetPIN.routeTemplate) {
+            val viewModel = SetPINScreenViewModel()
+            SetPINScreen(viewModel)
         }
     }
 }

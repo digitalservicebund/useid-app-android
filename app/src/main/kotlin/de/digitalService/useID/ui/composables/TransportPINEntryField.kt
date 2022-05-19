@@ -67,7 +67,7 @@ fun TransportPINEntryField(
                 },
                 shape = MaterialTheme.shapes.small,
                 colors = TextFieldDefaults.textFieldColors(
-                    containerColor = MaterialTheme.colorScheme.background,
+                    containerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
@@ -93,12 +93,12 @@ fun TransportPINEntryField(
             )
             Surface(
                 shape = MaterialTheme.shapes.small,
-                contentColor = MaterialTheme.colorScheme.background,
+                color = MaterialTheme.colorScheme.background,
                 modifier = Modifier
                     .align(Alignment.Center)
                     .fillMaxSize()
                     .clickable(
-                        enabled = true,
+                        enabled = false,
                         onClick = {
                             focusRequester.requestFocus()
                             keyboardController?.show()
@@ -111,7 +111,7 @@ fun TransportPINEntryField(
 
             }
             PINDigitRow(
-                input = pinInput, modifier = Modifier
+                input = pinInput, digitCount = 5, placeholder = false, spacerPosition = null, modifier = Modifier
                     .align(Alignment.Center)
                     .width(240.dp)
             )

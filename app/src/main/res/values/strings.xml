@@ -20,4 +20,8 @@
     <string name="firstTimeUser_personalPINIntro_title">Wählen Sie Ihre persönliche PIN für Ihren Ausweis</string>
     <string name="firstTimeUser_personalPINIntro_body">Diese 6-stellige persönliche PIN geben Sie jedes Mal ein, wenn Sie Ihren Ausweis online benutzen.</string>
     <string name="firstTimeUser_personalPINIntro_continue">Persönliche PIN wählen</string>
+    <string name="firstTimeUser_personalPIN_title">Wählen Sie Ihre persönliche PIN für Ihren Ausweis</string>
+    <string name="firstTimeUser_personalPIN_confirmation">Geben Sie Ihre persönliche PIN zur Bestätigung noch einmal ein.</string>
+    <string name="firstTimeUser_personalPIN_error_mismatch_title">Die beiden PINs stimmen nicht überein</string>
+    <string name="firstTimeUser_personalPIN_error_mismatch_body">Versuchen Sie es erneut.</string>
 </resources>
