@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.composables.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,23 +32,43 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.weight(1f))
-        Column(horizontalAlignment = Alignment.CenterHorizontally,) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             PINEntryField(
                 value = viewModel.pin1,
                 onValueChanged = viewModel::userInputPIN1,
                 focusRequester = focusRequesterPIN1
             )
-            if (viewModel.shouldShowPIN2EntryField) {
-                Text(stringResource(id = R.string.firstTimeUser_personalPIN_confirmation), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center, modifier = Modifier.padding(vertical = 10.dp))
-                PINEntryField(
-                    value = viewModel.pin2,
-                    onValueChanged = viewModel::userInputPIN2,
-                    focusRequester = focusRequesterPIN2
-                )
+            AnimatedVisibility(viewModel.shouldShowPIN2EntryField) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        stringResource(id = R.string.firstTimeUser_personalPIN_confirmation),
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 10.dp)
+                    )
+                    PINEntryField(
+                        value = viewModel.pin2,
+                        onValueChanged = viewModel::userInputPIN2,
+                        focusRequester = focusRequesterPIN2
+                    )
+                }
             }
-            if (viewModel.shouldShowError) {
-                Text(stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_title), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium, textAlign = TextAlign.Center, modifier = Modifier.padding(vertical = 10.dp))
-                Text(stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_body), style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center, modifier = Modifier.padding(vertical = 10.dp))
+            AnimatedVisibility(viewModel.shouldShowError) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_title),
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 10.dp)
+                    )
+                    Text(
+                        stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_body),
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 10.dp)
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.weight(1f))
