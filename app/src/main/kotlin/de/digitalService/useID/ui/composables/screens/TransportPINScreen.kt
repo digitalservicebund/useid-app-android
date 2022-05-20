@@ -79,7 +79,6 @@ fun TransportPINScreen(viewModel: TransportPINScreenViewModelInterface) {
     }
 
     LaunchedEffect(Unit) {
-        // A bug in Material 3 (1.0.0-alpha11) prevents this from showing the keyboard automatically sometimes.
         focusRequester.requestFocus()
     }
 }

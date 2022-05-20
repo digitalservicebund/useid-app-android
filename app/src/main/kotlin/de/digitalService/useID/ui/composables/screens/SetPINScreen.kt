@@ -53,19 +53,23 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
         Spacer(modifier = Modifier.weight(1f))
     }
 
-    LaunchedEffect(viewModel.shouldShowPIN2EntryField) {
-        // A bug in Material 3 (1.0.0-alpha11) prevents this from showing the keyboard automatically sometimes.
-        if (viewModel.shouldShowPIN2EntryField) {
-            focusRequesterPIN2.requestFocus()
-        } else {
-            focusRequesterPIN1.requestFocus()
+    LaunchedEffect(viewModel.focus) {
+        when(viewModel.focus) {
+            SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1 -> focusRequesterPIN1.requestFocus()
+            SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_2 -> focusRequesterPIN2.requestFocus()
         }
     }
 }
 
 interface SetPINScreenViewModelInterface {
+    enum class PINEntryFieldFocus {
+        PIN_1, PIN_2
+    }
+
     val pin1: String
     val pin2: String
+
+    val focus: PINEntryFieldFocus
 
     val shouldShowPIN2EntryField: Boolean
     val shouldShowError: Boolean
@@ -81,8 +85,11 @@ class SetPINScreenViewModel: ViewModel(), SetPINScreenViewModelInterface {
     override var pin2 by mutableStateOf("")
         private set
 
-    override val shouldShowPIN2EntryField: Boolean
-        get() = pin1.length > 5 || pin2.isNotEmpty()
+    override var focus: SetPINScreenViewModelInterface.PINEntryFieldFocus by mutableStateOf(SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1)
+        private set
+
+    override var shouldShowPIN2EntryField by mutableStateOf(false)
+        private set
 
     override var shouldShowError by mutableStateOf(false)
         private set
@@ -90,6 +97,14 @@ class SetPINScreenViewModel: ViewModel(), SetPINScreenViewModelInterface {
     override fun userInputPIN1(value: String) {
         pin1 = value
         shouldShowError = false
+
+        val pinComplete = pin1.length >= 6
+
+        shouldShowPIN2EntryField = pinComplete || pin2.isNotEmpty()
+
+        if (pinComplete) {
+            focus = SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_2
+        }
     }
 
     override fun userInputPIN2(value: String) {
@@ -106,6 +121,7 @@ class SetPINScreenViewModel: ViewModel(), SetPINScreenViewModelInterface {
             pin1 = ""
             pin2 = ""
             shouldShowError = true
+            focus = SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1
         }
     }
 }
@@ -114,6 +130,7 @@ class SetPINScreenViewModel: ViewModel(), SetPINScreenViewModelInterface {
 private class PreviewSetPINScreenViewModel(
     override val pin1: String,
     override val pin2: String,
+    override val focus: SetPINScreenViewModelInterface.PINEntryFieldFocus,
     override val shouldShowPIN2EntryField: Boolean,
     override val shouldShowError: Boolean
 ) : SetPINScreenViewModelInterface {
@@ -125,7 +142,7 @@ private class PreviewSetPINScreenViewModel(
 @Composable
 fun PreviewSetPINScreen() {
     UseIDTheme {
-        SetPINScreen(PreviewSetPINScreenViewModel("12", "", false, false))
+        SetPINScreen(PreviewSetPINScreenViewModel("12", "", SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1, false, false))
     }
 }
 //endregion
