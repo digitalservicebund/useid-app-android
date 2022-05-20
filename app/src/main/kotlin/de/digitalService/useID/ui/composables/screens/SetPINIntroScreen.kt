@@ -25,7 +25,9 @@ interface SetPINIntroScreenViewModelInterface {
 }
 
 class SetPINIntroScreenViewModel(val navController: NavController, val transportPIN: String): ViewModel(), SetPINIntroScreenViewModelInterface {
-    override fun onSetPIN() { }
+    override fun onSetPIN() {
+        navController.navigate(Screen.SetPIN.routeTemplate)
+    }
 }
 
 //region Preview

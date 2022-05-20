@@ -26,6 +26,9 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
     val focusRequesterPIN1 = remember { FocusRequester() }
     val focusRequesterPIN2 = remember { FocusRequester() }
 
+    val pin1EntryFieldDescription = stringResource(id = R.string.firstTimeUser_personalPIN_PIN1TextFieldDescription, viewModel.pin1.map { "$it " })
+    val pin2EntryFieldDescription = stringResource(id = R.string.firstTimeUser_personalPIN_PIN2TextFieldDescription, viewModel.pin2.map { "$it " })
+
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
             stringResource(id = R.string.firstTimeUser_personalPIN_title),
@@ -35,8 +38,14 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             PINEntryField(
                 value = viewModel.pin1,
+                digitCount = 6,
+                spacerPosition = 3,
                 onValueChanged = viewModel::userInputPIN1,
-                focusRequester = focusRequesterPIN1
+                contentDescription = pin1EntryFieldDescription,
+                focusRequester = focusRequesterPIN1,
+                modifier = Modifier
+                    .width(240.dp)
+                    .height(56.dp)
             )
             AnimatedVisibility(viewModel.shouldShowPIN2EntryField) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -48,8 +57,14 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
                     )
                     PINEntryField(
                         value = viewModel.pin2,
+                        digitCount = 6,
+                        spacerPosition = 3,
                         onValueChanged = viewModel::userInputPIN2,
-                        focusRequester = focusRequesterPIN2
+                        contentDescription = pin2EntryFieldDescription,
+                        focusRequester = focusRequesterPIN2,
+                        modifier = Modifier
+                            .width(240.dp)
+                            .height(56.dp)
                     )
                 }
             }

@@ -24,4 +24,6 @@
     <string name="firstTimeUser_personalPIN_confirmation">Geben Sie Ihre persönliche PIN zur Bestätigung noch einmal ein.</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_title">Die beiden PINs stimmen nicht überein</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Versuchen Sie es erneut.</string>
+    <string name="firstTimeUser_personalPIN_PIN1TextFieldDescription">Eingabefeld PIN %1$s</string>
+    <string name="firstTimeUser_personalPIN_PIN2TextFieldDescription">Eingabefeld Wiederholung PIN %1$s</string>
 </resources>

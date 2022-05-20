@@ -13,7 +13,7 @@ sealed class NavigationException: Exception() {
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
-    NavHost(navController = navController, startDestination = Screen.SetPIN.routeTemplate, modifier = modifier) {
+    NavHost(navController = navController, startDestination = Screen.FirstTimeUserCheck.routeTemplate, modifier = modifier) {
         composable(Screen.FirstTimeUserCheck.routeTemplate) {
             FirstTimeUserCheckScreen(FirstTimeUserCheckScreenViewModel(navController))
         }

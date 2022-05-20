@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.composables
 
 import android.util.Log
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
@@ -36,23 +37,24 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 fun PINEntryField(
     value: String,
     onValueChanged: (String) -> Unit,
+    digitCount: Int,
+    spacerPosition: Int?,
+    contentDescription: String,
     focusRequester: FocusRequester,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onDone: () -> Unit = { },
 ) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
-    val pinEntryDescription = stringResource(id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription, value.map { "$it " })
 
     Box(
         modifier = modifier
-            .width(240.dp)
-            .height(56.dp)
             .focusable(false)
     ) {
         TextField(
             value = value,
             onValueChange = {
-                if (it.length < 7) {
+                if (it.length <= digitCount) {
                     onValueChanged(it)
                 }
             },
@@ -68,21 +70,16 @@ fun PINEntryField(
                 keyboardType = KeyboardType.NumberPassword,
                 imeAction = ImeAction.Done
             ),
-//            keyboardActions = KeyboardActions(
-//                onDone = {
-//                    if (pinInput.length != 6) {
-//                        Log.d("DEBUG", "PIN input too short.")
-//                    } else {
-//                        onDone(pinInput)
-//                    }
-//                }
-//            ),
+            keyboardActions = KeyboardActions(
+                onDone = { onDone() }
+            ),
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
                 .focusRequester(focusRequester)
         )
         Surface(
+            shape = MaterialTheme.shapes.small,
             color = MaterialTheme.colorScheme.background,
             modifier = Modifier
                 .align(Alignment.Center)
@@ -95,15 +92,19 @@ fun PINEntryField(
                     }
                 )
                 .semantics(mergeDescendants = true) {
-                    stateDescription = pinEntryDescription
+                    stateDescription = contentDescription
                 }
         ) {
 
         }
         PINDigitRow(
-            input = value, digitCount = 6, placeholder = false, spacerPosition = 3, modifier = Modifier
+            input = value,
+            digitCount = digitCount,
+            placeholder = false,
+            spacerPosition = spacerPosition,
+            modifier = Modifier
                 .align(Alignment.Center)
-                .width(240.dp)
+                .fillMaxWidth()
         )
     }
 }
@@ -112,6 +113,6 @@ fun PINEntryField(
 @Composable
 fun PreviewPINEntryField() {
     UseIDTheme {
-        PINEntryField(value = "22", onValueChanged = { }, focusRequester = FocusRequester())
+        PINEntryField(value = "22", onValueChanged = { }, digitCount = 6, spacerPosition = 3, contentDescription = "", focusRequester = FocusRequester())
     }
 }
