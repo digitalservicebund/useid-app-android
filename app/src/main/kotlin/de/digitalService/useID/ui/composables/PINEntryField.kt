@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.input.ImeAction
@@ -44,7 +45,6 @@ fun PINEntryField(
     modifier: Modifier = Modifier,
     onDone: () -> Unit = { },
 ) {
-
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Box(
@@ -92,7 +92,8 @@ fun PINEntryField(
                     }
                 )
                 .semantics(mergeDescendants = true) {
-                    stateDescription = contentDescription
+                    this.contentDescription = contentDescription
+                    stateDescription = value.replace(".".toRegex(), "$0 ")
                 }
         ) {
 

@@ -12,6 +12,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,10 +27,17 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
     val focusRequesterPIN1 = remember { FocusRequester() }
     val focusRequesterPIN2 = remember { FocusRequester() }
 
-    val pin1EntryFieldDescription = stringResource(id = R.string.firstTimeUser_personalPIN_PIN1TextFieldDescription, viewModel.pin1.map { "$it " })
-    val pin2EntryFieldDescription = stringResource(id = R.string.firstTimeUser_personalPIN_PIN2TextFieldDescription, viewModel.pin2.map { "$it " })
+    val pin1EntryFieldDescription = stringResource(
+        id = R.string.firstTimeUser_personalPIN_PIN1TextFieldDescription,
+        viewModel.pin1.map { "$it " })
+    val pin2EntryFieldDescription = stringResource(
+        id = R.string.firstTimeUser_personalPIN_PIN2TextFieldDescription,
+        viewModel.pin2.map { "$it " })
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(horizontal = 20.dp)) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 20.dp)
+    ) {
         Text(
             stringResource(id = R.string.firstTimeUser_personalPIN_title),
             style = MaterialTheme.typography.titleLarge
@@ -69,7 +77,10 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
                 }
             }
             AnimatedVisibility(viewModel.shouldShowError) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.semantics(mergeDescendants = true) { }
+                ) {
                     Text(
                         stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_title),
                         color = MaterialTheme.colorScheme.error,
@@ -90,7 +101,7 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
     }
 
     LaunchedEffect(viewModel.focus) {
-        when(viewModel.focus) {
+        when (viewModel.focus) {
             SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1 -> focusRequesterPIN1.requestFocus()
             SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_2 -> focusRequesterPIN2.requestFocus()
         }
@@ -114,14 +125,16 @@ interface SetPINScreenViewModelInterface {
     fun userInputPIN2(value: String)
 }
 
-class SetPINScreenViewModel: ViewModel(), SetPINScreenViewModelInterface {
+class SetPINScreenViewModel : ViewModel(), SetPINScreenViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set
 
     override var pin2 by mutableStateOf("")
         private set
 
-    override var focus: SetPINScreenViewModelInterface.PINEntryFieldFocus by mutableStateOf(SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1)
+    override var focus: SetPINScreenViewModelInterface.PINEntryFieldFocus by mutableStateOf(
+        SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1
+    )
         private set
 
     override var shouldShowPIN2EntryField by mutableStateOf(false)
@@ -170,15 +183,23 @@ private class PreviewSetPINScreenViewModel(
     override val shouldShowPIN2EntryField: Boolean,
     override val shouldShowError: Boolean
 ) : SetPINScreenViewModelInterface {
-    override fun userInputPIN1(value: String) { }
-    override fun userInputPIN2(value: String) { }
+    override fun userInputPIN1(value: String) {}
+    override fun userInputPIN2(value: String) {}
 }
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewSetPINScreen() {
     UseIDTheme {
-        SetPINScreen(PreviewSetPINScreenViewModel("12", "", SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1, false, false))
+        SetPINScreen(
+            PreviewSetPINScreenViewModel(
+                "12",
+                "",
+                SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1,
+                false,
+                false
+            )
+        )
     }
 }
 //endregion
