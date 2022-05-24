@@ -120,7 +120,7 @@ class SetupTransportPINViewModel(val navController: NavController, val attempts:
 
     override fun onDoneTapped() {
         if (transportPIN.length == 5) {
-            navController.navigate(Screen.SetPINIntro.parameterizedRoute(transportPIN))
+            navController.navigate(Screen.SetupPersonalPINIntro.parameterizedRoute(transportPIN))
         } else {
             Log.d("DEBUG", "Transport PIN too short.")
         }

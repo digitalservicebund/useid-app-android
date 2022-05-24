@@ -27,7 +27,7 @@ interface SetupPINLetterScreenViewModelInterface {
 }
 
 class SetupPINLetterScreenViewModel(val navController: NavController): ViewModel(), SetupPINLetterScreenViewModelInterface {
-    override fun onTransportPINAvailable() { navController.navigate(Screen.TransportPIN.parameterizedRoute()) }
+    override fun onTransportPINAvailable() { navController.navigate(Screen.SetupTransportPIN.parameterizedRoute()) }
     override fun onNoPINAvailable() { navController.navigate(Screen.ResetPIN.parameterizedRoute()) }
 }
 

@@ -26,7 +26,7 @@ interface SetupPersonalPINIntroViewModelInterface {
 
 class SetupPersonalPINIntroViewModel(val navController: NavController, val transportPIN: String): ViewModel(), SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() {
-        navController.navigate(Screen.SetPIN.routeTemplate)
+        navController.navigate(Screen.SetupPersonalPIN.routeTemplate)
     }
 }
 

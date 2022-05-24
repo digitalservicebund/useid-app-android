@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -122,7 +123,7 @@ interface SetupPersonalPINViewModelInterface {
     fun userInputPIN2(value: String)
 }
 
-class SetupPersonalPINViewModel : ViewModel(), SetupPersonalPINViewModelInterface {
+class SetupPersonalPINViewModel(val navController: NavController, val transportPIN: String): ViewModel(), SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set
 
@@ -162,7 +163,7 @@ class SetupPersonalPINViewModel : ViewModel(), SetupPersonalPINViewModelInterfac
 
     private fun handlePINInput() {
         if (pin1 == pin2) {
-            // Proceed to next screen
+            navController.navigate(Screen.SetupScan.parameterizedRoute(transportPIN, pin1))
         } else {
             pin1 = ""
             pin2 = ""

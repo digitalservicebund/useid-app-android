@@ -26,4 +26,7 @@
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Versuchen Sie es erneut.</string>
     <string name="firstTimeUser_personalPIN_PIN1TextFieldDescription">Eingabefeld PIN</string>
     <string name="firstTimeUser_personalPIN_PIN2TextFieldDescription">Eingabefeld Wiederholung PIN</string>
+    <string name="firstTimeUser_scan_title">Legen Sie Ihren Ausweis dicht an die Rückseite Ihres Smartphones – fast geschafft!</string>
+    <string name="firstTimeUser_scan_body">So wird Ihre persönliche PIN Ihrem Ausweis zugeordnet.</string>
+    <string name="firstTimeUser_scan_helpButton">Mein Ausweis wird nicht erkannt</string>
 </resources>
