@@ -10,8 +10,8 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun FirstTimeUserCheckScreen(viewModel: FirstTimeUserCheckScreenViewModelInterface) {
-    OnboardingScreen(
+fun SetupIntro(viewModel: SetupIntroViewModelInterface) {
+    StandardScreen(
         title = stringResource(id = R.string.firstTimeUser_intro_title),
         body = stringResource(id = R.string.firstTimeUser_intro_body),
         imageID = R.drawable.eids,
@@ -21,14 +21,14 @@ fun FirstTimeUserCheckScreen(viewModel: FirstTimeUserCheckScreenViewModelInterfa
     )
 }
 
-interface FirstTimeUserCheckScreenViewModelInterface {
+interface SetupIntroViewModelInterface {
     fun onFirstTimeUsage()
     fun onNonFirstTimeUsage()
 }
 
-class FirstTimeUserCheckScreenViewModel(val navController: NavController): ViewModel(), FirstTimeUserCheckScreenViewModelInterface {
+class SetupIntroViewModel(val navController: NavController): ViewModel(), SetupIntroViewModelInterface {
     override fun onFirstTimeUsage() {
-        navController.navigate(Screen.FirstTimeUserPINLetterCheck.parameterizedRoute())
+        navController.navigate(Screen.SetupPINLetter.parameterizedRoute())
     }
 
     override fun onNonFirstTimeUsage() {
@@ -36,16 +36,16 @@ class FirstTimeUserCheckScreenViewModel(val navController: NavController): ViewM
 }
 
 //region Preview
-private class PreviewFirstTimeUserCheckScreenViewModel(): FirstTimeUserCheckScreenViewModelInterface {
+private class PreviewSetupIntroViewModel(): SetupIntroViewModelInterface {
     override fun onFirstTimeUsage() { }
     override fun onNonFirstTimeUsage() { }
 }
 
 @Composable
 @Preview
-fun PreviewFirstTimeUserCheckScreen() {
+fun PreviewSetupIntro() {
     UseIDTheme {
-        FirstTimeUserCheckScreen(PreviewFirstTimeUserCheckScreenViewModel())
+        SetupIntro(PreviewSetupIntroViewModel())
     }
 }
 //endregion

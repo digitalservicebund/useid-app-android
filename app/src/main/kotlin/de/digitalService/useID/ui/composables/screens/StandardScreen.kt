@@ -28,7 +28,7 @@ class BundButtonConfig(
 )
 
 @Composable
-fun OnboardingScreen(
+fun StandardScreen(
     title: String,
     body: String,
     @DrawableRes imageID: Int,
@@ -88,7 +88,7 @@ fun OnboardingScreen(
 @Preview
 fun PreviewOnboardingScreenTwoButtons() {
     UseIDTheme {
-        OnboardingScreen(
+        StandardScreen(
             title = "Title",
             body = "Body",
             imageID = R.drawable.eids,
@@ -103,7 +103,7 @@ fun PreviewOnboardingScreenTwoButtons() {
 @Preview
 fun PreviewOnboardingScreenOneButton() {
     UseIDTheme {
-        OnboardingScreen(
+        StandardScreen(
             title = "Title",
             body = "Body",
             imageID = R.drawable.eids,
@@ -118,7 +118,7 @@ fun PreviewOnboardingScreenOneButton() {
 @Preview
 fun PreviewOnboardingScreenNoButton() {
     UseIDTheme {
-        OnboardingScreen(
+        StandardScreen(
             title = "Title",
             body = "Body",
             imageID = R.drawable.eids,

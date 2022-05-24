@@ -18,11 +18,11 @@ sealed interface ScreenInterface {
 }
 
 sealed class Screen: ScreenInterface {
-    object FirstTimeUserCheck : Screen() {
+    object SetupIntro : Screen() {
         fun parameterizedRoute(): String = screenName
     }
 
-    object FirstTimeUserPINLetterCheck : Screen() {
+    object SetupPINLetter : Screen() {
         fun parameterizedRoute(): String = screenName
     }
 

@@ -21,7 +21,7 @@ import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun TransportPINScreen(viewModel: TransportPINScreenViewModelInterface) {
+fun SetupTransportPIN(viewModel: SetupTransportPINViewModelInterface) {
     val focusRequester = remember { FocusRequester() }
     val resources = LocalContext.current.resources
 
@@ -96,7 +96,7 @@ fun TransportPINScreen(viewModel: TransportPINScreenViewModelInterface) {
     }
 }
 
-interface TransportPINScreenViewModelInterface {
+interface SetupTransportPINViewModelInterface {
     val transportPIN: String
 
     val shouldShowTransportPINError: Boolean
@@ -106,8 +106,8 @@ interface TransportPINScreenViewModelInterface {
     fun onDoneTapped()
 }
 
-class TransportPINScreenViewModel(val navController: NavController, val attempts: Int?) :
-    ViewModel(), TransportPINScreenViewModelInterface {
+class SetupTransportPINViewModel(val navController: NavController, val attempts: Int?) :
+    ViewModel(), SetupTransportPINViewModelInterface {
     override var transportPIN: String by mutableStateOf("")
         private set
 
@@ -128,44 +128,44 @@ class TransportPINScreenViewModel(val navController: NavController, val attempts
 }
 
 //region Preview
-private class PreviewTransportPINScreenViewModel(
+private class PreviewSetupTransportPINViewModel(
     override val transportPIN: String,
     override val shouldShowTransportPINError: Boolean,
     override val displayedAttempts: Int
-) : TransportPINScreenViewModelInterface {
+) : SetupTransportPINViewModelInterface {
     override fun onInputChanged(value: String) { }
     override fun onDoneTapped() { }
 }
 
 @Preview
 @Composable
-fun PreviewTransportPINScreenWithoutAttempts() {
+fun PreviewSetupTransportPINWithoutAttempts() {
     UseIDTheme {
-        TransportPINScreen(PreviewTransportPINScreenViewModel("12",false, 0))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12",false, 0))
     }
 }
 
 @Preview
 @Composable
-fun PreviewTransportPINScreenNullAttempts() {
+fun PreviewSetupTransportPINNullAttempts() {
     UseIDTheme {
-        TransportPINScreen(PreviewTransportPINScreenViewModel("12", true, 0))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", true, 0))
     }
 }
 
 @Preview
 @Composable
-fun PreviewTransportPINScreenOneAttempt() {
+fun PreviewSetupTransportPINOneAttempt() {
     UseIDTheme {
-        TransportPINScreen(PreviewTransportPINScreenViewModel("12", true, 1))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", true, 1))
     }
 }
 
 @Preview
 @Composable
-fun PreviewTransportPINScreenTwoAttempts() {
+fun PreviewSetupTransportPINTwoAttempts() {
     UseIDTheme {
-        TransportPINScreen(PreviewTransportPINScreenViewModel("12",true, 2))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12",true, 2))
     }
 }
 //endregion

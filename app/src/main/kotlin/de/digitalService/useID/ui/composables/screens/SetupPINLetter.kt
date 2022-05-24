@@ -10,8 +10,8 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun FirstTimeUserPINLetterScreen(viewModel: FirstTimeUserPINLetterScreenViewModelInterface) {
-    OnboardingScreen(
+fun SetupPINLetter(viewModel: SetupPINLetterScreenViewModelInterface) {
+    StandardScreen(
         title = stringResource(id = R.string.firstTimeUser_pinLetter_title),
         body = stringResource(id = R.string.firstTimeUser_pinLetter_body),
         imageID = R.drawable.pin_brief,
@@ -21,27 +21,27 @@ fun FirstTimeUserPINLetterScreen(viewModel: FirstTimeUserPINLetterScreenViewMode
     )
 }
 
-interface FirstTimeUserPINLetterScreenViewModelInterface {
+interface SetupPINLetterScreenViewModelInterface {
     fun onTransportPINAvailable()
     fun onNoPINAvailable()
 }
 
-class FirstTimeUserPINLetterScreenViewModel(val navController: NavController): ViewModel(), FirstTimeUserPINLetterScreenViewModelInterface {
+class SetupPINLetterScreenViewModel(val navController: NavController): ViewModel(), SetupPINLetterScreenViewModelInterface {
     override fun onTransportPINAvailable() { navController.navigate(Screen.TransportPIN.parameterizedRoute()) }
     override fun onNoPINAvailable() { navController.navigate(Screen.ResetPIN.parameterizedRoute()) }
 }
 
 //region Preview
-private class PreviewFirstTimeUserPINLetterScreenViewModel: FirstTimeUserPINLetterScreenViewModelInterface {
+private class PreviewSetupPINLetterScreenViewModel: SetupPINLetterScreenViewModelInterface {
     override fun onTransportPINAvailable() { }
     override fun onNoPINAvailable() { }
 }
 
 @Composable
 @Preview
-fun PreviewFirstTimeUserPINLetterScreen() {
+fun PreviewSetupPINLetterScreen() {
     UseIDTheme {
-        FirstTimeUserPINLetterScreen(PreviewFirstTimeUserPINLetterScreenViewModel())
+        SetupPINLetter(PreviewSetupPINLetterScreenViewModel())
     }
 }
 //endregion

@@ -1,6 +1,5 @@
 package de.digitalService.useID.ui.composables.screens
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -9,8 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -23,7 +20,7 @@ import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier = Modifier) {
+fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Modifier = Modifier) {
     val focusRequesterPIN1 = remember { FocusRequester() }
     val focusRequesterPIN2 = remember { FocusRequester() }
 
@@ -102,13 +99,13 @@ fun SetPINScreen(viewModel: SetPINScreenViewModelInterface, modifier: Modifier =
 
     LaunchedEffect(viewModel.focus) {
         when (viewModel.focus) {
-            SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1 -> focusRequesterPIN1.requestFocus()
-            SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_2 -> focusRequesterPIN2.requestFocus()
+            SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1 -> focusRequesterPIN1.requestFocus()
+            SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_2 -> focusRequesterPIN2.requestFocus()
         }
     }
 }
 
-interface SetPINScreenViewModelInterface {
+interface SetupPersonalPINViewModelInterface {
     enum class PINEntryFieldFocus {
         PIN_1, PIN_2
     }
@@ -125,15 +122,15 @@ interface SetPINScreenViewModelInterface {
     fun userInputPIN2(value: String)
 }
 
-class SetPINScreenViewModel : ViewModel(), SetPINScreenViewModelInterface {
+class SetupPersonalPINViewModel : ViewModel(), SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set
 
     override var pin2 by mutableStateOf("")
         private set
 
-    override var focus: SetPINScreenViewModelInterface.PINEntryFieldFocus by mutableStateOf(
-        SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1
+    override var focus: SetupPersonalPINViewModelInterface.PINEntryFieldFocus by mutableStateOf(
+        SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1
     )
         private set
 
@@ -152,7 +149,7 @@ class SetPINScreenViewModel : ViewModel(), SetPINScreenViewModelInterface {
         shouldShowPIN2EntryField = pinComplete || pin2.isNotEmpty()
 
         if (pinComplete) {
-            focus = SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_2
+            focus = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_2
         }
     }
 
@@ -170,32 +167,32 @@ class SetPINScreenViewModel : ViewModel(), SetPINScreenViewModelInterface {
             pin1 = ""
             pin2 = ""
             shouldShowError = true
-            focus = SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1
+            focus = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1
         }
     }
 }
 
 //region Preview
-private class PreviewSetPINScreenViewModel(
+private class PreviewSetupPersonalPINViewModel(
     override val pin1: String,
     override val pin2: String,
-    override val focus: SetPINScreenViewModelInterface.PINEntryFieldFocus,
+    override val focus: SetupPersonalPINViewModelInterface.PINEntryFieldFocus,
     override val shouldShowPIN2EntryField: Boolean,
     override val shouldShowError: Boolean
-) : SetPINScreenViewModelInterface {
+) : SetupPersonalPINViewModelInterface {
     override fun userInputPIN1(value: String) {}
     override fun userInputPIN2(value: String) {}
 }
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable
-fun PreviewSetPINScreen() {
+fun PreviewSetupPersonalPIN() {
     UseIDTheme {
-        SetPINScreen(
-            PreviewSetPINScreenViewModel(
+        SetupPersonalPIN(
+            PreviewSetupPersonalPINViewModel(
                 "12",
                 "",
-                SetPINScreenViewModelInterface.PINEntryFieldFocus.PIN_1,
+                SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1,
                 false,
                 false
             )

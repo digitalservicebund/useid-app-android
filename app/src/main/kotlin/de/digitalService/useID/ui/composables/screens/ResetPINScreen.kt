@@ -7,8 +7,8 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun ResetPINScreen() {
-    OnboardingScreen(
+fun ReSetupPersonalPIN() {
+    StandardScreen(
         title = "Neuen PIN-Brief bestellen",
         body = "Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter www.pin-ruecksetzbrief-bestellen.de",
         imageID = R.drawable.pin_brief,
@@ -18,8 +18,8 @@ fun ResetPINScreen() {
 
 @Composable
 @Preview
-fun PINResetPINScreen() {
+fun PINReSetupPersonalPIN() {
     UseIDTheme {
-        ResetPINScreen()
+        ReSetupPersonalPIN()
     }
 }

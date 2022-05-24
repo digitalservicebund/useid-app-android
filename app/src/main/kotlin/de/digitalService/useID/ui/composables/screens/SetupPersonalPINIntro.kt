@@ -10,8 +10,8 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun SetPINIntroScreen(viewModel: SetPINIntroScreenViewModelInterface) {
-    OnboardingScreen(
+fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface) {
+    StandardScreen(
         title = stringResource(id = R.string.firstTimeUser_personalPINIntro_title),
         body = stringResource(id = R.string.firstTimeUser_personalPINIntro_body),
         imageID = R.drawable.eids,
@@ -20,26 +20,26 @@ fun SetPINIntroScreen(viewModel: SetPINIntroScreenViewModelInterface) {
     )
 }
 
-interface SetPINIntroScreenViewModelInterface {
+interface SetupPersonalPINIntroViewModelInterface {
     fun onSetPIN()
 }
 
-class SetPINIntroScreenViewModel(val navController: NavController, val transportPIN: String): ViewModel(), SetPINIntroScreenViewModelInterface {
+class SetupPersonalPINIntroViewModel(val navController: NavController, val transportPIN: String): ViewModel(), SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() {
         navController.navigate(Screen.SetPIN.routeTemplate)
     }
 }
 
 //region Preview
-private class PreviewSetPINIntroScreenViewModel: SetPINIntroScreenViewModelInterface {
+private class PreviewSetupPersonalPINIntroViewModel: SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() { }
 }
 
 @Preview
 @Composable
-fun PreviewSetPINIntroScreen() {
+fun PreviewSetupPersonalPINIntro() {
     UseIDTheme {
-        SetPINIntroScreen(PreviewSetPINIntroScreenViewModel())
+        SetupPersonalPINIntro(PreviewSetupPersonalPINIntroViewModel())
     }
 }
 //endregion

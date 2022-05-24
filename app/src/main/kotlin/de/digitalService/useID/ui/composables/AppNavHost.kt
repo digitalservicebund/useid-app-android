@@ -13,22 +13,22 @@ sealed class NavigationException: Exception() {
 
 @Composable
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
-    NavHost(navController = navController, startDestination = Screen.FirstTimeUserCheck.routeTemplate, modifier = modifier) {
-        composable(Screen.FirstTimeUserCheck.routeTemplate) {
-            FirstTimeUserCheckScreen(FirstTimeUserCheckScreenViewModel(navController))
+    NavHost(navController = navController, startDestination = Screen.SetupIntro.routeTemplate, modifier = modifier) {
+        composable(Screen.SetupIntro.routeTemplate) {
+            SetupIntro(SetupIntroViewModel(navController))
         }
 
-        composable(Screen.FirstTimeUserPINLetterCheck.routeTemplate) {
-            FirstTimeUserPINLetterScreen(FirstTimeUserPINLetterScreenViewModel(navController))
+        composable(Screen.SetupPINLetter.routeTemplate) {
+            SetupPINLetter(SetupPINLetterScreenViewModel(navController))
         }
 
         composable(Screen.ResetPIN.routeTemplate) {
-            ResetPINScreen()
+            ReSetupPersonalPIN()
         }
 
         composable(Screen.TransportPIN.routeTemplate) {
-            val viewModel = TransportPINScreenViewModel(navController, attempts = null)
-            TransportPINScreen(viewModel)
+            val viewModel = SetupTransportPINViewModel(navController, attempts = null)
+            SetupTransportPIN(viewModel)
         }
 
         composable(Screen.SetPINIntro.routeTemplate,
@@ -37,13 +37,13 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             val arguments = entry.arguments ?: throw NavigationException.MissingArgumentException
 
             val pin = Screen.SetPINIntro.pin(arguments)
-            val viewModel = SetPINIntroScreenViewModel(navController, pin)
-            SetPINIntroScreen(viewModel)
+            val viewModel = SetupPersonalPINIntroViewModel(navController, pin)
+            SetupPersonalPINIntro(viewModel)
         }
 
         composable(Screen.SetPIN.routeTemplate) {
-            val viewModel = SetPINScreenViewModel()
-            SetPINScreen(viewModel)
+            val viewModel = SetupPersonalPINViewModel()
+            SetupPersonalPIN(viewModel)
         }
     }
 }
