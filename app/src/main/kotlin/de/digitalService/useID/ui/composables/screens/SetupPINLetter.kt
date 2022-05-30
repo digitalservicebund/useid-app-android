@@ -6,8 +6,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.coordinators.PINLetterCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import javax.inject.Inject
 
 @Composable
 fun SetupPINLetter(viewModel: SetupPINLetterScreenViewModelInterface) {
@@ -26,9 +30,10 @@ interface SetupPINLetterScreenViewModelInterface {
     fun onNoPINAvailable()
 }
 
-class SetupPINLetterScreenViewModel(val navController: NavController): ViewModel(), SetupPINLetterScreenViewModelInterface {
-    override fun onTransportPINAvailable() { navController.navigate(Screen.SetupTransportPIN.parameterizedRoute()) }
-    override fun onNoPINAvailable() { navController.navigate(Screen.ResetPIN.parameterizedRoute()) }
+@HiltViewModel
+class SetupPINLetterViewModel @Inject constructor(private val coordinator: PINLetterCoordinator): ViewModel(), SetupPINLetterScreenViewModelInterface {
+    override fun onTransportPINAvailable() { coordinator.letterAvailable() }
+    override fun onNoPINAvailable() { coordinator.letterNotAvailable() }
 }
 
 //region Preview

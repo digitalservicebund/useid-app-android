@@ -5,9 +5,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import javax.inject.Inject
 
 @Composable
 fun SetupIntro(viewModel: SetupIntroViewModelInterface) {
@@ -26,9 +28,10 @@ interface SetupIntroViewModelInterface {
     fun onNonFirstTimeUsage()
 }
 
-class SetupIntroViewModel(val navController: NavController): ViewModel(), SetupIntroViewModelInterface {
+@HiltViewModel
+class SetupIntroViewModel @Inject constructor(val appCoordinator: AppCoordinator): ViewModel(), SetupIntroViewModelInterface {
     override fun onFirstTimeUsage() {
-        navController.navigate(Screen.SetupPINLetter.parameterizedRoute())
+        appCoordinator.startSetupIDCard()
     }
 
     override fun onNonFirstTimeUsage() {

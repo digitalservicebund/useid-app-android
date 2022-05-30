@@ -6,8 +6,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.coordinators.PersonalPINIntroCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import javax.inject.Inject
 
 @Composable
 fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface) {
@@ -24,9 +27,10 @@ interface SetupPersonalPINIntroViewModelInterface {
     fun onSetPIN()
 }
 
-class SetupPersonalPINIntroViewModel(val navController: NavController, val transportPIN: String): ViewModel(), SetupPersonalPINIntroViewModelInterface {
+@HiltViewModel
+class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: PersonalPINIntroCoordinator): ViewModel(), SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() {
-        navController.navigate(Screen.SetupPersonalPIN.routeTemplate)
+        coordinator.finishIntro()
     }
 }
 

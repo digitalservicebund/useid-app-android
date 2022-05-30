@@ -16,9 +16,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.PINEntryField
+import de.digitalService.useID.ui.coordinators.PersonalPINCoordinator
+import de.digitalService.useID.ui.coordinators.PersonalPINIntroCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import javax.inject.Inject
 
 @Composable
 fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Modifier = Modifier) {
@@ -123,7 +127,8 @@ interface SetupPersonalPINViewModelInterface {
     fun userInputPIN2(value: String)
 }
 
-class SetupPersonalPINViewModel(val navController: NavController, val transportPIN: String): ViewModel(), SetupPersonalPINViewModelInterface {
+@HiltViewModel
+class SetupPersonalPINViewModel @Inject constructor(private val coordinator: PersonalPINCoordinator): ViewModel(), SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set
 
@@ -163,7 +168,7 @@ class SetupPersonalPINViewModel(val navController: NavController, val transportP
 
     private fun handlePINInput() {
         if (pin1 == pin2) {
-            navController.navigate(Screen.SetupScan.parameterizedRoute(transportPIN, pin1))
+            coordinator.finishPersonalPINEntry(pin1)
         } else {
             pin1 = ""
             pin2 = ""

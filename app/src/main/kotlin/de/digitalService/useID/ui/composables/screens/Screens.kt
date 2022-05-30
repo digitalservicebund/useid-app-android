@@ -1,6 +1,6 @@
 package de.digitalService.useID.ui.composables.screens
 
-import android.os.Bundle
+import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -31,47 +31,31 @@ sealed class Screen: ScreenInterface {
     }
 
     object SetupTransportPIN : Screen() {
-        fun parameterizedRoute(): String = screenName
+        private enum class Parameters {
+            attempts
+        }
+
+        override val routeTemplate: String
+            get() = routeWithParameters<Parameters>(screenName)
+
+        override val namedNavArguments: List<NamedNavArgument>
+            get() = Parameters.values().map {
+                when (it) {
+                    Parameters.attempts -> navArgument(it.name) { type = NavType.IntType }
+                }
+            }
+
+        fun attempts(savedStateHandle: SavedStateHandle): Int = savedStateHandle.get(Parameters.attempts.name) ?: throw NavigationException.MissingArgumentException
+
+        fun parameterizedRoute(attempts: Int): String = "$screenName/$attempts"
     }
 
     object SetupPersonalPINIntro : Screen() {
-        private enum class Parameters {
-            transportPIN
-        }
-
-        override val routeTemplate: String
-            get() = routeWithParameters<Parameters>(screenName)
-
-        override val namedNavArguments: List<NamedNavArgument>
-            get() = Parameters.values().map {
-                when (it) {
-                    Parameters.transportPIN -> navArgument(it.name) { type = NavType.StringType }
-                }
-            }
-
-        fun transportPIN(bundle: Bundle): String = bundle.getString(Parameters.transportPIN.name) ?: throw NavigationException.MissingArgumentException
-
-        fun parameterizedRoute(transportPIN: String): String = "$screenName/$transportPIN"
+        fun parameterizedRoute(): String = screenName
     }
 
     object SetupPersonalPIN : Screen() {
-        private enum class Parameters {
-            transportPIN
-        }
-
-        override val routeTemplate: String
-            get() = routeWithParameters<Parameters>(screenName)
-
-        override val namedNavArguments: List<NamedNavArgument>
-            get() = Parameters.values().map {
-                when (it) {
-                    Parameters.transportPIN -> navArgument(it.name) { type = NavType.StringType }
-                }
-            }
-
-        fun transportPIN(bundle: Bundle): String = bundle.getString(Parameters.transportPIN.name) ?: throw NavigationException.MissingArgumentException
-
-        fun parameterizedRoute(transportPIN: String): String = "$screenName/$transportPIN"
+        fun parameterizedRoute(): String = screenName
     }
 
     object SetupScan : Screen() {
@@ -90,8 +74,8 @@ sealed class Screen: ScreenInterface {
                 }
             }
 
-        fun transportPIN(bundle: Bundle): String = bundle.getString(Parameters.transportPIN.name) ?: throw NavigationException.MissingArgumentException
-        fun personalPIN(bundle: Bundle): String = bundle.getString(Parameters.personalPIN.name) ?: throw NavigationException.MissingArgumentException
+        fun transportPIN(savedStateHandle: SavedStateHandle): String = savedStateHandle.get(Parameters.transportPIN.name) ?: throw NavigationException.MissingArgumentException
+        fun personalPIN(savedStateHandle: SavedStateHandle): String = savedStateHandle.get(Parameters.personalPIN.name) ?: throw NavigationException.MissingArgumentException
 
         fun parameterizedRoute(transportPIN: String, personalPIN: String): String = "$screenName/$transportPIN/$personalPIN"
     }

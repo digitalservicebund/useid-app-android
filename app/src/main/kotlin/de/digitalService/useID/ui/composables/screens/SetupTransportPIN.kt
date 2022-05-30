@@ -14,18 +14,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.PINEntryField
+import de.digitalService.useID.ui.coordinators.TransportPINCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import javax.inject.Inject
 
 @Composable
 fun SetupTransportPIN(viewModel: SetupTransportPINViewModelInterface) {
     val focusRequester = remember { FocusRequester() }
     val resources = LocalContext.current.resources
 
-    val pinEntryFieldDescription = stringResource(id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription, viewModel.transportPIN.map { "$it " })
+    val pinEntryFieldDescription = stringResource(
+        id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription,
+        viewModel.transportPIN.map { "$it " })
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
@@ -106,8 +112,19 @@ interface SetupTransportPINViewModelInterface {
     fun onDoneTapped()
 }
 
-class SetupTransportPINViewModel(val navController: NavController, val attempts: Int?) :
+@HiltViewModel
+class SetupTransportPINViewModel @Inject constructor(
+    private val coordinator: TransportPINCoordinator,
+    savedStateHandle: SavedStateHandle
+) :
     ViewModel(), SetupTransportPINViewModelInterface {
+
+    private val attempts: Int
+
+    init {
+        attempts = Screen.SetupTransportPIN.attempts(savedStateHandle)
+    }
+
     override var transportPIN: String by mutableStateOf("")
         private set
 
@@ -120,7 +137,7 @@ class SetupTransportPINViewModel(val navController: NavController, val attempts:
 
     override fun onDoneTapped() {
         if (transportPIN.length == 5) {
-            navController.navigate(Screen.SetupPersonalPINIntro.parameterizedRoute(transportPIN))
+            coordinator.finishTransportPINEntry(transportPIN)
         } else {
             Log.d("DEBUG", "Transport PIN too short.")
         }
@@ -133,15 +150,15 @@ private class PreviewSetupTransportPINViewModel(
     override val shouldShowTransportPINError: Boolean,
     override val displayedAttempts: Int
 ) : SetupTransportPINViewModelInterface {
-    override fun onInputChanged(value: String) { }
-    override fun onDoneTapped() { }
+    override fun onInputChanged(value: String) {}
+    override fun onDoneTapped() {}
 }
 
 @Preview
 @Composable
 fun PreviewSetupTransportPINWithoutAttempts() {
     UseIDTheme {
-        SetupTransportPIN(PreviewSetupTransportPINViewModel("12",false, 0))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", false, 0))
     }
 }
 
@@ -165,7 +182,7 @@ fun PreviewSetupTransportPINOneAttempt() {
 @Composable
 fun PreviewSetupTransportPINTwoAttempts() {
     UseIDTheme {
-        SetupTransportPIN(PreviewSetupTransportPINViewModel("12",true, 2))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", true, 2))
     }
 }
 //endregion
