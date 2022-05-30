@@ -28,17 +28,18 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.coordinators.PersonalPINCoordinator
+import de.digitalService.useID.ui.coordinators.SetupScanCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Composable
-fun SetupScan(viewModel: SetupScanViewModelInterface) {
+fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(vertical = 40.dp, horizontal = 20.dp)
     ) {
@@ -78,14 +79,14 @@ interface SetupScanViewModelInterface {
 
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
-    private val coordinator: PersonalPINCoordinator,
+    private val coordinator: SetupScanCoordinator,
     private val idCardManager: IDCardManager,
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupScanViewModelInterface {
 
-    val transportPIN: String
-    val personalPIN: String
+    private val transportPIN: String
+    private val personalPIN: String
 
     init {
         transportPIN = Screen.SetupScan.transportPIN(savedStateHandle)
@@ -95,18 +96,30 @@ class SetupScanViewModel @Inject constructor(
     override fun onUIInitialized(context: Context) {
         viewModelScope.launch {
             idCardManager.changePin(context).collect { event ->
-                when(event) {
-                    EIDInteractionEvent.CardInteractionComplete -> Log.d("DEBUG", "Card interaction complete.")
+                when (event) {
+                    EIDInteractionEvent.CardInteractionComplete -> Log.d(
+                        "DEBUG",
+                        "Card interaction complete."
+                    )
                     EIDInteractionEvent.CardRecognized -> Log.d("DEBUG", "Card recognized.")
                     EIDInteractionEvent.CardRemoved -> Log.d("DEBUG", "Card removed.")
-                    EIDInteractionEvent.PINManagementStarted -> Log.d("DEBUG", "PIN management started.")
-                    EIDInteractionEvent.ProcessCompletedSuccessfully -> Log.d("DEBUG", "Process completed.")
+                    EIDInteractionEvent.PINManagementStarted -> Log.d(
+                        "DEBUG",
+                        "PIN management started."
+                    )
+                    EIDInteractionEvent.ProcessCompletedSuccessfully -> {
+                        Log.d("DEBUG", "Process completed.")
+                        coordinator.settingPINSucceeded()
+                    }
                     EIDInteractionEvent.RequestCardInsertion -> Log.d("DEBUG", "Insert card.")
                     is EIDInteractionEvent.RequestChangedPIN -> {
-//                        Log.d("DEBUG", "Changed PIN requested. Entering old PIN: $transportPIN, new PIN: $personalPIN")
-//                        event.pinCallback(transportPIN, personalPIN)
+                        Log.d(
+                            "DEBUG",
+                            "Changed PIN requested. Entering transport PIN and personal PIN"
+                        )
+                        event.pinCallback(transportPIN, personalPIN)
                     }
-                    else -> Log.d("DEBUG", "Collected unexpected event.")
+                    else -> Log.d("DEBUG", "Collected unexpected event: $event")
                 }
             }
         }

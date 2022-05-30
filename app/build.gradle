@@ -27,6 +27,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "nfc"
+    productFlavors {
+        device {
+            dimension = "nfc"
+        }
+        emulator {
+            dimension = "nfc"
+        }
+    }
+
+    variantFilter { variant ->
+        def flavors = variant.flavors*.name
+        if (flavors.contains("emulator") && variant.buildType.name == "release") {
+            setIgnore(true)
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

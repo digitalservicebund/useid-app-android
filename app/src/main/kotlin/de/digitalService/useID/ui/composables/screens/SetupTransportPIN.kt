@@ -128,8 +128,9 @@ class SetupTransportPINViewModel @Inject constructor(
     override var transportPIN: String by mutableStateOf("")
         private set
 
-    override val shouldShowTransportPINError: Boolean = attempts?.let { attempts < 3 } ?: false
-    override val displayedAttempts: Int = attempts ?: 3
+    override val shouldShowTransportPINError: Boolean = attempts < 3
+    override val displayedAttempts: Int
+        get() = attempts
 
     override fun onInputChanged(value: String) {
         transportPIN = value

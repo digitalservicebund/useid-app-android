@@ -54,7 +54,11 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             Screen.SetupScan.routeTemplate,
             arguments = Screen.SetupScan.namedNavArguments
         ) {
-            SetupScan(hiltViewModel<SetupScanViewModel>())
+            ConfigSpecificSetupScan()
+        }
+
+        composable(Screen.SetupFinish.routeTemplate) {
+            SetupFinish()
         }
     }
 }
