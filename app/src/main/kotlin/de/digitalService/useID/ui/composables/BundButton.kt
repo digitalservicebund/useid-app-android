@@ -32,10 +32,13 @@ fun BundButton(type: ButtonType, onClick: () -> Unit, label: String) {
     }
 
     Button(
-        onClick = onClick, colors = ButtonDefaults.buttonColors(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
-        ), shape = MaterialTheme.shapes.small, modifier = Modifier
+        ),
+        shape = MaterialTheme.shapes.small,
+        modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
     ) {

@@ -21,13 +21,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardManager
-import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.coordinators.PersonalPINCoordinator
 import de.digitalService.useID.ui.coordinators.SetupScanCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.launch
@@ -57,10 +54,13 @@ fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modif
             style = MaterialTheme.typography.bodySmall
         )
         Button(
-            onClick = viewModel::onHelpButtonTapped, colors = ButtonDefaults.buttonColors(
+            onClick = viewModel::onHelpButtonTapped,
+            colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.secondary,
                 contentColor = MaterialTheme.colorScheme.onSecondary
-            ), shape = MaterialTheme.shapes.small, modifier = Modifier
+            ),
+            shape = MaterialTheme.shapes.small,
+            modifier = Modifier
                 .height(40.dp)
         ) {
             Text(stringResource(id = R.string.firstTimeUser_scan_helpButton))

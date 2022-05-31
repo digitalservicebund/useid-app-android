@@ -4,7 +4,7 @@ import android.util.Log
 import kotlinx.coroutines.channels.SendChannel
 import org.openecard.mobile.activation.*
 
-class PINManagementInteractionHandler(private val channel: SendChannel<EIDInteractionEvent>):
+class PINManagementInteractionHandler(private val channel: SendChannel<EIDInteractionEvent>) :
     PinManagementInteraction {
     private val logTag = javaClass.canonicalName!!
 

@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.PINEntryField
@@ -31,7 +30,8 @@ fun SetupTransportPIN(viewModel: SetupTransportPINViewModelInterface) {
 
     val pinEntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription,
-        viewModel.transportPIN.map { "$it " })
+        viewModel.transportPIN.map { "$it " }
+    )
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(

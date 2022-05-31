@@ -18,8 +18,8 @@ class IDCardManager {
     private var androidContextManager: AndroidContextManager? = null
 
     private sealed class Task {
-        data class EAC(val tokenURL: String): Task()
-        object PINManagement: Task()
+        data class EAC(val tokenURL: String) : Task()
+        object PINManagement : Task()
     }
 
     fun handleNFCTag(tag: Tag) = androidContextManager?.onNewIntent(tag) ?: Log.d(logTag, "Ignoring NFC tag because no ID card related process is running.")
@@ -27,7 +27,7 @@ class IDCardManager {
     fun identify(context: Context, tokenURL: String): Flow<EIDInteractionEvent> = executeTask(context, Task.EAC(tokenURL))
     fun changePin(context: Context): Flow<EIDInteractionEvent> = executeTask(context, Task.PINManagement)
 
-    private class ControllerCallbackHandler(private val channel: SendChannel<EIDInteractionEvent>): ControllerCallback {
+    private class ControllerCallbackHandler(private val channel: SendChannel<EIDInteractionEvent>) : ControllerCallback {
         private val logTag = javaClass.canonicalName!!
 
         override fun onStarted() {
@@ -42,7 +42,7 @@ class IDCardManager {
                 return
             }
 
-            when(p0.resultCode) {
+            when (p0.resultCode) {
                 ActivationResultCode.OK, ActivationResultCode.REDIRECT -> {
                     channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfully)
                     channel.close()

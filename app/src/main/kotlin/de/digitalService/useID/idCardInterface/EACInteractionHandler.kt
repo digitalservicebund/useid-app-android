@@ -4,7 +4,7 @@ import android.util.Log
 import kotlinx.coroutines.channels.SendChannel
 import org.openecard.mobile.activation.*
 
-class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent>): EacInteraction {
+class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent>) : EacInteraction {
     private val logTag = javaClass.canonicalName!!
 
     override fun requestCardInsertion() {
@@ -103,8 +103,7 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
         }
 
         val readAttributes =
-            try { p0.readAccessAttributes.reduceToMap() }
-            catch (e: IDCardInteractionException.UnexpectedReadAttribute) {
+            try { p0.readAccessAttributes.reduceToMap() } catch (e: IDCardInteractionException.UnexpectedReadAttribute) {
                 channel.close(e)
                 return
             }

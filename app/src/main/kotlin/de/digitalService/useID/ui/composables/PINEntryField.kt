@@ -1,8 +1,5 @@
 package de.digitalService.useID.ui.composables
 
-import android.util.Log
-import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
@@ -20,8 +17,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -29,8 +24,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -43,7 +36,7 @@ fun PINEntryField(
     contentDescription: String,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
-    onDone: () -> Unit = { },
+    onDone: () -> Unit = { }
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -63,7 +56,7 @@ fun PINEntryField(
                 containerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
             ),
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions.Default.copy(
@@ -96,7 +89,6 @@ fun PINEntryField(
                     stateDescription = value.replace(".".toRegex(), "$0 ")
                 }
         ) {
-
         }
         PINDigitRow(
             input = value,

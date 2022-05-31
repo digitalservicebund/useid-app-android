@@ -39,13 +39,13 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         composable(
-            Screen.SetupPersonalPINIntro.routeTemplate,
+            Screen.SetupPersonalPINIntro.routeTemplate
         ) {
             SetupPersonalPINIntro(hiltViewModel<SetupPersonalPINIntroViewModel>())
         }
 
         composable(
-            Screen.SetupPersonalPIN.routeTemplate,
+            Screen.SetupPersonalPIN.routeTemplate
         ) {
             SetupPersonalPIN(hiltViewModel<SetupPersonalPINViewModel>())
         }

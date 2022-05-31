@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @Composable
 fun EmulatorSetupScan(viewModel: EmulatorSetupScanViewModel) {
-    val innerViewModel = object: SetupScanViewModelInterface {
+    val innerViewModel = object : SetupScanViewModelInterface {
         override fun onUIInitialized(context: Context) {}
         override fun onHelpButtonTapped() {}
     }
@@ -37,7 +37,7 @@ fun EmulatorSetupScan(viewModel: EmulatorSetupScanViewModel) {
 }
 
 @HiltViewModel
-class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: SetupScanCoordinator): ViewModel() {
+class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: SetupScanCoordinator) : ViewModel() {
     fun simulateSuccess() { coordinator.settingPINSucceeded() }
     fun simulateIncorrectTransportPIN() { coordinator.settingPINFailed(attempts = 2) }
     fun simulateCANRequired() { }

@@ -50,7 +50,7 @@ fun StandardScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     body,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))

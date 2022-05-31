@@ -3,7 +3,7 @@ package de.digitalService.useID.idCardInterface
 import org.openecard.mobile.activation.SelectableItem
 import org.openecard.mobile.activation.ServiceErrorResponse
 
-fun ServiceErrorResponse.errorDescription(): String = "${statusCode.ordinal} - ${statusCode.name}: ${errorMessage}"
+fun ServiceErrorResponse.errorDescription(): String = "${statusCode.ordinal} - ${statusCode.name}: $errorMessage"
 
 fun List<SelectableItem>.reduceToMap(): Map<IDCardAttribute, Boolean> = map { it ->
     try {
@@ -13,12 +13,13 @@ fun List<SelectableItem>.reduceToMap(): Map<IDCardAttribute, Boolean> = map { it
     }
 }.toMap()
 
-fun Map<IDCardAttribute, Boolean>.toSelectableItems(): List<SelectableItem> = map { object:
-    SelectableItem {
-    override fun getName(): String = it.key.name
-    override fun getText(): String = ""
-    override fun isChecked(): Boolean = it.value
-    override fun setChecked(p0: Boolean) { }
-    override fun isRequired(): Boolean = false
-}
+fun Map<IDCardAttribute, Boolean>.toSelectableItems(): List<SelectableItem> = map {
+    object :
+        SelectableItem {
+        override fun getName(): String = it.key.name
+        override fun getText(): String = ""
+        override fun isChecked(): Boolean = it.value
+        override fun setChecked(p0: Boolean) { }
+        override fun isRequired(): Boolean = false
+    }
 }

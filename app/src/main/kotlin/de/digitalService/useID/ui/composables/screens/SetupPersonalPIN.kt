@@ -15,12 +15,10 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.coordinators.PersonalPINCoordinator
-import de.digitalService.useID.ui.coordinators.PersonalPINIntroCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -31,10 +29,12 @@ fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Mo
 
     val pin1EntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_PIN1TextFieldDescription,
-        viewModel.pin1.map { "$it " })
+        viewModel.pin1.map { "$it " }
+    )
     val pin2EntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_PIN2TextFieldDescription,
-        viewModel.pin2.map { "$it " })
+        viewModel.pin2.map { "$it " }
+    )
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -128,7 +128,7 @@ interface SetupPersonalPINViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINViewModel @Inject constructor(private val coordinator: PersonalPINCoordinator): ViewModel(), SetupPersonalPINViewModelInterface {
+class SetupPersonalPINViewModel @Inject constructor(private val coordinator: PersonalPINCoordinator) : ViewModel(), SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set
 

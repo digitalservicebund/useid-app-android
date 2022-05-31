@@ -29,7 +29,7 @@ interface SetupIntroViewModelInterface {
 }
 
 @HiltViewModel
-class SetupIntroViewModel @Inject constructor(val appCoordinator: AppCoordinator): ViewModel(), SetupIntroViewModelInterface {
+class SetupIntroViewModel @Inject constructor(val appCoordinator: AppCoordinator) : ViewModel(), SetupIntroViewModelInterface {
     override fun onFirstTimeUsage() {
         appCoordinator.startSetupIDCard()
     }
@@ -39,7 +39,7 @@ class SetupIntroViewModel @Inject constructor(val appCoordinator: AppCoordinator
 }
 
 //region Preview
-private class PreviewSetupIntroViewModel(): SetupIntroViewModelInterface {
+private class PreviewSetupIntroViewModel() : SetupIntroViewModelInterface {
     override fun onFirstTimeUsage() { }
     override fun onNonFirstTimeUsage() { }
 }

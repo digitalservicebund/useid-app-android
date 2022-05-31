@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+    id 'org.jmailen.kotlinter'
 }
 
 android {
@@ -95,4 +96,21 @@ dependencies {
 
     implementation 'org.slf4j:slf4j-api:1.7.30'
     implementation 'com.github.tony19:logback-android:2.0.0'
+}
+
+kotlinter {
+    ignoreFailures = false
+    reporters = ['checkstyle', 'plain']
+    experimentalRules = true
+    disabledRules = [
+            "no-wildcard-imports"
+    ]
+}
+
+lintKotlinAndroidTest {
+    exclude '**/*.kt'
+}
+
+lintKotlinTest {
+    exclude '**/*.kt'
 }

@@ -11,16 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.rememberNavController
-import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
-import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,7 +26,7 @@ fun UseIDApp(appCoordinator: AppCoordinator) {
 
     appCoordinator.setNavController(navController)
 
-    navController.addOnDestinationChangedListener(object: NavController.OnDestinationChangedListener {
+    navController.addOnDestinationChangedListener(object : NavController.OnDestinationChangedListener {
         override fun onDestinationChanged(
             controller: NavController,
             destination: NavDestination,
@@ -62,9 +58,12 @@ fun UseIDApp(appCoordinator: AppCoordinator) {
                 )
             }
         ) { paddingValues ->
-            AppNavHost(navController = navController, modifier = Modifier
-                .padding(top = paddingValues.calculateTopPadding())
-                .fillMaxWidth())
+            AppNavHost(
+                navController = navController,
+                modifier = Modifier
+                    .padding(top = paddingValues.calculateTopPadding())
+                    .fillMaxWidth()
+            )
         }
     }
 }

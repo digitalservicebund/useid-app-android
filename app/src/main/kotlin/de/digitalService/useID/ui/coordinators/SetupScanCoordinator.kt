@@ -10,6 +10,5 @@ class SetupScanCoordinator @Inject constructor(private val appCoordinator: AppCo
     }
 
     fun settingPINFailed(attempts: Int) {
-
     }
 }

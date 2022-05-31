@@ -17,7 +17,7 @@ sealed interface ScreenInterface {
         get() = listOf()
 }
 
-sealed class Screen: ScreenInterface {
+sealed class Screen : ScreenInterface {
     object SetupIntro : Screen() {
         fun parameterizedRoute(): String = screenName
     }
@@ -32,7 +32,7 @@ sealed class Screen: ScreenInterface {
 
     object SetupTransportPIN : Screen() {
         private enum class Parameters {
-            attempts
+            Attempts
         }
 
         override val routeTemplate: String
@@ -41,11 +41,11 @@ sealed class Screen: ScreenInterface {
         override val namedNavArguments: List<NamedNavArgument>
             get() = Parameters.values().map {
                 when (it) {
-                    Parameters.attempts -> navArgument(it.name) { type = NavType.IntType }
+                    Parameters.Attempts -> navArgument(it.name) { type = NavType.IntType }
                 }
             }
 
-        fun attempts(savedStateHandle: SavedStateHandle): Int = savedStateHandle.get(Parameters.attempts.name) ?: throw NavigationException.MissingArgumentException
+        fun attempts(savedStateHandle: SavedStateHandle): Int = savedStateHandle.get(Parameters.Attempts.name) ?: throw NavigationException.MissingArgumentException
 
         fun parameterizedRoute(attempts: Int): String = "$screenName/$attempts"
     }
@@ -60,7 +60,7 @@ sealed class Screen: ScreenInterface {
 
     object SetupScan : Screen() {
         private enum class Parameters {
-            transportPIN, personalPIN
+            TransportPIN, PersonalPIN
         }
 
         override val routeTemplate: String
@@ -69,13 +69,13 @@ sealed class Screen: ScreenInterface {
         override val namedNavArguments: List<NamedNavArgument>
             get() = Parameters.values().map {
                 when (it) {
-                    Parameters.transportPIN -> navArgument(it.name) { type = NavType.StringType }
-                    Parameters.personalPIN -> navArgument(it.name) { type = NavType.StringType }
+                    Parameters.TransportPIN -> navArgument(it.name) { type = NavType.StringType }
+                    Parameters.PersonalPIN -> navArgument(it.name) { type = NavType.StringType }
                 }
             }
 
-        fun transportPIN(savedStateHandle: SavedStateHandle): String = savedStateHandle.get(Parameters.transportPIN.name) ?: throw NavigationException.MissingArgumentException
-        fun personalPIN(savedStateHandle: SavedStateHandle): String = savedStateHandle.get(Parameters.personalPIN.name) ?: throw NavigationException.MissingArgumentException
+        fun transportPIN(savedStateHandle: SavedStateHandle): String = savedStateHandle.get(Parameters.TransportPIN.name) ?: throw NavigationException.MissingArgumentException
+        fun personalPIN(savedStateHandle: SavedStateHandle): String = savedStateHandle.get(Parameters.PersonalPIN.name) ?: throw NavigationException.MissingArgumentException
 
         fun parameterizedRoute(transportPIN: String, personalPIN: String): String = "$screenName/$transportPIN/$personalPIN"
     }
@@ -84,7 +84,7 @@ sealed class Screen: ScreenInterface {
         fun parameterizedRoute(): String = screenName
     }
 
-    inline fun <reified T: Enum<T>> routeWithParameters(route: String): String = route + "/" + enumValues<T>().joinToString(
+    inline fun <reified T : Enum<T>> routeWithParameters(route: String): String = route + "/" + enumValues<T>().joinToString(
         "/"
     ) { "{${it.name}}" }
 }

@@ -5,7 +5,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavController
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.coordinators.PersonalPINIntroCoordinator
@@ -28,14 +27,14 @@ interface SetupPersonalPINIntroViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: PersonalPINIntroCoordinator): ViewModel(), SetupPersonalPINIntroViewModelInterface {
+class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: PersonalPINIntroCoordinator) : ViewModel(), SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() {
         coordinator.finishIntro()
     }
 }
 
 //region Preview
-private class PreviewSetupPersonalPINIntroViewModel: SetupPersonalPINIntroViewModelInterface {
+private class PreviewSetupPersonalPINIntroViewModel : SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() { }
 }
 

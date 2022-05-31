@@ -19,7 +19,7 @@ private val BundesSans = FontFamily(
     Font(R.font.bundes_sans_dtp_bold, FontWeight.Bold, FontStyle.Normal),
     Font(R.font.bundes_sans_dtp_bold_italic, FontWeight.Bold, FontStyle.Italic),
     Font(R.font.bundes_sans_dtp_black, FontWeight.Black, FontStyle.Normal),
-    Font(R.font.bundes_sans_dtp_black_italic, FontWeight.Black, FontStyle.Italic),
+    Font(R.font.bundes_sans_dtp_black_italic, FontWeight.Black, FontStyle.Italic)
 )
 
 private val largeTitle = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Bold, fontSize = 30.sp)
