@@ -17,7 +17,6 @@
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:label="@string/appName"
             android:theme="@style/Theme.UseID"
             android:launchMode="singleTask">
             <meta-data android:name="android.nfc.action.TECH_DISCOVERED"

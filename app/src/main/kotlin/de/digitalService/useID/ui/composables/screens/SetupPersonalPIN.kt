@@ -38,7 +38,7 @@ fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Mo
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(horizontal = 20.dp)
+        modifier = modifier.padding(horizontal = 20.dp)
     ) {
         Text(
             stringResource(id = R.string.firstTimeUser_personalPIN_title),

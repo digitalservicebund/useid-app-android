@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
             activity.applicationContext,
             activity.javaClass
         ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         nfcAdapter?.enableForegroundDispatch(activity, nfcPendingIntent, null, null)
     }
 }
