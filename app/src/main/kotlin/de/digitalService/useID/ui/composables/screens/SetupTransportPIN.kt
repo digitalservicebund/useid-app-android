@@ -18,6 +18,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.coordinators.TransportPINCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -118,6 +119,7 @@ class SetupTransportPINViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupTransportPINViewModelInterface {
+    private val logger by getLogger()
 
     private val attempts: Int
 
@@ -140,7 +142,7 @@ class SetupTransportPINViewModel @Inject constructor(
         if (transportPIN.length == 5) {
             coordinator.finishTransportPINEntry(transportPIN)
         } else {
-            Log.d("DEBUG", "Transport PIN too short.")
+            logger.debug("Transport PIN too short.")
         }
     }
 }

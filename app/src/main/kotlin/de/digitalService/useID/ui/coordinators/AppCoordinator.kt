@@ -2,12 +2,15 @@ package de.digitalService.useID.ui
 
 import android.util.Log
 import androidx.navigation.NavController
+import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.composables.screens.Screen
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class AppCoordinator @Inject constructor() {
+    private val logger by getLogger()
+
     private lateinit var navController: NavController
 
     // TODO: The PINs should not live here.
@@ -33,7 +36,7 @@ class AppCoordinator @Inject constructor() {
         val personalPIN = personalPIN
 
         if (transportPIN == null || personalPIN == null) {
-            Log.e("DEBUG", "PINs not available.")
+            logger.error("PINs not available.")
         } else {
             navController.navigate(Screen.SetupScan.parameterizedRoute(transportPIN, personalPIN))
         }

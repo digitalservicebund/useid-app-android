@@ -55,7 +55,6 @@ class MainActivity : ComponentActivity() {
 
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (tag != null) {
-            Log.d("DEBUG", "Passing tag to IDCardManager.")
             idCardManager.handleNFCTag(tag)
         }
     }
