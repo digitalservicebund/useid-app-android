@@ -1,0 +1,19 @@
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(tasks: ["clean", "testDeviceDebugUnitTest"])
+    gradle(tasks: ["connectedDeviceDebugAndroidTest", "--info"])
+  end
+
+  desc "Run Android linter and ktlint"
+  lane :lint do |options|
+    lint_result = gradle(tasks: ["clean", "lintDeviceDebug", "lintEmulatorDebug", "lintKotlinMain"])
+
+
+    if options[:strict] && (lint_result.include? "report") then
+      UI.user_error!("The linter reported one or more issues.")
+    end
+  end
+end

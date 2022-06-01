@@ -34,6 +34,9 @@ google-services.json
 # Android Profiling
 *.hprof
 
+# fastlane
+fastlane/report.xml
+
 # macOS
 
 # General

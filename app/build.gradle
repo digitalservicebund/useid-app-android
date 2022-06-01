@@ -82,7 +82,7 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
     implementation "com.google.dagger:hilt-android:2.38.1"
-    kapt "com.google.dagger:hilt-compiler:2.38.1"
+    kapt "com.google.dagger:hilt-compiler:2.40.1"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
@@ -94,7 +94,7 @@ dependencies {
 
     implementation 'xerces:xercesImpl:2.12.0'
 
-    implementation 'org.slf4j:slf4j-api:1.7.30'
+    implementation 'org.slf4j:slf4j-api:1.7.32'
     implementation 'com.github.tony19:logback-android:2.0.0'
 }
 
@@ -103,7 +103,8 @@ kotlinter {
     reporters = ['checkstyle', 'plain']
     experimentalRules = true
     disabledRules = [
-            "no-wildcard-imports"
+            "no-wildcard-imports",
+            "no-unused-imports" // This rule can be enabled again as soon as we can upgrade to kotlinter 3.10 (which includes ktlint 0.45 that fixes this bug: https://github.com/pinterest/ktlint/issues/1277) (requires Kotlin 1.6.20 which is not compatible with compose 1.1.1)
     ]
 }
 
