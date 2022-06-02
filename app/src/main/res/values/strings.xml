@@ -9,6 +9,7 @@
     <string name="firstTimeUser_pinLetter_yes">Ja, PIN-Brief vorhanden</string>
     <string name="firstTimeUser_pinLetter_no">Nein, neuen PIN-Brief bestellen</string>
     <string name="navigation_back">Zurück</string>
+    <string name="navigation_cancel">Abbrechen</string>
     <string name="firstTimeUser_transportPIN_title">Geben Sie Ihre 5-stellige Transport-PIN aus dem PIN-Brief ein</string>
     <string name="firstTimeUser_transportPIN_error">Inkorrekte Transport-PIN</string>
     <string name="firstTimeUser_transportPIN_tryAgain">Versuchen Sie es erneut.</string>

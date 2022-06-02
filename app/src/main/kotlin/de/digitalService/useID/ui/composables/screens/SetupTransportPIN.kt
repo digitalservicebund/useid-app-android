@@ -25,7 +25,10 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
 @Composable
-fun SetupTransportPIN(viewModel: SetupTransportPINViewModelInterface) {
+fun SetupTransportPIN(
+    viewModel: SetupTransportPINViewModelInterface,
+    modifier: Modifier = Modifier
+) {
     val focusRequester = remember { FocusRequester() }
     val resources = LocalContext.current.resources
 
@@ -34,7 +37,7 @@ fun SetupTransportPIN(viewModel: SetupTransportPINViewModelInterface) {
         viewModel.transportPIN.map { "$it " }
     )
 
-    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+    Column(modifier = modifier.padding(horizontal = 20.dp)) {
         Text(
             text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
             style = MaterialTheme.typography.titleLarge
@@ -114,18 +117,21 @@ interface SetupTransportPINViewModelInterface {
 }
 
 @HiltViewModel
-class SetupTransportPINViewModel @Inject constructor(
-    private val coordinator: TransportPINCoordinator,
-    savedStateHandle: SavedStateHandle
+class SetupTransportPINViewModel(
+    private val attempts: Int,
+    private val onDone: (String) -> Unit
 ) :
     ViewModel(), SetupTransportPINViewModelInterface {
     private val logger by getLogger()
 
-    private val attempts: Int
-
-    init {
-        attempts = Screen.SetupTransportPIN.attempts(savedStateHandle)
-    }
+    @Inject
+    constructor(
+        coordinator: TransportPINCoordinator,
+        savedStateHandle: SavedStateHandle
+    ) : this(
+        attempts = Screen.SetupTransportPIN.attempts(savedStateHandle),
+        onDone = coordinator::finishTransportPINEntry
+    )
 
     override var transportPIN: String by mutableStateOf("")
         private set
@@ -140,7 +146,7 @@ class SetupTransportPINViewModel @Inject constructor(
 
     override fun onDoneTapped() {
         if (transportPIN.length == 5) {
-            coordinator.finishTransportPINEntry(transportPIN)
+            onDone(transportPIN)
         } else {
             logger.debug("Transport PIN too short.")
         }

@@ -37,31 +37,20 @@ fun UseIDApp(appCoordinator: AppCoordinator) {
     })
 
     UseIDTheme {
-        Scaffold(
-            topBar = {
-                SmallTopAppBar(
-                    title = { },
-                    navigationIcon = {
-                        if (shouldShowBackButton) {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBack,
-                                    contentDescription = stringResource(id = R.string.navigation_back)
-                                )
-                            }
-                        }
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+        ScreenWithTopBar(navigationIcon = {
+            if (shouldShowBackButton) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.navigation_back)
                     )
-                )
+                }
             }
-        ) { paddingValues ->
+        }) { topBarPadding ->
             AppNavHost(
                 navController = navController,
                 modifier = Modifier
-                    .padding(top = paddingValues.calculateTopPadding())
+                    .padding(top = topBarPadding)
                     .fillMaxWidth()
             )
         }
