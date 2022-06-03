@@ -41,7 +41,9 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import java.lang.Error
 import javax.annotation.Nullable
 import javax.inject.Inject
 
@@ -150,19 +152,27 @@ private fun TransportPINDialog(attempts: Int, onCancel: () -> Unit, onNewTranspo
 }
 
 interface SetupScanViewModelInterface {
-    enum class Error {
-        PINSuspended, PINDeactivated;
+    sealed class Error {
+        object PINSuspended: Error()
+        object PINDeactivated: Error()
+        data class Other(val message: String?): Error()
 
         val titleResID: Int
             get() {
                 return when (this) {
                     PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
                     PINDeactivated -> R.string.firstTimeUser_scan_error_title_pin_deactivated
+                    is Other -> R.string.firstTimeUser_scan_error_title_unknown
                 }
             }
 
         val textResID: Int
-            get() = R.string.firstTimeUser_scan_error_text_feature_unavailable
+            get() {
+            return when (this) {
+                PINSuspended, PINDeactivated -> R.string.firstTimeUser_scan_error_text_feature_unavailable
+                is Other -> R.string.firstTimeUser_scan_error_text_unknown
+            }
+        }
     }
 
     val attempts: Int
@@ -220,7 +230,9 @@ class SetupScanViewModel @Inject constructor(
 
     private fun executePINManagement(oldPIN: String, newPIN: String, context: Context) {
         viewModelCoroutineScope.launch {
-            idCardManager.changePin(context).collect { event ->
+            idCardManager.changePin(context).catch { exception ->
+                errorState = SetupScanViewModelInterface.Error.Other(exception.message)
+            }.collect { event ->
                 when (event) {
                     EIDInteractionEvent.CardInteractionComplete -> logger.debug("Card interaction complete.")
                     EIDInteractionEvent.CardRecognized -> logger.debug("Card recognized.")
