@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.ui.AppCoordinator
@@ -44,23 +43,32 @@ fun EmulatorSetupScan(viewModel: EmulatorSetupScanViewModel) {
 class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: SetupScanCoordinator) : ViewModel() {
     fun simulateSuccess() { coordinator.settingPINSucceeded() }
     fun simulateIncorrectTransportPIN() { innerViewModel.injectAttempts(innerViewModel.attempts - 1) }
-    fun simulateCANRequired() { }
-    fun simulatePUKRequired() { }
+    fun simulateCANRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.PINSuspended) }
+    fun simulatePUKRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.PINDeactivated) }
 
     val innerViewModel = object : SetupScanViewModelInterfaceExtension {
         override var attempts: Int by mutableStateOf(3)
+        override var errorState: SetupScanViewModelInterface.Error? by mutableStateOf(null)
         override fun onUIInitialized(context: Context) {}
         override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) { attempts = 3 }
         override fun onHelpButtonTapped() {}
         override fun onCancel() { coordinator.cancelSetup() }
+        override fun onErrorDialogButtonTap() {
+            coordinator.cancelSetup()
+        }
 
         override fun injectAttempts(newAttempts: Int) {
             this.attempts = newAttempts
+        }
+
+        override fun injectShouldShowError(error: SetupScanViewModelInterface.Error) {
+            errorState = error
         }
     }
 
     interface SetupScanViewModelInterfaceExtension: SetupScanViewModelInterface {
         fun injectAttempts(newAttempts: Int)
+        fun injectShouldShowError(error: SetupScanViewModelInterface.Error)
     }
 }
 

@@ -17,7 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -40,6 +39,7 @@ import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupScanCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.annotation.Nullable
@@ -50,41 +50,16 @@ import javax.inject.Inject
 fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
+    viewModel.errorState?.let {
+        ErrorAlertDialog(error = it, onButtonTap = viewModel::onErrorDialogButtonTap)
+    }
+
     AnimatedVisibility(
         visible = viewModel.attempts < 3,
         enter = scaleIn(tween(200)),
         exit = scaleOut(tween(100))
     ) {
-        Dialog(
-            onDismissRequest = viewModel::onCancel,
-            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-        ) {
-            ScreenWithTopBar(
-                navigationIcon = {
-                    androidx.compose.material3.IconButton(onClick = viewModel::onCancel) {
-                        androidx.compose.material3.Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = stringResource(id = R.string.navigation_cancel)
-                        )
-                    }
-                },
-                modifier = Modifier.height(500.dp)
-            ) { topPadding ->
-                val focusManager = LocalFocusManager.current
-
-                SetupTransportPIN(
-                    viewModel = SetupTransportPINViewModel(
-                        attempts = viewModel.attempts,
-                        onDone = { viewModel.onReEnteredTransportPIN(it, context) }),
-                    modifier = Modifier.padding(top = topPadding)
-                )
-
-                LaunchedEffect(Unit) {
-                    delay(100L) // Workaround for https://issuetracker.google.com/issues/204502668
-                    focusManager.moveFocus(FocusDirection.Next)
-                }
-            }
-        }
+        TransportPINDialog(attempts = viewModel.attempts, onCancel = viewModel::onCancel, onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) })
     }
 
     Column(
@@ -125,13 +100,79 @@ fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modif
     }
 }
 
+@Composable
+private fun ErrorAlertDialog(error: SetupScanViewModelInterface.Error, onButtonTap: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = { },
+        confirmButton = {
+            Button(onClick = onButtonTap) {
+                Text(stringResource(id = R.string.firstTimeUser_scan_error_button))
+            }
+        },
+        title = { Text(stringResource(id = error.titleResID)) },
+        text = { Text(stringResource(id = error.textResID)) },
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    )
+}
+
+@Composable
+private fun TransportPINDialog(attempts: Int, onCancel: () -> Unit, onNewTransportPIN: (String) -> Unit) {
+    Dialog(
+        onDismissRequest = { },
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
+        ScreenWithTopBar(
+            navigationIcon = {
+                androidx.compose.material3.IconButton(onClick = onCancel) {
+                    androidx.compose.material3.Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.navigation_cancel)
+                    )
+                }
+            },
+            modifier = Modifier.height(500.dp)
+        ) { topPadding ->
+            val focusManager = LocalFocusManager.current
+
+            SetupTransportPIN(
+                viewModel = SetupTransportPINViewModel(
+                    attempts = attempts,
+                    onDone = onNewTransportPIN),
+                modifier = Modifier.padding(top = topPadding)
+            )
+
+            LaunchedEffect(Unit) {
+                delay(100L) // Workaround for https://issuetracker.google.com/issues/204502668
+                focusManager.moveFocus(FocusDirection.Next)
+            }
+        }
+    }
+}
+
 interface SetupScanViewModelInterface {
+    enum class Error {
+        PINSuspended, PINDeactivated;
+
+        val titleResID: Int
+            get() {
+                return when (this) {
+                    PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
+                    PINDeactivated -> R.string.firstTimeUser_scan_error_title_pin_deactivated
+                }
+            }
+
+        val textResID: Int
+            get() = R.string.firstTimeUser_scan_error_text_feature_unavailable
+    }
+
     val attempts: Int
+    val errorState: Error?
 
     fun onUIInitialized(context: Context)
     fun onReEnteredTransportPIN(newTransportPIN: String, context: Context)
     fun onHelpButtonTapped()
 
+    fun onErrorDialogButtonTap()
     fun onCancel()
 }
 
@@ -153,6 +194,9 @@ class SetupScanViewModel @Inject constructor(
     override var attempts: Int by mutableStateOf(3)
         private set
 
+    override var errorState: SetupScanViewModelInterface.Error? by mutableStateOf(null)
+        private set
+
     init {
         transportPIN = Screen.SetupScan.transportPIN(savedStateHandle)
         personalPIN = Screen.SetupScan.personalPIN(savedStateHandle)
@@ -160,20 +204,19 @@ class SetupScanViewModel @Inject constructor(
         viewModelCoroutineScope = coroutineScope ?: viewModelScope
     }
 
-    override fun onUIInitialized(context: Context) {
+    override fun onUIInitialized(context: Context) =
         executePINManagement(transportPIN, personalPIN, context)
-    }
 
-    override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) {
+    override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) =
         executePINManagement(newTransportPIN, personalPIN, context)
-    }
 
     override fun onHelpButtonTapped() {}
 
-    override fun onCancel() {
-        attempts = 3
+    override fun onErrorDialogButtonTap() {
         coordinator.cancelSetup()
     }
+
+    override fun onCancel() = coordinator.cancelSetup()
 
     private fun executePINManagement(oldPIN: String, newPIN: String, context: Context) {
         viewModelCoroutineScope.launch {
@@ -186,42 +229,73 @@ class SetupScanViewModel @Inject constructor(
                         logger.debug("PIN management started.")
                     }
                     EIDInteractionEvent.ProcessCompletedSuccessfully -> {
-                        logger.debug("Process completed.")
+                        logger.debug("Process completed successfully.")
                         coordinator.settingPINSucceeded()
                     }
-                    EIDInteractionEvent.RequestCardInsertion -> logger.debug("Insert card.")
+                    EIDInteractionEvent.RequestCardInsertion -> logger.debug("Card insertion requested.")
                     is EIDInteractionEvent.RequestChangedPIN -> {
                         logger.debug("Changed PIN requested. Entering transport PIN and personal PIN")
                         event.attempts?.let { attempts = it }
                         event.pinCallback(oldPIN, newPIN)
                     }
-                    else -> logger.debug("Collected unexpected event: $event")
+                    is EIDInteractionEvent.RequestCANAndChangedPIN -> {
+                        errorState =
+                            SetupScanViewModelInterface.Error.PINSuspended
+                        cancel()
+                    }
+                    is EIDInteractionEvent.RequestPUK -> {
+                        errorState =
+                            SetupScanViewModelInterface.Error.PINDeactivated
+                        cancel()
+                    }
+                    else -> {
+                        logger.debug("Collected unexpected event: $event")
+                        cancel()
+                    }
                 }
             }
         }
     }
 }
 
-class PreviewSetupScanViewModel(override val attempts: Int) : SetupScanViewModelInterface {
+class PreviewSetupScanViewModel(
+    override val attempts: Int,
+    override val errorState: SetupScanViewModelInterface.Error?
+) :
+    SetupScanViewModelInterface {
     override fun onUIInitialized(context: Context) {}
     override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) {}
     override fun onHelpButtonTapped() {}
     override fun onCancel() {}
+    override fun onErrorDialogButtonTap() {}
 }
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewSetupScanWithoutError() {
     UseIDTheme {
-        SetupScan(PreviewSetupScanViewModel(3))
+        SetupScan(PreviewSetupScanViewModel(3, errorState = null))
     }
 }
 
 @Preview(device = Devices.PIXEL_3A, showSystemUi = true)
 @Preview(device = Devices.PIXEL_4_XL, showSystemUi = true)
 @Composable
-fun PreviewSetupScanError() {
+fun PreviewSetupScanInvalidTransportPIN() {
     UseIDTheme {
-        SetupScan(PreviewSetupScanViewModel(2))
+        SetupScan(PreviewSetupScanViewModel(2, errorState = null))
+    }
+}
+
+@Preview(device = Devices.PIXEL_3A)
+@Composable
+fun PreviewSetupScanWithError() {
+    UseIDTheme {
+        SetupScan(
+            PreviewSetupScanViewModel(
+                3,
+                errorState = SetupScanViewModelInterface.Error.PINSuspended
+            )
+        )
     }
 }
