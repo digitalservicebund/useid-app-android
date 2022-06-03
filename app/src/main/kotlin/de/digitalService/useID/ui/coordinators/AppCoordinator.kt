@@ -23,6 +23,10 @@ class AppCoordinator @Inject constructor() {
 
     fun navigate(route: String) = navController.navigate(route)
 
+    fun popToRoot() {
+        navController.popBackStack(route = Screen.SetupIntro.routeTemplate, inclusive = false)
+    }
+
     // Setup
     fun startSetupIDCard() = navController.navigate(Screen.SetupPINLetter.parameterizedRoute())
     fun setTransportPIN(transportPIN: String) {

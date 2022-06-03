@@ -50,8 +50,9 @@ class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: Se
     val innerViewModel = object : SetupScanViewModelInterfaceExtension {
         override var attempts: Int by mutableStateOf(3)
         override fun onUIInitialized(context: Context) {}
-        override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) {}
+        override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) { attempts = 3 }
         override fun onHelpButtonTapped() {}
+        override fun onCancel() { coordinator.cancelSetup() }
 
         override fun injectAttempts(newAttempts: Int) {
             this.attempts = newAttempts

@@ -9,6 +9,7 @@ class SetupScanCoordinator @Inject constructor(private val appCoordinator: AppCo
         appCoordinator.navigate(Screen.SetupFinish.parameterizedRoute())
     }
 
-    fun settingPINFailed(attempts: Int) {
+    fun cancelSetup() {
+        appCoordinator.popToRoot()
     }
 }

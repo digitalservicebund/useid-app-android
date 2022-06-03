@@ -14,7 +14,7 @@ import de.digitalService.useID.ui.composables.screens.SetupTransportPIN
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ScreenWithTopBar(navigationIcon: @Composable () -> Unit, content: @Composable (topPadding: Dp) -> Unit) {
+fun ScreenWithTopBar(navigationIcon: @Composable () -> Unit, modifier: Modifier = Modifier, content: @Composable (topPadding: Dp) -> Unit) {
     Scaffold(
         topBar = {
             SmallTopAppBar(
@@ -25,7 +25,8 @@ fun ScreenWithTopBar(navigationIcon: @Composable () -> Unit, content: @Composabl
                     navigationIconContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
-        }
+        },
+        modifier = modifier
     ) { paddingValues ->
         content(paddingValues.calculateTopPadding())
     }

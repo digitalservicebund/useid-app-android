@@ -43,7 +43,7 @@ fun SetupTransportPIN(
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(40.dp))
-        Box(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Box(modifier = Modifier.padding(horizontal = 20.dp).aspectRatio(2f)) {
             Image(
                 painter = painterResource(id = R.drawable.transport_pin),
                 contentDescription = null,
@@ -61,8 +61,9 @@ fun SetupTransportPIN(
                 onDone = viewModel::onDoneTapped,
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .width(240.dp)
-                    .height(56.dp)
+                    .aspectRatio(5f)
+                    .padding(horizontal = 25.dp)
+                    .fillMaxSize()
             )
         }
 
@@ -161,6 +162,14 @@ private class PreviewSetupTransportPINViewModel(
 ) : SetupTransportPINViewModelInterface {
     override fun onInputChanged(value: String) {}
     override fun onDoneTapped() {}
+}
+
+@Preview(widthDp = 300)
+@Composable
+fun PreviewSetupTransportPINWithoutAttemptsNarrowDevice() {
+    UseIDTheme {
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", false, 0))
+    }
 }
 
 @Preview
