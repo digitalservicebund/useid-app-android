@@ -27,11 +27,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardManager
@@ -43,7 +43,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import java.lang.Error
 import javax.annotation.Nullable
 import javax.inject.Inject
 
@@ -98,7 +97,7 @@ fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modif
     }
 
     LaunchedEffect(Unit) {
-        viewModel.onUIInitialized(context)
+        viewModel.startSettingPIN(context)
     }
 }
 
@@ -136,12 +135,7 @@ private fun TransportPINDialog(attempts: Int, onCancel: () -> Unit, onNewTranspo
         ) { topPadding ->
             val focusManager = LocalFocusManager.current
 
-            SetupTransportPIN(
-                viewModel = SetupTransportPINViewModel(
-                    attempts = attempts,
-                    onDone = onNewTransportPIN),
-                modifier = Modifier.padding(top = topPadding)
-            )
+            SetupReEnterTransportPIN(viewModel = SetupReEnterTransportPINViewModel(attempts, onNewTransportPIN), modifier = Modifier.padding(top = topPadding))
 
             LaunchedEffect(Unit) {
                 delay(100L) // Workaround for https://issuetracker.google.com/issues/204502668
@@ -178,8 +172,8 @@ interface SetupScanViewModelInterface {
     val attempts: Int
     val errorState: Error?
 
-    fun onUIInitialized(context: Context)
-    fun onReEnteredTransportPIN(newTransportPIN: String, context: Context)
+    fun startSettingPIN(context: Context)
+    fun onReEnteredTransportPIN(transportPIN: String, context: Context)
     fun onHelpButtonTapped()
 
     fun onErrorDialogButtonTap()
@@ -189,17 +183,14 @@ interface SetupScanViewModelInterface {
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
     private val coordinator: SetupScanCoordinator,
+    private val secureStorageManager: SecureStorageManagerInterface,
     private val idCardManager: IDCardManager,
-    @Nullable private val coroutineScope: CoroutineScope? = null,
-    savedStateHandle: SavedStateHandle
+    @Nullable private val coroutineScope: CoroutineScope? = null
 ) :
     ViewModel(), SetupScanViewModelInterface {
     private val logger by getLogger()
 
-    private val transportPIN: String
-    private val personalPIN: String
-
-    private val viewModelCoroutineScope: CoroutineScope
+    private val viewModelCoroutineScope: CoroutineScope = coroutineScope ?: viewModelScope
 
     override var attempts: Int by mutableStateOf(3)
         private set
@@ -207,18 +198,18 @@ class SetupScanViewModel @Inject constructor(
     override var errorState: SetupScanViewModelInterface.Error? by mutableStateOf(null)
         private set
 
-    init {
-        transportPIN = Screen.SetupScan.transportPIN(savedStateHandle)
-        personalPIN = Screen.SetupScan.personalPIN(savedStateHandle)
-
-        viewModelCoroutineScope = coroutineScope ?: viewModelScope
+    override fun startSettingPIN(context: Context) {
+        val transportPIN = secureStorageManager.loadTransportPIN() ?: run {
+            logger.error("Transport PIN not available.")
+            errorState = SetupScanViewModelInterface.Error.Other(null)
+            return
+        }
+        executePINManagement(transportPIN, context)
     }
 
-    override fun onUIInitialized(context: Context) =
-        executePINManagement(transportPIN, personalPIN, context)
-
-    override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) =
-        executePINManagement(newTransportPIN, personalPIN, context)
+    override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {
+        executePINManagement(transportPIN, context)
+    }
 
     override fun onHelpButtonTapped() {}
 
@@ -228,7 +219,13 @@ class SetupScanViewModel @Inject constructor(
 
     override fun onCancel() = coordinator.cancelSetup()
 
-    private fun executePINManagement(oldPIN: String, newPIN: String, context: Context) {
+    private fun executePINManagement(transportPIN: String, context: Context) {
+        val newPIN = secureStorageManager.loadPersonalPIN() ?: run {
+            logger.error("Personal PIN not available.")
+            errorState = SetupScanViewModelInterface.Error.Other(null)
+            return
+        }
+
         viewModelCoroutineScope.launch {
             idCardManager.changePin(context).catch { exception ->
                 errorState = SetupScanViewModelInterface.Error.Other(exception.message)
@@ -248,7 +245,7 @@ class SetupScanViewModel @Inject constructor(
                     is EIDInteractionEvent.RequestChangedPIN -> {
                         logger.debug("Changed PIN requested. Entering transport PIN and personal PIN")
                         event.attempts?.let { attempts = it }
-                        event.pinCallback(oldPIN, newPIN)
+                        event.pinCallback(transportPIN, newPIN)
                     }
                     is EIDInteractionEvent.RequestCANAndChangedPIN -> {
                         errorState =
@@ -275,8 +272,8 @@ class PreviewSetupScanViewModel(
     override val errorState: SetupScanViewModelInterface.Error?
 ) :
     SetupScanViewModelInterface {
-    override fun onUIInitialized(context: Context) {}
-    override fun onReEnteredTransportPIN(newTransportPIN: String, context: Context) {}
+    override fun startSettingPIN(context: Context) {}
+    override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}
     override fun onHelpButtonTapped() {}
     override fun onCancel() {}
     override fun onErrorDialogButtonTap() {}

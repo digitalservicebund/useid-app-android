@@ -5,8 +5,7 @@ import de.digitalService.useID.ui.composables.screens.Screen
 import javax.inject.Inject
 
 class TransportPINCoordinator @Inject constructor(private val appCoordinator: AppCoordinator) {
-    fun finishTransportPINEntry(transportPIN: String) {
-        appCoordinator.setTransportPIN(transportPIN)
+    fun finishTransportPINEntry() {
         appCoordinator.navigate(Screen.SetupPersonalPINIntro.parameterizedRoute())
     }
 }

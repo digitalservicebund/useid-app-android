@@ -18,8 +18,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.SecureStorageManager
+import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.composables.PINEntryField
+import de.digitalService.useID.ui.composables.TransportPINEntryField
 import de.digitalService.useID.ui.coordinators.TransportPINCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
@@ -30,12 +33,6 @@ fun SetupTransportPIN(
     modifier: Modifier = Modifier
 ) {
     val focusRequester = remember { FocusRequester() }
-    val resources = LocalContext.current.resources
-
-    val pinEntryFieldDescription = stringResource(
-        id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription,
-        viewModel.transportPIN.map { "$it " }
-    )
 
     Column(modifier = modifier.padding(horizontal = 20.dp)) {
         Text(
@@ -43,63 +40,12 @@ fun SetupTransportPIN(
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(40.dp))
-        Box(modifier = Modifier.padding(horizontal = 20.dp).aspectRatio(2f)) {
-            Image(
-                painter = painterResource(id = R.drawable.transport_pin),
-                contentDescription = null,
-                alignment = Alignment.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
-            PINEntryField(
-                value = viewModel.transportPIN,
-                onValueChanged = viewModel::onInputChanged,
-                digitCount = 5,
-                spacerPosition = null,
-                contentDescription = pinEntryFieldDescription,
-                focusRequester = focusRequester,
-                onDone = viewModel::onDoneTapped,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .aspectRatio(5f)
-                    .padding(horizontal = 25.dp)
-                    .fillMaxSize()
-            )
-        }
-
-        if (viewModel.shouldShowTransportPINError) {
-            val attempts = viewModel.displayedAttempts
-            Spacer(modifier = Modifier.height(40.dp))
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    stringResource(id = R.string.firstTimeUser_transportPIN_error_incorrectPIN),
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    stringResource(id = R.string.firstTimeUser_transportPIN_error_tryAgain),
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
-                )
-                val attemptString = if (attempts > 0) {
-                    resources.getQuantityString(
-                        R.plurals.firstTimeUser_transportPIN_remainingAttempts,
-                        attempts,
-                        attempts
-                    )
-                } else {
-                    stringResource(id = R.string.firstTimeUser_transportPIN_error_noAttemptLeft)
-                }
-                Text(
-                    attemptString,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
+        TransportPINEntryField(
+            value = viewModel.transportPIN,
+            onValueChanged = viewModel::onInputChanged,
+            onDone = viewModel::onDoneTapped,
+            focusRequester = focusRequester
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -110,17 +56,14 @@ fun SetupTransportPIN(
 interface SetupTransportPINViewModelInterface {
     val transportPIN: String
 
-    val shouldShowTransportPINError: Boolean
-    val displayedAttempts: Int
-
     fun onInputChanged(value: String)
     fun onDoneTapped()
 }
 
 @HiltViewModel
 class SetupTransportPINViewModel(
-    private val attempts: Int,
-    private val onDone: (String) -> Unit
+    private val secureStorageManager: SecureStorageManagerInterface,
+    private val onDone: () -> Unit
 ) :
     ViewModel(), SetupTransportPINViewModelInterface {
     private val logger by getLogger()
@@ -128,18 +71,14 @@ class SetupTransportPINViewModel(
     @Inject
     constructor(
         coordinator: TransportPINCoordinator,
-        savedStateHandle: SavedStateHandle
+        secureStorageManager: SecureStorageManager
     ) : this(
-        attempts = Screen.SetupTransportPIN.attempts(savedStateHandle),
+        secureStorageManager = secureStorageManager,
         onDone = coordinator::finishTransportPINEntry
     )
 
     override var transportPIN: String by mutableStateOf("")
         private set
-
-    override val shouldShowTransportPINError: Boolean = attempts < 3
-    override val displayedAttempts: Int
-        get() = attempts
 
     override fun onInputChanged(value: String) {
         transportPIN = value
@@ -147,7 +86,9 @@ class SetupTransportPINViewModel(
 
     override fun onDoneTapped() {
         if (transportPIN.length == 5) {
-            onDone(transportPIN)
+            secureStorageManager.setTransportPIN(transportPIN)
+            transportPIN = ""
+            onDone()
         } else {
             logger.debug("Transport PIN too short.")
         }
@@ -156,9 +97,7 @@ class SetupTransportPINViewModel(
 
 //region Preview
 private class PreviewSetupTransportPINViewModel(
-    override val transportPIN: String,
-    override val shouldShowTransportPINError: Boolean,
-    override val displayedAttempts: Int
+    override val transportPIN: String
 ) : SetupTransportPINViewModelInterface {
     override fun onInputChanged(value: String) {}
     override fun onDoneTapped() {}
@@ -168,7 +107,7 @@ private class PreviewSetupTransportPINViewModel(
 @Composable
 fun PreviewSetupTransportPINWithoutAttemptsNarrowDevice() {
     UseIDTheme {
-        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", false, 0))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12"))
     }
 }
 
@@ -176,7 +115,7 @@ fun PreviewSetupTransportPINWithoutAttemptsNarrowDevice() {
 @Composable
 fun PreviewSetupTransportPINWithoutAttempts() {
     UseIDTheme {
-        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", false, 0))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12"))
     }
 }
 
@@ -184,7 +123,7 @@ fun PreviewSetupTransportPINWithoutAttempts() {
 @Composable
 fun PreviewSetupTransportPINNullAttempts() {
     UseIDTheme {
-        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", true, 0))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12"))
     }
 }
 
@@ -192,7 +131,7 @@ fun PreviewSetupTransportPINNullAttempts() {
 @Composable
 fun PreviewSetupTransportPINOneAttempt() {
     UseIDTheme {
-        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", true, 1))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12"))
     }
 }
 
@@ -200,7 +139,7 @@ fun PreviewSetupTransportPINOneAttempt() {
 @Composable
 fun PreviewSetupTransportPINTwoAttempts() {
     UseIDTheme {
-        SetupTransportPIN(PreviewSetupTransportPINViewModel("12", true, 2))
+        SetupTransportPIN(PreviewSetupTransportPINViewModel("12"))
     }
 }
 //endregion

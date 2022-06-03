@@ -11,10 +11,7 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.test.*
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -53,7 +50,7 @@ class SetupScanViewModelTest {
             emit(EIDInteractionEvent.ProcessCompletedSuccessfully)
         }
 
-        viewModel.onUIInitialized(context)
+        viewModel.startSettingPIN(context)
 
         advanceUntilIdle()
 

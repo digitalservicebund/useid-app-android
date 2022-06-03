@@ -9,13 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AppCoordinator @Inject constructor() {
-    private val logger by getLogger()
-
     private lateinit var navController: NavController
-
-    // TODO: The PINs should not live here.
-    private var transportPIN: String? = null
-    private var personalPIN: String? = null
 
     fun setNavController(navController: NavController) {
         this.navController = navController
@@ -27,26 +21,5 @@ class AppCoordinator @Inject constructor() {
         navController.popBackStack(route = Screen.SetupIntro.routeTemplate, inclusive = false)
     }
 
-    // Setup
     fun startSetupIDCard() = navController.navigate(Screen.SetupPINLetter.parameterizedRoute())
-    fun setTransportPIN(transportPIN: String) {
-        this.transportPIN = transportPIN
-    }
-    fun setPersonalPIN(personalPIN: String) {
-        this.personalPIN = personalPIN
-    }
-    fun finishPINEntry() {
-        val transportPIN = transportPIN
-        val personalPIN = personalPIN
-
-        if (transportPIN == null || personalPIN == null) {
-            logger.error("PINs not available.")
-        } else {
-            navController.navigate(Screen.SetupScan.parameterizedRoute(transportPIN, personalPIN))
-        }
-    }
-    fun clearPINs() {
-        transportPIN = null
-        personalPIN = null
-    }
 }

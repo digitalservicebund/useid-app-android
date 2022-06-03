@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class PINLetterCoordinator @Inject constructor(private val appCoordinator: AppCoordinator) {
     fun letterAvailable() {
-        appCoordinator.navigate(Screen.SetupTransportPIN.parameterizedRoute(attempts = 3))
+        appCoordinator.navigate(Screen.SetupTransportPIN.parameterizedRoute())
     }
 
     fun letterNotAvailable() {
