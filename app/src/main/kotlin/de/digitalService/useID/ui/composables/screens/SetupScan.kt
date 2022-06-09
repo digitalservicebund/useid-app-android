@@ -34,6 +34,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
+import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupScanCoordinator
@@ -160,14 +161,16 @@ private fun TransportPINDialog(
 interface SetupScanViewModelInterface {
     sealed class Error {
         object PINSuspended : Error()
-        object PINDeactivated : Error()
+        object PINBlocked : Error()
+        object IDDeactivated : Error()
         data class Other(val message: String?) : Error()
 
         val titleResID: Int
             get() {
                 return when (this) {
                     PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
-                    PINDeactivated -> R.string.firstTimeUser_scan_error_title_pin_deactivated
+                    PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
+                    IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
                     is Other -> R.string.firstTimeUser_scan_error_title_unknown
                 }
             }
@@ -175,7 +178,7 @@ interface SetupScanViewModelInterface {
         val textResID: Int
             get() {
                 return when (this) {
-                    PINSuspended, PINDeactivated -> R.string.firstTimeUser_scan_error_text_feature_unavailable
+                    PINSuspended, PINBlocked, IDDeactivated -> R.string.firstTimeUser_scan_error_text_feature_unavailable
                     is Other -> R.string.firstTimeUser_scan_error_text_unknown
                 }
             }
@@ -244,7 +247,11 @@ class SetupScanViewModel @Inject constructor(
         viewModelCoroutineScope.launch {
             logger.debug("Starting PIN management flow.")
             idCardManager.changePin(context).catch { exception ->
-                errorState = SetupScanViewModelInterface.Error.Other(exception.message)
+                errorState = when (exception) {
+                    is IDCardInteractionException.CardDeactivated -> SetupScanViewModelInterface.Error.IDDeactivated
+                    is IDCardInteractionException.CardBlocked -> SetupScanViewModelInterface.Error.PINBlocked
+                    else -> SetupScanViewModelInterface.Error.Other(exception.message)
+                }
             }.collect { event ->
                 when (event) {
                     EIDInteractionEvent.CardInteractionComplete -> logger.debug("Card interaction complete.")
@@ -281,7 +288,7 @@ class SetupScanViewModel @Inject constructor(
                     }
                     is EIDInteractionEvent.RequestPUK -> {
                         errorState =
-                            SetupScanViewModelInterface.Error.PINDeactivated
+                            SetupScanViewModelInterface.Error.PINBlocked
                         cancel()
                     }
                     else -> {

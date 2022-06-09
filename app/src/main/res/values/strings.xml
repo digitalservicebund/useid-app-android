@@ -31,7 +31,8 @@
     <string name="firstTimeUser_scan_body">So wird Ihre persönliche PIN Ihrem Ausweis zugeordnet.</string>
     <string name="firstTimeUser_scan_helpButton">Mein Ausweis wird nicht erkannt</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
-    <string name="firstTimeUser_scan_error_title_pin_deactivated">PIN deaktiviert</string>
+    <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
+    <string name="firstTimeUser_scan_error_title_id_deactivated">Online-Ausweisfunktion deaktiviert</string>
     <string name="firstTimeUser_scan_error_title_unknown">Fehler</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
