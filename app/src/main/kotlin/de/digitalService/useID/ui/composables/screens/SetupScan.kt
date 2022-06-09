@@ -242,6 +242,7 @@ class SetupScanViewModel @Inject constructor(
         }
 
         viewModelCoroutineScope.launch {
+            logger.debug("Starting PIN management flow.")
             idCardManager.changePin(context).catch { exception ->
                 errorState = SetupScanViewModelInterface.Error.Other(exception.message)
             }.collect { event ->
@@ -285,6 +286,7 @@ class SetupScanViewModel @Inject constructor(
                     }
                     else -> {
                         logger.debug("Collected unexpected event: $event")
+                        errorState = SetupScanViewModelInterface.Error.Other(null)
                         cancel()
                     }
                 }
