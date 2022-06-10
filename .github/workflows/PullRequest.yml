@@ -1,0 +1,22 @@
+name: Checks on Pullrequests
+on:
+  push
+
+concurrency:
+  group: ${{ github.head_ref || github.ref }} # Cancel old runs if they have not finished yet
+  cancel-in-progress: true
+
+# Necessary for ruby/setup-ruby which we can't use yet.
+# env:
+#   ImageOS: macos12
+
+jobs:
+  lint:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Run Android linter and ktlint
+        run: bundle exec fastlane lint
