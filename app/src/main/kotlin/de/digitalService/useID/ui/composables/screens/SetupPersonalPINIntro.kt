@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.coordinators.PersonalPINIntroCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -27,9 +27,9 @@ interface SetupPersonalPINIntroViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: PersonalPINIntroCoordinator) : ViewModel(), SetupPersonalPINIntroViewModelInterface {
+class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel(), SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() {
-        coordinator.finishIntro()
+        coordinator.onPersonalPINIntroFinished()
     }
 }
 

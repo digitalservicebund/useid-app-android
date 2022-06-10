@@ -23,7 +23,7 @@ import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.composables.TransportPINEntryField
-import de.digitalService.useID.ui.coordinators.TransportPINCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -70,11 +70,11 @@ class SetupTransportPINViewModel(
 
     @Inject
     constructor(
-        coordinator: TransportPINCoordinator,
+        coordinator: SetupCoordinator,
         secureStorageManager: SecureStorageManager
     ) : this(
         secureStorageManager = secureStorageManager,
-        onDone = coordinator::finishTransportPINEntry
+        onDone = coordinator::onTransportPINEntered
     )
 
     override var transportPIN: String by mutableStateOf("")

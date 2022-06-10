@@ -23,7 +23,6 @@ import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.composables.TransportPINEntryField
-import de.digitalService.useID.ui.coordinators.TransportPINCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 

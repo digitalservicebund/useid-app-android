@@ -17,10 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.ui.composables.PINEntryField
-import de.digitalService.useID.ui.coordinators.PersonalPINCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -130,7 +129,7 @@ interface SetupPersonalPINViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINViewModel @Inject constructor(private val coordinator: PersonalPINCoordinator, private val secureStorageManager: SecureStorageManagerInterface) : ViewModel(), SetupPersonalPINViewModelInterface {
+class SetupPersonalPINViewModel @Inject constructor(private val coordinator: SetupCoordinator, private val secureStorageManager: SecureStorageManagerInterface) : ViewModel(), SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set
 
@@ -171,7 +170,7 @@ class SetupPersonalPINViewModel @Inject constructor(private val coordinator: Per
     private fun handlePINInput() {
         if (pin1 == pin2) {
             secureStorageManager.setPersonalPIN(pin1)
-            coordinator.finishPersonalPINEntry()
+            coordinator.onPersonalPINEntered()
         } else {
             pin1 = ""
             pin2 = ""

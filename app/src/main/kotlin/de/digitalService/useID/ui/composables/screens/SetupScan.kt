@@ -37,7 +37,7 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
-import de.digitalService.useID.ui.coordinators.SetupScanCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -197,7 +197,7 @@ interface SetupScanViewModelInterface {
 
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
-    private val coordinator: SetupScanCoordinator,
+    private val coordinator: SetupCoordinator,
     private val secureStorageManager: SecureStorageManagerInterface,
     private val idCardManager: IDCardManager,
     @Nullable private val coroutineScope: CoroutineScope? = null
@@ -263,7 +263,7 @@ class SetupScanViewModel @Inject constructor(
                     }
                     EIDInteractionEvent.ProcessCompletedSuccessfully -> {
                         logger.debug("Process completed successfully.")
-                        coordinator.settingPINSucceeded()
+                        coordinator.onSettingPINSucceeded()
                     }
                     EIDInteractionEvent.RequestCardInsertion -> logger.debug("Card insertion requested.")
                     is EIDInteractionEvent.RequestChangedPIN -> {

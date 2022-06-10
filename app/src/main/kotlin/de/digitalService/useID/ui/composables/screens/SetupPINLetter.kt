@@ -7,7 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.coordinators.PINLetterCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -29,9 +29,9 @@ interface SetupPINLetterScreenViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPINLetterViewModel @Inject constructor(private val coordinator: PINLetterCoordinator) : ViewModel(), SetupPINLetterScreenViewModelInterface {
-    override fun onTransportPINAvailable() { coordinator.letterAvailable() }
-    override fun onNoPINAvailable() { coordinator.letterNotAvailable() }
+class SetupPINLetterViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel(), SetupPINLetterScreenViewModelInterface {
+    override fun onTransportPINAvailable() { coordinator.setupWithPINLetter() }
+    override fun onNoPINAvailable() { coordinator.setupWithoutPINLetter() }
 }
 
 //region Preview

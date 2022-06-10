@@ -18,7 +18,7 @@ import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.SetupScan
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
-import de.digitalService.useID.ui.coordinators.SetupScanCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -41,8 +41,8 @@ fun EmulatorSetupScan(viewModel: EmulatorSetupScanViewModel) {
 }
 
 @HiltViewModel
-class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: SetupScanCoordinator) : ViewModel() {
-    fun simulateSuccess() { coordinator.settingPINSucceeded() }
+class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel() {
+    fun simulateSuccess() { coordinator.onSettingPINSucceeded() }
     fun simulateIncorrectTransportPIN() { innerViewModel.injectAttempts(innerViewModel.attempts - 1) }
     fun simulateCANRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.PINSuspended) }
     fun simulatePUKRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.IDDeactivated) }
@@ -75,6 +75,6 @@ class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: Se
 @Composable
 fun PreviewEmulatorSetupScan() {
     UseIDTheme {
-        EmulatorSetupScan(EmulatorSetupScanViewModel(SetupScanCoordinator(AppCoordinator())))
+        EmulatorSetupScan(EmulatorSetupScanViewModel(SetupCoordinator(AppCoordinator())))
     }
 }
