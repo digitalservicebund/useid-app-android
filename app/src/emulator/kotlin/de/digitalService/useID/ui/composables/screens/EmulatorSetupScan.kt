@@ -45,7 +45,7 @@ class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: Se
     fun simulateSuccess() { coordinator.settingPINSucceeded() }
     fun simulateIncorrectTransportPIN() { innerViewModel.injectAttempts(innerViewModel.attempts - 1) }
     fun simulateCANRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.PINSuspended) }
-    fun simulatePUKRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.PINDeactivated) }
+    fun simulatePUKRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.IDDeactivated) }
 
     val innerViewModel = object : SetupScanViewModelInterfaceExtension {
         override var attempts: Int by mutableStateOf(3)
