@@ -1,6 +1,5 @@
 package de.digitalService.useID.ui.composables.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -9,22 +8,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.SecureStorageManager
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.ui.composables.PINEntryField
 import de.digitalService.useID.ui.composables.TransportPINEntryField
 import de.digitalService.useID.ui.theme.UseIDTheme
-import javax.inject.Inject
 
 @Composable
 fun SetupReEnterTransportPIN(

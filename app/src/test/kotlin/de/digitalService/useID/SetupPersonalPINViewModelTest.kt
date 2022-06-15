@@ -46,7 +46,7 @@ class SetupPersonalPINViewModelTest {
         }
 
         @Test
-        fun toShort() {
+        fun tooShort() {
             val testValue = "12345"
 
             val viewModel = SetupPersonalPINViewModel(
@@ -146,7 +146,7 @@ class SetupPersonalPINViewModelTest {
         }
 
         @Test
-        fun toShort() {
+        fun tooShort() {
             val testValue = "12345"
 
             val viewModel = SetupPersonalPINViewModel(
