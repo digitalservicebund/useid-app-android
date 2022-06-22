@@ -1,9 +1,7 @@
 package de.digitalService.useID
 
-import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.performClick
 import de.digitalService.useID.ui.composables.screens.SetupScan
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
 import io.mockk.every
@@ -79,6 +77,32 @@ class SetupScanTest {
         val errorDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_title_pin_suspended)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()
 
+        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
+    }
+
+    @Test
+    fun openErrorDialogAndTransportPinDialog() {
+        val testErrorState = SetupScanViewModelInterface.Error.PINSuspended
+        val testAttempts = 2
+
+        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns testErrorState
+        every { mockViewModel.attempts } returns testAttempts
+
+        composeTestRule.setContent {
+            SetupScan(viewModel = mockViewModel)
+        }
+
+        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+
+        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
+        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsNotDisplayed()
+
+        val buttonText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_button)
+        composeTestRule.onNodeWithText(buttonText).performClick()
+
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTap() }
         verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
 }
