@@ -15,7 +15,7 @@ interface SecureStorageManagerInterface {
     fun loadPersonalPIN(): String?
 }
 
-class SecureStorageManager @Inject constructor(@ApplicationContext context: Context): SecureStorageManagerInterface {
+class SecureStorageManager @Inject constructor(@ApplicationContext context: Context) : SecureStorageManagerInterface {
     private enum class StorageKey { TransportPIN, PersonalPIN }
 
     companion object {

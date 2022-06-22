@@ -65,7 +65,7 @@ class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: Se
         }
     }
 
-    interface SetupScanViewModelInterfaceExtension: SetupScanViewModelInterface {
+    interface SetupScanViewModelInterfaceExtension : SetupScanViewModelInterface {
         fun injectAttempts(newAttempts: Int)
         fun injectShouldShowError(error: SetupScanViewModelInterface.Error)
     }

@@ -64,7 +64,8 @@ fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modif
         TransportPINDialog(
             attempts = viewModel.attempts,
             onCancel = viewModel::onCancel,
-            onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) })
+            onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
+        )
     }
 
     Column(
@@ -147,7 +148,8 @@ private fun TransportPINDialog(
                 viewModel = SetupReEnterTransportPINViewModel(
                     attempts,
                     onNewTransportPIN
-                ), modifier = Modifier.padding(top = topPadding)
+                ),
+                modifier = Modifier.padding(top = topPadding)
             )
 
             LaunchedEffect(Unit) {

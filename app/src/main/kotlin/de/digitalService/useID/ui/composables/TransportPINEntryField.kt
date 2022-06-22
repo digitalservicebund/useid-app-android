@@ -25,9 +25,11 @@ fun TransportPINEntryField(
         value.map { "$it " }
     )
 
-    Box(modifier = Modifier
-        .padding(horizontal = 20.dp)
-        .aspectRatio(2f)) {
+    Box(
+        modifier = Modifier
+            .padding(horizontal = 20.dp)
+            .aspectRatio(2f)
+    ) {
         Image(
             painter = painterResource(id = R.drawable.transport_pin),
             contentDescription = null,

@@ -19,7 +19,13 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run Android linter and ktlint
-        run: bundle exec fastlane lint
+        run: bundle exec fastlane lint strict:true
+      - name: Upload lint report
+        if: failure()
+        uses: actions/upload-artifact@v2
+        with:
+          name: lint_report-${{ github.sha }}
+          path: app/build/reports
   test:
     runs-on: self-hosted
     steps:
