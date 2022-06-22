@@ -35,6 +35,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
         id = R.string.firstTimeUser_personalPIN_PIN1TextFieldDescription,
         viewModel.pin1.map { "$it " }
     )
+
     val pin2EntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_PIN2TextFieldDescription,
         viewModel.pin2.map { "$it " }
@@ -62,6 +63,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
                     .width(240.dp)
                     .height(56.dp)
             )
+
             AnimatedVisibility(viewModel.shouldShowPIN2EntryField) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -84,6 +86,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
                     )
                 }
             }
+
             AnimatedVisibility(viewModel.shouldShowError) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
