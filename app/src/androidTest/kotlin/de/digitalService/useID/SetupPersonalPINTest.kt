@@ -41,6 +41,8 @@ class SetupPersonalPINTest {
         }
 
         val pinEntryTextFieldTag = "PINEntryField"
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
+
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput(testPinInput)
         testPin1State.value = testPinInput
         composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(6)
@@ -48,8 +50,11 @@ class SetupPersonalPINTest {
         composeTestRule.onAllNodesWithTag("PINEntryField").assertCountEquals(1)
 
         testShouldShowPIN2EntryFieldState.value = true
+        testFocusPinState.value = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_2
 
         composeTestRule.onAllNodesWithTag("PINEntryField").assertCountEquals(2)
+
+        composeTestRule.onAllNodesWithTag("PINEntryField")[1].assertIsFocused()
 
         composeTestRule.onAllNodesWithTag("PINEntryField")[1].performTextInput(testPinInput2)
         testPin2State.value = testPinInput2
