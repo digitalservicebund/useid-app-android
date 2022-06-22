@@ -50,16 +50,14 @@ class SetupReEnterTransportPINTest {
     @Test
     fun correctPinEntryShown() {
         val testAttempts = 3
-        var testTransportPin = mutableStateOf("")
+        val testTransportPin = mutableStateOf("")
 
         val mockViewModel: SetupReEnterTransportPINViewModelInterface = mockk(relaxed = true)
         every { mockViewModel.attempts } returns testAttempts
         every { mockViewModel.transportPIN } answers { testTransportPin.value }
 
-        var lastSeenValue = ""
         composeTestRule.setContent {
             SetupReEnterTransportPIN(viewModel = mockViewModel)
-            lastSeenValue = testTransportPin.value
         }
 
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
