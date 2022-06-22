@@ -26,6 +26,7 @@ jobs:
         with:
           name: lint_report-${{ github.sha }}
           path: app/build/reports
+
   test:
     runs-on: self-hosted
     steps:
@@ -34,4 +35,16 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run tests
-        run: bundle exec fastlane test
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: arm64-v8a
+          avd-name: UseIDAndroidTest
+          emulator-options: -no-snapshot -wipe-data -no-boot-anim -noaudio
+          script: bundle exec fastlane test
+      - name: Upload AndroidTest report
+        uses: actions/upload-artifact@v2
+        with:
+          name: android_test_report-${{ github.sha }}
+          path: app/build/outputs/androidTest-results
