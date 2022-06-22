@@ -1,0 +1,44 @@
+name: Build and submit release version
+on:
+  workflow_dispatch:
+    inputs:
+      versionName:
+        description: 'Version name'
+        required: true
+        type: string
+
+jobs:
+  updateVersion:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          ref: 'release/${{ inputs.versionName }}'
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Update version name and bump version code
+        run: bundle exec fastlane updateVersion version_name:${{ inputs.versionName }}
+
+  release:
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          ref: 'release/${{ inputs.versionName }}'
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Deploy key store
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
+          echo -n "$KEYSTORE_BASE64" | base64 --decode --output $KEYSTORE_PATH
+          echo "KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
+      - name: Build release and submit to Google Play Store
+        env:
+          KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: bundle exec fastlane release

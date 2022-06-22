@@ -9,11 +9,58 @@ platform :android do
 
   desc "Run Android linter and ktlint"
   lane :lint do |options|
-    lint_result = gradle(tasks: ["clean", "lintDeviceDebug", "lintEmulatorDebug", "lintKotlinMain"])
+    lint_result = gradle(tasks: ["clean", "lintKotlinMain"])
 
 
     if options[:strict] && (lint_result.include? "report") then
       UI.user_error!("The linter reported one or more issues.")
     end
+
+    gradle(tasks: ["clean", "lintDeviceDebug", "lintEmulatorDebug"])
+  end
+
+  desc "Update version name and bump version code"
+  lane :updateVersion do |options|
+    skip_docs
+    ensure_git_status_clean
+
+    increment_version_code(gradle_file_path: "app/build.gradle")
+
+    if options[:version_name]
+      android_set_version_name(version_name: options[:version_name])
+    end
+
+    version_name = android_get_version_name
+    version_code = android_get_version_code
+
+    git_commit(path: "app/build.gradle", message: "Bump version to #{version_name}-#{version_code}")
+    push_to_git_remote
+  end
+
+  desc "Create new Playstore build and submit to Google Play Store"
+  lane :buildAndSubmit do
+    skip_docs
+    ensure_git_status_clean
+
+    gradle(
+      task: 'bundle',
+      flavor: 'device',
+      build_type: 'Release',
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => "upload",
+        "android.injected.signing.key.password" => ENV["UPLOAD_KEY_PASSWORD"]
+      }
+    )
+
+    supply(
+      track: 'internal',
+      package_name: 'de.digitalService.useID',
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_apk: true
+    )
   end
 end
