@@ -3,6 +3,8 @@ package de.digitalService.useID
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPIN
 import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPINViewModelInterface
 import io.mockk.every
@@ -11,7 +13,12 @@ import io.mockk.verify
 import org.junit.Rule
 import org.junit.Test
 
+@HiltAndroidTest
 class SetupReEnterTransportPINTest {
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
@@ -46,7 +53,7 @@ class SetupReEnterTransportPINTest {
         verify(exactly = 1) { mockViewModel.onInputChanged("1234") }
         verify(exactly = 1) { mockViewModel.onInputChanged("12345") }
 
-        verify(exactly = 0) { mockViewModel.onInputChanged("123455") }
+        verify(exactly = 0) { mockViewModel.onInputChanged("123456") }
     }
 
     @Test

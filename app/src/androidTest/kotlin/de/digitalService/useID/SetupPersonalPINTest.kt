@@ -3,6 +3,8 @@ package de.digitalService.useID
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.composables.screens.SetupPersonalPIN
 import de.digitalService.useID.ui.composables.screens.SetupPersonalPINViewModelInterface
 import io.mockk.every
@@ -11,7 +13,12 @@ import io.mockk.verify
 import org.junit.Rule
 import org.junit.Test
 
+@HiltAndroidTest
 class SetupPersonalPINTest {
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 

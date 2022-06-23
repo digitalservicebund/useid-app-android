@@ -1,7 +1,12 @@
 package de.digitalService.useID
 
-import androidx.compose.ui.test.*
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.composables.screens.SetupScan
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
 import io.mockk.every
@@ -10,8 +15,12 @@ import io.mockk.verify
 import org.junit.Rule
 import org.junit.Test
 
-
+@HiltAndroidTest
 class SetupScanTest {
+
+    @get:Rule
+    var hiltRule = HiltAndroidRule(this)
+
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
