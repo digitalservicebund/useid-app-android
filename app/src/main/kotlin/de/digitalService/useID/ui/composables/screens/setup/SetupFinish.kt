@@ -8,12 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.ui.composables.BundButton
 import de.digitalService.useID.ui.composables.ButtonType
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import javax.inject.Inject
 
 @Composable
-fun SetupFinish() {
+fun SetupFinish(viewModel: SetupFinishViewModelInterface) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -28,14 +32,29 @@ fun SetupFinish() {
             "success_body",
             style = MaterialTheme.typography.bodySmall
         )
-        BundButton(type = ButtonType.PRIMARY, onClick = { }, label = "Close")
+        BundButton(type = ButtonType.PRIMARY, onClick = viewModel::onCloseButtonClicked, label = "Close")
     }
+}
+
+interface SetupFinishViewModelInterface {
+    fun onCloseButtonClicked()
+}
+
+@HiltViewModel
+class SetupFinishViewModel @Inject constructor(private val coordinator: SetupCoordinator): ViewModel(), SetupFinishViewModelInterface {
+    override fun onCloseButtonClicked() {
+        coordinator.onSetupFinished()
+    }
+}
+
+class PreviewSetupFinishViewModel: SetupFinishViewModelInterface {
+    override fun onCloseButtonClicked() { }
 }
 
 @Preview
 @Composable
 fun PreviewSetupFinish() {
     UseIDTheme {
-        SetupFinish()
+        SetupFinish(PreviewSetupFinishViewModel())
     }
 }

@@ -22,4 +22,5 @@ class AppCoordinator @Inject constructor() {
     }
 
     fun startSetupIDCard() = navController.navigate(Screen.SetupPINLetter.parameterizedRoute())
+    fun startIdentification() = navController.navigate(Screen.IdentificationFetchMetadata.parameterizedRoute())
 }

@@ -24,7 +24,7 @@ class IDCardManager {
 
     fun handleNFCTag(tag: Tag) = androidContextManager?.onNewIntent(tag) ?: Log.d(logTag, "Ignoring NFC tag because no ID card related process is running.")
 
-    fun identify(context: Context, tokenURL: String): Flow<EIDInteractionEvent> = executeTask(context, Task.EAC(tokenURL))
+    fun identify(context: Context, url: String): Flow<EIDInteractionEvent> = executeTask(context, Task.EAC(url))
     fun changePin(context: Context): Flow<EIDInteractionEvent> = executeTask(context, Task.PINManagement)
 
     private class ControllerCallbackHandler(private val channel: SendChannel<EIDInteractionEvent>) : ControllerCallback {

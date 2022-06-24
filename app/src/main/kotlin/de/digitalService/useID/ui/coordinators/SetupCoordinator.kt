@@ -29,6 +29,10 @@ class SetupCoordinator @Inject constructor(private val appCoordinator: AppCoordi
         appCoordinator.navigate(Screen.SetupFinish.parameterizedRoute())
     }
 
+    fun onSetupFinished() {
+        appCoordinator.startIdentification()
+    }
+
     fun cancelSetup() {
         appCoordinator.popToRoot()
     }

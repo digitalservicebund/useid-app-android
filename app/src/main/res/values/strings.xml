@@ -37,4 +37,8 @@
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
+    <string name="identification_fetchMetadata_pleaseWait">Einen Moment bitte…</string>
+    <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
+    <string name="identification_attributeConsent_body">Mit Eingabe Ihrer persönlichen PIN gewähren Sie „%1s\" den Zugriff auf folgende Daten von Ihrem Ausweis:</string>
+    <string name="identification_attributeConsent_pinButton">Persönliche PIN eingeben</string>
 </resources>

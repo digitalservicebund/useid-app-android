@@ -5,6 +5,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
     id 'org.jmailen.kotlinter'
     id 'de.mannodermaus.android-junit5'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -82,6 +83,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
     implementation 'androidx.activity:activity-compose:1.4.0'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
 
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha03'
 

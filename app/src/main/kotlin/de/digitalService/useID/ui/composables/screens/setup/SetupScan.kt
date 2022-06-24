@@ -202,7 +202,7 @@ class SetupScanViewModel @Inject constructor(
     private val coordinator: SetupCoordinator,
     private val secureStorageManager: SecureStorageManagerInterface,
     private val idCardManager: IDCardManager,
-    @Nullable private val coroutineScope: CoroutineScope? = null
+    @Nullable coroutineScope: CoroutineScope? = null
 ) :
     ViewModel(), SetupScanViewModelInterface {
     private val logger by getLogger()

@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import de.digitalService.useID.ui.composables.screens.*
+import de.digitalService.useID.ui.composables.screens.identification.*
 
 sealed class NavigationException : Exception() {
     object MissingArgumentException : NavigationException()
@@ -16,7 +17,7 @@ sealed class NavigationException : Exception() {
 fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
         navController = navController,
-        startDestination = Screen.SetupIntro.routeTemplate,
+        startDestination = Screen.IdentificationFetchMetadata.routeTemplate,
         modifier = modifier
     ) {
         composable(Screen.SetupIntro.routeTemplate) {
@@ -31,10 +32,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             SetupResetPersonalPIN()
         }
 
-        composable(
-            Screen.SetupTransportPIN.routeTemplate,
-            arguments = Screen.SetupTransportPIN.namedNavArguments
-        ) {
+        composable(Screen.SetupTransportPIN.routeTemplate) {
             SetupTransportPIN(hiltViewModel<SetupTransportPINViewModel>())
         }
 
@@ -50,15 +48,23 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
             SetupPersonalPIN(hiltViewModel<SetupPersonalPINViewModel>())
         }
 
-        composable(
-            Screen.SetupScan.routeTemplate,
-            arguments = Screen.SetupScan.namedNavArguments
-        ) {
+        composable(Screen.SetupScan.routeTemplate) {
             ConfigSpecificSetupScan()
         }
 
         composable(Screen.SetupFinish.routeTemplate) {
-            SetupFinish()
+            SetupFinish(hiltViewModel<SetupFinishViewModel>())
+        }
+
+        composable(Screen.IdentificationFetchMetadata.routeTemplate) {
+            IdentificationFetchMetadata(hiltViewModel<IdentificationFetchMetadataViewModel>())
+        }
+
+        composable(
+            route = Screen.IdentificationAttributeConsent.routeTemplate,
+            arguments = Screen.IdentificationAttributeConsent.namedNavArguments
+        ) {
+            IdentificationAttributeConsent(hiltViewModel<IdentificationAttributeConsentViewModel>())
         }
     }
 }
