@@ -2,8 +2,13 @@ package de.digitalService.useID.ui
 
 import android.util.Log
 import androidx.navigation.NavController
+import com.ramcosta.composedestinations.navigation.navigate
+import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.ui.composables.screens.Screen
+import de.digitalService.useID.ui.composables.screens.destinations.Destination
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationFetchMetadataDestination
+import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
+import de.digitalService.useID.ui.composables.screens.destinations.SetupPINLetterDestination
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -15,12 +20,12 @@ class AppCoordinator @Inject constructor() {
         this.navController = navController
     }
 
-    fun navigate(route: String) = navController.navigate(route)
+    fun navigate(route: Direction) = navController.navigate(route)
 
     fun popToRoot() {
-        navController.popBackStack(route = Screen.SetupIntro.routeTemplate, inclusive = false)
+        navController.popBackStack(route = SetupIntroDestination.route, inclusive = false)
     }
 
-    fun startSetupIDCard() = navController.navigate(Screen.SetupPINLetter.parameterizedRoute())
-    fun startIdentification() = navController.navigate(Screen.IdentificationFetchMetadata.parameterizedRoute())
+    fun startSetupIDCard() = navController.navigate(SetupPINLetterDestination)
+    fun startIdentification() = navController.navigate(IdentificationFetchMetadataDestination)
 }

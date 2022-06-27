@@ -7,7 +7,7 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.composables.screens.Screen
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -41,10 +41,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         confirmationCallback = event.confirmationCallback
 
-                        val subject = event.request.subject
-                        val requiredReadAttributes = event.request.readAttributes.filterValues { it }.keys
-
-                        CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(Screen.IdentificationAttributeConsent.parameterizedRoute(subject, event.request)) }
+                        CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(IdentificationAttributeConsentDestination(event.request)) }
                     }
                     else -> logger.debug("Unhandled authentication event: $event")
                 }

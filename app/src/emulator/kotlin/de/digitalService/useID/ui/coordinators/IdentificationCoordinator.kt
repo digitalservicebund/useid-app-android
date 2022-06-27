@@ -6,7 +6,7 @@ import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.composables.screens.Screen
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -36,7 +36,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
                     readAttributes = mapOf(Pair(IDCardAttribute.DG01, true))
                 )
 
-            CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(Screen.IdentificationAttributeConsent.parameterizedRoute(mockedRequest)) }
+            CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(IdentificationAttributeConsentDestination(mockedRequest)) }
         }
     }
 }

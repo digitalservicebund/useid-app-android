@@ -7,5 +7,5 @@ import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
 
 @Composable
 fun ConfigSpecificSetupScan() {
-    SetupScan(hiltViewModel<SetupScanViewModel>())
+    SetupScan(viewModel = hiltViewModel<SetupScanViewModel>())
 }

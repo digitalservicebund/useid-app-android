@@ -13,8 +13,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.ui.theme.UseIDTheme
 import de.digitalService.useID.R
@@ -27,9 +29,12 @@ import kotlinx.coroutines.launch
 import javax.annotation.Nullable
 import javax.inject.Inject
 
+@Destination
 @Composable
-fun IdentificationFetchMetadata(viewModel: IdentificationFetchMetadataViewModelInterface, modifier: Modifier = Modifier) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier.padding(20.dp).fillMaxSize()) {
+fun IdentificationFetchMetadata(modifier: Modifier = Modifier, viewModel: IdentificationFetchMetadataViewModelInterface = hiltViewModel<IdentificationFetchMetadataViewModel>()) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier
+        .padding(20.dp)
+        .fillMaxSize()) {
         Spacer(modifier = Modifier.weight(.5f))
         Box {
             CircularProgressIndicator(
@@ -83,6 +88,6 @@ class PreviewIdentificationFetchMetadataViewModel: IdentificationFetchMetadataVi
 @Composable
 fun PreviewIdentificationFetchMetadata() {
     UseIDTheme {
-        IdentificationFetchMetadata(PreviewIdentificationFetchMetadataViewModel())
+        IdentificationFetchMetadata(viewModel = PreviewIdentificationFetchMetadataViewModel())
     }
 }

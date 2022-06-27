@@ -14,7 +14,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
@@ -23,8 +25,9 @@ import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
+@Destination
 @Composable
-fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Modifier = Modifier) {
+fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINViewModelInterface = hiltViewModel<SetupPersonalPINViewModel>()) {
     val focusRequesterPIN1 = remember { FocusRequester() }
     val focusRequesterPIN2 = remember { FocusRequester() }
 
@@ -197,7 +200,7 @@ private class PreviewSetupPersonalPINViewModel(
 fun PreviewSetupPersonalPIN() {
     UseIDTheme {
         SetupPersonalPIN(
-            PreviewSetupPersonalPINViewModel(
+            viewModel = PreviewSetupPersonalPINViewModel(
                 "12",
                 "",
                 SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1,

@@ -27,8 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
@@ -48,8 +50,9 @@ import javax.annotation.Nullable
 import javax.inject.Inject
 
 @OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
-fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modifier) {
+fun SetupScan(modifier: Modifier = Modifier, viewModel: SetupScanViewModelInterface = hiltViewModel<SetupScanViewModel>()) {
     val context = LocalContext.current
 
     viewModel.errorState?.let {
@@ -320,7 +323,7 @@ class PreviewSetupScanViewModel(
 @Composable
 fun PreviewSetupScanWithoutError() {
     UseIDTheme {
-        SetupScan(PreviewSetupScanViewModel(3, errorState = null))
+        SetupScan(viewModel = PreviewSetupScanViewModel(3, errorState = null))
     }
 }
 
@@ -329,7 +332,7 @@ fun PreviewSetupScanWithoutError() {
 @Composable
 fun PreviewSetupScanInvalidTransportPIN() {
     UseIDTheme {
-        SetupScan(PreviewSetupScanViewModel(2, errorState = null))
+        SetupScan(viewModel = PreviewSetupScanViewModel(2, errorState = null))
     }
 }
 
@@ -338,7 +341,7 @@ fun PreviewSetupScanInvalidTransportPIN() {
 fun PreviewSetupScanWithError() {
     UseIDTheme {
         SetupScan(
-            PreviewSetupScanViewModel(
+            viewModel = PreviewSetupScanViewModel(
                 3,
                 errorState = SetupScanViewModelInterface.Error.PINSuspended
             )

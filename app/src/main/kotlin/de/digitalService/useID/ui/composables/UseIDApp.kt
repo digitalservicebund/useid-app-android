@@ -14,8 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.rememberNavController
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.annotation.NavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.composables.screens.NavGraphs
+import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

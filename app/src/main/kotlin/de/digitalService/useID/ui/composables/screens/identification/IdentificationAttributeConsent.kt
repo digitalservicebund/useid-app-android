@@ -15,21 +15,27 @@ import androidx.compose.ui.tooling.preview.Device
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.composables.BundButton
 import de.digitalService.useID.ui.composables.ButtonType
-import de.digitalService.useID.ui.composables.screens.Screen
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
 import org.openecard.bouncycastle.math.raw.Mod
 import javax.inject.Inject
 
+@Destination(
+    navArgsDelegate = IdentificationAttributeConsentNavArgs::class
+)
 @Composable
-fun IdentificationAttributeConsent(viewModel: IdentificationAttributeConsentViewModelInterface, modifier: Modifier = Modifier) {
+fun IdentificationAttributeConsent(modifier: Modifier = Modifier, viewModel: IdentificationAttributeConsentViewModelInterface = hiltViewModel<IdentificationAttributeConsentViewModel>()) {
     Column(modifier = modifier.padding(20.dp)) {
         Text(
             viewModel.identificationProvider,
@@ -60,6 +66,10 @@ fun IdentificationAttributeConsent(viewModel: IdentificationAttributeConsentView
     }
 }
 
+data class IdentificationAttributeConsentNavArgs(
+    val request: EIDAuthenticationRequest
+)
+
 interface IdentificationAttributeConsentViewModelInterface {
     val identificationProvider: String
     val requiredReadAttributes: List<String>
@@ -73,7 +83,7 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
     override val requiredReadAttributes: List<String>
 
     init {
-        val request = Screen.IdentificationAttributeConsent.request(savedStateHandle)
+        val request = IdentificationAttributeConsentDestination.argsFrom(savedStateHandle).request
         identificationProvider = request.subject
         requiredReadAttributes = request.readAttributes.filterValues { it }.keys.map(IDCardAttribute::name)
     }
@@ -94,6 +104,6 @@ private val previewIdentificationAttributeConsentViewModel = PreviewIdentificati
 @Composable
 fun PreviewIdentificationAttributeConsent() {
     UseIDTheme {
-        IdentificationAttributeConsent(previewIdentificationAttributeConsentViewModel)
+        IdentificationAttributeConsent(viewModel = previewIdentificationAttributeConsentViewModel)
     }
 }
