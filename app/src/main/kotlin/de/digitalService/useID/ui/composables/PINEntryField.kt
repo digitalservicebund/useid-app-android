@@ -32,6 +32,7 @@ fun PINEntryField(
     value: String,
     onValueChanged: (String) -> Unit,
     digitCount: Int,
+    obfuscation: Boolean,
     spacerPosition: Int?,
     contentDescription: String,
     focusRequester: FocusRequester,
@@ -93,6 +94,7 @@ fun PINEntryField(
         PINDigitRow(
             input = value,
             digitCount = digitCount,
+            obfuscation = obfuscation,
             placeholder = false,
             spacerPosition = spacerPosition,
             modifier = Modifier
@@ -106,6 +108,6 @@ fun PINEntryField(
 @Composable
 fun PreviewPINEntryField() {
     UseIDTheme {
-        PINEntryField(value = "22", onValueChanged = { }, digitCount = 6, spacerPosition = 3, contentDescription = "", focusRequester = FocusRequester())
+        PINEntryField(value = "22", onValueChanged = { }, digitCount = 6, obfuscation = true, spacerPosition = 3, contentDescription = "", focusRequester = FocusRequester())
     }
 }

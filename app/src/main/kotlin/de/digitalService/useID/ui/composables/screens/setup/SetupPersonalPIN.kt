@@ -53,6 +53,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
             PINEntryField(
                 value = viewModel.pin1,
                 digitCount = 6,
+                obfuscation = true,
                 spacerPosition = 3,
                 onValueChanged = viewModel::userInputPIN1,
                 contentDescription = pin1EntryFieldDescription,
@@ -72,6 +73,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
                     PINEntryField(
                         value = viewModel.pin2,
                         digitCount = 6,
+                        obfuscation = true,
                         spacerPosition = 3,
                         onValueChanged = viewModel::userInputPIN2,
                         contentDescription = pin2EntryFieldDescription,

@@ -13,13 +13,15 @@ interface SecureStorageManagerInterface {
 
     fun setPersonalPIN(value: String)
     fun loadPersonalPIN(): String?
+
+    fun clearStorage()
 }
 
 class SecureStorageManager @Inject constructor(@ApplicationContext context: Context) : SecureStorageManagerInterface {
     private enum class StorageKey { TransportPIN, PersonalPIN }
 
     companion object {
-        val sharedPreferencesFileName = BuildConfig.APPLICATION_ID + ".encryptedSharedPreferences"
+        const val sharedPreferencesFileName = BuildConfig.APPLICATION_ID + ".encryptedSharedPreferences"
     }
 
     private val sharedPreferences: SharedPreferences
@@ -49,4 +51,11 @@ class SecureStorageManager @Inject constructor(@ApplicationContext context: Cont
 
     override fun loadPersonalPIN(): String? =
         load(StorageKey.PersonalPIN)
+
+    override fun clearStorage() {
+        with(sharedPreferences.edit()) {
+            clear()
+            apply()
+        }
+    }
 }

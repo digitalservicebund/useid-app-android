@@ -10,10 +10,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PINDigitRow(input: String, digitCount: Int, placeholder: Boolean, spacerPosition: Int?, modifier: Modifier = Modifier) {
+fun PINDigitRow(input: String, digitCount: Int, obfuscation: Boolean, placeholder: Boolean, spacerPosition: Int?, modifier: Modifier = Modifier) {
     Row(horizontalArrangement = Arrangement.SpaceAround, modifier = modifier) {
         for (position in 1..digitCount) {
-            PINDigitField(input = input.length >= position, placeholder = placeholder)
+            val char = input.toCharArray().getOrNull(position - 1)
+            PINDigitField(input = char, obfuscation = obfuscation,  placeholder = placeholder)
             spacerPosition?.let {
                 if (spacerPosition == position) {
                     Spacer(modifier = Modifier.width(8.dp))
@@ -26,11 +27,11 @@ fun PINDigitRow(input: String, digitCount: Int, placeholder: Boolean, spacerPosi
 @Preview
 @Composable
 fun PreviewPINDigitRowTransportPIN() {
-    PINDigitRow(input = "12", digitCount = 5, placeholder = false, spacerPosition = null, modifier = Modifier.width(300.dp))
+    PINDigitRow(input = "12", digitCount = 5, obfuscation = false, placeholder = false, spacerPosition = null, modifier = Modifier.width(300.dp))
 }
 
 @Preview
 @Composable
 fun PreviewPINDigitRowPersonalPIN() {
-    PINDigitRow(input = "12", digitCount = 6, placeholder = false, spacerPosition = 3, modifier = Modifier.width(300.dp))
+    PINDigitRow(input = "12", digitCount = 6, obfuscation = true, placeholder = false, spacerPosition = 3, modifier = Modifier.width(300.dp))
 }

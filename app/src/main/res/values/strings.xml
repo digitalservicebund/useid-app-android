@@ -56,4 +56,8 @@
     <string name="idCardAttribute_DG19">Residence Permit I</string>
     <string name="idCardAttribute_restrictedIdentification">Restricted Identification</string>
     <string name="idCardAttribute_ageVerification">Altersverifikation</string>
+    <string name="identification_personalPIN_title">Geben Sie Ihre persönliche PIN Ihres Ausweises ein</string>
+    <string name="identification_personalPIN_error_incorrectPIN">Inkorrekte persönliche PIN</string>
+    <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
+    <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
 </resources>

@@ -41,6 +41,7 @@ fun TransportPINEntryField(
             value = value,
             onValueChanged = onValueChanged,
             digitCount = 5,
+            obfuscation = false,
             spacerPosition = null,
             contentDescription = description,
             focusRequester = focusRequester,

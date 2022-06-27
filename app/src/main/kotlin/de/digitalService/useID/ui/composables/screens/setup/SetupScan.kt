@@ -242,6 +242,11 @@ class SetupScanViewModel @Inject constructor(
 
     override fun onCancel() = coordinator.cancelSetup()
 
+    private fun finishSetup() {
+        secureStorageManager.clearStorage()
+        coordinator.onSettingPINSucceeded()
+    }
+
     private fun executePINManagement(transportPIN: String, context: Context) {
         val newPIN = secureStorageManager.loadPersonalPIN() ?: run {
             logger.error("Personal PIN not available.")
@@ -268,7 +273,7 @@ class SetupScanViewModel @Inject constructor(
                     }
                     EIDInteractionEvent.ProcessCompletedSuccessfully -> {
                         logger.debug("Process completed successfully.")
-                        coordinator.onSettingPINSucceeded()
+                        finishSetup()
                     }
                     EIDInteractionEvent.RequestCardInsertion -> logger.debug("Card insertion requested.")
                     is EIDInteractionEvent.RequestChangedPIN -> {

@@ -29,6 +29,7 @@ import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.composables.BundButton
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import org.openecard.bouncycastle.math.raw.Mod
 import javax.inject.Inject
@@ -82,7 +83,7 @@ fun IdentificationAttributeConsent(
         Spacer(Modifier.height(20.dp))
         BundButton(
             type = ButtonType.PRIMARY,
-            onClick = { },
+            onClick = viewModel::onPINButtonTapped,
             label = stringResource(id = R.string.identification_attributeConsent_pinButton)
         )
     }
@@ -95,10 +96,13 @@ data class IdentificationAttributeConsentNavArgs(
 interface IdentificationAttributeConsentViewModelInterface {
     val identificationProvider: String
     val requiredReadAttributes: List<Int>
+
+    fun onPINButtonTapped()
 }
 
 @HiltViewModel
 class IdentificationAttributeConsentViewModel @Inject constructor(
+    private val coordinator: IdentificationCoordinator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), IdentificationAttributeConsentViewModelInterface {
     override val identificationProvider: String
@@ -112,6 +116,10 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
             .filterValues { it }
             .keys
             .map { attributeDescriptionID(it) }
+    }
+
+    override fun onPINButtonTapped() {
+        coordinator.confirmAttributesForIdentification()
     }
 
     private fun attributeDescriptionID(attribute: IDCardAttribute): Int = when (attribute) {
@@ -137,7 +145,9 @@ class PreviewIdentificationAttributeConsentViewModel(
     override val identificationProvider: String,
     override val requiredReadAttributes: List<Int>
 ) :
-    IdentificationAttributeConsentViewModelInterface
+    IdentificationAttributeConsentViewModelInterface {
+    override fun onPINButtonTapped() {}
+}
 
 private val previewIdentificationAttributeConsentViewModel =
     PreviewIdentificationAttributeConsentViewModel(

@@ -7,6 +7,8 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
+import de.digitalService.useID.ui.composables.screens.identification.IdentificationPersonalPIN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -38,5 +40,13 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
 
             CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(IdentificationAttributeConsentDestination(mockedRequest)) }
         }
+    }
+
+    fun confirmAttributesForIdentification() {
+        appCoordinator.navigate(IdentificationPersonalPINDestination(null, false))
+    }
+
+    fun onPINEntered() {
+
     }
 }
