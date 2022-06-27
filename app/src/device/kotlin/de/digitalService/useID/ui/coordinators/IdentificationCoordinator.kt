@@ -20,7 +20,7 @@ class IdentificationCoordinator @Inject constructor(
     val appCoordinator: AppCoordinator,
     val idCardManager: IDCardManager
 ) {
-    val logger by getLogger()
+    private val logger by getLogger()
 
     private var confirmationCallback: ((Map<IDCardAttribute, Boolean>) -> Unit)? = null
 
@@ -29,7 +29,9 @@ class IdentificationCoordinator @Inject constructor(
             "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
 
         CoroutineScope(Dispatchers.IO).launch {
-            idCardManager.identify(context, demoURL).collect { event ->
+            idCardManager.identify(context, demoURL).catch {
+                logger.error("Error: $it")
+            }.collect { event ->
                 when (event) {
                     EIDInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started")
                     is EIDInteractionEvent.RequestAuthenticationRequestConfirmation -> {

@@ -2,7 +2,9 @@ package de.digitalService.useID.ui.composables.screens.identification
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,15 +37,25 @@ import javax.inject.Inject
     navArgsDelegate = IdentificationAttributeConsentNavArgs::class
 )
 @Composable
-fun IdentificationAttributeConsent(modifier: Modifier = Modifier, viewModel: IdentificationAttributeConsentViewModelInterface = hiltViewModel<IdentificationAttributeConsentViewModel>()) {
-    Column(modifier = modifier.padding(20.dp)) {
+fun IdentificationAttributeConsent(
+    modifier: Modifier = Modifier,
+    viewModel: IdentificationAttributeConsentViewModelInterface = hiltViewModel<IdentificationAttributeConsentViewModel>()
+) {
+    Column(
+        modifier = modifier
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         Text(
             viewModel.identificationProvider,
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.padding(5.dp))
         Text(
-            stringResource(id = R.string.identification_attributeConsent_body, viewModel.identificationProvider),
+            stringResource(
+                id = R.string.identification_attributeConsent_body,
+                viewModel.identificationProvider
+            ),
             style = MaterialTheme.typography.bodySmall
         )
         Surface(
@@ -56,13 +68,23 @@ fun IdentificationAttributeConsent(modifier: Modifier = Modifier, viewModel: Ide
                 .fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(start = 40.dp, top = 20.dp)) {
-                viewModel.requiredReadAttributes.forEach { attribute ->
-                    Text("\u2022 $attribute", color = Color.Black, style = MaterialTheme.typography.labelMedium, modifier = Modifier.padding(bottom = 20.dp))
+                viewModel.requiredReadAttributes.forEach { attributeId ->
+                    Text(
+                        "\u2022 ${stringResource(id = attributeId)}",
+                        color = Color.Black,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(bottom = 20.dp)
+                    )
                 }
             }
         }
         Spacer(Modifier.weight(1f))
-        BundButton(type = ButtonType.PRIMARY, onClick = { }, label = stringResource(id = R.string.identification_attributeConsent_pinButton))
+        Spacer(Modifier.height(20.dp))
+        BundButton(
+            type = ButtonType.PRIMARY,
+            onClick = { },
+            label = stringResource(id = R.string.identification_attributeConsent_pinButton)
+        )
     }
 }
 
@@ -72,33 +94,62 @@ data class IdentificationAttributeConsentNavArgs(
 
 interface IdentificationAttributeConsentViewModelInterface {
     val identificationProvider: String
-    val requiredReadAttributes: List<String>
+    val requiredReadAttributes: List<Int>
 }
 
 @HiltViewModel
 class IdentificationAttributeConsentViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
-): ViewModel(), IdentificationAttributeConsentViewModelInterface {
+) : ViewModel(), IdentificationAttributeConsentViewModelInterface {
     override val identificationProvider: String
-    override val requiredReadAttributes: List<String>
+    override val requiredReadAttributes: List<Int>
 
     init {
         val request = IdentificationAttributeConsentDestination.argsFrom(savedStateHandle).request
         identificationProvider = request.subject
-        requiredReadAttributes = request.readAttributes.filterValues { it }.keys.map(IDCardAttribute::name)
+        requiredReadAttributes = request
+            .readAttributes
+            .filterValues { it }
+            .keys
+            .map { attributeDescriptionID(it) }
+    }
+
+    private fun attributeDescriptionID(attribute: IDCardAttribute): Int = when (attribute) {
+        IDCardAttribute.DG01 -> R.string.idCardAttribute_DG01
+        IDCardAttribute.DG02 -> R.string.idCardAttribute_DG02
+        IDCardAttribute.DG03 -> R.string.idCardAttribute_DG03
+        IDCardAttribute.DG04 -> R.string.idCardAttribute_DG04
+        IDCardAttribute.DG05 -> R.string.idCardAttribute_DG05
+        IDCardAttribute.DG06 -> R.string.idCardAttribute_DG06
+        IDCardAttribute.DG07 -> R.string.idCardAttribute_DG07
+        IDCardAttribute.DG08 -> R.string.idCardAttribute_DG08
+        IDCardAttribute.DG09 -> R.string.idCardAttribute_DG09
+        IDCardAttribute.DG10 -> R.string.idCardAttribute_DG10
+        IDCardAttribute.DG13 -> R.string.idCardAttribute_DG13
+        IDCardAttribute.DG17 -> R.string.idCardAttribute_DG17
+        IDCardAttribute.DG19 -> R.string.idCardAttribute_DG19
+        IDCardAttribute.RESTRICTED_IDENTIFICATION -> R.string.idCardAttribute_restrictedIdentification
+        IDCardAttribute.AGE_VERIFICATION -> R.string.idCardAttribute_ageVerification
     }
 }
 
 class PreviewIdentificationAttributeConsentViewModel(
     override val identificationProvider: String,
-    override val requiredReadAttributes: List<String>
+    override val requiredReadAttributes: List<Int>
 ) :
     IdentificationAttributeConsentViewModelInterface
 
-private val previewIdentificationAttributeConsentViewModel = PreviewIdentificationAttributeConsentViewModel(
-    identificationProvider = "Grundsteuer",
-    requiredReadAttributes = listOf("Vornamen", "Nachnamen", "Geburtstag", "Geburtsort", "Dokumentenart", "Pseudonym")
-)
+private val previewIdentificationAttributeConsentViewModel =
+    PreviewIdentificationAttributeConsentViewModel(
+        identificationProvider = "Grundsteuer",
+        requiredReadAttributes = listOf(
+            R.string.idCardAttribute_DG01,
+            R.string.idCardAttribute_DG02,
+            R.string.idCardAttribute_DG03,
+            R.string.idCardAttribute_DG04,
+            R.string.idCardAttribute_DG05,
+        )
+    )
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable

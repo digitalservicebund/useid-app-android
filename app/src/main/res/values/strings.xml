@@ -41,4 +41,19 @@
     <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
     <string name="identification_attributeConsent_body">Mit Eingabe Ihrer persönlichen PIN gewähren Sie „%1s\" den Zugriff auf folgende Daten von Ihrem Ausweis:</string>
     <string name="identification_attributeConsent_pinButton">Persönliche PIN eingeben</string>
+    <string name="idCardAttribute_DG01">Dokumentenart</string>
+    <string name="idCardAttribute_DG02">Ausstellende Behörde</string>
+    <string name="idCardAttribute_DG03">Ablaufdatum</string>
+    <string name="idCardAttribute_DG04">Vornamen</string>
+    <string name="idCardAttribute_DG05">Nachnamen</string>
+    <string name="idCardAttribute_DG06">Nom de Plume</string>
+    <string name="idCardAttribute_DG07">Akademische Titel</string>
+    <string name="idCardAttribute_DG08">Geburtsdatum</string>
+    <string name="idCardAttribute_DG09">Geburtsort</string>
+    <string name="idCardAttribute_DG10">Nationalität</string>
+    <string name="idCardAttribute_DG13">Geburtsname</string>
+    <string name="idCardAttribute_DG17">Anschrift</string>
+    <string name="idCardAttribute_DG19">Residence Permit I</string>
+    <string name="idCardAttribute_restrictedIdentification">Restricted Identification</string>
+    <string name="idCardAttribute_ageVerification">Altersverifikation</string>
 </resources>
