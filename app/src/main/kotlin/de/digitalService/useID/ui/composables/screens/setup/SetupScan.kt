@@ -170,10 +170,11 @@ interface SetupScanViewModelInterface {
         val titleResID: Int
             get() {
                 return when (this) {
-                    PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
-                    PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
-                    IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
+                    is PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
+                    is PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
+                    is IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
                     is Other -> R.string.firstTimeUser_scan_error_title_unknown
+                    else -> throw IllegalArgumentException()
                 }
             }
 
@@ -182,6 +183,7 @@ interface SetupScanViewModelInterface {
                 return when (this) {
                     PINSuspended, PINBlocked, IDDeactivated -> R.string.firstTimeUser_scan_error_text_feature_unavailable
                     is Other -> R.string.firstTimeUser_scan_error_text_unknown
+                    else -> throw IllegalArgumentException()
                 }
             }
     }
@@ -286,7 +288,7 @@ class SetupScanViewModel @Inject constructor(
                                 return@collect
                             }
                             cancel()
-                        }
+                         }
                     }
                     is EIDInteractionEvent.RequestCANAndChangedPIN -> {
                         errorState =

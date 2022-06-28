@@ -17,6 +17,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -71,6 +72,7 @@ fun PINEntryField(
                 .align(Alignment.Center)
                 .fillMaxWidth()
                 .focusRequester(focusRequester)
+                .testTag("PINEntryField")
         )
         Surface(
             shape = MaterialTheme.shapes.small,

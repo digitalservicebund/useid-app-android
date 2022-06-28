@@ -1,5 +1,6 @@
 package de.digitalService.useID
 
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.*
@@ -9,9 +10,9 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.UseIDApp
-import de.digitalService.useID.ui.composables.screens.Screen
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
+import de.digitalService.useID.ui.composables.screens.destinations.SetupFinishDestination
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -23,10 +24,10 @@ import javax.inject.Inject
 @HiltAndroidTest
 class UiTestSetup {
 
-    @get:Rule
+    @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
@@ -42,16 +43,16 @@ class UiTestSetup {
 
     @Test
     fun test() {
-        var testErrorState: MutableState<SetupScanViewModelInterface.Error?> = mutableStateOf(null)
-        var testAttempts = mutableStateOf(3)
+        val testErrorState: MutableState<SetupScanViewModelInterface.Error?> = mutableStateOf(null)
+        val testAttempts = mutableStateOf(3)
 
         every { mockSetupScanViewModel.errorState } answers { testErrorState.value }
         every { mockSetupScanViewModel.attempts } answers { testAttempts.value }
         every { mockSetupScanViewModel.onReEnteredTransportPIN(any(), any()) } answers {
-            appCoordinator.navigate(Screen.SetupFinish.parameterizedRoute())
+            appCoordinator.navigate(SetupFinishDestination)
         }
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             UseIDApp(appCoordinator)
         }
 

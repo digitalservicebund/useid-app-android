@@ -1,5 +1,6 @@
 package de.digitalService.useID
 
+import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -33,7 +34,7 @@ class SetupScanTest {
         every { mockViewModel.errorState } returns testErrorState
         every { mockViewModel.attempts } returns testAttempts
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
         }
 
@@ -58,7 +59,7 @@ class SetupScanTest {
         every { mockViewModel.errorState } returns null
         every { mockViewModel.attempts } returns testAttempts
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
         }
 
@@ -76,7 +77,7 @@ class SetupScanTest {
         every { mockViewModel.errorState } returns null
         every { mockViewModel.attempts } returns testAttempts
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
         }
 
@@ -98,7 +99,7 @@ class SetupScanTest {
         every { mockViewModel.errorState } returns testErrorState
         every { mockViewModel.attempts } returns testAttempts
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
         }
 

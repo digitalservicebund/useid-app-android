@@ -1,5 +1,6 @@
 package de.digitalService.useID
 
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -16,11 +17,11 @@ import org.junit.Test
 @HiltAndroidTest
 class SetupPersonalPINTest {
 
-    @get:Rule
-    var hiltRule = HiltAndroidRule(this)
-
-    @get:Rule
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
 
     @Test
     fun correctUsage() {
@@ -43,7 +44,7 @@ class SetupPersonalPINTest {
         every { mockViewModel.pin2 } answers { testPin2State.value }
         every { mockViewModel.focus } answers { testFocusPinState.value }
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             SetupPersonalPIN(viewModel = mockViewModel)
         }
 

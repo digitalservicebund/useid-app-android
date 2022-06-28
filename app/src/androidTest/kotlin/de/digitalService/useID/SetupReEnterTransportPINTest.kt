@@ -1,5 +1,6 @@
 package de.digitalService.useID
 
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -29,7 +30,7 @@ class SetupReEnterTransportPINTest {
         val mockViewModel: SetupReEnterTransportPINViewModelInterface = mockk(relaxed = true)
         every { mockViewModel.attempts } returns testAttempts
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             SetupReEnterTransportPIN(viewModel = mockViewModel)
         }
 
@@ -65,7 +66,7 @@ class SetupReEnterTransportPINTest {
         every { mockViewModel.attempts } returns testAttempts
         every { mockViewModel.transportPIN } answers { testTransportPin.value }
 
-        composeTestRule.setContent {
+        composeTestRule.activity.setContent {
             SetupReEnterTransportPIN(viewModel = mockViewModel)
         }
 
