@@ -16,10 +16,10 @@ import org.junit.jupiter.params.provider.ValueSource
 @ExtendWith(MockKExtension::class)
 class SetupPersonalPINViewModelTest {
 
-    @MockK(relaxed = true)
+    @MockK(relaxUnitFun = true)
     lateinit var coordinatorMock: SetupCoordinator
 
-    @MockK(relaxed = true)
+    @MockK(relaxUnitFun = true)
     lateinit var secureStorageManagerMock: SecureStorageManager
 
     val defaultValue = ""

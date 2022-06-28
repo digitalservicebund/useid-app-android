@@ -12,10 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 class SetupTransportPINViewModelTest {
 
-    @MockK(relaxed = true)
+    @MockK(relaxUnitFun = true)
     lateinit var coordinatorMock: SetupCoordinator
 
-    @MockK(relaxed = true)
+    @MockK(relaxUnitFun = true)
     lateinit var secureStorageManagerMock: SecureStorageManager
 
     private val defaultPin = ""

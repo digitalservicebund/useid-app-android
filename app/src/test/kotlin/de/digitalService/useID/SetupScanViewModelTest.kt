@@ -23,16 +23,16 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
 class SetupScanViewModelTest {
-    @MockK(relaxed = true)
+    @MockK(relaxUnitFun = true)
     lateinit var coordinatorMock: SetupCoordinator
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var secureStorageManagerMock: SecureStorageManager
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var idCardManagerMock: IDCardManager
 
-    @MockK
+    @MockK(relaxUnitFun = true)
     lateinit var contextMock: Context
 
     @OptIn(ExperimentalCoroutinesApi::class)
