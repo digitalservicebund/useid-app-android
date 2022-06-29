@@ -40,7 +40,11 @@
     <string name="identification_fetchMetadata_pleaseWait">Einen Moment bitte…</string>
     <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
     <string name="identification_attributeConsent_body">Mit Eingabe Ihrer persönlichen PIN gewähren Sie „%1s\" den Zugriff auf folgende Daten von Ihrem Ausweis:</string>
+    <string name="identification_attributeConsent_button_additionalInformation">Weitere Informationen</string>
     <string name="identification_attributeConsent_pinButton">Persönliche PIN eingeben</string>
+    <string name="identification_attributeConsent_info_provider_info">Anbieterinformationen</string>
+    <string name="identification_attributeConsent_info_provider">Anbieter</string>
+    <string name="identification_attributeConsent_info_issuer">Aussteller des Berechtigungszertifikats</string>
     <string name="idCardAttribute_DG01">Dokumentenart</string>
     <string name="idCardAttribute_DG02">Ausstellende Behörde</string>
     <string name="idCardAttribute_DG03">Ablaufdatum</string>

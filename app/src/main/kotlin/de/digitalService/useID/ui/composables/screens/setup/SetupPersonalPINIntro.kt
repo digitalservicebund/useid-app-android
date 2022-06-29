@@ -16,7 +16,7 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = hiltViewModel<SetupPersonalPINIntroViewModel>()) {
-    StandardScreen(
+    StandardStaticComposition(
         title = stringResource(id = R.string.firstTimeUser_personalPINIntro_title),
         body = stringResource(id = R.string.firstTimeUser_personalPINIntro_body),
         imageID = R.drawable.eids,

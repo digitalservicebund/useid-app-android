@@ -18,7 +18,7 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntroViewModel>()) {
-    StandardScreen(
+    StandardStaticComposition(
         title = stringResource(id = R.string.firstTimeUser_intro_title),
         body = stringResource(id = R.string.firstTimeUser_intro_body),
         imageID = R.drawable.eids,

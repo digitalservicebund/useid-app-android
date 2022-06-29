@@ -1,7 +1,8 @@
 package de.digitalService.useID.ui.composables.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,7 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.digitalService.useID.ui.composables.BundButton
+import de.digitalService.useID.ui.composables.RegularBundButton
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -21,21 +22,23 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 40.dp, horizontal = 20.dp)
-    ) {
-        Text(
-            "success_title",
-            style = MaterialTheme.typography.titleLarge
-        )
-        Text(
-            "success_body",
-            style = MaterialTheme.typography.bodySmall
-        )
-        BundButton(type = ButtonType.PRIMARY, onClick = viewModel::onCloseButtonClicked, label = "Close")
+    StandardButtonScreen(primaryButton = BundButtonConfig(title = "Close", action = viewModel::onCloseButtonClicked)) {
+        Column(
+            verticalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 40.dp, horizontal = 20.dp)
+                .verticalScroll(rememberScrollState())
+        ) {
+            Text(
+                "success_title",
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                "success_body",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 

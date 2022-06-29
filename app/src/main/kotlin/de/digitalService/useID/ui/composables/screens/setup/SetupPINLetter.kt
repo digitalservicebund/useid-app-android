@@ -16,7 +16,7 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupPINLetter(viewModel: SetupPINLetterScreenViewModelInterface = hiltViewModel<SetupPINLetterViewModel>()) {
-    StandardScreen(
+    StandardStaticComposition(
         title = stringResource(id = R.string.firstTimeUser_pinLetter_title),
         body = stringResource(id = R.string.firstTimeUser_pinLetter_body),
         imageID = R.drawable.pin_brief,
