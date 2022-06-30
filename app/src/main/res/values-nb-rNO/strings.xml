@@ -33,7 +33,7 @@
     <string name="firstTimeUser_scan_error_text_unknown">En uventet feil inntraff. Ta en titt i loggføringen.</string>
     <string name="firstTimeUser_scan_error_button">OK</string>
     <string name="firstTimeUser_intro_title">Har du brukt din nettbaserte ID tidligere\?</string>
-    <string name="firstTimeUser_intro_body">Følgende dokumenter gjør bruk av funksjonen: Tysk identitetskort, elektronisk oppholdsbevis, eID-kort for EU-borgere.</string>
+    <string name="firstTimeUser_intro_body">Følgende dokumenter tilbyr funksjonen: Tysk identitetskort, elektronisk oppholdstillatelse, eID-kort for EU-borgere.</string>
     <string name="firstTimeUser_pinLetter_body">Du skal ha fått PIN-koden tilsendt etter å ha søkt om ID-kortet.</string>
     <string name="firstTimeUser_pinLetter_yes">Ja, jeg har PIN-koden klar</string>
     <string name="firstTimeUser_personalPINIntro_continue">Velg personlig PIN-kode</string>
