@@ -3,7 +3,7 @@
     <string name="firstTimeUser_intro_yes">Yes, I have already made use of it</string>
     <string name="firstTimeUser_intro_no">No, register an online ID now</string>
     <string name="firstTimeUser_pinLetter_title">Du you have you PIN-letter handy\?</string>
-    <string name="firstTimeUser_intro_body">The following documents make use of the function: German personal ID-card, electronic permanent resident card, eID card for EU citizens.</string>
+    <string name="firstTimeUser_intro_body">The following documents offer this function: German personal ID-card, electronic permanent resident card, eID card for EU citizens.</string>
     <string name="firstTimeUser_pinLetter_body">You should have gotten a letter with a PIN-code when you requested the ID card.</string>
     <string name="firstTimeUser_pinLetter_yes">Yes, I have my PIN-letter</string>
     <string name="firstTimeUser_pinLetter_no">No, send me a new PIN-letter</string>
@@ -36,4 +36,5 @@
     <string name="firstTimeUser_scan_error_text_feature_unavailable">This function isn\'t supportet at the moment. Please use AusweisApp2 instead.</string>
     <string name="firstTimeUser_scan_error_text_unknown">En unexpected error occurred. Please have a look in the logs to find out why.</string>
     <string name="firstTimeUser_scan_error_button">OK</string>
+    <string name="firstTimeUser_transportPIN_title">Type in your five-digit transport PIN found in your PIN letter</string>
 </resources>
