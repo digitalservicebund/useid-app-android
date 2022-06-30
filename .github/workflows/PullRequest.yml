@@ -19,7 +19,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run Android linter and ktlint
-        run: bundle exec fastlane lint strict:true
+        run: bundle exec fastlane lint
       - name: Upload lint report
         if: failure()
         uses: actions/upload-artifact@v2

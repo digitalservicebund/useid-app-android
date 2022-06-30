@@ -1,6 +1,5 @@
 package de.digitalService.useID.ui.composables.screens.identification
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -15,26 +14,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.digitalService.useID.ui.theme.UseIDTheme
 import de.digitalService.useID.R
-import de.digitalService.useID.getLogger
-import de.digitalService.useID.idCardInterface.EIDInteractionEvent
-import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import javax.annotation.Nullable
+import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
 @Destination
 @Composable
 fun IdentificationFetchMetadata(modifier: Modifier = Modifier, viewModel: IdentificationFetchMetadataViewModelInterface = hiltViewModel<IdentificationFetchMetadataViewModel>()) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = modifier
-        .padding(20.dp)
-        .fillMaxSize()) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .padding(20.dp)
+            .fillMaxSize()
+    ) {
         Spacer(modifier = Modifier.weight(.5f))
         Box {
             CircularProgressIndicator(
@@ -80,7 +75,7 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     }
 }
 
-class PreviewIdentificationFetchMetadataViewModel: IdentificationFetchMetadataViewModelInterface {
+class PreviewIdentificationFetchMetadataViewModel : IdentificationFetchMetadataViewModelInterface {
     override fun fetchMetadata() { }
 }
 

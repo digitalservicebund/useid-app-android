@@ -126,7 +126,7 @@ class IdentificationPersonalPINViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator,
     private val secureStorageManager: SecureStorageManagerInterface,
     savedStateHandle: SavedStateHandle
-): ViewModel(), IdentificationPersonalPINViewModelInterface {
+) : ViewModel(), IdentificationPersonalPINViewModelInterface {
     override var pin by mutableStateOf("")
         private set
 
@@ -152,7 +152,9 @@ class IdentificationPersonalPINViewModel @Inject constructor(
 }
 
 class PreviewIdentificationPersonalPINViewModel(
-    override val pin: String, override val attempts: Int?, override val shouldShowError: Boolean
+    override val pin: String,
+    override val attempts: Int?,
+    override val shouldShowError: Boolean
 ) : IdentificationPersonalPINViewModelInterface {
     override fun userInputPIN(value: String) { }
     override fun onDone() { }

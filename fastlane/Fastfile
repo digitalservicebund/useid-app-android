@@ -8,15 +8,8 @@ platform :android do
   end
 
   desc "Run Android linter and ktlint"
-  lane :lint do |options|
-    lint_result = gradle(tasks: ["clean", "lintKotlinMain"])
-
-
-    if options[:strict] && (lint_result.include? "report") then
-      UI.user_error!("The linter reported one or more issues.")
-    end
-
-    gradle(tasks: ["clean", "lintDeviceDebug", "lintEmulatorDebug"])
+  lane :lint do
+    gradle(tasks: ["clean", "lintKotlinMain", "lintDeviceDebug", "lintEmulatorDebug"])
   end
 
   desc "Update version name and bump version code"

@@ -25,6 +25,9 @@ android {
         }
     }
 
+    lintOptions {
+        textReport true
+    }
     testOptions {
         packagingOptions {
             jniLibs {

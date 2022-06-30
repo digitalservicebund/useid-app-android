@@ -288,7 +288,7 @@ class SetupScanViewModel @Inject constructor(
                                 return@collect
                             }
                             cancel()
-                         }
+                        }
                     }
                     is EIDInteractionEvent.RequestCANAndChangedPIN -> {
                         errorState =

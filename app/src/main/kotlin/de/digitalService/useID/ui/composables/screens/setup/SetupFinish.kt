@@ -13,8 +13,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.digitalService.useID.ui.composables.RegularBundButton
-import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
@@ -47,13 +45,13 @@ interface SetupFinishViewModelInterface {
 }
 
 @HiltViewModel
-class SetupFinishViewModel @Inject constructor(private val coordinator: SetupCoordinator): ViewModel(), SetupFinishViewModelInterface {
+class SetupFinishViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel(), SetupFinishViewModelInterface {
     override fun onCloseButtonClicked() {
         coordinator.onSetupFinished()
     }
 }
 
-class PreviewSetupFinishViewModel: SetupFinishViewModelInterface {
+class PreviewSetupFinishViewModel : SetupFinishViewModelInterface {
     override fun onCloseButtonClicked() { }
 }
 

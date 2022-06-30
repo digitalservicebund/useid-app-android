@@ -1,11 +1,8 @@
 package de.digitalService.useID.ui
 
-import android.util.Log
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
-import de.digitalService.useID.getLogger
-import de.digitalService.useID.ui.composables.screens.destinations.Destination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
 import de.digitalService.useID.ui.composables.screens.destinations.SetupPINLetterDestination

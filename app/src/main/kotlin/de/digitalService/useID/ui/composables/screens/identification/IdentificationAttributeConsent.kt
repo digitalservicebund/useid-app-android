@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,9 +15,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,16 +31,12 @@ import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.composables.BundButton
-import de.digitalService.useID.ui.composables.RegularBundButton
 import de.digitalService.useID.ui.composables.ButtonType
+import de.digitalService.useID.ui.composables.RegularBundButton
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
-import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPIN
-import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPINViewModel
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
-import kotlinx.coroutines.delay
-import org.openecard.bouncycastle.math.raw.Mod
 import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -138,7 +131,8 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
             },
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp),
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier
                     .padding(top = topPadding, start = 20.dp, end = 20.dp)
                     .verticalScroll(
@@ -298,7 +292,7 @@ private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean):
             R.string.idCardAttribute_DG02,
             R.string.idCardAttribute_DG03,
             R.string.idCardAttribute_DG04,
-            R.string.idCardAttribute_DG05,
+            R.string.idCardAttribute_DG05
         ),
         shouldShowInfoDialog = infoDialog,
         infoDialogContent = ProviderInfoDialogContent(

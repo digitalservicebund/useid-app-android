@@ -14,7 +14,7 @@ fun PINDigitRow(input: String, digitCount: Int, obfuscation: Boolean, placeholde
     Row(horizontalArrangement = Arrangement.SpaceAround, modifier = modifier) {
         for (position in 1..digitCount) {
             val char = input.toCharArray().getOrNull(position - 1)
-            PINDigitField(input = char, obfuscation = obfuscation,  placeholder = placeholder)
+            PINDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
             spacerPosition?.let {
                 if (spacerPosition == position) {
                     Spacer(modifier = Modifier.width(8.dp))
