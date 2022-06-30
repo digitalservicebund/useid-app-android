@@ -3,7 +3,7 @@
     <string name="firstTimeUser_intro_yes">Yes, I have already made use of it</string>
     <string name="firstTimeUser_intro_no">No, register an online ID now</string>
     <string name="firstTimeUser_pinLetter_title">Du you have you PIN-letter handy\?</string>
-    <string name="firstTimeUser_intro_body">The following documents offer this function: German personal ID-card, electronic permanent resident card, eID card for EU citizens.</string>
+    <string name="firstTimeUser_intro_body">The following documents offer this function: German identity card, electronic permanent resident card, eID card for EU citizens</string>
     <string name="firstTimeUser_pinLetter_body">You should have gotten a letter with a PIN-code when you requested the ID card.</string>
     <string name="firstTimeUser_pinLetter_yes">Yes, I have my PIN-letter</string>
     <string name="firstTimeUser_pinLetter_no">No, send me a new PIN-letter</string>
@@ -15,7 +15,7 @@
     <string name="firstTimeUser_personalPINIntro_title">Pick a personal PIN for your ID-card</string>
     <string name="firstTimeUser_personalPINIntro_continue">Pick a personal PIN</string>
     <string name="firstTimeUser_personalPIN_confirmation">Repeat your personal PIN to confirm.</string>
-    <string name="firstTimeUser_personalPIN_error_mismatch_title">Mismatching PIN codes.</string>
+    <string name="firstTimeUser_personalPIN_error_mismatch_title">Mismatching PIN codes</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Try again.</string>
     <string name="firstTimeUser_personalPIN_PIN1TextFieldDescription">Input field for PIN</string>
     <string name="firstTimeUser_personalPIN_PIN2TextFieldDescription">Input field for repeating the PIN</string>
@@ -30,8 +30,8 @@
     <string name="firstTimeUser_transportPIN_switchToPersonalPIN">Click here if your PIN has six digits</string>
     <string name="firstTimeUser_transportPIN_error_tryAgain">Try agian.</string>
     <string name="firstTimeUser_personalPINIntro_body">This six-digit personal PIN is needed every time you use you use your ID online.</string>
-    <string name="firstTimeUser_personalPIN_title">Pick a personal PIN for your ID-card.</string>
-    <string name="firstTimeUser_scan_title">Place your ID card on the backside of your smartphone — almost done.</string>
+    <string name="firstTimeUser_personalPIN_title">Pick a PIN for your ID card</string>
+    <string name="firstTimeUser_scan_title">Place your ID card on the backside of your smartphone – almost done!</string>
     <string name="firstTimeUser_scan_error_title_unknown">Error</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">This function isn\'t supportet at the moment. Please use AusweisApp2 instead.</string>
     <string name="firstTimeUser_scan_error_text_unknown">En unexpected error occurred. Please have a look in the logs to find out why.</string>
