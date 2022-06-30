@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <plurals name="firstTimeUser_transportPIN_remainingAttempts">
+        <item quantity="one">This is your last attempt</item>
+        <item quantity="other">You have %d attempts left</item>
+    </plurals>
+</resources>
