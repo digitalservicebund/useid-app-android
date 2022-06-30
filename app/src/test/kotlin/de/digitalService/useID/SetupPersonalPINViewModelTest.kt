@@ -3,10 +3,15 @@ package de.digitalService.useID
 import de.digitalService.useID.ui.composables.screens.SetupPersonalPINViewModel
 import de.digitalService.useID.ui.composables.screens.SetupPersonalPINViewModelInterface
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockkStatic
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -23,6 +28,13 @@ class SetupPersonalPINViewModelTest {
     lateinit var secureStorageManagerMock: SecureStorageManager
 
     val defaultValue = ""
+
+    @BeforeEach
+    fun setUp() {
+        mockkStatic(android.text.TextUtils::class)
+        val slot = slot<String>()
+        every { android.text.TextUtils.isDigitsOnly(capture(slot)) } answers { Regex("[0-9]*").matches(slot.captured) }
+    }
 
     @Nested
     inner class UserInputPIN1 {
@@ -96,7 +108,7 @@ class SetupPersonalPINViewModelTest {
 
             viewModel.userInputPIN1(testValue)
 
-            assertEquals(testValue, viewModel.pin1)
+            assertEquals("", viewModel.pin1)
             assertFalse(viewModel.shouldShowPIN2EntryField)
             assertEquals(SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1, viewModel.focus)
         }
@@ -116,7 +128,7 @@ class SetupPersonalPINViewModelTest {
 
             viewModel.userInputPIN1(testValue)
 
-            assertEquals(testValue, viewModel.pin1)
+            assertEquals("", viewModel.pin1)
             assertFalse(viewModel.shouldShowPIN2EntryField)
             assertEquals(SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1, viewModel.focus)
         }
@@ -201,8 +213,8 @@ class SetupPersonalPINViewModelTest {
             viewModel.userInputPIN1(testValue)
             viewModel.userInputPIN2(testValue)
 
-            assertEquals(testValue, viewModel.pin1)
-            assertEquals(testValue, viewModel.pin2)
+            assertEquals("", viewModel.pin1)
+            assertEquals("", viewModel.pin2)
 
             verify(exactly = 0) { secureStorageManagerMock.setPersonalPIN(testValue) }
             verify(exactly = 0) { coordinatorMock.onPersonalPINEntered() }
@@ -223,8 +235,8 @@ class SetupPersonalPINViewModelTest {
             viewModel.userInputPIN1(testValue)
             viewModel.userInputPIN2(testValue)
 
-            assertEquals(testValue, viewModel.pin1)
-            assertEquals(testValue, viewModel.pin2)
+            assertEquals("", viewModel.pin1)
+            assertEquals("", viewModel.pin2)
 
             verify(exactly = 0) { secureStorageManagerMock.setPersonalPIN(testValue) }
             verify(exactly = 0) { coordinatorMock.onPersonalPINEntered() }
@@ -233,7 +245,7 @@ class SetupPersonalPINViewModelTest {
         @Test
         fun notEqual() {
             val testValue1 = "123456"
-            val testValue2 = "1234567"
+            val testValue2 = "123450"
 
             val viewModel = SetupPersonalPINViewModel(
                 coordinatorMock,
@@ -244,9 +256,12 @@ class SetupPersonalPINViewModelTest {
             assertEquals(SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1, viewModel.focus)
 
             viewModel.userInputPIN1(testValue1)
-            viewModel.userInputPIN2(testValue2)
 
             assertEquals(SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_2, viewModel.focus)
+
+            viewModel.userInputPIN2(testValue2)
+
+            assertEquals(SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1, viewModel.focus)
             assertTrue(viewModel.shouldShowError)
 
             assertEquals(defaultValue, viewModel.pin1)

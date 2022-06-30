@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -156,10 +157,12 @@ class SetupPersonalPINViewModel @Inject constructor(private val coordinator: Set
         private set
 
     override fun userInputPIN1(value: String) {
+        if (!checkPINString(value)) return
+
         pin1 = value
         shouldShowError = false
 
-        val pinComplete = pin1.length >= 6
+        val pinComplete = pin1.length == 6
 
         shouldShowPIN2EntryField = pinComplete || pin2.isNotEmpty()
 
@@ -168,9 +171,13 @@ class SetupPersonalPINViewModel @Inject constructor(private val coordinator: Set
         }
     }
 
+    private fun checkPINString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
+
     override fun userInputPIN2(value: String) {
+        if (!checkPINString(value)) return
+
         pin2 = value
-        if (pin2.length > 5) {
+        if (pin2.length == 6) {
             handlePINInput()
         }
     }
