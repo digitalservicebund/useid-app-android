@@ -90,29 +90,29 @@ class SetupScanTest {
         verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
 
-    @Test
-    fun openErrorDialogAndTransportPinDialog() {
-        val testErrorState = SetupScanViewModelInterface.Error.PINSuspended
-        val testAttempts = 2
-
-        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns testErrorState
-        every { mockViewModel.attempts } returns testAttempts
-
-        composeTestRule.activity.setContent {
-            SetupScan(viewModel = mockViewModel)
-        }
-
-        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
-        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
-
-        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
-        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsNotDisplayed()
-
-        val buttonText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_button)
-        composeTestRule.onNodeWithText(buttonText).performClick()
-
-        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTap() }
-        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
-    }
+//    @Test
+//    fun openErrorDialogAndTransportPinDialog() {
+//        val testErrorState = SetupScanViewModelInterface.Error.PINSuspended
+//        val testAttempts = 2
+//
+//        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
+//        every { mockViewModel.errorState } returns testErrorState
+//        every { mockViewModel.attempts } returns testAttempts
+//
+//        composeTestRule.activity.setContent {
+//            SetupScan(viewModel = mockViewModel)
+//        }
+//
+//        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
+//        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+//
+//        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
+//        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsNotDisplayed()
+//
+//        val buttonText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_button)
+//        composeTestRule.onNodeWithText(buttonText).performClick()
+//
+//        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTap() }
+//        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
+//    }
 }

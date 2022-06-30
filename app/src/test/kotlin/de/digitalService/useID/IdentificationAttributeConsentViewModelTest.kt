@@ -1,6 +1,7 @@
 package de.digitalService.useID
 
 import androidx.lifecycle.SavedStateHandle
+import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
@@ -47,6 +48,7 @@ class IdentificationAttributeConsentViewModelTest {
 
         every { mockRequest.subject } returns testIdentificationProvider
         every { mockRequest.readAttributes } returns testIdAttributes
+        every { mockRequest.terms } returns AuthenticationTerms.Text("termsText")
 
         val viewModel = IdentificationAttributeConsentViewModel(
             mockIdentificationCoordinator,
