@@ -1,2 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="firstTimeUser_scan_body">Slik knytter du din personlige PIN til ID-beviset ditt.</string>
+    <string name="firstTimeUser_intro_yes">Ja, jeg har allerede brukt den</string>
+    <string name="firstTimeUser_intro_no">Nei, registrer nettbasert ID nå</string>
+    <string name="firstTimeUser_pinLetter_title">Har du fortsatt PIN-koden din\?</string>
+    <string name="firstTimeUser_pinLetter_no">Nei, bestill nytt PIN-brev</string>
+    <string name="navigation_back">Tilbake</string>
+    <string name="navigation_cancel">Avbryt</string>
+    <string name="firstTimeUser_transportPIN_title">Skriv inn den 5-sifrede transport-PIN-koden fra PIN-brevet</string>
+    <string name="firstTimeUser_transportPIN_error">Feil transport-PIN</string>
+    <string name="firstTimeUser_transportPIN_tryAgain">Prøv igjen.</string>
+    <string name="firstTimeUser_transportPIN_switchToPersonalPIN">Klikk her hvis PIN-koden din har seks sifre</string>
+    <string name="firstTimeUser_transportPIN_PINTextFieldDescription">Inndatafelt for transport-PIN</string>
+    <string name="firstTimeUser_transportPIN_error_incorrectPIN">Feil transport-PIN</string>
+    <string name="firstTimeUser_transportPIN_error_tryAgain">Prøv igjen.</string>
+    <string name="firstTimeUser_transportPIN_error_noAttemptLeft">Du har ikke flere forsøk igjen.</string>
+    <string name="firstTimeUser_personalPINIntro_title">Velg din personlige PIN for ditt ID-kort</string>
+    <string name="firstTimeUser_personalPINIntro_body">Denne 6-sifrede personlige PIN-koden brukes hver gang du bruker ID-en din på nettet.</string>
+    <string name="firstTimeUser_personalPIN_title">Velg en personlig PIN-kode for ditt ID-bevis</string>
+    <string name="firstTimeUser_personalPIN_confirmation">Skriv inn din personlige PIN-kode igjen for å bekrefte.</string>
+    <string name="firstTimeUser_personalPIN_error_mismatch_title">De to PIN-kodene samsvarer ikke</string>
+    <string name="firstTimeUser_personalPIN_error_mismatch_body">Prøv igjen.</string>
+    <string name="firstTimeUser_personalPIN_PIN1TextFieldDescription">Inndatafelt for PIN-kode</string>
+    <string name="firstTimeUser_personalPIN_PIN2TextFieldDescription">Inndatafelt for gjentagelse av PIN</string>
+    <string name="firstTimeUser_scan_title">Plasser ID-beviset ditt på baksiden av smarttelefonen din. Nesten ferdig nå.</string>
+    <string name="firstTimeUser_scan_helpButton">ID-en min gjenkjennes ikke</string>
+    <string name="firstTimeUser_scan_error_title_pin_suspended">PIN-koden er suspendert</string>
+    <string name="firstTimeUser_scan_error_title_pin_blocked">PIN-koden er blokkert</string>
+    <string name="firstTimeUser_scan_error_title_id_deactivated">Den nettbaserte ID-bevisfunksjonen er avslått</string>
+    <string name="firstTimeUser_scan_error_title_unknown">Feil</string>
+    <string name="firstTimeUser_scan_error_text_feature_unavailable">Denne funksjonen støttes ikke for øyeblikket. Bruk AusweisApp2 istedenfor.</string>
+    <string name="firstTimeUser_scan_error_text_unknown">En uventet feil inntraff. Ta en titt i loggføringen.</string>
+    <string name="firstTimeUser_scan_error_button">OK</string>
+    <string name="firstTimeUser_intro_title">Har du brukt din nettbaserte ID tidligere\?</string>
+    <string name="firstTimeUser_intro_body">Følgende dokumenter gjør bruk av funksjonen: Tysk identitetskort, elektronisk oppholdsbevis, eID-kort for EU-borgere.</string>
+    <string name="firstTimeUser_pinLetter_body">Du skal ha fått PIN-koden tilsendt etter å ha søkt om ID-kortet.</string>
+    <string name="firstTimeUser_pinLetter_yes">Ja, jeg har PIN-koden klar</string>
+    <string name="firstTimeUser_personalPINIntro_continue">Velg personlig PIN-kode</string>
+</resources>
