@@ -14,6 +14,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -124,7 +125,6 @@ data class IdentificationPersonalPINNavArgs(
 @HiltViewModel
 class IdentificationPersonalPINViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator,
-    private val secureStorageManager: SecureStorageManagerInterface,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), IdentificationPersonalPINViewModelInterface {
     override var pin by mutableStateOf("")
@@ -141,14 +141,19 @@ class IdentificationPersonalPINViewModel @Inject constructor(
     }
 
     override fun userInputPIN(value: String) {
+        if (!checkPINString(value)) return
+
         pin = value
         shouldShowError = false
     }
 
     override fun onDone() {
-        secureStorageManager.setPersonalPIN(pin)
-        coordinator.onPINEntered()
+        if (pin.length == 6) {
+            coordinator.onPINEntered(pin)
+        }
     }
+
+    private fun checkPINString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
 }
 
 class PreviewIdentificationPersonalPINViewModel(

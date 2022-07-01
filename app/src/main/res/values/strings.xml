@@ -64,4 +64,9 @@
     <string name="identification_personalPIN_error_incorrectPIN">Inkorrekte persönliche PIN</string>
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
+    <string name="identification_scan_body">So kann die Bürger:in-App überprüfen, ob die von Ihnen eingegebene persönliche PIN korrekt ist.</string>
+    <string name="identification_scan_title">Legen Sie Ihren Ausweis dicht an die Rückseite Ihres Smartphones</string>
+    <string name="identification_success_button">Schließen</string>
+    <string name="identification_success_title">Sie haben sich erfolgreich ausgewiesen</string>
+    <string name="identification_success_body">Machen Sie weiter bei %1s.</string>
 </resources>

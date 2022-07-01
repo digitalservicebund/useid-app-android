@@ -1,22 +1,28 @@
 package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
+import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
-import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
+enum class ScanEvent {
+    CardRequested, CardAttached, Finished
+}
+
+@Singleton
 class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     val appCoordinator: AppCoordinator,
@@ -24,7 +30,12 @@ class IdentificationCoordinator @Inject constructor(
 ) {
     private val logger by getLogger()
 
+    private val _scanEventFlow: MutableStateFlow<ScanEvent> = MutableStateFlow(ScanEvent.CardRequested)
+    val scanEventFlow: StateFlow<ScanEvent>
+        get() = _scanEventFlow
+
     private var requestAuthenticationEvent: EIDInteractionEvent.RequestAuthenticationRequestConfirmation? = null
+    private var pinCallback: ((String) -> Unit)? = null
 
     fun startIdentificationProcess() {
         startIdentification()
@@ -40,8 +51,13 @@ class IdentificationCoordinator @Inject constructor(
         requestAuthenticationEvent.confirmationCallback(requiredAttributes)
     }
 
-    fun onPINEntered() {
-        // TODO: Implement
+    fun onPINEntered(pin: String) {
+        val pinCallback = pinCallback ?: run {
+            logger.error("Cannot process PIN because there isn't any pin callback saved.")
+            return
+        }
+        pinCallback(pin)
+        this.pinCallback = null
     }
 
     private fun startIdentification() {
@@ -63,16 +79,40 @@ class IdentificationCoordinator @Inject constructor(
 
                         requestAuthenticationEvent = event
 
-                        CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(IdentificationAttributeConsentDestination(event.request)) }
+                        navigateOnMain(IdentificationAttributeConsentDestination(event.request))
                     }
                     is EIDInteractionEvent.RequestPIN -> {
                         logger.debug("Requesting PIN")
 
-                        CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(IdentificationPersonalPINDestination(event.attempts, false)) }
+                        pinCallback = event.pinCallback
+
+                        navigateOnMain(IdentificationPersonalPINDestination(event.attempts, false))
+                    }
+                    EIDInteractionEvent.RequestCardInsertion -> {
+                        logger.debug("Requesting ID card")
+                        navigateOnMain(IdentificationScanDestination)
+                    }
+                    EIDInteractionEvent.CardRecognized -> {
+                        logger.debug("Card recognized")
+                        _scanEventFlow.emit(ScanEvent.CardAttached)
+                    }
+                    is EIDInteractionEvent.ProcessCompletedSuccessfully -> {
+                        logger.debug("Process completed successfully")
+                        _scanEventFlow.emit(ScanEvent.Finished)
+
+                        // Handle refresh address here ...
+
+                        requestAuthenticationEvent?.request?.subject?.let {
+                            navigateOnMain(IdentificationSuccessDestination(it))
+                        }
                     }
                     else -> logger.debug("Unhandled authentication event: $event")
                 }
             }
         }
+    }
+
+    private fun navigateOnMain(direction: Direction) {
+        CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(direction) }
     }
 }

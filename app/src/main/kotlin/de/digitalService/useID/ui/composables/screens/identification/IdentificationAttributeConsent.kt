@@ -56,10 +56,11 @@ fun IdentificationAttributeConsent(
             modifier = Modifier
                 .padding(20.dp)
         )
-    }) { paddingValues ->
+    }, modifier = modifier) { paddingValues ->
         Column(
             modifier = Modifier
                 .padding(bottom = paddingValues.calculateBottomPadding())
+                .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Text(

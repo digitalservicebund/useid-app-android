@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Singleton
 class IdentificationCoordinator @Inject constructor(private val appCoordinator: AppCoordinator) {
     private val logger by getLogger()
 
@@ -47,6 +48,6 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
     }
 
     fun onPINEntered() {
-
+        appCoordinator.navigate(IdentificationScanDestination)
     }
 }

@@ -9,7 +9,7 @@ sealed class EIDInteractionEvent {
     class RequestPIN(val attempts: Int?, val pinCallback: (String) -> Unit) : EIDInteractionEvent()
     class RequestPINAndCAN(val pinCANCallback: (pin: String, can: String) -> Unit) : EIDInteractionEvent()
     class RequestPUK(val pukCallback: (String) -> Unit) : EIDInteractionEvent()
-    object ProcessCompletedSuccessfully : EIDInteractionEvent()
+    class ProcessCompletedSuccessfully(val redirectURL: String) : EIDInteractionEvent()
 
     object AuthenticationStarted : EIDInteractionEvent()
     class RequestAuthenticationRequestConfirmation(val request: EIDAuthenticationRequest, val confirmationCallback: (Map<IDCardAttribute, Boolean>) -> Unit) : EIDInteractionEvent()
