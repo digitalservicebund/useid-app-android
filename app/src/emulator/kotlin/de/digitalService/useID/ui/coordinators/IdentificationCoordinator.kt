@@ -8,18 +8,31 @@ import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationPersonalPIN
+import de.digitalService.useID.ui.composables.screens.identification.IdentificationSuccess
+import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
 class IdentificationCoordinator @Inject constructor(private val appCoordinator: AppCoordinator) {
     private val logger by getLogger()
+
+    private val _scanEventFlow: MutableStateFlow<ScanEvent> = MutableStateFlow(ScanEvent.CardRequested)
+    val scanEventFlow: StateFlow<ScanEvent>
+        get() = _scanEventFlow
+
+    private val provider: String = "Provider"
 
     fun startIdentificationProcess() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -47,7 +60,11 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
         appCoordinator.navigate(IdentificationPersonalPINDestination(null, false))
     }
 
-    fun onPINEntered() {
+    fun onPINEntered(pin: String) {
         appCoordinator.navigate(IdentificationScanDestination)
+    }
+
+    fun onIDInteractionFinishedSuccessfully() {
+        appCoordinator.navigate(IdentificationSuccessDestination(provider))
     }
 }

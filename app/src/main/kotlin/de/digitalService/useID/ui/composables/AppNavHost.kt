@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.manualcomposablecalls.composable
 import de.digitalService.useID.ui.composables.screens.*
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
 import de.digitalService.useID.ui.composables.screens.destinations.SetupScanDestination
 import de.digitalService.useID.ui.composables.screens.identification.*
 
@@ -19,6 +20,10 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier = Modifier) 
     ) {
         composable(SetupScanDestination) {
             ConfigSpecificSetupScan()
+        }
+
+        composable(IdentificationScanDestination) {
+            ConfigSpecificIdentificationScan()
         }
     }
 }

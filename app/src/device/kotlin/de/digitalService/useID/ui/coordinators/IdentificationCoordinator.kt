@@ -11,16 +11,13 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
+import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
-
-enum class ScanEvent {
-    CardRequested, CardAttached, Finished
-}
 
 @Singleton
 class IdentificationCoordinator @Inject constructor(

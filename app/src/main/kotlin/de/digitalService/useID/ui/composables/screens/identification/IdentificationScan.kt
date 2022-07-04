@@ -22,7 +22,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.coordinators.ScanEvent
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -83,6 +82,10 @@ fun IdentificationScan(modifier: Modifier = Modifier, viewModel: IdentificationS
             }
         }
     }
+}
+
+enum class ScanEvent {
+    CardRequested, CardAttached, Finished
 }
 
 interface IdentificationScanViewModelInterface {

@@ -140,7 +140,6 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                         rememberScrollState()
                     )
             ) {
-                val distance = 10.dp
                 Text(content.subject, style = MaterialTheme.typography.titleLarge)
                 Text(
                     stringResource(id = R.string.identification_attributeConsent_info_provider_info),
