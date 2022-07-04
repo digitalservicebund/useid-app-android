@@ -57,7 +57,7 @@ fun SetupScan(modifier: Modifier = Modifier, viewModel: SetupScanViewModelInterf
     }
 
     AnimatedVisibility(
-        visible = viewModel.attempts < 3, //TODO: Both dialogs should not show at the same time
+        visible = viewModel.attempts < 3, // TODO: Both dialogs should not show at the same time
         enter = scaleIn(tween(200)),
         exit = scaleOut(tween(100))
     ) {
