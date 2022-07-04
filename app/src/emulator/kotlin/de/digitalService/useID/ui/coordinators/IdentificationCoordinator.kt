@@ -10,6 +10,7 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
+import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationPersonalPIN
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationSuccess
 import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
@@ -27,6 +28,10 @@ import javax.inject.Singleton
 @Singleton
 class IdentificationCoordinator @Inject constructor(private val appCoordinator: AppCoordinator) {
     private val logger by getLogger()
+
+    private val _fetchMetadataEventFlow: MutableStateFlow<FetchMetadataEvent> = MutableStateFlow(FetchMetadataEvent.Started)
+    val fetchMetadataEventFlow: StateFlow<FetchMetadataEvent>
+        get() = _fetchMetadataEventFlow
 
     private val _scanEventFlow: MutableStateFlow<ScanEvent> = MutableStateFlow(ScanEvent.CardRequested)
     val scanEventFlow: StateFlow<ScanEvent>
@@ -62,6 +67,9 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
 
     fun onPINEntered(pin: String) {
         appCoordinator.navigate(IdentificationScanDestination)
+    }
+
+    fun cancelIdentification() {
     }
 
     fun onIDInteractionFinishedSuccessfully() {

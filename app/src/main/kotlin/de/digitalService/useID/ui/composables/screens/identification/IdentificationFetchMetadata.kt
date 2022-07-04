@@ -1,29 +1,52 @@
 package de.digitalService.useID.ui.composables.screens.identification
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.composables.ScreenWithTopBar
+import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPIN
+import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPINViewModel
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalAnimationApi::class)
 @Destination
 @Composable
-fun IdentificationFetchMetadata(modifier: Modifier = Modifier, viewModel: IdentificationFetchMetadataViewModelInterface = hiltViewModel<IdentificationFetchMetadataViewModel>()) {
+fun IdentificationFetchMetadata(
+    modifier: Modifier = Modifier,
+    viewModel: IdentificationFetchMetadataViewModelInterface = hiltViewModel<IdentificationFetchMetadataViewModel>()
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -57,32 +80,126 @@ fun IdentificationFetchMetadata(modifier: Modifier = Modifier, viewModel: Identi
         }
     }
 
+    AnimatedVisibility(
+        visible = viewModel.shouldShowError,
+        enter = scaleIn(tween(200)),
+        exit = scaleOut(tween(100))
+    ) {
+        ConnectionErrorDialog(
+            onCancel = viewModel::onErrorCancel,
+            onRetry = viewModel::onErrorRetry
+        )
+    }
+
     LaunchedEffect(Unit) {
         viewModel.fetchMetadata()
     }
 }
 
+@Composable
+fun ConnectionErrorDialog(
+    onCancel: () -> Unit,
+    onRetry: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = { },
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    ) {
+        ScreenWithTopBar(
+            navigationIcon = {
+                IconButton(onClick = onCancel) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(id = R.string.navigation_cancel)
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxSize().padding(vertical = 20.dp)
+        ) { topPadding ->
+            IdentificationFetchMetadataError(
+                onRetry = onRetry,
+                modifier = Modifier.padding(top = topPadding, start = 20.dp, end = 20.dp)
+            )
+        }
+    }
+}
+
+enum class FetchMetadataEvent {
+    Started, Finished, Error
+}
+
 interface IdentificationFetchMetadataViewModelInterface {
+    val shouldShowProgressIndicator: Boolean
+    val shouldShowError: Boolean
+
     fun fetchMetadata()
+    fun onErrorCancel()
+    fun onErrorRetry()
 }
 
 @HiltViewModel
 class IdentificationFetchMetadataViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator
 ) : ViewModel(), IdentificationFetchMetadataViewModelInterface {
+    override var shouldShowProgressIndicator: Boolean by mutableStateOf(false)
+        private set
+
+    override var shouldShowError: Boolean by mutableStateOf(false)
+        private set
+
+    init {
+        collectFetchMetadataEvents()
+    }
+
     override fun fetchMetadata() {
         coordinator.startIdentificationProcess()
     }
+
+    override fun onErrorCancel() {
+        coordinator.cancelIdentification()
+    }
+
+    override fun onErrorRetry() {
+        coordinator.startIdentificationProcess()
+    }
+
+    private fun collectFetchMetadataEvents() {
+        viewModelScope.launch {
+            coordinator.fetchMetadataEventFlow.collect { event ->
+                when (event) {
+                    FetchMetadataEvent.Started -> {
+                        shouldShowProgressIndicator = true
+                        shouldShowError = false
+                    }
+                    FetchMetadataEvent.Finished -> shouldShowProgressIndicator = false
+                    FetchMetadataEvent.Error -> {
+                        shouldShowProgressIndicator = false
+                        shouldShowError = true
+                    }
+                }
+            }
+        }
+    }
 }
 
-class PreviewIdentificationFetchMetadataViewModel : IdentificationFetchMetadataViewModelInterface {
-    override fun fetchMetadata() { }
+class PreviewIdentificationFetchMetadataViewModel(
+    override val shouldShowProgressIndicator: Boolean,
+    override val shouldShowError: Boolean
+) : IdentificationFetchMetadataViewModelInterface {
+    override fun fetchMetadata() {}
+    override fun onErrorCancel() {}
+    override fun onErrorRetry() {}
 }
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewIdentificationFetchMetadata() {
     UseIDTheme {
-        IdentificationFetchMetadata(viewModel = PreviewIdentificationFetchMetadataViewModel())
+        IdentificationFetchMetadata(
+            viewModel = PreviewIdentificationFetchMetadataViewModel(
+                shouldShowProgressIndicator = true,
+                shouldShowError = false
+            )
+        )
     }
 }

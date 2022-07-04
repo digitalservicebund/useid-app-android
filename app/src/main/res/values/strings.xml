@@ -69,4 +69,7 @@
     <string name="identification_success_button">Schließen</string>
     <string name="identification_success_title">Sie haben sich erfolgreich ausgewiesen</string>
     <string name="identification_success_body">Machen Sie weiter bei %1s.</string>
+    <string name="identification_fetchMetadataError_title">Ein Fehler ist aufgetreten.</string>
+    <string name="identification_fetchMetadataError_body">Bitte versuchen Sie es noch einmal. Stellen Sie sicher, dass Sie eine gute Internetverbindung haben.</string>
+    <string name="identification_fetchMetadataError_button">Erneut versuchen</string>
 </resources>

@@ -11,6 +11,7 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
+import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,11 @@ class IdentificationCoordinator @Inject constructor(
     val idCardManager: IDCardManager
 ) {
     private val logger by getLogger()
+
+    private val _fetchMetadataEventFlow: MutableStateFlow<FetchMetadataEvent> = MutableStateFlow(
+        FetchMetadataEvent.Started)
+    val fetchMetadataEventFlow: StateFlow<FetchMetadataEvent>
+        get() = _fetchMetadataEventFlow
 
     private val _scanEventFlow: MutableStateFlow<ScanEvent> = MutableStateFlow(ScanEvent.CardRequested)
     val scanEventFlow: StateFlow<ScanEvent>
@@ -57,13 +63,21 @@ class IdentificationCoordinator @Inject constructor(
         this.pinCallback = null
     }
 
+    fun cancelIdentification() {
+        // TODO: Implement cancellation
+    }
+
     private fun startIdentification() {
         val demoURL =
             "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
 
         CoroutineScope(Dispatchers.IO).launch {
+            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
+
             idCardManager.identify(context, demoURL).catch {
                 logger.error("Error: $it")
+
+                _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
             }.collect { event ->
                 when (event) {
                     EIDInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started")
@@ -76,6 +90,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         requestAuthenticationEvent = event
 
+                        _fetchMetadataEventFlow.emit(FetchMetadataEvent.Finished)
                         navigateOnMain(IdentificationAttributeConsentDestination(event.request))
                     }
                     is EIDInteractionEvent.RequestPIN -> {
