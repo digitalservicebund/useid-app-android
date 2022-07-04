@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
@@ -17,22 +16,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.ui.composables.PINEntryField
-import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
-import javax.inject.Inject
 
-@Destination
 @Composable
-fun IdentificationPersonalPIN(
+fun IdentificationReEnterPersonalPIN(
     modifier: Modifier = Modifier,
-    viewModel: IdentificationPersonalPINViewModelInterface = hiltViewModel<IdentificationPersonalPINViewModel>()
+    viewModel: IdentificationReEnterPersonalPINViewModel
 ) {
     val pinEntryFieldDescription = stringResource(
         id = R.string.identification_personalPIN_PINTextFieldDescription,
@@ -47,9 +39,9 @@ fun IdentificationPersonalPIN(
     ) {
         Text(
             stringResource(id = R.string.identification_personalPIN_title),
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.align(Alignment.Start)
         )
-        Spacer(modifier = Modifier.weight(1f))
         PINEntryField(
             value = viewModel.pin,
             digitCount = 6,
@@ -58,13 +50,35 @@ fun IdentificationPersonalPIN(
             onValueChanged = viewModel::userInputPIN,
             contentDescription = pinEntryFieldDescription,
             focusRequester = focusRequester,
-            onDone = viewModel::onDone,
+            onDone = viewModel::onDoneTapped,
             modifier = Modifier
                 .padding(top = 50.dp)
                 .width(240.dp)
                 .height(56.dp)
         )
-        Spacer(modifier = Modifier.weight(1f))
+        Text(
+            stringResource(id = R.string.identification_personalPIN_error_incorrectPIN),
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+        Text(
+            stringResource(id = R.string.identification_personalPIN_error_tryAgain),
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
+        Text(
+            LocalContext.current.resources.getQuantityString(
+                R.plurals.identification_personalPIN_remainingAttempts,
+                viewModel.attempts,
+                viewModel.attempts
+            ),
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
     }
 
     LaunchedEffect(Unit) {
@@ -72,45 +86,29 @@ fun IdentificationPersonalPIN(
     }
 }
 
-interface IdentificationPersonalPINViewModelInterface {
-    val pin: String
-
-    fun userInputPIN(value: String)
-    fun onDone()
-}
-
-@HiltViewModel
-class IdentificationPersonalPINViewModel @Inject constructor(
-    private val coordinator: IdentificationCoordinator
-) : ViewModel(), IdentificationPersonalPINViewModelInterface {
-    override var pin by mutableStateOf("")
+class IdentificationReEnterPersonalPINViewModel(val attempts: Int, private val onDone: (String) -> Unit) {
+    var pin by mutableStateOf("")
         private set
 
-    override fun userInputPIN(value: String) {
+    fun userInputPIN(value: String) {
         if (!checkPINString(value)) return
+
         pin = value
     }
 
-    override fun onDone() {
+    fun onDoneTapped() {
         if (pin.length == 6) {
-            coordinator.onPINEntered(pin)
+            onDone(pin)
         }
     }
 
     private fun checkPINString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
 }
 
-class PreviewIdentificationPersonalPINViewModel(
-    override val pin: String,
-) : IdentificationPersonalPINViewModelInterface {
-    override fun userInputPIN(value: String) { }
-    override fun onDone() { }
-}
-
 @Preview
 @Composable
-fun PreviewIdentificationPersonalPIN() {
+fun PreviewIdentificationReEnterPersonalPIN() {
     UseIDTheme {
-        IdentificationPersonalPIN(viewModel = PreviewIdentificationPersonalPINViewModel("123"))
+        IdentificationReEnterPersonalPIN(viewModel = IdentificationReEnterPersonalPINViewModel(3, { }))
     }
 }

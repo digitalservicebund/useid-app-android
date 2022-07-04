@@ -12,6 +12,7 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
+import de.digitalService.useID.ui.composables.screens.identification.IdentificationPersonalPIN
 import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +40,8 @@ class IdentificationCoordinator @Inject constructor(
 
     private var requestAuthenticationEvent: EIDInteractionEvent.RequestAuthenticationRequestConfirmation? = null
     private var pinCallback: ((String) -> Unit)? = null
+
+    private var reachedScanState = false
 
     fun startIdentificationProcess() {
         startIdentification()
@@ -98,15 +101,22 @@ class IdentificationCoordinator @Inject constructor(
 
                         pinCallback = event.pinCallback
 
-                        navigateOnMain(IdentificationPersonalPINDestination(event.attempts, false))
+                        if (event.attempts == null) {
+                            navigateOnMain(IdentificationPersonalPINDestination)
+                        } else {
+                            _scanEventFlow.emit(ScanEvent.IncorrectPIN(attempts = event.attempts))
+                        }
                     }
                     EIDInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Requesting ID card")
-                        navigateOnMain(IdentificationScanDestination)
+                        if (!reachedScanState) {
+                            navigateOnMain(IdentificationScanDestination)
+                        }
                     }
                     EIDInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized")
                         _scanEventFlow.emit(ScanEvent.CardAttached)
+                        reachedScanState = true
                     }
                     is EIDInteractionEvent.ProcessCompletedSuccessfully -> {
                         logger.debug("Process completed successfully")

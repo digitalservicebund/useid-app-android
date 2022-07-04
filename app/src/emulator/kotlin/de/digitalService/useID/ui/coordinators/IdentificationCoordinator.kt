@@ -62,7 +62,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
     }
 
     fun confirmAttributesForIdentification() {
-        appCoordinator.navigate(IdentificationPersonalPINDestination(null, false))
+        appCoordinator.navigate(IdentificationPersonalPINDestination)
     }
 
     fun onPINEntered(pin: String) {
