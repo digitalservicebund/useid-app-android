@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationScanViewModelInterface
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
@@ -57,7 +58,7 @@ class EmulatorIdentificationScanViewModel @Inject constructor(private val coordi
             innerViewModel.injectShouldShowProgress(true)
             delay(3000L)
             innerViewModel.injectShouldShowProgress(false)
-            innerViewModel.injectErrorState(IdentificationScanViewModelInterface.Error.IncorrectPIN(2))
+            innerViewModel.injectErrorState(ScanError.IncorrectPIN(2))
         }
     }
     fun simulateCANRequired() {
@@ -65,7 +66,7 @@ class EmulatorIdentificationScanViewModel @Inject constructor(private val coordi
             innerViewModel.injectShouldShowProgress(true)
             delay(3000L)
             innerViewModel.injectShouldShowProgress(false)
-            innerViewModel.injectErrorState(IdentificationScanViewModelInterface.Error.PINSuspended)
+            innerViewModel.injectErrorState(ScanError.PINSuspended)
         }
     }
     fun simulatePUKRequired() {
@@ -73,13 +74,13 @@ class EmulatorIdentificationScanViewModel @Inject constructor(private val coordi
             innerViewModel.injectShouldShowProgress(true)
             delay(3000L)
             innerViewModel.injectShouldShowProgress(false)
-            innerViewModel.injectErrorState(IdentificationScanViewModelInterface.Error.PINBlocked)
+            innerViewModel.injectErrorState(ScanError.PINBlocked)
         }
     }
 
     val innerViewModel = object : IdentificationScanViewModelInterfaceExtension {
         override var shouldShowProgress by mutableStateOf(false)
-        override var errorState: IdentificationScanViewModelInterface.Error? by mutableStateOf(null)
+        override var errorState: ScanError? by mutableStateOf(null)
         override fun onHelpButtonTapped() {}
         override fun onCancelIdentification() { coordinator.cancelIdentification() }
         override fun onNewPersonalPINEntered(pin: String) {
@@ -90,14 +91,14 @@ class EmulatorIdentificationScanViewModel @Inject constructor(private val coordi
             shouldShowProgress = show
         }
 
-        override fun injectErrorState(state: IdentificationScanViewModelInterface.Error?) {
+        override fun injectErrorState(state: ScanError?) {
             errorState = state
         }
     }
 
     interface IdentificationScanViewModelInterfaceExtension : IdentificationScanViewModelInterface {
         fun injectShouldShowProgress(show: Boolean)
-        fun injectErrorState(state: IdentificationScanViewModelInterface.Error?)
+        fun injectErrorState(state: ScanError?)
     }
 }
 

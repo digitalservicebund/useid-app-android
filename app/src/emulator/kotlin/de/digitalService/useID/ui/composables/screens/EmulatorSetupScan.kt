@@ -13,13 +13,17 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.SetupScan
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Composable
@@ -42,32 +46,59 @@ fun EmulatorSetupScan(viewModel: EmulatorSetupScanViewModel) {
 
 @HiltViewModel
 class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel() {
-    fun simulateSuccess() { coordinator.onSettingPINSucceeded() }
-    fun simulateIncorrectTransportPIN() { innerViewModel.injectAttempts(innerViewModel.attempts - 1) }
-    fun simulateCANRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.PINSuspended) }
-    fun simulatePUKRequired() { innerViewModel.injectShouldShowError(SetupScanViewModelInterface.Error.IDDeactivated) }
+    fun simulateSuccess() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            coordinator.onSettingPINSucceeded()
+        }
+    }
+    fun simulateIncorrectTransportPIN() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectShouldShowError(ScanError.IncorrectPIN(2))
+        }
+    }
+    fun simulateCANRequired() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectShouldShowError(ScanError.PINSuspended)
+        }
+    }
+    fun simulatePUKRequired() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectShouldShowError(ScanError.PINBlocked)
+        }
+    }
 
     val innerViewModel = object : SetupScanViewModelInterfaceExtension {
-        override var attempts: Int by mutableStateOf(3)
-        override var errorState: SetupScanViewModelInterface.Error? by mutableStateOf(null)
+        override var shouldShowProgress: Boolean by mutableStateOf(false)
+        override var errorState: ScanError? by mutableStateOf(null)
         override fun startSettingPIN(context: Context) {}
-        override fun onReEnteredTransportPIN(transportPIN: String, context: Context) { attempts = 3 }
+        override fun onReEnteredTransportPIN(transportPIN: String, context: Context) { injectShouldShowError(null) }
         override fun onHelpButtonTapped() {}
         override fun onCancel() { coordinator.cancelSetup() }
         override fun onErrorDialogButtonTap() { coordinator.cancelSetup() }
 
-        override fun injectAttempts(newAttempts: Int) {
-            this.attempts = newAttempts
+        override fun injectShouldShowProgress(show: Boolean) {
+            shouldShowProgress = show
         }
-
-        override fun injectShouldShowError(error: SetupScanViewModelInterface.Error) {
+        override fun injectShouldShowError(error: ScanError?) {
             errorState = error
         }
     }
 
     interface SetupScanViewModelInterfaceExtension : SetupScanViewModelInterface {
-        fun injectAttempts(newAttempts: Int)
-        fun injectShouldShowError(error: SetupScanViewModelInterface.Error)
+        fun injectShouldShowProgress(show: Boolean)
+        fun injectShouldShowError(error: ScanError?)
     }
 }
 

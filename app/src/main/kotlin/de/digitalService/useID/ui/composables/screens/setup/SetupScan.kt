@@ -35,6 +35,8 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.ui.ScanError
+import de.digitalService.useID.ui.composables.ScanErrorAlertDialog
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -46,79 +48,33 @@ import kotlinx.coroutines.launch
 import javax.annotation.Nullable
 import javax.inject.Inject
 
-@OptIn(ExperimentalAnimationApi::class)
 @Destination
 @Composable
-fun SetupScan(modifier: Modifier = Modifier, viewModel: SetupScanViewModelInterface = hiltViewModel<SetupScanViewModel>()) {
+fun SetupScan(
+    modifier: Modifier = Modifier,
+    viewModel: SetupScanViewModelInterface = hiltViewModel<SetupScanViewModel>()
+) {
     val context = LocalContext.current
 
-    viewModel.errorState?.let {
-        ErrorAlertDialog(error = it, onButtonTap = viewModel::onErrorDialogButtonTap)
-    }
-
-    AnimatedVisibility(
-        visible = viewModel.attempts < 3, // TODO: Both dialogs should not show at the same time
-        enter = scaleIn(tween(200)),
-        exit = scaleOut(tween(100))
-    ) {
-        TransportPINDialog(
-            attempts = viewModel.attempts,
-            onCancel = viewModel::onCancel,
-            onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
-        )
-    }
-
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
+    ScanScreen(
+        title = stringResource(id = R.string.firstTimeUser_scan_title),
+        body = stringResource(id = R.string.firstTimeUser_scan_body),
+        errorState = viewModel.errorState,
+        onIncorrectPIN = { attempts ->
+            TransportPINDialog(
+                attempts = attempts,
+                onCancel = viewModel::onCancel,
+                onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
+            )
+        },
+        onCancel = viewModel::onCancel,
+        showProgress = viewModel.shouldShowProgress,
         modifier = modifier
-            .fillMaxSize()
-            .padding(vertical = 40.dp, horizontal = 20.dp)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.eids),
-            contentScale = ContentScale.Fit,
-            contentDescription = ""
-        )
-        Text(
-            stringResource(id = R.string.firstTimeUser_scan_title),
-            style = MaterialTheme.typography.titleLarge
-        )
-        Text(
-            stringResource(id = R.string.firstTimeUser_scan_body),
-            style = MaterialTheme.typography.bodySmall
-        )
-        Button(
-            onClick = viewModel::onHelpButtonTapped,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            ),
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier
-                .height(40.dp)
-        ) {
-            Text(stringResource(id = R.string.firstTimeUser_scan_helpButton))
-        }
-    }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.startSettingPIN(context)
     }
-}
-
-@Composable
-private fun ErrorAlertDialog(error: SetupScanViewModelInterface.Error, onButtonTap: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = { },
-        confirmButton = {
-            Button(onClick = onButtonTap) {
-                Text(stringResource(id = R.string.firstTimeUser_scan_error_button))
-            }
-        },
-        title = { Text(stringResource(id = error.titleResID)) },
-        text = { Text(stringResource(id = error.textResID)) },
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    )
 }
 
 @Composable
@@ -161,35 +117,8 @@ private fun TransportPINDialog(
 }
 
 interface SetupScanViewModelInterface {
-    sealed class Error {
-        object PINSuspended : Error()
-        object PINBlocked : Error()
-        object IDDeactivated : Error()
-        data class Other(val message: String?) : Error()
-
-        val titleResID: Int
-            get() {
-                return when (this) {
-                    is PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
-                    is PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
-                    is IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
-                    is Other -> R.string.idScan_error_unknown_title
-                    else -> throw IllegalArgumentException()
-                }
-            }
-
-        val textResID: Int
-            get() {
-                return when (this) {
-                    PINSuspended, PINBlocked, IDDeactivated -> R.string.firstTimeUser_scan_error_text_feature_unavailable
-                    is Other -> R.string.firstTimeUser_scan_error_text_unknown
-                    else -> throw IllegalArgumentException()
-                }
-            }
-    }
-
-    val attempts: Int
-    val errorState: Error?
+    val shouldShowProgress: Boolean
+    val errorState: ScanError?
 
     fun startSettingPIN(context: Context)
     fun onReEnteredTransportPIN(transportPIN: String, context: Context)
@@ -212,16 +141,16 @@ class SetupScanViewModel @Inject constructor(
     private val viewModelCoroutineScope: CoroutineScope = coroutineScope ?: viewModelScope
     private var firstPINCallback: Boolean = true
 
-    override var attempts: Int by mutableStateOf(3)
+    override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
 
-    override var errorState: SetupScanViewModelInterface.Error? by mutableStateOf(null)
+    override var errorState: ScanError? by mutableStateOf(null)
         private set
 
     override fun startSettingPIN(context: Context) {
         val transportPIN = secureStorageManager.loadTransportPIN() ?: run {
             logger.error("Transport PIN not available.")
-            errorState = SetupScanViewModelInterface.Error.Other(null)
+            errorState = ScanError.Other(null)
             return
         }
         executePINManagement(transportPIN, context)
@@ -229,7 +158,6 @@ class SetupScanViewModel @Inject constructor(
 
     override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {
         firstPINCallback = true
-        attempts = 3
         executePINManagement(transportPIN, context)
     }
 
@@ -249,7 +177,7 @@ class SetupScanViewModel @Inject constructor(
     private fun executePINManagement(transportPIN: String, context: Context) {
         val newPIN = secureStorageManager.loadPersonalPIN() ?: run {
             logger.error("Personal PIN not available.")
-            errorState = SetupScanViewModelInterface.Error.Other(null)
+            errorState = ScanError.Other(null)
             return
         }
 
@@ -257,15 +185,21 @@ class SetupScanViewModel @Inject constructor(
             logger.debug("Starting PIN management flow.")
             idCardManager.changePin(context).catch { exception ->
                 errorState = when (exception) {
-                    is IDCardInteractionException.CardDeactivated -> SetupScanViewModelInterface.Error.IDDeactivated
-                    is IDCardInteractionException.CardBlocked -> SetupScanViewModelInterface.Error.PINBlocked
-                    else -> SetupScanViewModelInterface.Error.Other(exception.message)
+                    is IDCardInteractionException.CardDeactivated -> ScanError.CardDeactivated
+                    is IDCardInteractionException.CardBlocked -> ScanError.PINBlocked
+                    else -> ScanError.Other(exception.message)
                 }
             }.collect { event ->
                 when (event) {
                     EIDInteractionEvent.CardInteractionComplete -> logger.debug("Card interaction complete.")
-                    EIDInteractionEvent.CardRecognized -> logger.debug("Card recognized.")
-                    EIDInteractionEvent.CardRemoved -> logger.debug("Card removed.")
+                    EIDInteractionEvent.CardRecognized -> {
+                        logger.debug("Card recognized.")
+                        shouldShowProgress = true
+                    }
+                    EIDInteractionEvent.CardRemoved -> {
+                        logger.debug("Card removed.")
+                        shouldShowProgress = false
+                    }
                     EIDInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started.")
                     EIDInteractionEvent.PINManagementStarted -> {
                         logger.debug("PIN management started.")
@@ -282,27 +216,26 @@ class SetupScanViewModel @Inject constructor(
                             firstPINCallback = false
                         } else {
                             logger.debug("Old and new PIN requested for a second time. The Transport-PIN seems to be incorrect.")
-                            attempts = event.attempts ?: run {
+                            val attempts = event.attempts ?: run {
                                 logger.error("Old and new PIN requested without attempts.")
                                 cancel()
                                 return@collect
                             }
+                            errorState = ScanError.IncorrectPIN(attempts)
                             cancel()
                         }
                     }
                     is EIDInteractionEvent.RequestCANAndChangedPIN -> {
-                        errorState =
-                            SetupScanViewModelInterface.Error.PINSuspended
+                        errorState = ScanError.PINSuspended
                         cancel()
                     }
                     is EIDInteractionEvent.RequestPUK -> {
-                        errorState =
-                            SetupScanViewModelInterface.Error.PINBlocked
+                        errorState = ScanError.PINBlocked
                         cancel()
                     }
                     else -> {
                         logger.debug("Collected unexpected event: $event")
-                        errorState = SetupScanViewModelInterface.Error.Other(null)
+                        errorState = ScanError.Other(null)
                         cancel()
                     }
                 }
@@ -312,8 +245,8 @@ class SetupScanViewModel @Inject constructor(
 }
 
 class PreviewSetupScanViewModel(
-    override val attempts: Int,
-    override val errorState: SetupScanViewModelInterface.Error?
+    override val shouldShowProgress: Boolean,
+    override val errorState: ScanError?
 ) :
     SetupScanViewModelInterface {
     override fun startSettingPIN(context: Context) {}
@@ -327,7 +260,7 @@ class PreviewSetupScanViewModel(
 @Composable
 fun PreviewSetupScanWithoutError() {
     UseIDTheme {
-        SetupScan(viewModel = PreviewSetupScanViewModel(3, errorState = null))
+        SetupScan(viewModel = PreviewSetupScanViewModel(false, errorState = null))
     }
 }
 
@@ -336,7 +269,7 @@ fun PreviewSetupScanWithoutError() {
 @Composable
 fun PreviewSetupScanInvalidTransportPIN() {
     UseIDTheme {
-        SetupScan(viewModel = PreviewSetupScanViewModel(2, errorState = null))
+        SetupScan(viewModel = PreviewSetupScanViewModel(false, errorState = ScanError.IncorrectPIN(2)))
     }
 }
 
@@ -346,8 +279,8 @@ fun PreviewSetupScanWithError() {
     UseIDTheme {
         SetupScan(
             viewModel = PreviewSetupScanViewModel(
-                3,
-                errorState = SetupScanViewModelInterface.Error.PINSuspended
+                false,
+                ScanError.PINSuspended
             )
         )
     }

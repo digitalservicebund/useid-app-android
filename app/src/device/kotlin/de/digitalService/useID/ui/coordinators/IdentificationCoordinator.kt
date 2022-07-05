@@ -8,6 +8,7 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
@@ -17,6 +18,7 @@ import de.digitalService.useID.ui.composables.screens.identification.Identificat
 import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -82,11 +84,11 @@ class IdentificationCoordinator @Inject constructor(
                 logger.error("Identification error: $error")
 
                 when(error) {
-                    IDCardInteractionException.CardDeactivated -> _scanEventFlow.emit(ScanEvent.CardDeactivated)
-                    IDCardInteractionException.CardBlocked -> _scanEventFlow.emit(ScanEvent.CardBlocked)
+                    IDCardInteractionException.CardDeactivated -> _scanEventFlow.emit(ScanEvent.Error(ScanError.CardDeactivated))
+                    IDCardInteractionException.CardBlocked -> _scanEventFlow.emit(ScanEvent.Error(ScanError.CardBlocked))
                     else -> {
                         _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
-                        _scanEventFlow.emit(ScanEvent.UnknownError)
+                        _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
                     }
                 }
             }.collect { event ->
@@ -112,20 +114,23 @@ class IdentificationCoordinator @Inject constructor(
                         if (event.attempts == null) {
                             navigateOnMain(IdentificationPersonalPINDestination)
                         } else {
-                            _scanEventFlow.emit(ScanEvent.IncorrectPIN(attempts = event.attempts))
+                            _scanEventFlow.emit(ScanEvent.Error(ScanError.IncorrectPIN(attempts = event.attempts)))
                         }
                     }
                     is EIDInteractionEvent.RequestCAN -> {
                         logger.debug("Requesting CAN")
-                        _scanEventFlow.emit(ScanEvent.PINSuspended)
+                        _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
+                        cancel()
                     }
                     is EIDInteractionEvent.RequestPINAndCAN -> {
                         logger.debug("Requesting PIN and CAN")
-                        _scanEventFlow.emit(ScanEvent.PINSuspended)
+                        _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
+                        cancel()
                     }
                     is EIDInteractionEvent.RequestPUK -> {
                         logger.debug("Requesting PUK")
-                        _scanEventFlow.emit(ScanEvent.PINBlocked)
+                        _scanEventFlow.emit(ScanEvent.Error(ScanError.PINBlocked))
+                        cancel()
                     }
                     EIDInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Requesting ID card")
