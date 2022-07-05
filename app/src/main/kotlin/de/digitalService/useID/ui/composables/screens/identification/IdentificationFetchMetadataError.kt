@@ -12,7 +12,6 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.screens.BundButtonConfig
 import de.digitalService.useID.ui.composables.screens.StandardButtonScreen
 import de.digitalService.useID.ui.theme.UseIDTheme
-import org.openecard.bouncycastle.math.raw.Mod
 
 @Composable
 fun IdentificationFetchMetadataError(

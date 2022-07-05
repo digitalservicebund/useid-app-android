@@ -1,12 +1,6 @@
 package de.digitalService.useID.ui.composables.screens
 
 import android.content.Context
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -14,10 +8,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,7 +28,6 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.ScanError
-import de.digitalService.useID.ui.composables.ScanErrorAlertDialog
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme

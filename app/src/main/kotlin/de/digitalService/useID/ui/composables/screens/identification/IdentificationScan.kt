@@ -1,21 +1,13 @@
 package de.digitalService.useID.ui.composables.screens.identification
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,9 +19,7 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.ScanError
-import de.digitalService.useID.ui.composables.ScanErrorAlertDialog
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.composables.screens.ScanScreen
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
@@ -48,7 +38,8 @@ fun IdentificationScan(modifier: Modifier = Modifier, viewModel: IdentificationS
         onIncorrectPIN = { attempts -> PINDialog(attempts = attempts, onCancel = viewModel::onCancelIdentification, onNewPINEntered = viewModel::onNewPersonalPINEntered) },
         onCancel = viewModel::onCancelIdentification,
         showProgress = viewModel.shouldShowProgress,
-        modifier = modifier)
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -86,10 +77,10 @@ private fun PINDialog(
 }
 
 sealed class ScanEvent {
-    object CardRequested: ScanEvent()
-    object CardAttached: ScanEvent()
-    object Finished: ScanEvent()
-    data class Error(val error: ScanError): ScanEvent()
+    object CardRequested : ScanEvent()
+    object CardAttached : ScanEvent()
+    object Finished : ScanEvent()
+    data class Error(val error: ScanError) : ScanEvent()
 }
 
 interface IdentificationScanViewModelInterface {
@@ -102,7 +93,7 @@ interface IdentificationScanViewModelInterface {
 }
 
 @HiltViewModel
-class IdentificationScanViewModel @Inject constructor(private val coordinator: IdentificationCoordinator): ViewModel(), IdentificationScanViewModelInterface {
+class IdentificationScanViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel(), IdentificationScanViewModelInterface {
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
     override var errorState: ScanError? by mutableStateOf(null)
@@ -127,7 +118,7 @@ class IdentificationScanViewModel @Inject constructor(private val coordinator: I
     private fun collectScanEvents() {
         viewModelScope.launch {
             coordinator.scanEventFlow.collect { event ->
-                when(event) {
+                when (event) {
                     ScanEvent.CardRequested -> shouldShowProgress = false
                     ScanEvent.CardAttached -> shouldShowProgress = true
                     ScanEvent.Finished -> shouldShowProgress = false
@@ -141,9 +132,10 @@ class IdentificationScanViewModel @Inject constructor(private val coordinator: I
     }
 }
 
-private class PreviewIdentificationScanViewModel(override val shouldShowProgress: Boolean,
-                                                 override val errorState: ScanError?
-): IdentificationScanViewModelInterface {
+private class PreviewIdentificationScanViewModel(
+    override val shouldShowProgress: Boolean,
+    override val errorState: ScanError?
+) : IdentificationScanViewModelInterface {
     override fun onHelpButtonTapped() {}
     override fun onCancelIdentification() {}
     override fun onNewPersonalPINEntered(pin: String) {}

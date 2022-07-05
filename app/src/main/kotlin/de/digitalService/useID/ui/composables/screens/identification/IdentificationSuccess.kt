@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.composables.screens.identification
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -69,7 +68,8 @@ data class IdentificationSuccessNavArgs(
 )
 
 @HiltViewModel
-class IdentificationSuccessViewModel @Inject constructor(savedStateHandle: SavedStateHandle) : ViewModel(),
+class IdentificationSuccessViewModel @Inject constructor(savedStateHandle: SavedStateHandle) :
+    ViewModel(),
     IdentificationSuccessViewModelInterface {
     override val provider: String
     override fun onButtonTapped() {}
@@ -83,9 +83,11 @@ class IdentificationSuccessViewModel @Inject constructor(savedStateHandle: Saved
 @Composable
 fun PreviewIdentificationSuccess() {
     UseIDTheme {
-        IdentificationSuccess(viewModel = object : IdentificationSuccessViewModelInterface {
-            override val provider: String = "Grundsteuer"
-            override fun onButtonTapped() {}
-        })
+        IdentificationSuccess(
+            viewModel = object : IdentificationSuccessViewModelInterface {
+                override val provider: String = "Grundsteuer"
+                override fun onButtonTapped() {}
+            }
+        )
     }
 }
