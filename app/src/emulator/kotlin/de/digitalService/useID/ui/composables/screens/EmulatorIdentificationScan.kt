@@ -60,14 +60,28 @@ class EmulatorIdentificationScanViewModel @Inject constructor(private val coordi
             innerViewModel.injectErrorState(IdentificationScanViewModelInterface.Error.IncorrectPIN(2))
         }
     }
-    fun simulateCANRequired() {  }
-    fun simulatePUKRequired() {  }
+    fun simulateCANRequired() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectErrorState(IdentificationScanViewModelInterface.Error.PINSuspended)
+        }
+    }
+    fun simulatePUKRequired() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectErrorState(IdentificationScanViewModelInterface.Error.PINBlocked)
+        }
+    }
 
     val innerViewModel = object : IdentificationScanViewModelInterfaceExtension {
         override var shouldShowProgress by mutableStateOf(false)
         override var errorState: IdentificationScanViewModelInterface.Error? by mutableStateOf(null)
         override fun onHelpButtonTapped() {}
-        override fun onCancelReEnterPersonalPIN() { coordinator.cancelIdentification() }
+        override fun onCancelIdentification() { coordinator.cancelIdentification() }
         override fun onNewPersonalPINEntered(pin: String) {
             errorState = null
         }

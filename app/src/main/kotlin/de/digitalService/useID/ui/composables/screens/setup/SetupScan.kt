@@ -173,7 +173,7 @@ interface SetupScanViewModelInterface {
                     is PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
                     is PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
                     is IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
-                    is Other -> R.string.firstTimeUser_scan_error_title_unknown
+                    is Other -> R.string.idScan_error_unknown_title
                     else -> throw IllegalArgumentException()
                 }
             }

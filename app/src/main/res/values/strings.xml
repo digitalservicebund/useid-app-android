@@ -33,7 +33,6 @@
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
     <string name="firstTimeUser_scan_error_title_id_deactivated">Online-Ausweisfunktion deaktiviert</string>
-    <string name="firstTimeUser_scan_error_title_unknown">Fehler</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
@@ -72,4 +71,9 @@
     <string name="identification_fetchMetadataError_title">Ein Fehler ist aufgetreten.</string>
     <string name="identification_fetchMetadataError_body">Bitte versuchen Sie es noch einmal. Stellen Sie sicher, dass Sie eine gute Internetverbindung haben.</string>
     <string name="identification_fetchMetadataError_button">Erneut versuchen</string>
+    <string name="idScan_error_cardDeactivated_title">Für Ihren Ausweis ist die Online-Funktion nicht aktiviert</string>
+    <string name="idScan_error_cardDeactivated_body">Wenden Sie sich an Ihr Bürgeramt, um die Online-Ausweisfunktion zu akvitieren.\\n\\nSie wissen nicht, an wen Sie sich wenden können? Rufen Sie die 115 an oder informieren Sie sich unter https://behoredenfinder.de/</string>
+    <string name="idScan_error_unknown_title">Fehler</string>
+    <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
+    <string name="idScan_error_button_close">Schließen</string>
 </resources>

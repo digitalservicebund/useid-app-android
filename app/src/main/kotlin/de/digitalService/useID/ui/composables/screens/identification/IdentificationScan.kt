@@ -2,9 +2,6 @@ package de.digitalService.useID.ui.composables.screens.identification
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -32,8 +29,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
-import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPIN
-import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPINViewModel
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
@@ -100,15 +95,35 @@ fun IdentificationScan(modifier: Modifier = Modifier, viewModel: IdentificationS
 
     viewModel.errorState?.let {
         when (it) {
-            IdentificationScanViewModelInterface.Error.IDDeactivated -> TODO()
             is IdentificationScanViewModelInterface.Error.IncorrectPIN -> {
-                PINDialog(attempts = it.attempts, onCancel = viewModel::onCancelReEnterPersonalPIN, onNewPINEntered = viewModel::onNewPersonalPINEntered)
+                PINDialog(attempts = it.attempts, onCancel = viewModel::onCancelIdentification, onNewPINEntered = viewModel::onNewPersonalPINEntered)
             }
-            is IdentificationScanViewModelInterface.Error.Other -> TODO()
-            IdentificationScanViewModelInterface.Error.PINBlocked -> TODO()
-            IdentificationScanViewModelInterface.Error.PINSuspended -> TODO()
+            else -> ErrorAlertDialog(error = it, onButtonTap = viewModel::onCancelIdentification)
         }
     }
+}
+
+@Composable
+private fun ErrorAlertDialog(error: IdentificationScanViewModelInterface.Error, onButtonTap: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = { },
+        confirmButton = {
+            Button(
+                onClick = onButtonTap,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(stringResource(id = R.string.idScan_error_button_close))
+            }
+        },
+        shape = RoundedCornerShape(10.dp),
+        title = { Text(stringResource(id = error.titleResID), style = MaterialTheme.typography.titleMedium) },
+        text = { Text(stringResource(id = error.textResID), style = MaterialTheme.typography.bodySmall) },
+        containerColor = MaterialTheme.colorScheme.background,
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    )
 }
 
 @Composable
@@ -150,6 +165,11 @@ sealed class ScanEvent {
     object CardAttached: ScanEvent()
     object Finished: ScanEvent()
     data class IncorrectPIN(val attempts: Int): ScanEvent()
+    object CardDeactivated: ScanEvent()
+    object PINSuspended: ScanEvent()
+    object PINBlocked: ScanEvent()
+    object CardBlocked: ScanEvent()
+    object UnknownError: ScanEvent()
 }
 
 interface IdentificationScanViewModelInterface {
@@ -157,16 +177,16 @@ interface IdentificationScanViewModelInterface {
         data class IncorrectPIN(val attempts: Int) : Error()
         object PINSuspended : Error()
         object PINBlocked : Error()
-        object IDDeactivated : Error()
+        object CardBlocked : Error()
+        object CardDeactivated : Error()
         data class Other(val message: String?) : Error()
 
         val titleResID: Int
             get() {
                 return when (this) {
-                    is PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
-                    is PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
-                    is IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
-                    is Other -> R.string.firstTimeUser_scan_error_title_unknown
+                    PINSuspended, PINBlocked -> R.string.idScan_error_unknown_title
+                    CardDeactivated -> R.string.idScan_error_cardDeactivated_title
+                    is Other -> R.string.idScan_error_unknown_title
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -174,8 +194,9 @@ interface IdentificationScanViewModelInterface {
         val textResID: Int
             get() {
                 return when (this) {
-                    PINSuspended, PINBlocked, IDDeactivated -> R.string.firstTimeUser_scan_error_text_feature_unavailable
-                    is Other -> R.string.firstTimeUser_scan_error_text_unknown
+                    PINSuspended, PINBlocked -> R.string.idScan_error_unknown_body
+                    CardDeactivated -> R.string.idScan_error_cardDeactivated_body
+                    is Other -> R.string.idScan_error_unknown_body
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -185,14 +206,12 @@ interface IdentificationScanViewModelInterface {
     val errorState: Error?
 
     fun onHelpButtonTapped()
-    fun onCancelReEnterPersonalPIN()
+    fun onCancelIdentification()
     fun onNewPersonalPINEntered(pin: String)
 }
 
 @HiltViewModel
 class IdentificationScanViewModel @Inject constructor(private val coordinator: IdentificationCoordinator): ViewModel(), IdentificationScanViewModelInterface {
-    private val logger by getLogger()
-
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
     override var errorState: IdentificationScanViewModelInterface.Error? by mutableStateOf(null)
@@ -205,7 +224,7 @@ class IdentificationScanViewModel @Inject constructor(private val coordinator: I
     override fun onHelpButtonTapped() {
     }
 
-    override fun onCancelReEnterPersonalPIN() {
+    override fun onCancelIdentification() {
         coordinator.cancelIdentification()
     }
 
@@ -222,9 +241,28 @@ class IdentificationScanViewModel @Inject constructor(private val coordinator: I
                     ScanEvent.CardAttached -> shouldShowProgress = true
                     ScanEvent.Finished -> shouldShowProgress = false
                     is ScanEvent.IncorrectPIN -> {
-                        logger.debug("Set ERROR")
                         shouldShowProgress = false
                         errorState = IdentificationScanViewModelInterface.Error.IncorrectPIN(event.attempts)
+                    }
+                    ScanEvent.CardDeactivated -> {
+                        shouldShowProgress = false
+                        errorState = IdentificationScanViewModelInterface.Error.CardDeactivated
+                    }
+                    ScanEvent.PINSuspended -> {
+                        shouldShowProgress = false
+                        errorState = IdentificationScanViewModelInterface.Error.PINSuspended
+                    }
+                    ScanEvent.PINBlocked -> {
+                        shouldShowProgress = false
+                        errorState = IdentificationScanViewModelInterface.Error.PINBlocked
+                    }
+                    ScanEvent.CardBlocked -> {
+                        shouldShowProgress = false
+                        errorState = IdentificationScanViewModelInterface.Error.CardBlocked
+                    }
+                    ScanEvent.UnknownError -> {
+                        shouldShowProgress = false
+                        errorState = IdentificationScanViewModelInterface.Error.Other(null)
                     }
                 }
             }
@@ -236,7 +274,7 @@ private class PreviewIdentificationScanViewModel(override val shouldShowProgress
                                                  override val errorState: IdentificationScanViewModelInterface.Error?
 ): IdentificationScanViewModelInterface {
     override fun onHelpButtonTapped() {}
-    override fun onCancelReEnterPersonalPIN() {}
+    override fun onCancelIdentification() {}
     override fun onNewPersonalPINEntered(pin: String) {}
 }
 
@@ -253,5 +291,13 @@ fun PreviewIdentificationScan() {
 fun PreviewIdentificationScanWithProgress() {
     UseIDTheme {
         IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, null))
+    }
+}
+
+@Preview
+@Composable
+fun PreviewIdentificationScanWithError() {
+    UseIDTheme {
+        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, IdentificationScanViewModelInterface.Error.CardDeactivated))
     }
 }

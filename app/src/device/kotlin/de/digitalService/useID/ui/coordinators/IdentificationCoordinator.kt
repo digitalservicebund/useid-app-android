@@ -5,6 +5,7 @@ import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
+import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
@@ -67,7 +68,7 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     fun cancelIdentification() {
-        // TODO: Implement cancellation
+        appCoordinator.popToRoot()
     }
 
     private fun startIdentification() {
@@ -77,10 +78,17 @@ class IdentificationCoordinator @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
 
-            idCardManager.identify(context, demoURL).catch {
-                logger.error("Error: $it")
+            idCardManager.identify(context, demoURL).catch { error ->
+                logger.error("Identification error: $error")
 
-                _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
+                when(error) {
+                    IDCardInteractionException.CardDeactivated -> _scanEventFlow.emit(ScanEvent.CardDeactivated)
+                    IDCardInteractionException.CardBlocked -> _scanEventFlow.emit(ScanEvent.CardBlocked)
+                    else -> {
+                        _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
+                        _scanEventFlow.emit(ScanEvent.UnknownError)
+                    }
+                }
             }.collect { event ->
                 when (event) {
                     EIDInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started")
@@ -106,6 +114,18 @@ class IdentificationCoordinator @Inject constructor(
                         } else {
                             _scanEventFlow.emit(ScanEvent.IncorrectPIN(attempts = event.attempts))
                         }
+                    }
+                    is EIDInteractionEvent.RequestCAN -> {
+                        logger.debug("Requesting CAN")
+                        _scanEventFlow.emit(ScanEvent.PINSuspended)
+                    }
+                    is EIDInteractionEvent.RequestPINAndCAN -> {
+                        logger.debug("Requesting PIN and CAN")
+                        _scanEventFlow.emit(ScanEvent.PINSuspended)
+                    }
+                    is EIDInteractionEvent.RequestPUK -> {
+                        logger.debug("Requesting PUK")
+                        _scanEventFlow.emit(ScanEvent.PINBlocked)
                     }
                     EIDInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Requesting ID card")

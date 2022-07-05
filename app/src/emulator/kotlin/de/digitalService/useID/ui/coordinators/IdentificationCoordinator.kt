@@ -70,6 +70,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
     }
 
     fun cancelIdentification() {
+        appCoordinator.popToRoot()
     }
 
     fun onIDInteractionFinishedSuccessfully() {
