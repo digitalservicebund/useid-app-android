@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.SetupScan
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
 import io.mockk.every
@@ -27,12 +28,10 @@ class SetupScanTest {
 
     @Test
     fun openErrorDialogAndConfirmWithButton() {
-        val testErrorState = SetupScanViewModelInterface.Error.PINSuspended
-        val testAttempts = 3
+        val testErrorState = ScanError.Other(null)
 
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
         every { mockViewModel.errorState } returns testErrorState
-        every { mockViewModel.attempts } returns testAttempts
 
         composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
@@ -44,20 +43,17 @@ class SetupScanTest {
         val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
         composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
 
-        val buttonText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_button)
+        val buttonText = composeTestRule.activity.getString(R.string.idScan_error_button_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTap() }
+        verify(exactly = 1) { mockViewModel.onCancel() }
         verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
 
     @Test
     fun enterTransportPinDialogOpens() {
-        val testAttempts = 0
-
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns null
-        every { mockViewModel.attempts } returns testAttempts
+        every { mockViewModel.errorState } returns ScanError.IncorrectPIN(2)
 
         composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
@@ -71,11 +67,8 @@ class SetupScanTest {
 
     @Test
     fun noDialogIsOpen() {
-        val testAttempts = 3
-
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
         every { mockViewModel.errorState } returns null
-        every { mockViewModel.attempts } returns testAttempts
 
         composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
@@ -89,30 +82,4 @@ class SetupScanTest {
 
         verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
-
-//    @Test
-//    fun openErrorDialogAndTransportPinDialog() {
-//        val testErrorState = SetupScanViewModelInterface.Error.PINSuspended
-//        val testAttempts = 2
-//
-//        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-//        every { mockViewModel.errorState } returns testErrorState
-//        every { mockViewModel.attempts } returns testAttempts
-//
-//        composeTestRule.activity.setContent {
-//            SetupScan(viewModel = mockViewModel)
-//        }
-//
-//        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
-//        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
-//
-//        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
-//        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsNotDisplayed()
-//
-//        val buttonText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_button)
-//        composeTestRule.onNodeWithText(buttonText).performClick()
-//
-//        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTap() }
-//        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
-//    }
 }

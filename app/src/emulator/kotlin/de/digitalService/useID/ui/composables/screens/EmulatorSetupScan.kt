@@ -86,7 +86,6 @@ class EmulatorSetupScanViewModel @Inject constructor(private val coordinator: Se
         override fun onReEnteredTransportPIN(transportPIN: String, context: Context) { injectShouldShowError(null) }
         override fun onHelpButtonTapped() {}
         override fun onCancel() { coordinator.cancelSetup() }
-        override fun onErrorDialogButtonTap() { coordinator.cancelSetup() }
 
         override fun injectShouldShowProgress(show: Boolean) {
             shouldShowProgress = show

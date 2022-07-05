@@ -124,7 +124,6 @@ interface SetupScanViewModelInterface {
     fun onReEnteredTransportPIN(transportPIN: String, context: Context)
     fun onHelpButtonTapped()
 
-    fun onErrorDialogButtonTap()
     fun onCancel()
 }
 
@@ -162,10 +161,6 @@ class SetupScanViewModel @Inject constructor(
     }
 
     override fun onHelpButtonTapped() {}
-
-    override fun onErrorDialogButtonTap() {
-        coordinator.cancelSetup()
-    }
 
     override fun onCancel() = coordinator.cancelSetup()
 
@@ -253,7 +248,6 @@ class PreviewSetupScanViewModel(
     override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}
     override fun onHelpButtonTapped() {}
     override fun onCancel() {}
-    override fun onErrorDialogButtonTap() {}
 }
 
 @Preview(device = Devices.PIXEL_3A)

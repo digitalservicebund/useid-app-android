@@ -4,6 +4,7 @@ import android.content.Context
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
@@ -51,7 +52,7 @@ class SetupScanViewModelTest {
         every { idCardManagerMock.changePin(contextMock) } returns flow {
             emit(EIDInteractionEvent.PINManagementStarted)
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfully)
+            emit(EIDInteractionEvent.ProcessCompletedSuccessfully(""))
         }
 
         val viewModel = SetupScanViewModel(
@@ -95,7 +96,7 @@ class SetupScanViewModelTest {
 
         verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        assertEquals(SetupScanViewModelInterface.Error.Other(null), viewModel.errorState)
+        assertEquals(ScanError.Other(null), viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -121,7 +122,7 @@ class SetupScanViewModelTest {
 
         verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        assertEquals(SetupScanViewModelInterface.Error.Other(null), viewModel.errorState)
+        assertEquals(ScanError.Other(null), viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -152,7 +153,7 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(SetupScanViewModelInterface.Error.IDDeactivated, viewModel.errorState)
+        assertEquals(ScanError.CardDeactivated, viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -183,7 +184,7 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(SetupScanViewModelInterface.Error.PINBlocked, viewModel.errorState)
+        assertEquals(ScanError.PINBlocked, viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -215,7 +216,7 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(SetupScanViewModelInterface.Error.Other(exception_message), viewModel.errorState)
+        assertEquals(ScanError.Other(exception_message), viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -236,7 +237,7 @@ class SetupScanViewModelTest {
             emit(EIDInteractionEvent.PINManagementStarted)
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = attempts, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfully)
+            emit(EIDInteractionEvent.ProcessCompletedSuccessfully(""))
         }
 
         val viewModel = SetupScanViewModel(
@@ -254,8 +255,7 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { pinCallback(transportPIN, personalPIN) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertNull(viewModel.errorState)
-        assertEquals(attempts, viewModel.attempts)
+        assertEquals(viewModel.errorState, ScanError.IncorrectPIN(attempts))
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -289,7 +289,7 @@ class SetupScanViewModelTest {
         verify(exactly = 0) { pinCallback(any(), any(), any()) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(SetupScanViewModelInterface.Error.PINSuspended, viewModel.errorState)
+        assertEquals(ScanError.PINSuspended, viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -323,7 +323,7 @@ class SetupScanViewModelTest {
         verify(exactly = 0) { pinCallback(any()) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(SetupScanViewModelInterface.Error.PINBlocked, viewModel.errorState)
+        assertEquals(ScanError.PINBlocked, viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -341,7 +341,7 @@ class SetupScanViewModelTest {
         every { idCardManagerMock.changePin(contextMock) } returns flow {
             emit(EIDInteractionEvent.PINManagementStarted)
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfully)
+            emit(EIDInteractionEvent.ProcessCompletedSuccessfully(""))
         }
 
         val viewModel = SetupScanViewModel(

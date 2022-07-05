@@ -9,6 +9,7 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.UseIDApp
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
@@ -43,11 +44,9 @@ class UiTestSetup {
 
     @Test
     fun test() {
-        val testErrorState: MutableState<SetupScanViewModelInterface.Error?> = mutableStateOf(null)
-        val testAttempts = mutableStateOf(3)
+        val testErrorState: MutableState<ScanError?> = mutableStateOf(null)
 
         every { mockSetupScanViewModel.errorState } answers { testErrorState.value }
-        every { mockSetupScanViewModel.attempts } answers { testAttempts.value }
         every { mockSetupScanViewModel.onReEnteredTransportPIN(any(), any()) } answers {
             appCoordinator.navigate(SetupFinishDestination)
         }
@@ -107,30 +106,28 @@ class UiTestSetup {
         val setupScanTitle = composeTestRule.activity.getString(R.string.firstTimeUser_scan_title)
         composeTestRule.onNodeWithText(setupScanTitle).assertIsDisplayed()
 
-        testErrorState.value = SetupScanViewModelInterface.Error.PINSuspended
+        testErrorState.value = ScanError.PINSuspended
         val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.value!!.titleResID)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
 
         val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.value!!.titleResID)
         composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
 
-        val buttonText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_button)
+        val buttonText = composeTestRule.activity.getString(R.string.idScan_error_button_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockSetupScanViewModel.onErrorDialogButtonTap() }
-        testErrorState.value = null
+        verify(exactly = 1) { mockSetupScanViewModel.onCancel() }
+        testErrorState.value = ScanError.IncorrectPIN(2)
 
         composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()
         composeTestRule.onNodeWithText(errorDialogDescriptionText).assertDoesNotExist()
 
-        testAttempts.value = 0
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
 
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
-        testAttempts.value = 3
 
         verify(exactly = 1) { mockSetupScanViewModel.onReEnteredTransportPIN("12345", any()) }
     }
