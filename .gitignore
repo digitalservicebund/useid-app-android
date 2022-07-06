@@ -37,6 +37,9 @@ google-services.json
 # fastlane
 fastlane/report.xml
 
+# Builds
+**/release/**
+
 # macOS
 
 # General
