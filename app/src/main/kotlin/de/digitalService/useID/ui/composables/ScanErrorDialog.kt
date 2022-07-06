@@ -11,23 +11,9 @@ import de.digitalService.useID.ui.ScanError
 
 @Composable
 fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = { },
-        confirmButton = {
-            Button(
-                onClick = onButtonTap,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text(stringResource(id = R.string.idScan_error_button_close))
-            }
-        },
-        shape = RoundedCornerShape(10.dp),
+    StandardDialog(
         title = { Text(stringResource(id = error.titleResID), style = MaterialTheme.typography.titleMedium) },
         text = { Text(stringResource(id = error.textResID), style = MaterialTheme.typography.bodySmall) },
-        containerColor = MaterialTheme.colorScheme.background,
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        onButtonTap = onButtonTap
     )
 }
