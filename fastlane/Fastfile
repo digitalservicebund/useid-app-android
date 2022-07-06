@@ -9,7 +9,7 @@ platform :android do
 
   desc "Run Android linter and ktlint"
   lane :lint do
-    gradle(tasks: ["clean", "lintKotlinMain", "lintDeviceDebug", "lintEmulatorDebug"])
+    gradle(tasks: ["clean", "lintKotlinMain", "lintDeviceDebug", "lintPreviewDebug"])
   end
 
   desc "Update version name and bump version code"
@@ -31,13 +31,25 @@ platform :android do
   end
 
   desc "Create new Playstore build and submit to Google Play Store"
-  lane :buildAndSubmit do
+  lane :buildAndSubmitPreview do
+    skip_docs
+    buildAndSubmit(flavor: 'preview', package_name: 'de.bund.digitalservice.UseID.Preview')
+  end
+
+  desc "Create new Playstore build and submit to Google Play Store"
+  lane :buildAndSubmitRelease do
+    skip_docs
+    buildAndSubmit(flavor: 'device', package_name: 'de.bund.digitalservice.UseID')
+  end
+
+  desc "Create new Playstore build and submit to Google Play Store"
+  lane :buildAndSubmit do |options|
     skip_docs
     ensure_git_status_clean
 
     gradle(
       task: 'bundle',
-      flavor: 'device',
+      flavor: options[:flavor],
       build_type: 'Release',
       properties: {
         "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
@@ -49,7 +61,7 @@ platform :android do
 
     supply(
       track: 'internal',
-      package_name: 'de.digitalService.useID',
+      package_name: options[:package_name],
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,

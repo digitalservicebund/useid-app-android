@@ -16,7 +16,7 @@ android {
         applicationId "de.digitalService.useID"
         minSdk 28
         targetSdk 32
-        versionCode 3
+        versionCode 4
         versionName "1.0"
 
         testInstrumentationRunner "de.digitalService.useID.HiltTestRunner"
@@ -48,15 +48,11 @@ android {
         device {
             dimension = "nfc"
         }
-        emulator {
+        preview {
             dimension = "nfc"
-        }
-    }
 
-    variantFilter { variant ->
-        def flavors = variant.flavors*.name
-        if (flavors.contains("emulator") && variant.buildType.name == "release") {
-            setIgnore(true)
+            //noinspection GradlePath
+            applicationIdSuffix = ".Preview"
         }
     }
 

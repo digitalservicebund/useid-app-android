@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Composable
-fun EmulatorIdentificationScan(viewModel: EmulatorIdentificationScanViewModel) {
+fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel) {
     Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
         IdentificationScan(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
         Row(
@@ -44,7 +44,7 @@ fun EmulatorIdentificationScan(viewModel: EmulatorIdentificationScanViewModel) {
 }
 
 @HiltViewModel
-class EmulatorIdentificationScanViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel() {
+class PreviewIdentificationScanViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel() {
     fun simulateSuccess() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -104,10 +104,10 @@ class EmulatorIdentificationScanViewModel @Inject constructor(private val coordi
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable
-fun PreviewEmulatorIdentificationScan() {
+fun PreviewPreviewIdentificationScan() {
     UseIDTheme {
-        EmulatorIdentificationScan(
-            EmulatorIdentificationScanViewModel(
+        PreviewIdentificationScan(
+            PreviewIdentificationScanViewModel(
                 IdentificationCoordinator(
                     AppCoordinator()
                 )

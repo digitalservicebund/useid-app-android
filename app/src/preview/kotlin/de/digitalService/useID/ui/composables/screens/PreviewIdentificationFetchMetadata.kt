@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Composable
-fun EmulatorIdentificationFetchMetadata(viewModel: EmulatorIdentificationFetchMetadataViewModel) {
+fun PreviewIdentificationFetchMetadata(viewModel: PreviewIdentificationFetchMetadataViewModel) {
     Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
         IdentificationFetchMetadata(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
         Row(
@@ -42,7 +42,7 @@ fun EmulatorIdentificationFetchMetadata(viewModel: EmulatorIdentificationFetchMe
 }
 
 @HiltViewModel
-class EmulatorIdentificationFetchMetadataViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel() {
+class PreviewIdentificationFetchMetadataViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel() {
     fun simulateSuccess() { coordinator.startIdentificationProcess() }
     fun simulateConnectionError() {
         viewModelScope.launch {
@@ -58,7 +58,6 @@ class EmulatorIdentificationFetchMetadataViewModel @Inject constructor(private v
         override fun fetchMetadata() {}
         override fun onErrorCancel() {}
         override fun onErrorRetry() {
-            coordinator.startIdentificationProcess()
             injectShouldShowProgress(true)
             injectShouldShowError(false)
         }
@@ -80,10 +79,10 @@ class EmulatorIdentificationFetchMetadataViewModel @Inject constructor(private v
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable
-fun PreviewEmulatorIdentificationFetchMetadata() {
+fun PreviewPreviewIdentificationFetchMetadata() {
     UseIDTheme {
-        EmulatorIdentificationFetchMetadata(
-            EmulatorIdentificationFetchMetadataViewModel(
+        PreviewIdentificationFetchMetadata(
+            PreviewIdentificationFetchMetadataViewModel(
                 IdentificationCoordinator(
                     AppCoordinator()
                 )

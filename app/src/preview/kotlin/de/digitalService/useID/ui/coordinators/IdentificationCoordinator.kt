@@ -41,11 +41,6 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
 
     fun startIdentificationProcess() {
         CoroutineScope(Dispatchers.IO).launch {
-
-            logger.debug("Simulate fetching provider metadata.")
-            delay(2000L)
-            logger.debug("Fetching provider metadata done.")
-
             val mockedRequest =
                 EIDAuthenticationRequest(
                     issuer = "issuer",
