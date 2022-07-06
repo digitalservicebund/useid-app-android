@@ -366,29 +366,6 @@ class SetupScanViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onErrorDialogButtonTap() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            secureStorageManagerMock,
-            idCardManagerMock,
-            testScope
-        )
-
-        viewModel.onErrorDialogButtonTap()
-
-        verify(exactly = 1) { coordinatorMock.cancelSetup() }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { secureStorageManagerMock.loadPersonalPIN() }
-        verify(exactly = 0) { secureStorageManagerMock.loadTransportPIN() }
-
-        assertNull(viewModel.errorState)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
     fun onCancel() = runTest {
         val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
 
@@ -433,10 +410,4 @@ class SetupScanViewModelTest {
 
         assertNull(viewModel.errorState)
     }
-
-//    @OptIn(ExperimentalCoroutinesApi::class)
-//    @Test
-//    fun fail() = runTest {
-//        Assertions.fail()
-//    }
 }
