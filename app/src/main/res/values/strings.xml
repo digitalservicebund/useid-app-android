@@ -79,4 +79,9 @@
     <string name="firstTimeUser_finish_title">Persönliche PIN gewählt und Online-Ausweis eingerichtet</string>
     <string name="firstTimeUser_finish_body">Ihre persönliche PIN geben Sie jedes Mal ein, wenn Sie Ihren Ausweis online benutzen.</string>
     <string name="firstTimeUser_finish_button">Schließen</string>
+    <string name="idScan_help_title">Ausweis wird nicht unterstützt.</string>
+    <string name="idScan_help_body_supportedDocuments">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger</string>
+    <string name="idScan_help_body_troubleshoot">Wenn Sie eines der oben genannten Dokumente benutzen und das Problem weiterhin auftritt, versuchen Sie diese Schritte:</string>
+    <string name="idScan_help_body_enumeration_tryAgain">Entfernen Sie die Karte von Ihrem Telefon und legen Sie sie erneut an das Telefon.</string>
+    <string name="idScan_help_body_enumeration_case">Wenn Sie eine sehr dicke Handyhülle haben, versuchen Sie, die Hülle zu entfernen.</string>
 </resources>
