@@ -76,4 +76,7 @@
     <string name="idScan_error_unknown_title">Fehler</string>
     <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="idScan_error_button_close">Schließen</string>
+    <string name="firstTimeUser_finish_title">Persönliche PIN gewählt und Online-Ausweis eingerichtet</string>
+    <string name="firstTimeUser_finish_body">Ihre persönliche PIN geben Sie jedes Mal ein, wenn Sie Ihren Ausweis online benutzen.</string>
+    <string name="firstTimeUser_finish_button">Schließen</string>
 </resources>

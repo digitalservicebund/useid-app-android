@@ -7,7 +7,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.ScanError
 
 @Composable
 fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, onButtonTap: () -> Unit) {
