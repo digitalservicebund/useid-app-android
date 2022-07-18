@@ -10,5 +10,6 @@ data class EIDAuthenticationRequest(
     val subjectURL: String,
     val validity: String,
     val terms: AuthenticationTerms,
+    val transactionInfo: String?,
     val readAttributes: Map<IDCardAttribute, Boolean>
 )

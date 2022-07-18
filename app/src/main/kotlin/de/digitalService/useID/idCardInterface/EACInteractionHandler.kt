@@ -97,7 +97,7 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
     ) {
         Log.d(logTag, "Requesting to confirm server data.")
 
-        if (p0 == null || p1 == null || p2 == null) {
+        if (p0 == null || p2 == null) {
             channel.close(IDCardInteractionException.FrameworkError())
             return
         }
@@ -115,6 +115,7 @@ class EACInteractionHandler(private val channel: SendChannel<EIDInteractionEvent
             p0.subjectUrl,
             p0.validity,
             AuthenticationTerms.Text(p0.termsOfUsage.dataString),
+            p1,
             readAttributes
         )
 

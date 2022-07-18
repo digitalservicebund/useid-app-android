@@ -49,6 +49,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
                     subjectURL = "subject_url",
                     validity = "validity",
                     terms = AuthenticationTerms.Text("terms"),
+                    transactionInfo = null,
                     readAttributes = mapOf(Pair(IDCardAttribute.DG01, true))
                 )
 

@@ -62,7 +62,7 @@ class IdentificationUiTest {
             appCoordinator.navigate(
                 IdentificationAttributeConsentDestination(
                     EIDAuthenticationRequest(
-                        "ISSUER", "ISSUER_URL", "SUBJECT", "SUBJECT_URL", "VALIDITY", AuthenticationTerms.Text("TEXT"), mapOf(
+                        "ISSUER", "ISSUER_URL", "SUBJECT", "SUBJECT_URL", "VALIDITY", AuthenticationTerms.Text("TEXT"), null, mapOf(
                             IDCardAttribute.DG01 to true,
                             IDCardAttribute.DG02 to true,
                             IDCardAttribute.DG03 to false,
@@ -140,7 +140,7 @@ class IdentificationUiTest {
 
         verify(exactly = 1) { mockSetupScanViewModel.onReEnteredTransportPIN("12345", any()) }
 
-        composeTestRule.onNodeWithText("Close").performClick()
+        composeTestRule.onNodeWithText("Schließen").performClick()
 
         val attributeText1 = composeTestRule.activity.getString(R.string.idCardAttribute_DG02)
         composeTestRule.onNodeWithText(attributeText1, substring = true).assertIsDisplayed()
