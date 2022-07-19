@@ -12,11 +12,14 @@ import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.UseIDApp
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
-import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.composables.screens.destinations.SetupFinishDestination
+import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,6 +40,9 @@ class UiTestSetup {
     @BindValue
     val mockSetupScanViewModel: SetupScanViewModel = mockk(relaxed = true)
 
+    @BindValue
+    val mockIdentificationCoordinator: IdentificationCoordinator = mockk(relaxed = true)
+
     @Before
     fun before() {
         hiltRule.inject()
@@ -45,10 +51,16 @@ class UiTestSetup {
     @Test
     fun test() {
         val testErrorState: MutableState<ScanError?> = mutableStateOf(null)
+        val testIdentificationValue = "testIdentificationValue"
 
         every { mockSetupScanViewModel.errorState } answers { testErrorState.value }
         every { mockSetupScanViewModel.onReEnteredTransportPIN(any(), any()) } answers {
             appCoordinator.navigate(SetupFinishDestination)
+        }
+
+        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns MutableStateFlow(FetchMetadataEvent.Finished)
+        every { mockIdentificationCoordinator.startIdentificationProcess() } answers {
+            appCoordinator.navigate(IdentificationSuccessDestination(testIdentificationValue))
         }
 
         composeTestRule.activity.setContent {
@@ -130,5 +142,8 @@ class UiTestSetup {
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
 
         verify(exactly = 1) { mockSetupScanViewModel.onReEnteredTransportPIN("12345", any()) }
+
+        val setupSuccessCloseButton = composeTestRule.activity.getString(R.string.firstTimeUser_finish_button)
+        composeTestRule.onNodeWithText(setupSuccessCloseButton).performClick()
     }
 }
