@@ -1,4 +1,4 @@
-package de.digitalService.useID
+package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadataViewModel
@@ -48,7 +48,7 @@ class IdentificationFetchMetadataViewModelTest {
         val viewModel = IdentificationFetchMetadataViewModel(
             mockIdentificationCoordinator,
         )
-        
+
         dispatcher.scheduler.advanceUntilIdle();
 
         assertFalse(viewModel.shouldShowError)

@@ -1,5 +1,6 @@
-package de.digitalService.useID
+package de.digitalService.useID.viewModel
 
+import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.ui.composables.screens.SetupPersonalPINViewModel
 import de.digitalService.useID.ui.composables.screens.SetupPersonalPINViewModelInterface
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
@@ -10,7 +11,6 @@ import io.mockk.mockkStatic
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test

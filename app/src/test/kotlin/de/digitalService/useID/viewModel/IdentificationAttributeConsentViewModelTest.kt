@@ -1,6 +1,7 @@
-package de.digitalService.useID
+package de.digitalService.useID.viewModel
 
 import androidx.lifecycle.SavedStateHandle
+import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute
