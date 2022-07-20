@@ -16,7 +16,7 @@ android {
         applicationId "de.digitalService.useID"
         minSdk 28
         targetSdk 32
-        versionCode 4
+        versionCode 5
         versionName "1.0"
 
         testInstrumentationRunner "de.digitalService.useID.HiltTestRunner"
