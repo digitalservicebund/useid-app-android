@@ -1,4 +1,4 @@
-name: Release
+name: Preview
 on:
   workflow_dispatch:
     inputs:
@@ -14,7 +14,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
-          ref: 'release/${{ inputs.versionName }}'
+          ref: 'preview/${{ inputs.versionName }}'
       - name: Setup
         uses: ./.github/actions/setup
       - name: Update version name and bump version code
@@ -26,7 +26,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
-          ref: 'release/${{ inputs.versionName }}'
+          ref: 'preview/${{ inputs.versionName }}'
       - name: Setup
         uses: ./.github/actions/setup
       - name: Deploy key store
@@ -41,4 +41,4 @@ jobs:
           KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
-        run: bundle exec fastlane release
+        run: bundle exec fastlane preview
