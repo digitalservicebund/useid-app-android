@@ -1,5 +1,8 @@
 package de.digitalService.useID.idCardInterface
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class EIDAuthenticationRequest(
     val issuer: String,
     val issuerURL: String,

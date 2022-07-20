@@ -1,0 +1,137 @@
+package de.digitalService.useID
+
+import androidx.activity.compose.setContent
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.test.*
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import dagger.hilt.android.testing.BindValue
+import dagger.hilt.android.testing.HiltAndroidRule
+import dagger.hilt.android.testing.HiltAndroidTest
+import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.composables.UseIDApp
+import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
+import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
+import de.digitalService.useID.ui.composables.screens.destinations.SetupFinishDestination
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import javax.inject.Inject
+
+@HiltAndroidTest
+class UiTestSetup {
+
+    @get:Rule(order = 0)
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 1)
+    val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @Inject
+    lateinit var appCoordinator: AppCoordinator
+
+    @BindValue
+    val mockSetupScanViewModel: SetupScanViewModel = mockk(relaxed = true)
+
+    @Before
+    fun before() {
+        hiltRule.inject()
+    }
+
+    @Test
+    fun test() {
+        val testErrorState: MutableState<SetupScanViewModelInterface.Error?> = mutableStateOf(null)
+        val testAttempts = mutableStateOf(3)
+
+        every { mockSetupScanViewModel.errorState } answers { testErrorState.value }
+        every { mockSetupScanViewModel.attempts } answers { testAttempts.value }
+        every { mockSetupScanViewModel.onReEnteredTransportPIN(any(), any()) } answers {
+            appCoordinator.navigate(SetupFinishDestination)
+        }
+
+        composeTestRule.activity.setContent {
+            UseIDApp(appCoordinator)
+        }
+
+        val startSetupButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_no)
+        composeTestRule.onNodeWithText(startSetupButton).performClick()
+
+        composeTestRule.onNodeWithText(startSetupButton).assertDoesNotExist()
+
+        val backButtonTag = "backButton"
+        composeTestRule.onNodeWithTag(backButtonTag).performClick()
+
+        composeTestRule.onNodeWithText(startSetupButton).performClick()
+
+        val pinLetterAvailableButton = composeTestRule.activity.getString(R.string.firstTimeUser_pinLetter_yes)
+        composeTestRule.onNodeWithText(pinLetterAvailableButton).performClick()
+
+        val pinEntryTextFieldTag = "PINEntryField"
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
+        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(5)
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
+
+        val choosePersonalPinButton = composeTestRule.activity.getString(R.string.firstTimeUser_personalPINIntro_continue)
+        composeTestRule.onNodeWithText(choosePersonalPinButton).performClick()
+
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
+        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(5)
+
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(1)
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(1)
+
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("6")
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(2)
+
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[0].assertIsNotFocused()
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[1].assertIsFocused()
+
+        val personalPinError = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_error_mismatch_title)
+        composeTestRule.onNodeWithText(personalPinError).assertDoesNotExist()
+
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[1].performTextInput("111111")
+
+        composeTestRule.onNodeWithText(personalPinError).assertIsDisplayed()
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(2)
+
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[0].performTextInput("123456")
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(2)
+        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[1].performTextInput("123456")
+
+        val setupScanTitle = composeTestRule.activity.getString(R.string.firstTimeUser_scan_title)
+        composeTestRule.onNodeWithText(setupScanTitle).assertIsDisplayed()
+
+        testErrorState.value = SetupScanViewModelInterface.Error.PINSuspended
+        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.value!!.titleResID)
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+
+        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.value!!.titleResID)
+        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+
+        val buttonText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_button)
+        composeTestRule.onNodeWithText(buttonText).performClick()
+
+        verify(exactly = 1) { mockSetupScanViewModel.onErrorDialogButtonTap() }
+        testErrorState.value = null
+
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()
+        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertDoesNotExist()
+
+        testAttempts.value = 0
+        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
+        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
+
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
+        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
+        testAttempts.value = 3
+
+        verify(exactly = 1) { mockSetupScanViewModel.onReEnteredTransportPIN("12345", any()) }
+    }
+}

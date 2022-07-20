@@ -17,6 +17,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -32,6 +33,7 @@ fun PINEntryField(
     value: String,
     onValueChanged: (String) -> Unit,
     digitCount: Int,
+    obfuscation: Boolean,
     spacerPosition: Int?,
     contentDescription: String,
     focusRequester: FocusRequester,
@@ -70,6 +72,7 @@ fun PINEntryField(
                 .align(Alignment.Center)
                 .fillMaxWidth()
                 .focusRequester(focusRequester)
+                .testTag("PINEntryField")
         )
         Surface(
             shape = MaterialTheme.shapes.small,
@@ -93,6 +96,7 @@ fun PINEntryField(
         PINDigitRow(
             input = value,
             digitCount = digitCount,
+            obfuscation = obfuscation,
             placeholder = false,
             spacerPosition = spacerPosition,
             modifier = Modifier
@@ -106,6 +110,6 @@ fun PINEntryField(
 @Composable
 fun PreviewPINEntryField() {
     UseIDTheme {
-        PINEntryField(value = "22", onValueChanged = { }, digitCount = 6, spacerPosition = 3, contentDescription = "", focusRequester = FocusRequester())
+        PINEntryField(value = "22", onValueChanged = { }, digitCount = 6, obfuscation = true, spacerPosition = 3, contentDescription = "", focusRequester = FocusRequester())
     }
 }

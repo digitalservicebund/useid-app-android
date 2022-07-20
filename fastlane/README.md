@@ -29,7 +29,23 @@ Runs all the tests
 [bundle exec] fastlane android lint
 ```
 
-Run linter
+Run Android linter and ktlint
+
+### android updateVersion
+
+```sh
+[bundle exec] fastlane android updateVersion
+```
+
+Update version name and bump version code
+
+### android buildAndSubmit
+
+```sh
+[bundle exec] fastlane android buildAndSubmit
+```
+
+Create new Playstore build and submit to Google Play Store
 
 ----
 

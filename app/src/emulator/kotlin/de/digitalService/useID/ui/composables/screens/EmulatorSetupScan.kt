@@ -25,7 +25,7 @@ import javax.inject.Inject
 @Composable
 fun EmulatorSetupScan(viewModel: EmulatorSetupScanViewModel) {
     Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
-        SetupScan(viewModel.innerViewModel, modifier = Modifier.fillMaxHeight(0.9f))
+        SetupScan(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier

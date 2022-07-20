@@ -14,7 +14,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
@@ -23,8 +26,9 @@ import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
+@Destination
 @Composable
-fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Modifier = Modifier) {
+fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINViewModelInterface = hiltViewModel<SetupPersonalPINViewModel>()) {
     val focusRequesterPIN1 = remember { FocusRequester() }
     val focusRequesterPIN2 = remember { FocusRequester() }
 
@@ -32,6 +36,7 @@ fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Mo
         id = R.string.firstTimeUser_personalPIN_PIN1TextFieldDescription,
         viewModel.pin1.map { "$it " }
     )
+
     val pin2EntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_PIN2TextFieldDescription,
         viewModel.pin2.map { "$it " }
@@ -50,6 +55,7 @@ fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Mo
             PINEntryField(
                 value = viewModel.pin1,
                 digitCount = 6,
+                obfuscation = true,
                 spacerPosition = 3,
                 onValueChanged = viewModel::userInputPIN1,
                 contentDescription = pin1EntryFieldDescription,
@@ -58,6 +64,7 @@ fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Mo
                     .width(240.dp)
                     .height(56.dp)
             )
+
             AnimatedVisibility(viewModel.shouldShowPIN2EntryField) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -69,6 +76,7 @@ fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Mo
                     PINEntryField(
                         value = viewModel.pin2,
                         digitCount = 6,
+                        obfuscation = true,
                         spacerPosition = 3,
                         onValueChanged = viewModel::userInputPIN2,
                         contentDescription = pin2EntryFieldDescription,
@@ -79,6 +87,7 @@ fun SetupPersonalPIN(viewModel: SetupPersonalPINViewModelInterface, modifier: Mo
                     )
                 }
             }
+
             AnimatedVisibility(viewModel.shouldShowError) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -148,10 +157,12 @@ class SetupPersonalPINViewModel @Inject constructor(private val coordinator: Set
         private set
 
     override fun userInputPIN1(value: String) {
+        if (!checkPINString(value)) return
+
         pin1 = value
         shouldShowError = false
 
-        val pinComplete = pin1.length >= 6
+        val pinComplete = pin1.length == 6
 
         shouldShowPIN2EntryField = pinComplete || pin2.isNotEmpty()
 
@@ -160,9 +171,13 @@ class SetupPersonalPINViewModel @Inject constructor(private val coordinator: Set
         }
     }
 
+    private fun checkPINString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
+
     override fun userInputPIN2(value: String) {
+        if (!checkPINString(value)) return
+
         pin2 = value
-        if (pin2.length > 5) {
+        if (pin2.length == 6) {
             handlePINInput()
         }
     }
@@ -197,7 +212,7 @@ private class PreviewSetupPersonalPINViewModel(
 fun PreviewSetupPersonalPIN() {
     UseIDTheme {
         SetupPersonalPIN(
-            PreviewSetupPersonalPINViewModel(
+            viewModel = PreviewSetupPersonalPINViewModel(
                 "12",
                 "",
                 SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1,

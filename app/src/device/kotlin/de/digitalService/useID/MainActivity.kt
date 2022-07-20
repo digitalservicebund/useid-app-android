@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.Tag
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -64,7 +65,9 @@ class MainActivity : ComponentActivity() {
             activity.applicationContext,
             activity.javaClass
         ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
+
+        val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, flag)
         nfcAdapter?.enableForegroundDispatch(activity, nfcPendingIntent, null, null)
     }
 }

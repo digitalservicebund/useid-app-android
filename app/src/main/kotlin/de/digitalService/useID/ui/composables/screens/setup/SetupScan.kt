@@ -11,9 +11,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -27,8 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
@@ -48,8 +47,9 @@ import javax.annotation.Nullable
 import javax.inject.Inject
 
 @OptIn(ExperimentalAnimationApi::class)
+@Destination
 @Composable
-fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modifier) {
+fun SetupScan(modifier: Modifier = Modifier, viewModel: SetupScanViewModelInterface = hiltViewModel<SetupScanViewModel>()) {
     val context = LocalContext.current
 
     viewModel.errorState?.let {
@@ -57,7 +57,7 @@ fun SetupScan(viewModel: SetupScanViewModelInterface, modifier: Modifier = Modif
     }
 
     AnimatedVisibility(
-        visible = viewModel.attempts < 3,
+        visible = viewModel.attempts < 3, // TODO: Both dialogs should not show at the same time
         enter = scaleIn(tween(200)),
         exit = scaleOut(tween(100))
     ) {
@@ -170,10 +170,11 @@ interface SetupScanViewModelInterface {
         val titleResID: Int
             get() {
                 return when (this) {
-                    PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
-                    PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
-                    IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
+                    is PINSuspended -> R.string.firstTimeUser_scan_error_title_pin_suspended
+                    is PINBlocked -> R.string.firstTimeUser_scan_error_title_pin_blocked
+                    is IDDeactivated -> R.string.firstTimeUser_scan_error_title_id_deactivated
                     is Other -> R.string.firstTimeUser_scan_error_title_unknown
+                    else -> throw IllegalArgumentException()
                 }
             }
 
@@ -182,6 +183,7 @@ interface SetupScanViewModelInterface {
                 return when (this) {
                     PINSuspended, PINBlocked, IDDeactivated -> R.string.firstTimeUser_scan_error_text_feature_unavailable
                     is Other -> R.string.firstTimeUser_scan_error_text_unknown
+                    else -> throw IllegalArgumentException()
                 }
             }
     }
@@ -202,7 +204,7 @@ class SetupScanViewModel @Inject constructor(
     private val coordinator: SetupCoordinator,
     private val secureStorageManager: SecureStorageManagerInterface,
     private val idCardManager: IDCardManager,
-    @Nullable private val coroutineScope: CoroutineScope? = null
+    @Nullable coroutineScope: CoroutineScope? = null
 ) :
     ViewModel(), SetupScanViewModelInterface {
     private val logger by getLogger()
@@ -239,6 +241,11 @@ class SetupScanViewModel @Inject constructor(
 
     override fun onCancel() = coordinator.cancelSetup()
 
+    private fun finishSetup() {
+        secureStorageManager.clearStorage()
+        coordinator.onSettingPINSucceeded()
+    }
+
     private fun executePINManagement(transportPIN: String, context: Context) {
         val newPIN = secureStorageManager.loadPersonalPIN() ?: run {
             logger.error("Personal PIN not available.")
@@ -265,7 +272,7 @@ class SetupScanViewModel @Inject constructor(
                     }
                     EIDInteractionEvent.ProcessCompletedSuccessfully -> {
                         logger.debug("Process completed successfully.")
-                        coordinator.onSettingPINSucceeded()
+                        finishSetup()
                     }
                     EIDInteractionEvent.RequestCardInsertion -> logger.debug("Card insertion requested.")
                     is EIDInteractionEvent.RequestChangedPIN -> {
@@ -320,7 +327,7 @@ class PreviewSetupScanViewModel(
 @Composable
 fun PreviewSetupScanWithoutError() {
     UseIDTheme {
-        SetupScan(PreviewSetupScanViewModel(3, errorState = null))
+        SetupScan(viewModel = PreviewSetupScanViewModel(3, errorState = null))
     }
 }
 
@@ -329,7 +336,7 @@ fun PreviewSetupScanWithoutError() {
 @Composable
 fun PreviewSetupScanInvalidTransportPIN() {
     UseIDTheme {
-        SetupScan(PreviewSetupScanViewModel(2, errorState = null))
+        SetupScan(viewModel = PreviewSetupScanViewModel(2, errorState = null))
     }
 }
 
@@ -338,7 +345,7 @@ fun PreviewSetupScanInvalidTransportPIN() {
 fun PreviewSetupScanWithError() {
     UseIDTheme {
         SetupScan(
-            PreviewSetupScanViewModel(
+            viewModel = PreviewSetupScanViewModel(
                 3,
                 errorState = SetupScanViewModelInterface.Error.PINSuspended
             )

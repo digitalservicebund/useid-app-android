@@ -16,7 +16,7 @@ enum class ButtonType {
 }
 
 @Composable
-fun BundButton(type: ButtonType, onClick: () -> Unit, label: String) {
+fun BundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: Modifier = Modifier) {
     val containerColor: Color
     val contentColor: Color
 
@@ -38,10 +38,13 @@ fun BundButton(type: ButtonType, onClick: () -> Unit, label: String) {
             contentColor = contentColor
         ),
         shape = MaterialTheme.shapes.small,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
+        modifier = modifier
     ) {
         Text(label)
     }
+}
+
+@Composable
+fun RegularBundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: Modifier = Modifier) {
+    BundButton(type = type, onClick = onClick, label = label, modifier = modifier.fillMaxWidth().height(50.dp))
 }

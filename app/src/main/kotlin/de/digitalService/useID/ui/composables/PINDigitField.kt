@@ -8,17 +8,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PINDigitField(input: Boolean, placeholder: Boolean) {
+fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
     Box(
         modifier = Modifier
             .width(30.dp)
@@ -32,21 +35,33 @@ fun PINDigitField(input: Boolean, placeholder: Boolean) {
                 )
             }
     ) {
-        if (input) {
-            Icon(
-                imageVector = Icons.Filled.Circle,
-                contentDescription = "",
-                modifier = Modifier.align(
-                    Alignment.Center
-                ).size(10.dp)
-            )
+        if (input != null) {
+            if (obfuscation) {
+                Icon(
+                    imageVector = Icons.Filled.Circle,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(10.dp)
+                        .testTag("PinEntry")
+                )
+            } else {
+                Text(
+                    text = input.toString(),
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .testTag("PinEntry")
+                )
+            }
         } else if (placeholder) {
             Icon(
                 imageVector = Icons.Outlined.Circle,
                 contentDescription = "",
-                modifier = Modifier.align(
-                    Alignment.Center
-                ).size(10.dp)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(10.dp)
+                    .testTag("PinEntry")
             )
         }
     }
@@ -54,18 +69,24 @@ fun PINDigitField(input: Boolean, placeholder: Boolean) {
 
 @Preview
 @Composable
-fun PreviewPINDigitFieldWithInput() {
-    PINDigitField(input = true, placeholder = false)
+fun PreviewPINDigitFieldWithInputNotObfuscated() {
+    PINDigitField(input = '2', obfuscation = false, placeholder = false)
 }
 
 @Preview
 @Composable
-fun PreviewPINDigitFieldWithouInput() {
-    PINDigitField(input = false, placeholder = false)
+fun PreviewPINDigitFieldWithInputObfuscated() {
+    PINDigitField(input = '2', obfuscation = true, placeholder = false)
+}
+
+@Preview
+@Composable
+fun PreviewPINDigitFieldWithoutInput() {
+    PINDigitField(input = null, obfuscation = false, placeholder = false)
 }
 
 @Preview
 @Composable
 fun PreviewPINDigitFieldWithouInputAndPlaceholder() {
-    PINDigitField(input = false, placeholder = true)
+    PINDigitField(input = null, obfuscation = false, placeholder = true)
 }

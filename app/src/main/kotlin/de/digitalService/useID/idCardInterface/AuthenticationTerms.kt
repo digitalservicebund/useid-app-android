@@ -1,5 +1,9 @@
 package de.digitalService.useID.idCardInterface
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 sealed class AuthenticationTerms {
-    data class Text(val text: String) : AuthenticationTerms()
+    @Serializable
+    class Text(val text: String) : AuthenticationTerms()
 }
