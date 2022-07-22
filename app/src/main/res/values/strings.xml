@@ -73,6 +73,10 @@
     <string name="identification_fetchMetadataError_button">Erneut versuchen</string>
     <string name="idScan_error_cardDeactivated_title">Für Ihren Ausweis ist die Online-Funktion nicht aktiviert</string>
     <string name="idScan_error_cardDeactivated_body">Wenden Sie sich an Ihr Bürgeramt, um die Online-Ausweisfunktion zu akvitieren.\\n\\nSie wissen nicht, an wen Sie sich wenden können? Rufen Sie die 115 an oder informieren Sie sich unter https://behoredenfinder.de/</string>
+    <string name="idScan_error_suspended_title">Ihr Ausweis ist gesperrt</string>
+    <string name="idScan_error_suspended_body">### Warum ist Ihr Ausweis gesperrt?\n Da Sie Ihre PIN zwei Mal falsch eingeben haben, wurde Ihr Ausweis gesperrt.\n ### Was können Sie tun?\n Wir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.\n\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6-stelligen CAN in Kombination mit Ihrer PIN in der **AusweisApp2** entsperren.Ihre 6-stellige CAN finden Sie auf der Vorderseite Ihres Personalausweises. Alternativ können Sie im **Bürgeramt** Ihre PIN neu vergeben, sollten Sie diese vergessen haben.</string>
+    <string name="idScan_error_blocked_title">Ihr Ausweis ist blockiert</string>
+    <string name="idScan_error_blocked_body">### Warum ist Ihr Ausweis blockiert?\n Da Sie Ihre PIN ein drittes Mal falsch eingeben haben, wurde Ihr Ausweis blockiert.\n ### Was können Sie tun?\n Wir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der **AusweisApp2** oder im **Bürgeramt** entsperren.Ihre 10-stellige PUK finden Sie auf Ihrem PIN Brief.</string>
     <string name="idScan_error_unknown_title">Fehler</string>
     <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="idScan_error_button_close">Schließen</string>
@@ -80,8 +84,5 @@
     <string name="firstTimeUser_finish_body">Ihre persönliche PIN geben Sie jedes Mal ein, wenn Sie Ihren Ausweis online benutzen.</string>
     <string name="firstTimeUser_finish_button">Schließen</string>
     <string name="idScan_help_title">Ausweis wird nicht unterstützt.</string>
-    <string name="idScan_help_body_supportedDocuments">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger</string>
-    <string name="idScan_help_body_troubleshoot">Wenn Sie eines der oben genannten Dokumente benutzen und das Problem weiterhin auftritt, versuchen Sie diese Schritte:</string>
-    <string name="idScan_help_body_enumeration_tryAgain">Entfernen Sie die Karte von Ihrem Telefon und legen Sie sie erneut an das Telefon.</string>
-    <string name="idScan_help_body_enumeration_case">Wenn Sie eine sehr dicke Handyhülle haben, versuchen Sie, die Hülle zu entfernen.</string>
+    <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger\n\nWenn Sie eines der oben genannten Dokumente benutzen und das Problem weiterhin auftritt, versuchen Sie diese Schritte:\n\n- Entfernen Sie die Karte von Ihrem Telefon und legen Sie sie erneut an das Telefon.\n- Wenn Sie eine sehr dicke Handyhülle haben, versuchen Sie, die Hülle zu entfernen.</string>
 </resources>

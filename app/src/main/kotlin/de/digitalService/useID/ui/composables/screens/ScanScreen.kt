@@ -29,6 +29,7 @@ import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.ScanErrorAlertDialog
 import de.digitalService.useID.ui.composables.StandardDialog
 import de.digitalService.useID.ui.theme.UseIDTheme
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun ScanScreen(
@@ -112,38 +113,52 @@ fun ScanScreen(
                 )
             },
             text = {
-                val distance = 20.dp
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(distance),
-                    modifier = Modifier.verticalScroll(
-                        rememberScrollState()
-                    )
-                ) {
-                    Text(
-                        stringResource(id = R.string.idScan_help_body_supportedDocuments),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Text(
-                        stringResource(id = R.string.idScan_help_body_troubleshoot),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    val bullet1 = stringResource(id = R.string.idScan_help_body_enumeration_tryAgain)
-                    Text(text = "\u2022 $bullet1", style = MaterialTheme.typography.bodySmall)
-                    val bullet2 = stringResource(id = R.string.idScan_help_body_enumeration_case)
-                    Text(text = "\u2022 $bullet2", style = MaterialTheme.typography.bodySmall)
-                }
+                MarkdownText(
+                    markdown = stringResource(id = R.string.idScan_help_body),
+                    fontResource = R.font.bundes_sans_dtp_regular
+                )
             }, onButtonTap = { helpDialogShown = false })
     }
 }
 
 @Preview
 @Composable
-fun PreviewScanScreen() {
+private fun PreviewWithoutProgress() {
     UseIDTheme {
         ScanScreen(
             title = "Title",
             body = "Body",
             errorState = null,
+            onIncorrectPIN = { },
+            onCancel = {  },
+            showProgress = false
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewWithProgress() {
+    UseIDTheme {
+        ScanScreen(
+            title = "Title",
+            body = "Body",
+            errorState = null,
+            onIncorrectPIN = { },
+            onCancel = {  },
+            showProgress = true
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewWithError() {
+    UseIDTheme {
+        ScanScreen(
+            title = "Title",
+            body = "Body",
+            errorState = ScanError.PINSuspended,
             onIncorrectPIN = { },
             onCancel = {  },
             showProgress = false
