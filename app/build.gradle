@@ -7,6 +7,7 @@ plugins {
     id 'de.mannodermaus.android-junit5'
     id 'kotlinx-serialization'
     id 'com.google.devtools.ksp'
+    id 'io.sentry.android.gradle'
 }
 
 android {
@@ -48,12 +49,12 @@ android {
     productFlavors {
         device {
             dimension = "nfc"
+            manifestPlaceholders = [sentryURL:"https://887dace5d9c94ccf9110cfa1a90a124f@o1248831.ingest.sentry.io/6593737"]
         }
         preview {
             dimension = "nfc"
-
-            //noinspection GradlePath
             applicationIdSuffix = ".Preview"
+            manifestPlaceholders = [sentryURL:"https://d9b44d7779d7498c8cc2250eb3af253d@o1248831.ingest.sentry.io/6589522"]
         }
     }
 
@@ -134,6 +135,9 @@ dependencies {
 
     implementation 'org.slf4j:slf4j-api:1.7.32'
     implementation 'com.github.tony19:logback-android:2.0.0'
+
+    implementation 'io.sentry:sentry-android:6.3.0'
+    implementation 'io.sentry:sentry-compose-android:6.3.0'
 }
 
 kotlinter {
@@ -151,4 +155,8 @@ lintKotlinAndroidTest {
 
 lintKotlinTest {
     exclude '**/*.kt'
+}
+
+sentry {
+    ignoredBuildTypes = ["debug"]
 }

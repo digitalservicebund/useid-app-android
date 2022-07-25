@@ -30,6 +30,9 @@
                 <action android:name="android.nfc.action.TECH_DISCOVERED"/>
             </intent-filter>
         </activity>
+        <meta-data android:name="io.sentry.dsn" android:value="${sentryURL}" />
+        <meta-data android:name="io.sentry.traces.sample-rate" android:value="1.0" />
+        <meta-data android:name="io.sentry.traces.user-interaction.enable" android:value="false" />
     </application>
 
 </manifest>

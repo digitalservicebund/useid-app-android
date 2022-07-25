@@ -20,11 +20,11 @@ import androidx.navigation.compose.rememberNavController
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import io.sentry.compose.withSentryObservableEffect
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UseIDApp(appCoordinator: AppCoordinator) {
-    val navController = rememberNavController()
+    val navController = rememberNavController().withSentryObservableEffect()
     var shouldShowBackButton by remember { mutableStateOf(false) }
 
     appCoordinator.setNavController(navController)
