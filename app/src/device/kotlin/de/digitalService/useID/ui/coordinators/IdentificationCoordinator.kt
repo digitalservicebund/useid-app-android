@@ -32,8 +32,7 @@ class IdentificationCoordinator @Inject constructor(
 ) {
     private val logger by getLogger()
 
-    private val _fetchMetadataEventFlow: MutableStateFlow<FetchMetadataEvent> = MutableStateFlow(
-        FetchMetadataEvent.Started)
+    private val _fetchMetadataEventFlow: MutableStateFlow<FetchMetadataEvent> = MutableStateFlow(FetchMetadataEvent.Started)
     val fetchMetadataEventFlow: StateFlow<FetchMetadataEvent>
         get() = _fetchMetadataEventFlow
 
@@ -83,7 +82,7 @@ class IdentificationCoordinator @Inject constructor(
             idCardManager.identify(context, demoURL).catch { error ->
                 logger.error("Identification error: $error")
 
-                when(error) {
+                when (error) {
                     IDCardInteractionException.CardDeactivated -> _scanEventFlow.emit(ScanEvent.Error(ScanError.CardDeactivated))
                     IDCardInteractionException.CardBlocked -> _scanEventFlow.emit(ScanEvent.Error(ScanError.CardBlocked))
                     else -> {
