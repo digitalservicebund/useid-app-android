@@ -39,7 +39,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
 
     private val provider: String = "Provider"
 
-    fun startIdentificationProcess() {
+    fun startIdentificationProcess(tcTokenURL: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val mockedRequest =
                 EIDAuthenticationRequest(

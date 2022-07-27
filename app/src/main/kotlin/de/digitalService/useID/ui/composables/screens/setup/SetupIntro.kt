@@ -5,17 +5,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.FULL_ROUTE_PLACEHOLDER
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
+import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
+import de.digitalService.useID.ui.composables.screens.identification.IdentificationSuccessNavArgs
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
 @RootNavGraph(start = true)
-@Destination
+@Destination(
+    navArgsDelegate = SetupIntroNavArgs::class,
+    deepLinks = [
+        DeepLink(uriPattern = "eid://127.0.0.1:24727/eID-Client?tcTokenURL={tcTokenURL}")
+    ]
+)
 @Composable
 fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntroViewModel>()) {
     StandardStaticComposition(
@@ -28,18 +40,29 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
     )
 }
 
+data class SetupIntroNavArgs(
+    val tcTokenURL: String?
+)
+
 interface SetupIntroViewModelInterface {
     fun onFirstTimeUsage()
     fun onNonFirstTimeUsage()
 }
 
 @HiltViewModel
-class SetupIntroViewModel @Inject constructor(val appCoordinator: AppCoordinator) : ViewModel(), SetupIntroViewModelInterface {
+class SetupIntroViewModel @Inject constructor(private val setupCoordinator: SetupCoordinator, savedStateHandle: SavedStateHandle) : ViewModel(), SetupIntroViewModelInterface {
+    init {
+        SetupIntroDestination.argsFrom(savedStateHandle).tcTokenURL?.let {
+            setupCoordinator.setTCTokenURL(it)
+        }
+    }
+
     override fun onFirstTimeUsage() {
-        appCoordinator.startSetupIDCard()
+        setupCoordinator.startSetupIDCard()
     }
 
     override fun onNonFirstTimeUsage() {
+        setupCoordinator.onSetupFinished()
     }
 }
 

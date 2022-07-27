@@ -23,19 +23,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationFetchMetadataDestination
+import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @OptIn(ExperimentalAnimationApi::class)
-@Destination
+@Destination(
+    navArgsDelegate = IdentificationFetchMetadataNavArgs::class
+)
 @Composable
 fun IdentificationFetchMetadata(
     modifier: Modifier = Modifier,
@@ -118,6 +124,10 @@ fun ConnectionErrorDialog(
     }
 }
 
+data class IdentificationFetchMetadataNavArgs(
+    val tcTokenURL: String
+)
+
 enum class FetchMetadataEvent {
     Started, Finished, Error
 }
@@ -133,7 +143,8 @@ interface IdentificationFetchMetadataViewModelInterface {
 
 @HiltViewModel
 class IdentificationFetchMetadataViewModel @Inject constructor(
-    private val coordinator: IdentificationCoordinator
+    private val coordinator: IdentificationCoordinator,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel(), IdentificationFetchMetadataViewModelInterface {
     override var shouldShowProgressIndicator: Boolean by mutableStateOf(false)
         private set
@@ -141,12 +152,15 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     override var shouldShowError: Boolean by mutableStateOf(false)
         private set
 
+    private val tcTokenURL: String
+
     init {
+        tcTokenURL = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).tcTokenURL
         collectFetchMetadataEvents()
     }
 
     override fun fetchMetadata() {
-        coordinator.startIdentificationProcess()
+        coordinator.startIdentificationProcess(tcTokenURL)
     }
 
     override fun onErrorCancel() {
@@ -154,7 +168,7 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     }
 
     override fun onErrorRetry() {
-        coordinator.startIdentificationProcess()
+        coordinator.startIdentificationProcess(tcTokenURL)
     }
 
     private fun collectFetchMetadataEvents() {

@@ -43,7 +43,7 @@ fun PreviewIdentificationFetchMetadata(viewModel: PreviewIdentificationFetchMeta
 
 @HiltViewModel
 class PreviewIdentificationFetchMetadataViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel() {
-    fun simulateSuccess() { coordinator.startIdentificationProcess() }
+    fun simulateSuccess() { coordinator.startIdentificationProcess("") }
     fun simulateConnectionError() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(false)

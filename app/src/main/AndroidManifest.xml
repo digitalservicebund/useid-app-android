@@ -18,7 +18,7 @@
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.UseID"
-            android:launchMode="singleTask">
+            android:launchMode="standard">
             <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/techlist" />
             <intent-filter>
@@ -28,6 +28,12 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="eid"/>
             </intent-filter>
         </activity>
         <meta-data android:name="io.sentry.dsn" android:value="${sentryURL}" />

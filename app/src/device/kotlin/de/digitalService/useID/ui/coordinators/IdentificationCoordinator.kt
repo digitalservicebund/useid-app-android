@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
+import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.getLogger
@@ -22,6 +23,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.openecard.common.util.UrlEncoder
+import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -47,8 +50,8 @@ class IdentificationCoordinator @Inject constructor(
 
     private var reachedScanState = false
 
-    fun startIdentificationProcess() {
-        startIdentification()
+    fun startIdentificationProcess(tcTokenURL: String) {
+        startIdentification(tcTokenURL)
     }
 
     fun confirmAttributesForIdentification() {
@@ -74,14 +77,20 @@ class IdentificationCoordinator @Inject constructor(
         appCoordinator.popToRoot()
     }
 
-    private fun startIdentification() {
-        val demoURL =
-            "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
+    private fun startIdentification(tcTokenURL: String) {
+        val fullURL = Uri
+            .Builder()
+            .scheme("http")
+            .encodedAuthority("127.0.0.1:24727")
+            .appendPath("eID-Client")
+            .appendQueryParameter("tcTokenURL", tcTokenURL)
+            .build()
+            .toString()
 
         CoroutineScope(coroutineContextProvider.IO).launch {
             _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
 
-            idCardManager.identify(context, demoURL).catch { error ->
+            idCardManager.identify(context, fullURL).catch { error ->
                 logger.error("Identification error: $error")
 
                 when (error) {

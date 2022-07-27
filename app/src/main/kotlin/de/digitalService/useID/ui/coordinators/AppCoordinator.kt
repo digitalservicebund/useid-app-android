@@ -23,6 +23,5 @@ class AppCoordinator @Inject constructor() {
         navController.popBackStack(route = SetupIntroDestination.route, inclusive = false)
     }
 
-    fun startSetupIDCard() = navController.navigate(SetupPINLetterDestination)
-    fun startIdentification() = navController.navigate(IdentificationFetchMetadataDestination)
+    fun startIdentification(tcTokenURL: String) = navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL))
 }

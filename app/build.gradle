@@ -54,6 +54,7 @@ android {
         preview {
             dimension = "nfc"
             applicationIdSuffix = ".Preview"
+            versionNameSuffix = "-preview"
             manifestPlaceholders = [sentryURL:"https://d9b44d7779d7498c8cc2250eb3af253d@o1248831.ingest.sentry.io/6589522"]
         }
     }
