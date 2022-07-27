@@ -24,18 +24,29 @@ import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.composables.screens.ScanScreen
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.util.CoroutineContextProvider
+import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Destination
 @Composable
-fun IdentificationScan(modifier: Modifier = Modifier, viewModel: IdentificationScanViewModelInterface = hiltViewModel<IdentificationScanViewModel>()) {
+fun IdentificationScan(
+    modifier: Modifier = Modifier,
+    viewModel: IdentificationScanViewModelInterface = hiltViewModel<IdentificationScanViewModel>()
+) {
     ScanScreen(
         title = stringResource(id = R.string.identification_scan_title),
         body = stringResource(id = R.string.identification_scan_body),
         errorState = viewModel.errorState,
-        onIncorrectPIN = { attempts -> PINDialog(attempts = attempts, onCancel = viewModel::onCancelIdentification, onNewPINEntered = viewModel::onNewPersonalPINEntered) },
+        onIncorrectPIN = { attempts ->
+            PINDialog(
+                attempts = attempts,
+                onCancel = viewModel::onCancelIdentification,
+                onNewPINEntered = viewModel::onNewPersonalPINEntered
+            )
+        },
         onCancel = viewModel::onCancelIdentification,
         showProgress = viewModel.shouldShowProgress,
         modifier = modifier
@@ -93,7 +104,10 @@ interface IdentificationScanViewModelInterface {
 }
 
 @HiltViewModel
-class IdentificationScanViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel(), IdentificationScanViewModelInterface {
+class IdentificationScanViewModel @Inject constructor(
+    private val coordinator: IdentificationCoordinator,
+    private val coroutineContextProvider: CoroutineContextProviderType,
+) : ViewModel(), IdentificationScanViewModelInterface {
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
     override var errorState: ScanError? by mutableStateOf(null)
@@ -116,7 +130,7 @@ class IdentificationScanViewModel @Inject constructor(private val coordinator: I
     }
 
     private fun collectScanEvents() {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineContextProvider.IO) {
             coordinator.scanEventFlow.collect { event ->
                 when (event) {
                     ScanEvent.CardRequested -> shouldShowProgress = false

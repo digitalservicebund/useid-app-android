@@ -39,7 +39,7 @@ class IdentificationCoordinator @Inject constructor(
         get() = _fetchMetadataEventFlow
 
     private val _scanEventFlow: MutableStateFlow<ScanEvent> = MutableStateFlow(ScanEvent.CardRequested)
-    val scanEventFlow: StateFlow<ScanEvent>
+    val scanEventFlow: Flow<ScanEvent>
         get() = _scanEventFlow
 
     private var requestAuthenticationEvent: EIDInteractionEvent.RequestAuthenticationRequestConfirmation? = null
