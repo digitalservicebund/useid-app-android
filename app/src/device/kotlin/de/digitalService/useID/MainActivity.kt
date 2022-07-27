@@ -46,8 +46,8 @@ class MainActivity : ComponentActivity() {
         foregroundDispatch(this)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
         nfcAdapter?.disableForegroundDispatch(this)
     }
 
