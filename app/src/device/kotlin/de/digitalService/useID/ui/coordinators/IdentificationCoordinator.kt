@@ -16,6 +16,7 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationPersonalPIN
 import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
+import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -28,7 +29,8 @@ import javax.inject.Singleton
 class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     val appCoordinator: AppCoordinator,
-    val idCardManager: IDCardManager
+    val idCardManager: IDCardManager,
+    val coroutineContextProvider: CoroutineContextProviderType,
 ) {
     private val logger by getLogger()
 
@@ -76,7 +78,7 @@ class IdentificationCoordinator @Inject constructor(
         val demoURL =
             "http://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Ftest.governikus-eid.de%2FAutent-DemoApplication%2FRequestServlet%3Fprovider%3Ddemo_epa_20%26redirect%3Dtrue"
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(coroutineContextProvider.IO).launch {
             _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
 
             idCardManager.identify(context, demoURL).catch { error ->
