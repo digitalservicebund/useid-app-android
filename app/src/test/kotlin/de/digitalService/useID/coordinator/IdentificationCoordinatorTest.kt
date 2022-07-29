@@ -170,6 +170,47 @@ class IdentificationCoordinatorTest {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun startIdentificationProcess_SendEventBeforeListening_SkipFirstCardRequestedEvent() = runTest {
+        val testRedirectUrl = "testRedirectUrl"
+        val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
+
+        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockCoroutineContextProvider,
+        )
+
+        identificationCoordinator.startIdentificationProcess()
+
+        testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
+        advanceUntilIdle()
+
+        val results = mutableListOf<ScanEvent>()
+        val job = identificationCoordinator.scanEventFlow
+            .onEach(results::add)
+            .launchIn(CoroutineScope(dispatcher))
+
+        advanceUntilIdle()
+
+        Assertions.assertEquals(ScanEvent.Finished, results.get(0))
+
+        job.cancel()
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @ParameterizedTest
     @ValueSource(ints = [1, 2, 3])
     fun startIdentificationProcess_RequestPIN_WithAttempts(testValue: Int) = runTest {
