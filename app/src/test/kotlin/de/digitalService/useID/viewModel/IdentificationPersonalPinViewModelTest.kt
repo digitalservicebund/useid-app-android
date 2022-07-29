@@ -21,7 +21,7 @@ class IdentificationPersonalPinViewModelTest {
     lateinit var mockIdentificationCoordinator: IdentificationCoordinator
 
     @Test
-    fun userInputPIN_1() {
+    fun userInputPIN_DisplayCorrect_5Digits() {
         val testValue = "12345"
 
         mockkStatic("android.text.TextUtils")
@@ -36,7 +36,7 @@ class IdentificationPersonalPinViewModelTest {
     }
 
     @Test
-    fun userInputPIN_2() {
+    fun userInputPIN_DisplayCorrect_SingleDigits() {
         val testValue = "1"
 
         mockkStatic("android.text.TextUtils")
@@ -51,7 +51,7 @@ class IdentificationPersonalPinViewModelTest {
     }
 
     @Test
-    fun userInputPIN_3() {
+    fun userInputPIN_DisplayNothing_TooLong() {
         val testValue = "1234567"
 
         mockkStatic("android.text.TextUtils")
@@ -66,7 +66,7 @@ class IdentificationPersonalPinViewModelTest {
     }
 
     @Test
-    fun userInputPIN_4() {
+    fun userInputPIN_DisplayNothing_NotAllDigits() {
         val testValue = "123A5"
 
         mockkStatic("android.text.TextUtils")
@@ -81,7 +81,7 @@ class IdentificationPersonalPinViewModelTest {
     }
 
     @Test
-    fun onDone_1() {
+    fun onDone_Success_ValidPin() {
         val testValue = "123456"
 
         mockkStatic("android.text.TextUtils")
@@ -100,7 +100,7 @@ class IdentificationPersonalPinViewModelTest {
     }
 
     @Test
-    fun onDone_2() {
+    fun onDone_Failed_TooShort() {
         val testValue = "12345"
 
         mockkStatic("android.text.TextUtils")
@@ -119,7 +119,7 @@ class IdentificationPersonalPinViewModelTest {
     }
 
     @Test
-    fun onDone_3() {
+    fun onDone_Failed_TooLong() {
         val testValue = "1234567"
 
         mockkStatic("android.text.TextUtils")
