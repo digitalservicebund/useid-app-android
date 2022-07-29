@@ -39,6 +39,22 @@ Run Android linter and ktlint
 
 Update version name and bump version code
 
+### android buildAndSubmitPreview
+
+```sh
+[bundle exec] fastlane android buildAndSubmitPreview
+```
+
+Create new Playstore build and submit to Google Play Store
+
+### android buildAndSubmitRelease
+
+```sh
+[bundle exec] fastlane android buildAndSubmitRelease
+```
+
+Create new Playstore build and submit to Google Play Store
+
 ### android buildAndSubmit
 
 ```sh

@@ -24,7 +24,6 @@ import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.composables.screens.ScanScreen
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
-import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -106,7 +105,7 @@ interface IdentificationScanViewModelInterface {
 @HiltViewModel
 class IdentificationScanViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator,
-    private val coroutineContextProvider: CoroutineContextProviderType,
+    private val coroutineContextProvider: CoroutineContextProviderType
 ) : ViewModel(), IdentificationScanViewModelInterface {
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
