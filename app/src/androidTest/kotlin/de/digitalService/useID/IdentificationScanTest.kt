@@ -6,8 +6,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.ScanError
-import de.digitalService.useID.ui.composables.screens.SetupScan
-import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationScanViewModel
 import io.mockk.every
@@ -126,8 +124,8 @@ class IdentificationScanTest {
             IdentificationScan(viewModel = mockViewModel)
         }
 
-        val transportPinDialogTitleText = "PINEntryField"
-        composeTestRule.onNodeWithTag(transportPinDialogTitleText).assertIsDisplayed()
+        val pinEntryTag = "PINEntryField"
+        composeTestRule.onNodeWithTag(pinEntryTag).assertIsDisplayed()
     }
 
     @Test
@@ -139,8 +137,8 @@ class IdentificationScanTest {
             IdentificationScan(viewModel = mockViewModel)
         }
 
-        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
-        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertDoesNotExist()
+        val pinEntryTag = "PINEntryField"
+        composeTestRule.onNodeWithText(pinEntryTag).assertDoesNotExist()
 
         val errorDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_title_pin_suspended)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()
