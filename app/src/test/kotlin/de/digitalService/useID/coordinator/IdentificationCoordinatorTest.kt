@@ -542,7 +542,7 @@ class IdentificationCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onPINEntered_Success() = runTest {
+    fun onPINEntered_WithPinCallback() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
         every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
