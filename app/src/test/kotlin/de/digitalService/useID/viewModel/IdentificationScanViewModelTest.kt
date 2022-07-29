@@ -42,7 +42,7 @@ class IdentificationScanViewModelTest {
     }
 
     @Test
-    fun collectScanEvents_1() = runTest {
+    fun collectScanEvents_ScanEventCardRequested() = runTest {
         every { mockCoordinator.scanEventFlow } returns flow {
             emit(ScanEvent.CardRequested)
         }
@@ -60,7 +60,7 @@ class IdentificationScanViewModelTest {
     }
 
     @Test
-    fun collectScanEvents_2() = runTest {
+    fun collectScanEvents_ScanEventCardAttached() = runTest {
         every { mockCoordinator.scanEventFlow } returns flow {
             emit(ScanEvent.CardAttached)
         }
@@ -78,7 +78,7 @@ class IdentificationScanViewModelTest {
     }
 
     @Test
-    fun collectScanEvents_3() = runTest {
+    fun collectScanEvents_ScanErrorFinished() = runTest {
         every { mockCoordinator.scanEventFlow } returns flow {
             emit(ScanEvent.Finished)
         }
@@ -96,7 +96,7 @@ class IdentificationScanViewModelTest {
     }
 
     @Test
-    fun collectScanEvents_4() = runTest {
+    fun collectScanEvents_ScanErrorOther() = runTest {
         val testError = ScanError.Other(null)
 
         every { mockCoordinator.scanEventFlow } returns flow {
@@ -150,6 +150,7 @@ class IdentificationScanViewModelTest {
             mockCoordinator,
             mockCoroutineContextProvider
         )
+
         runCurrent()
 
         Assertions.assertEquals(testError, viewModel.errorState)
