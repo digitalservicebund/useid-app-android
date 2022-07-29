@@ -26,7 +26,7 @@ class IdentificationScanTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Test
-    fun openErrorDialogAndConfirmWithButton() {
+    fun openErrorDialogAndConfirmWithButton_ScanErrorOther() {
         val testErrorState = ScanError.Other(null)
 
         val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
@@ -49,7 +49,76 @@ class IdentificationScanTest {
     }
 
     @Test
-    fun enterTransportPinDialogOpens() {
+    fun openErrorDialogAndConfirmWithButton_ScanErrorCardDeactivated() {
+        val testErrorState = ScanError.CardDeactivated
+
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns testErrorState
+
+        composeTestRule.activity.setContent {
+            IdentificationScan(viewModel = mockViewModel)
+        }
+
+        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+
+        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+
+        val buttonText = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        composeTestRule.onNodeWithText(buttonText).performClick()
+
+        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
+    }
+
+    @Test
+    fun openErrorDialogAndConfirmWithButton_ScanErrorPINBlocked() {
+        val testErrorState = ScanError.PINBlocked
+
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns testErrorState
+
+        composeTestRule.activity.setContent {
+            IdentificationScan(viewModel = mockViewModel)
+        }
+
+        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+
+        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+
+        val buttonText = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        composeTestRule.onNodeWithText(buttonText).performClick()
+
+        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
+    }
+
+    @Test
+    fun openErrorDialogAndConfirmWithButton_ScanErrorPINSuspended() {
+        val testErrorState = ScanError.PINSuspended
+
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns testErrorState
+
+        composeTestRule.activity.setContent {
+            IdentificationScan(viewModel = mockViewModel)
+        }
+
+        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+
+        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+
+        val buttonText = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        composeTestRule.onNodeWithText(buttonText).performClick()
+
+        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
+    }
+
+    @Test
+    fun enterPinDialogOpens() {
         val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
         every { mockViewModel.errorState } returns ScanError.IncorrectPIN(2)
 
@@ -75,5 +144,20 @@ class IdentificationScanTest {
 
         val errorDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_title_pin_suspended)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()
+    }
+
+    @Test
+    fun noDialogIsOpen_ShowProgress() {
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+
+        every { mockViewModel.errorState } returns null
+        every { mockViewModel.shouldShowProgress } returns true
+
+        composeTestRule.activity.setContent {
+            IdentificationScan(viewModel = mockViewModel)
+        }
+
+        val progressIndicatorTag = "ProgressIndicator"
+        composeTestRule.onNodeWithTag(progressIndicatorTag).assertIsDisplayed()
     }
 }
