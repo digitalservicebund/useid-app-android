@@ -106,11 +106,9 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         testFlow.value = testRequestAuthenticationRequestConfirmation
-        runCurrent()
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.CardRequested, scanResults.get(0))
@@ -157,8 +155,6 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
-
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Finished, results.get(1))
@@ -193,8 +189,6 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestPIN(3) {}
-
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.IncorrectPIN(attempts = 3)), results.get(1))
@@ -221,8 +215,6 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess()
 
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {}
-
-        runCurrent()
         advanceUntilIdle()
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
@@ -254,8 +246,6 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestCAN {}
-
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.PINSuspended), results.get(1))
@@ -289,8 +279,6 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestPINAndCAN { _, _ -> }
-
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.PINSuspended), results.get(1))
@@ -324,8 +312,6 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestPUK {}
-
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.PINBlocked), results.get(1))
@@ -350,11 +336,9 @@ class IdentificationCoordinatorTest {
         )
 
         identificationCoordinator.startIdentificationProcess()
-
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestCardInsertion
-        runCurrent()
         advanceUntilIdle()
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationScanDestination) }
@@ -386,11 +370,9 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.CardRecognized
-        runCurrent()
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestCardInsertion
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.CardAttached, results.get(1))
@@ -425,7 +407,6 @@ class IdentificationCoordinatorTest {
             .onEach(results::add)
             .launchIn(CoroutineScope(dispatcher))
 
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.CardDeactivated), results.get(0))
@@ -460,7 +441,6 @@ class IdentificationCoordinatorTest {
             .onEach(results::add)
             .launchIn(CoroutineScope(dispatcher))
 
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.CardBlocked), results.get(0))
@@ -500,7 +480,6 @@ class IdentificationCoordinatorTest {
             .onEach(fetchResults::add)
             .launchIn(CoroutineScope(dispatcher))
 
-        runCurrent()
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.Other(null)), scanResults.get(0))
@@ -535,7 +514,6 @@ class IdentificationCoordinatorTest {
             didCallCallback = true
         }
 
-        runCurrent()
         advanceUntilIdle()
 
         identificationCoordinator.onPINEntered("testPin")
@@ -567,8 +545,7 @@ class IdentificationCoordinatorTest {
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {
             callbackCalledCount++
         }
-
-        runCurrent()
+        
         advanceUntilIdle()
 
         identificationCoordinator.onPINEntered("testPin1")
