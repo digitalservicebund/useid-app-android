@@ -77,6 +77,10 @@ class IdentificationCoordinator @Inject constructor(
         appCoordinator.popToRoot()
     }
 
+    fun finishIdentification() {
+        appCoordinator.popToRoot()
+    }
+
     private fun startIdentification(tcTokenURL: String) {
         val fullURL = Uri
             .Builder()
@@ -159,8 +163,8 @@ class IdentificationCoordinator @Inject constructor(
 
                         // Handle refresh address here ...
 
-                        requestAuthenticationEvent?.request?.subject?.let {
-                            navigateOnMain(IdentificationSuccessDestination(it))
+                        requestAuthenticationEvent?.request?.subject?.let { subject ->
+                            navigateOnMain(IdentificationSuccessDestination(subject, event.redirectURL))
                         }
                     }
                     else -> logger.debug("Unhandled authentication event: $event")

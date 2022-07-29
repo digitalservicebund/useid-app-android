@@ -50,7 +50,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
                     validity = "validity",
                     terms = AuthenticationTerms.Text("terms"),
                     transactionInfo = null,
-                    readAttributes = mapOf(Pair(IDCardAttribute.DG01, true))
+                    readAttributes = IDCardAttribute.values().associateWith { true }
                 )
 
             CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(IdentificationAttributeConsentDestination(mockedRequest)) }
@@ -69,7 +69,11 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
         appCoordinator.popToRoot()
     }
 
+    fun finishIdentification() {
+        appCoordinator.popToRoot()
+    }
+
     fun onIDInteractionFinishedSuccessfully() {
-        appCoordinator.navigate(IdentificationSuccessDestination(provider))
+        appCoordinator.navigate(IdentificationSuccessDestination(provider, "https://digitalservice.bund.de"))
     }
 }
