@@ -164,8 +164,9 @@ class IdentificationCoordinatorTest {
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_RequestPIN_Error() = runTest {
+    @ParameterizedTest
+    @ValueSource(ints = [1, 2, 3])
+    fun startIdentificationProcess_RequestPIN_WithAttempts(testValue: Int) = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
         every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
@@ -188,17 +189,17 @@ class IdentificationCoordinatorTest {
 
         advanceUntilIdle()
 
-        testFlow.value = EIDInteractionEvent.RequestPIN(3) {}
+        testFlow.value = EIDInteractionEvent.RequestPIN(testValue) {}
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.Error(ScanError.IncorrectPIN(attempts = 3)), results.get(1))
+        Assertions.assertEquals(ScanEvent.Error(ScanError.IncorrectPIN(attempts = testValue)), results.get(1))
 
         job.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun startIdentificationProcess_RequestPIN() = runTest {
+    fun startIdentificationProcess_RequestPIN_WithoutAttempts() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
         every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
@@ -545,7 +546,7 @@ class IdentificationCoordinatorTest {
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {
             callbackCalledCount++
         }
-        
+
         advanceUntilIdle()
 
         identificationCoordinator.onPINEntered("testPin1")
