@@ -24,7 +24,7 @@ class IdentificationPersonalPinTest {
     var hiltRule = HiltAndroidRule(this)
 
     @Test
-    fun correctUsage() {
+    fun testPinInputAndVisualisation() {
         val testPinState = mutableStateOf("")
 
         val testPinInput1 = "12345"
