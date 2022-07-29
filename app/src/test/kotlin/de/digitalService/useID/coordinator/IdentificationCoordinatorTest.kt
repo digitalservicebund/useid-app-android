@@ -27,6 +27,8 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 @ExtendWith(MockKExtension::class)
 class IdentificationCoordinatorTest {
@@ -105,17 +107,20 @@ class IdentificationCoordinatorTest {
 
         advanceUntilIdle()
 
+        Assertions.assertEquals(ScanEvent.CardRequested, scanResults.get(0))
+        Assertions.assertEquals(FetchMetadataEvent.Started, fetchResults.get(0))
+
         testFlow.value = testRequestAuthenticationRequestConfirmation
         advanceUntilIdle()
+
+        Assertions.assertEquals(1, scanResults.size)
+        Assertions.assertEquals(2, fetchResults.size)
+        Assertions.assertEquals(FetchMetadataEvent.Finished, fetchResults.get(1))
 
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.CardRequested, scanResults.get(0))
         Assertions.assertEquals(ScanEvent.Finished, scanResults.get(1))
-
-        Assertions.assertEquals(FetchMetadataEvent.Started, fetchResults.get(0))
-        Assertions.assertEquals(FetchMetadataEvent.Finished, fetchResults.get(1))
 
         scanJob.cancel()
         fetchJob.cancel()
