@@ -116,6 +116,7 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(1, scanResults.size)
         Assertions.assertEquals(2, fetchResults.size)
         Assertions.assertEquals(FetchMetadataEvent.Finished, fetchResults.get(1))
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
 
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
         advanceUntilIdle()
@@ -348,6 +349,7 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationScanDestination) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -383,7 +385,7 @@ class IdentificationCoordinatorTest {
 
         Assertions.assertEquals(ScanEvent.CardAttached, results.get(1))
 
-        verify(exactly = 0) { mockAppCoordinator.navigate(IdentificationScanDestination) }
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
 
         job.cancel()
     }
@@ -417,7 +419,7 @@ class IdentificationCoordinatorTest {
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.CardDeactivated), results.get(0))
 
-        verify(exactly = 0) { mockAppCoordinator.navigate(IdentificationScanDestination) }
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
 
         job.cancel()
     }
@@ -451,7 +453,7 @@ class IdentificationCoordinatorTest {
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.CardBlocked), results.get(0))
 
-        verify(exactly = 0) { mockAppCoordinator.navigate(IdentificationScanDestination) }
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
 
         job.cancel()
     }
@@ -491,7 +493,7 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(ScanEvent.Error(ScanError.Other(null)), scanResults.get(0))
         Assertions.assertEquals(FetchMetadataEvent.Error, fetchResults.get(0))
 
-        verify(exactly = 0) { mockAppCoordinator.navigate(IdentificationScanDestination) }
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
 
         scanJob.cancel()
         fetchJob.cancel()
@@ -527,6 +529,7 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(didCallCallback)
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
