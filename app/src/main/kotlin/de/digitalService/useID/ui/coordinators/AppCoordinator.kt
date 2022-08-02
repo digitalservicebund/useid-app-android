@@ -5,7 +5,6 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
-import de.digitalService.useID.ui.composables.screens.destinations.SetupPINLetterDestination
 import javax.inject.Inject
 import javax.inject.Singleton
 

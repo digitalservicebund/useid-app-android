@@ -12,11 +12,9 @@ import de.digitalService.useID.ui.composables.screens.identification.FetchMetada
 import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.util.CoroutineContextProvider
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockkStatic
-import io.mockk.verify
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,15 +46,40 @@ class IdentificationCoordinatorTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(dispatcher)
+
+        mockkStatic(Uri::class)
+
+        val mockUriBuilder = mockk<Uri.Builder>()
+
+        mockkConstructor(Uri.Builder::class)
+
+        every {
+            anyConstructed<Uri.Builder>()
+                .scheme("http")
+                .encodedAuthority("127.0.0.1:24727")
+                .appendPath("eID-Client")
+                .appendQueryParameter("tcTokenURL", testTokenURL)
+        } returns mockUriBuilder
+
+        val mockedUri = mockk<Uri>()
+
+        every { mockUriBuilder.build() } returns mockedUri
+
+        every { mockedUri.toString() } returns testURL
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    private val testTokenURL = "https://token"
+    private val testURL = "eid://127.0.0.1/eID-Client?tokenURL="
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -76,7 +99,7 @@ class IdentificationCoordinatorTest {
         ) {}
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         mockkStatic("android.util.Base64")
         mockkStatic("android.net.Uri")
@@ -93,7 +116,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val scanResults = mutableListOf<ScanEvent>()
         val scanJob = identificationCoordinator.scanEventFlow
@@ -134,7 +157,7 @@ class IdentificationCoordinatorTest {
         val testRedirectUrl = "testRedirectUrl"
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         mockkStatic("android.util.Base64")
         mockkStatic("android.net.Uri")
@@ -151,7 +174,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -175,7 +198,7 @@ class IdentificationCoordinatorTest {
         val testRedirectUrl = "testRedirectUrl"
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         mockkStatic("android.util.Base64")
         mockkStatic("android.net.Uri")
@@ -192,7 +215,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
         advanceUntilIdle()
@@ -216,7 +239,7 @@ class IdentificationCoordinatorTest {
     fun startIdentificationProcess_RequestPIN_WithAttempts(testValue: Int) = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -227,7 +250,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -249,7 +272,7 @@ class IdentificationCoordinatorTest {
     fun startIdentificationProcess_RequestPIN_WithoutAttempts() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -260,7 +283,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {}
         advanceUntilIdle()
@@ -273,7 +296,7 @@ class IdentificationCoordinatorTest {
     fun startIdentificationProcess_RequestCAN_Error() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -284,7 +307,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -306,7 +329,7 @@ class IdentificationCoordinatorTest {
     fun startIdentificationProcess_RequestPINAndCAN_Error() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -317,7 +340,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -339,7 +362,7 @@ class IdentificationCoordinatorTest {
     fun startIdentificationProcess_RequestPUK_Error() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -350,7 +373,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -372,7 +395,7 @@ class IdentificationCoordinatorTest {
     fun startIdentificationProcess_RequestCardInsertion() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -383,7 +406,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestCardInsertion
@@ -398,7 +421,7 @@ class IdentificationCoordinatorTest {
     fun startIdentificationProcess_RequestCardInsertion_WithReachedScanState() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -409,7 +432,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -438,7 +461,7 @@ class IdentificationCoordinatorTest {
             throw IDCardInteractionException.CardDeactivated
         }
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -449,7 +472,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -472,7 +495,7 @@ class IdentificationCoordinatorTest {
             throw IDCardInteractionException.CardBlocked
         }
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -483,7 +506,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -506,7 +529,7 @@ class IdentificationCoordinatorTest {
             throw NullPointerException()
         }
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -517,7 +540,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         val scanResults = mutableListOf<ScanEvent>()
         val scanJob = identificationCoordinator.scanEventFlow
@@ -545,7 +568,7 @@ class IdentificationCoordinatorTest {
     fun onPINEntered_WithPinCallback() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -556,7 +579,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         var didCallCallback = false
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {
@@ -578,7 +601,7 @@ class IdentificationCoordinatorTest {
     fun onPINEntered_CalledTwice() = runTest {
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
 
-        every { mockIDCardManager.identify(mockContext, any()) } returns testFlow
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -589,7 +612,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider,
         )
 
-        identificationCoordinator.startIdentificationProcess()
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
 
         var callbackCalledCount = 0
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {

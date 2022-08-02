@@ -26,7 +26,7 @@ import org.junit.Test
 import javax.inject.Inject
 
 @HiltAndroidTest
-class UiTestSetup {
+class SetupUiTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -51,7 +51,7 @@ class UiTestSetup {
     @Test
     fun test() {
         val testErrorState: MutableState<ScanError?> = mutableStateOf(null)
-        val testIdentificationValue = "testIdentificationValue"
+        val testProvider = "testProvider"
 
         every { mockSetupScanViewModel.errorState } answers { testErrorState.value }
         every { mockSetupScanViewModel.onReEnteredTransportPIN(any(), any()) } answers {
@@ -59,8 +59,8 @@ class UiTestSetup {
         }
 
         every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns MutableStateFlow(FetchMetadataEvent.Finished)
-        every { mockIdentificationCoordinator.startIdentificationProcess() } answers {
-            appCoordinator.navigate(IdentificationSuccessDestination(testIdentificationValue))
+        every { mockIdentificationCoordinator.startIdentificationProcess("") } answers {
+            appCoordinator.navigate(IdentificationSuccessDestination(testProvider, ""))
         }
 
         composeTestRule.activity.setContent {

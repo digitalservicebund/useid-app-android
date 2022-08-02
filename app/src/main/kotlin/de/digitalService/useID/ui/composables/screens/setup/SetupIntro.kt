@@ -9,14 +9,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.FULL_ROUTE_PLACEHOLDER
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationSuccessNavArgs
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject

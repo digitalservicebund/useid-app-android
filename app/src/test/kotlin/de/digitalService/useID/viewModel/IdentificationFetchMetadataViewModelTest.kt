@@ -1,5 +1,6 @@
 package de.digitalService.useID.viewModel
 
+import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadataViewModel
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
@@ -23,9 +24,11 @@ import org.junit.jupiter.api.extension.ExtendWith
 @ExtendWith(MockKExtension::class)
 class IdentificationFetchMetadataViewModelTest {
 
-
     @MockK(relaxUnitFun = true)
     lateinit var mockIdentificationCoordinator: IdentificationCoordinator
+
+    @MockK
+    lateinit var savedStateHandle: SavedStateHandle
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
@@ -33,12 +36,15 @@ class IdentificationFetchMetadataViewModelTest {
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(dispatcher)
+        every { savedStateHandle.get<String>("tcTokenURL") } returns testURL
     }
 
     @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    private val testURL = "eid://127.0.0.1/eID-Client?tokenURL="
 
     @Test
     fun init_collectMetaDataEvents_started() {
@@ -47,6 +53,7 @@ class IdentificationFetchMetadataViewModelTest {
 
         val viewModel = IdentificationFetchMetadataViewModel(
             mockIdentificationCoordinator,
+            savedStateHandle
         )
 
         dispatcher.scheduler.advanceUntilIdle();
@@ -62,6 +69,7 @@ class IdentificationFetchMetadataViewModelTest {
 
         val viewModel = IdentificationFetchMetadataViewModel(
             mockIdentificationCoordinator,
+            savedStateHandle
         )
 
         dispatcher.scheduler.advanceUntilIdle();
@@ -77,6 +85,7 @@ class IdentificationFetchMetadataViewModelTest {
 
         val viewModel = IdentificationFetchMetadataViewModel(
             mockIdentificationCoordinator,
+            savedStateHandle
         )
 
         dispatcher.scheduler.advanceUntilIdle();
@@ -92,10 +101,11 @@ class IdentificationFetchMetadataViewModelTest {
 
         val viewModel = IdentificationFetchMetadataViewModel(
             mockIdentificationCoordinator,
+            savedStateHandle
         )
 
         viewModel.fetchMetadata()
 
-        verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess() }
+        verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testURL) }
     }
 }
