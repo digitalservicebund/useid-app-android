@@ -68,3 +68,8 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# CI
+.bundle
+vendor
+Brewfile.lock.json
