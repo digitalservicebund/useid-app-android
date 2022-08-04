@@ -2,14 +2,21 @@ name: Release
 on:
   workflow_dispatch:
     inputs:
+      stage:
+        description: Stage
+        type: choice
+        required: true
+        options: 
+        - preview
+        - production
       versionName:
         description: 'Version name'
-        required: true
         type: string
+        required: true
       bumpVersionCode:
         description: 'Bump version code'
-        required: true
         type: boolean
+        required: true
         default: true
 
 jobs:
@@ -20,7 +27,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
-          ref: 'release/${{ inputs.versionName }}'
+          ref: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Setup
         uses: ./.github/actions/setup
       - name: Update version name and bump version code
@@ -33,7 +40,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
-          ref: 'release/${{ inputs.versionName }}'
+          ref: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Setup
         uses: ./.github/actions/setup
       - name: Deploy key store
@@ -58,5 +65,5 @@ jobs:
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: digitalservice
-          SENTRY_PROJECT: useid-android
-        run: bundle exec fastlane release
+          SENTRY_PROJECT: useid-preview-android
+        run: bundle exec fastlane release stage:${{ inputs.stage }}

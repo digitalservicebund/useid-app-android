@@ -31,13 +31,28 @@ platform :android do
   end
 
   desc "Create new Playstore build and submit to Google Play Store"
-  lane :preview do
+  lane :release do |options|
+    skip_docs
+    
+    if options[:stage] == 'preview' then
+      previewRelease()
+      next
+    end
+
+    if options[:stage] == 'production' then
+      productionRelease()
+      next
+    end
+  end
+
+  desc "Create new Playstore preview build and submit to Google Play Store"
+  lane :previewRelease do
     skip_docs
     buildAndSubmit(flavor: 'preview', package_name: 'de.digitalService.useID.Preview')
   end
 
-  desc "Create new Playstore build and submit to Google Play Store"
-  lane :release do
+  desc "Create new Playstore production build and submit to Google Play Store"
+  lane :productionRelease do
     skip_docs
     buildAndSubmit(flavor: 'device', package_name: 'de.digitalService.useID.UseID')
   end
