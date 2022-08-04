@@ -33,13 +33,13 @@ platform :android do
   desc "Create new Playstore build and submit to Google Play Store"
   lane :preview do
     skip_docs
-    buildAndSubmit(flavor: 'preview', package_name: 'de.bund.digitalservice.UseID.Preview')
+    buildAndSubmit(flavor: 'preview', package_name: 'de.digitalService.useID.Preview')
   end
 
   desc "Create new Playstore build and submit to Google Play Store"
   lane :release do
     skip_docs
-    buildAndSubmit(flavor: 'device', package_name: 'de.bund.digitalservice.UseID')
+    buildAndSubmit(flavor: 'device', package_name: 'de.digitalService.useID.UseID')
   end
 
   desc "Create new Playstore build and submit to Google Play Store"
