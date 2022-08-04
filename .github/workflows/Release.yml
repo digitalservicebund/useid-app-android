@@ -22,7 +22,6 @@ on:
 jobs:
   updateVersion:
     runs-on: self-hosted
-    if: ${{ inputs.bumpVersionCode }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
@@ -31,6 +30,7 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Update version name and bump version code
+        if: ${{ inputs.bumpVersionCode }}
         run: bundle exec fastlane updateVersion version_name:${{ inputs.versionName }}
 
   release:
