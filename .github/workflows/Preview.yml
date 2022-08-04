@@ -6,10 +6,16 @@ on:
         description: 'Version name'
         required: true
         type: string
+      bumpVersionCode:
+        description: 'Bump version code'
+        required: true
+        type: boolean
+        default: true
 
 jobs:
   updateVersion:
     runs-on: self-hosted
+    if: ${{ inputs.bumpVersionCode }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
