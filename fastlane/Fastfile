@@ -54,7 +54,7 @@ platform :android do
   desc "Create new Playstore production build and submit to Google Play Store"
   lane :productionRelease do
     skip_docs
-    buildAndSubmit(flavor: 'device', package_name: 'de.digitalService.useID.UseID')
+    buildAndSubmit(flavor: 'device', package_name: 'de.digitalService.useID')
   end
 
   desc "Create new Playstore build and submit to Google Play Store"
