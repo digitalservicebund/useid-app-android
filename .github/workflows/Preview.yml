@@ -37,6 +37,12 @@ jobs:
           KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
           echo -n "$KEYSTORE_BASE64" | base64 --decode --output $KEYSTORE_PATH
           echo "KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
+      - name: Deploy fastlane API key
+        env:
+          FASTLANE_API_KEY: ${{ secrets.FASTLANE_API_KEY }}
+        run: |
+          FASTLANE_API_KEY_PATH=$RUNNER_TEMP/fastlane_api_key.json
+          echo -n "$FASTLANE_API_KEY" > $FASTLANE_API_KEY_PATH
       - name: Build release and submit to Google Play Store
         env:
           KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}

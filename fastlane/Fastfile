@@ -62,6 +62,7 @@ platform :android do
     supply(
       track: 'internal',
       package_name: options[:package_name],
+      json_key: ENV["FASTLANE_API_KEY_PATH"],
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
