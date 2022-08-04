@@ -49,10 +49,12 @@ jobs:
         run: |
           FASTLANE_API_KEY_PATH=$RUNNER_TEMP/fastlane_api_key.json
           echo -n "$FASTLANE_API_KEY" > $FASTLANE_API_KEY_PATH
+          echo "FASTLANE_API_KEY_PATH=$FASTLANE_API_KEY_PATH" >> $GITHUB_ENV
       - name: Build release and submit to Google Play Store
         env:
           KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          FASTLANE_API_KEY_PATH: ${{ env.FASTLANE_API_KEY_PATH }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: digitalservice
