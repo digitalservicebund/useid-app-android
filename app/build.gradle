@@ -11,6 +11,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/Fabio/Arbeit/Agenturprojekte/2022-04 DigitalService4Germany/Entwicklung/Schlüsselmaterial/Android/upload-keystore.jks')
+            storePassword 'UHwRFmZZBgh4xPK7'
+            keyAlias 'upload'
+            keyPassword 'UHwRFmZZBgh4xPK7'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
@@ -24,6 +32,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.release
     }
 
     lintOptions {
@@ -39,9 +48,11 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Leave out optimization for now as this leads to a crash on app launch
+            
+//            minifyEnabled true
+//            shrinkResources true
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
