@@ -43,6 +43,8 @@ jobs:
           ref: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Setup
         uses: ./.github/actions/setup
+        with:
+          branch: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Deploy key store
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}

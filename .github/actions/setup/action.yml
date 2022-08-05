@@ -1,11 +1,18 @@
 name: Initial project setup
 
+inputs:
+  branch:
+    description: 'Git branch to checkout'
+    required: false
+    type: string
+
 runs:
   using: "composite"
   steps:
     - name: Check out repository code
       uses: actions/checkout@v2
-
+      with:
+        ref: ${{ inputs.branch }}
     - name: Install brews
       shell: bash
       run: brew bundle
