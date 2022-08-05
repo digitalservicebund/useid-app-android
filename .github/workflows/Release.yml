@@ -29,6 +29,11 @@ jobs:
           ref: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Setup
         uses: ./.github/actions/setup
+      # Instead of switching branches here we should checkout this ref in the setup action
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          ref: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Update version name and bump version code
         if: ${{ inputs.bumpVersionCode }}
         run: bundle exec fastlane updateVersion version_name:${{ inputs.versionName }}
@@ -43,6 +48,11 @@ jobs:
           ref: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Setup
         uses: ./.github/actions/setup
+      # Instead of switching branches here we should checkout this ref in the setup action
+      - name: Check out repository code
+        uses: actions/checkout@v2
+        with:
+          ref: '${{ inputs.stage }}/${{ inputs.versionName }}'
       - name: Deploy key store
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
