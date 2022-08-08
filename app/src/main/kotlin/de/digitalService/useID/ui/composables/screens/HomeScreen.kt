@@ -14,17 +14,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
+import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.composables.RegularBundButton
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.*
+import javax.inject.Inject
 
 @Composable
 @Destination
 @RootNavGraph(start = true)
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScreenViewModel>()) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,7 +50,8 @@ fun HomeScreen() {
             text = stringResource(R.string.homeScreen_more_subtitle),
             style = MaterialTheme.typography.titleLarge
         )
-        SetupUseIdCarBox()
+
+        SetupUseIdCarBox(viewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -56,7 +62,7 @@ fun HomeScreen() {
 }
 
 @Composable
-private fun SetupUseIdCarBox() {
+private fun SetupUseIdCarBox(viewModel: HomeScreenViewModelInterface) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Gray100),
@@ -76,7 +82,7 @@ private fun SetupUseIdCarBox() {
 
             RegularBundButton(
                 type = ButtonType.SECONDARY,
-                onClick = { },
+                onClick = viewModel::setupOnlineID,
                 label = stringResource(R.string.homeScreen_setupOnlineID_button),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -144,6 +150,19 @@ private fun CardButton(
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)
         )
+    }
+}
+
+interface HomeScreenViewModelInterface {
+    fun setupOnlineID()
+}
+
+@HiltViewModel
+class HomeScreenViewModel @Inject constructor(
+    private val setupCoordinator: SetupCoordinator
+) : ViewModel(), HomeScreenViewModelInterface {
+    override fun setupOnlineID() {
+        setupCoordinator.startSetupIDCard()
     }
 }
 
