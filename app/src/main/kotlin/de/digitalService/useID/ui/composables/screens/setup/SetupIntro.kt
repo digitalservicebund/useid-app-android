@@ -17,7 +17,6 @@ import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
-@RootNavGraph(start = true)
 @Destination(
     navArgsDelegate = SetupIntroNavArgs::class,
     deepLinks = [

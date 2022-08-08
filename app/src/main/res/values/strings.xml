@@ -85,4 +85,13 @@
     <string name="firstTimeUser_finish_button">Schließen</string>
     <string name="idScan_help_title">Ausweis wird nicht unterstützt.</string>
     <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger\n\nWenn Sie eines der oben genannten Dokumente benutzen und das Problem weiterhin auftritt, versuchen Sie diese Schritte:\n\n- Entfernen Sie die Karte von Ihrem Telefon und legen Sie sie erneut an das Telefon.\n- Wenn Sie eine sehr dicke Handyhülle haben, versuchen Sie, die Hülle zu entfernen.</string>
+    <string name="homeScreen_title">Platzhalter Titel</string>
+    <string name="homeScreen_more_subtitle">Mehr</string>
+    <string name="homeScreen_setupOnlineID_button">Online-Ausweise einrichten</string>
+    <string name="homeScreen_more_settings_button">Einstellungen</string>
+    <string name="homeScreen_more_askedQuestions_button">Häufige Fragen</string>
+    <string name="homeScreen_more_privacy_button">Datenschutz</string>
+    <string name="homeScreen_more_accessibilityStatement_button">Barrierefreiheitserklärung</string>
+    <string name="homeScreen_more_impressum_button">Impressum</string>
+    <string name="homeScreen_more_legalNotice_button">Rechtlihe Hinweise</string>
 </resources>
