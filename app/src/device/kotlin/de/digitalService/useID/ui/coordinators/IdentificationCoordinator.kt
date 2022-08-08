@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
@@ -15,25 +16,26 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationPersonalPIN
 import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import org.openecard.common.util.UrlEncoder
-import java.net.URL
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
-    val appCoordinator: AppCoordinator,
-    val idCardManager: IDCardManager,
-    val coroutineContextProvider: CoroutineContextProviderType,
+    private val appCoordinator: AppCoordinator,
+    private val idCardManager: IDCardManager,
+    private val coroutineContextProvider: CoroutineContextProviderType,
+    private val storageManager: StorageManagerType
 ) {
     private val logger by getLogger()
 
@@ -79,6 +81,7 @@ class IdentificationCoordinator @Inject constructor(
 
     fun finishIdentification() {
         appCoordinator.popToRoot()
+        storageManager.setIsFirstTimeUser()
     }
 
     private fun startIdentification(tcTokenURL: String) {

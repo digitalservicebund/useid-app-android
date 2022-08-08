@@ -16,13 +16,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.rememberNavController
+import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.AppCoordinatorType
 import de.digitalService.useID.ui.theme.UseIDTheme
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
-fun UseIDApp(appCoordinator: AppCoordinator) {
+fun UseIDApp(appCoordinator: AppCoordinatorType) {
     val navController = rememberNavController().withSentryObservableEffect()
     var shouldShowBackButton by remember { mutableStateOf(false) }
 
@@ -59,9 +60,17 @@ fun UseIDApp(appCoordinator: AppCoordinator) {
     }
 }
 
+private class PreviewAppCoordinator : AppCoordinatorType {
+    override fun setNavController(navController: NavController) {}
+    override fun navigate(route: Direction) {}
+    override fun popToRoot() {}
+    override fun startIdentification(tcTokenURL: String) {}
+    override fun homeScreenLaunched(token: String?) {}
+}
+
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 fun PreviewUseIDApp() {
-    UseIDApp(appCoordinator = AppCoordinator())
+    UseIDApp(appCoordinator = PreviewAppCoordinator())
 }

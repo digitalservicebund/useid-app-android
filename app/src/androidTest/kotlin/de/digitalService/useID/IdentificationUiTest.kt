@@ -41,6 +41,9 @@ class IdentificationUiTest {
     @Inject
     lateinit var appCoordinator: AppCoordinator
 
+    @Inject
+    lateinit var storageManager: StorageManager
+
     @BindValue
     lateinit var setupIntroViewModel: SetupIntroViewModel
 
@@ -55,7 +58,7 @@ class IdentificationUiTest {
         hiltRule.inject()
 
         val savedStateHandle = SavedStateHandle(mapOf(Pair("tcTokenURL", "https://tokenURL")))
-        setupIntroViewModel = SetupIntroViewModel(SetupCoordinator(appCoordinator), savedStateHandle)
+        setupIntroViewModel = SetupIntroViewModel(SetupCoordinator(appCoordinator, storageManager), savedStateHandle)
     }
 
     @Test

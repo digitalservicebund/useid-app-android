@@ -2,6 +2,7 @@
 
 package de.digitalService.useID.ui.composables.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -9,7 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.composables.RegularBundButton
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
@@ -37,6 +39,10 @@ import javax.inject.Inject
 @Destination
 @RootNavGraph(start = true)
 fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScreenViewModel>()) {
+    LaunchedEffect(Unit) {
+        viewModel.homeScreenLaunched()
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,21 +169,32 @@ private fun CardButton(
 
 interface HomeScreenViewModelInterface {
     fun setupOnlineID()
+    fun homeScreenLaunched()
 }
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
+    private val appCoordinator: AppCoordinator,
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), HomeScreenViewModelInterface {
+    override fun homeScreenLaunched() {
+        appCoordinator.homeScreenLaunched(null)
+    }
+
     override fun setupOnlineID() {
         setupCoordinator.startSetupIDCard()
     }
+}
+
+private class PreviewViewModel : HomeScreenViewModelInterface {
+    override fun setupOnlineID() {}
+    override fun homeScreenLaunched() {}
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
     UseIDTheme {
-        HomeScreen()
+        HomeScreen(PreviewViewModel())
     }
 }

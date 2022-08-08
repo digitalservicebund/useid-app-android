@@ -34,6 +34,9 @@ class IdentificationScanViewModelTest {
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(dispatcher)
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+        every { mockCoroutineContextProvider.Main } returns dispatcher
     }
 
     @AfterEach
@@ -46,8 +49,6 @@ class IdentificationScanViewModelTest {
         every { mockCoordinator.scanEventFlow } returns flow {
             emit(ScanEvent.CardRequested)
         }
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
 
         val viewModel = IdentificationScanViewModel(
             mockCoordinator,
@@ -65,8 +66,6 @@ class IdentificationScanViewModelTest {
             emit(ScanEvent.CardAttached)
         }
 
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
         val viewModel = IdentificationScanViewModel(
             mockCoordinator,
             mockCoroutineContextProvider
@@ -82,8 +81,6 @@ class IdentificationScanViewModelTest {
         every { mockCoordinator.scanEventFlow } returns flow {
             emit(ScanEvent.Finished)
         }
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
 
         val viewModel = IdentificationScanViewModel(
             mockCoordinator,
@@ -103,8 +100,6 @@ class IdentificationScanViewModelTest {
             emit(ScanEvent.Error(testError))
         }
 
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
         val viewModel = IdentificationScanViewModel(
             mockCoordinator,
             mockCoroutineContextProvider
@@ -121,8 +116,6 @@ class IdentificationScanViewModelTest {
         every { mockCoordinator.scanEventFlow } returns flow {
             emit(ScanEvent.CardAttached)
         }
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
 
         val viewModel = IdentificationScanViewModel(
             mockCoordinator,
@@ -143,8 +136,6 @@ class IdentificationScanViewModelTest {
         every { mockCoordinator.scanEventFlow } returns flow {
             emit(ScanEvent.Error(testError))
         }
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
 
         val viewModel = IdentificationScanViewModel(
             mockCoordinator,

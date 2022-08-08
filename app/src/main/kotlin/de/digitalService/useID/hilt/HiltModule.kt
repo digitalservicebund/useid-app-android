@@ -8,7 +8,11 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.SecureStorageManagerInterface
+import de.digitalService.useID.StorageManager
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.AppCoordinatorType
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
@@ -33,8 +37,14 @@ class ViewModelModule {
 @InstallIn(SingletonComponent::class)
 abstract class SingletonBindingModule {
     @Binds
+    abstract fun bindAppCoordinator(appCoordinator: AppCoordinator): AppCoordinatorType
+
+    @Binds
     abstract fun bindSecureStorageManager(secureStorageManager: SecureStorageManager): SecureStorageManagerInterface
 
     @Binds
-    abstract fun bindcoroutineContextProvider(coroutineContextProvider: CoroutineContextProvider): CoroutineContextProviderType
+    abstract fun bindCoroutineContextProvider(coroutineContextProvider: CoroutineContextProvider): CoroutineContextProviderType
+
+    @Binds
+    abstract fun bindStorageManager(storageManager: StorageManager): StorageManagerType
 }

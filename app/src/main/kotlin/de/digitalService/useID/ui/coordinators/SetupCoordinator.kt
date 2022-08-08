@@ -1,13 +1,16 @@
 package de.digitalService.useID.ui.coordinators
 
-import com.ramcosta.composedestinations.navigation.navigate
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.destinations.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SetupCoordinator @Inject constructor(private val appCoordinator: AppCoordinator) {
+class SetupCoordinator @Inject constructor(
+    private val appCoordinator: AppCoordinator,
+    private val storageManager: StorageManagerType
+    ) {
     private var tcTokenURL: String? = null
 
     fun setTCTokenURL(tcTokenURL: String) {
@@ -44,6 +47,7 @@ class SetupCoordinator @Inject constructor(private val appCoordinator: AppCoordi
         tcTokenURL?.let {
             appCoordinator.startIdentification(it)
             tcTokenURL = null
+            storageManager.setIsFirstTimeUser()
         }
     }
 
