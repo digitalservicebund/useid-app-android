@@ -26,7 +26,7 @@ class StorageManager @Inject constructor(@ApplicationContext context: Context) :
 
     override fun setIsFirstTimeUser() {
         sharedPrefs.edit {
-            putBoolean(StorageKeys.FIRST_TIME_USER_KEY.name, true)
+            putBoolean(StorageKeys.FIRST_TIME_USER_KEY.name, false)
         }
     }
 }
