@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class SetupCoordinator @Inject constructor(
     private val appCoordinator: AppCoordinator,
     private val storageManager: StorageManagerType
-    ) {
+) {
     private var tcTokenURL: String? = null
 
     fun setTCTokenURL(tcTokenURL: String) {
