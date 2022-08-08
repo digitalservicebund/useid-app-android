@@ -7,13 +7,8 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.AppCoordinator

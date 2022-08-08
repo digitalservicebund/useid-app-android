@@ -2,13 +2,17 @@
 
 package de.digitalService.useID.ui.composables.screens
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,7 +27,10 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.composables.RegularBundButton
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
-import de.digitalService.useID.ui.theme.*
+import de.digitalService.useID.ui.theme.Black
+import de.digitalService.useID.ui.theme.Gray300
+import de.digitalService.useID.ui.theme.Gray600
+import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
 @Composable
@@ -34,7 +41,6 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .background(Gray300)
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -51,6 +57,8 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             style = MaterialTheme.typography.titleLarge
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         SetupUseIdCarBox(viewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -65,14 +73,14 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
 private fun SetupUseIdCarBox(viewModel: HomeScreenViewModelInterface) {
     Card(
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Gray100),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(1.dp, Gray600),
         modifier = Modifier
             .fillMaxWidth()
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(id = de.digitalService.useID.R.drawable.eids),
+                painter = painterResource(id = R.drawable.eids),
                 contentScale = ContentScale.Inside,
                 contentDescription = "",
                 modifier = Modifier
@@ -98,7 +106,7 @@ private fun SetupUseIdCarBox(viewModel: HomeScreenViewModelInterface) {
 private fun MoreSettingsCardBox() {
     Card(
         shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Gray100),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(1.dp, Gray600),
         modifier = Modifier
             .fillMaxWidth()
