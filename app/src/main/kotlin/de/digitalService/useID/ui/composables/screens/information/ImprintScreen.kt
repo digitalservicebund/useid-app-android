@@ -15,6 +15,7 @@ import de.digitalService.useID.ui.composables.LargeTitleText
 import de.digitalService.useID.ui.composables.ScreenTitleText
 import de.digitalService.useID.ui.composables.SmallTitleText
 import de.digitalService.useID.ui.theme.UseIDTheme
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Destination
 @Composable
@@ -49,7 +50,10 @@ fun ImprintScreen() {
         LargeTitleText(text = stringResource(R.string.imprint_contact_title))
 
         SmallTitleText(text = stringResource(R.string.imprint_mail_title))
-        BodyText(text = stringResource(R.string.imprint_email_body))
+        MarkdownText(
+            markdown = stringResource(id = R.string.imprint_email_body),
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
 
         LargeTitleText(text = "Lorem ipsum")
         BodyText(text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum")
