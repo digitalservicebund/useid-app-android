@@ -3,16 +3,17 @@ package de.digitalService.useID.ui.composables.screens.information
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.composables.BodyText
+import de.digitalService.useID.ui.composables.LargeTitleText
+import de.digitalService.useID.ui.composables.ScreenTitleText
+import de.digitalService.useID.ui.composables.SmallTitleText
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Destination
@@ -24,76 +25,35 @@ fun ImprintScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        StyledSiteTitle(text = stringResource(R.string.imprint_screen_title))
+        ScreenTitleText(text = stringResource(R.string.imprint_screen_title))
 
-        StyledMediumTitle(text = stringResource(R.string.imprint_duty_info))
+        LargeTitleText(text = stringResource(R.string.imprint_duty_info))
 
-        StyledTextBlock(text = stringResource(R.string.imprint_address_body))
+        BodyText(text = stringResource(R.string.imprint_address_body))
 
-        StyledSmallTitle(text = stringResource(R.string.imprint_managementRepresentation_title))
-        StyledTextBlock(text = stringResource(R.string.imprint_managementRepresentation_body))
+        SmallTitleText(text = stringResource(R.string.imprint_managementRepresentation_title))
+        BodyText(text = stringResource(R.string.imprint_managementRepresentation_body))
 
-        StyledSmallTitle(text = stringResource(R.string.imprint_soloShareholder_title))
-        StyledTextBlock(text = stringResource(R.string.imprint_soloShareholder_body))
+        SmallTitleText(text = stringResource(R.string.imprint_soloShareholder_title))
+        BodyText(text = stringResource(R.string.imprint_soloShareholder_body))
 
-        StyledSmallTitle(text = stringResource(R.string.imprint_companyRegistrationNumber_title))
-        StyledTextBlock(text = stringResource(R.string.imprint_companyRegistrationNumber_body))
+        SmallTitleText(text = stringResource(R.string.imprint_companyRegistrationNumber_title))
+        BodyText(text = stringResource(R.string.imprint_companyRegistrationNumber_body))
 
-        StyledSmallTitle(text = stringResource(R.string.imprint_registryCourt_title))
-        StyledTextBlock(text = stringResource(R.string.imprint_registryCourt_body))
+        SmallTitleText(text = stringResource(R.string.imprint_registryCourt_title))
+        BodyText(text = stringResource(R.string.imprint_registryCourt_body))
 
-        StyledSmallTitle(text = stringResource(R.string.imprint_vATNumber_title))
-        StyledTextBlock(text = stringResource(R.string.imprint_vATNumber_body))
+        SmallTitleText(text = stringResource(R.string.imprint_vATNumber_title))
+        BodyText(text = stringResource(R.string.imprint_vATNumber_body))
 
-        StyledMediumTitle(text = stringResource(R.string.imprint_contact_title))
+        LargeTitleText(text = stringResource(R.string.imprint_contact_title))
 
-        StyledSmallTitle(text = stringResource(R.string.imprint_mail_title))
-        StyledTextBlock(text = stringResource(R.string.imprint_email_body))
+        SmallTitleText(text = stringResource(R.string.imprint_mail_title))
+        BodyText(text = stringResource(R.string.imprint_email_body))
 
-        StyledMediumTitle(text = "Lorem ipsum")
-        StyledTextBlock(text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum")
+        LargeTitleText(text = "Lorem ipsum")
+        BodyText(text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum")
     }
-}
-
-@Composable
-private fun StyledSiteTitle(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleLarge
-    )
-
-    Spacer(modifier = Modifier.height(32.dp))
-}
-
-@Composable
-private fun StyledMediumTitle(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleMedium,
-        fontSize = 24.sp
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
-}
-
-@Composable
-private fun StyledSmallTitle(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.titleMedium,
-        fontSize = 19.sp
-    )
-}
-
-@Composable
-private fun StyledTextBlock(text: String) {
-    Text(
-        text = text,
-        style = MaterialTheme.typography.bodyLarge,
-        fontSize = 17.sp
-    )
-
-    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @Preview(showBackground = true)
