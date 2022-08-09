@@ -38,11 +38,10 @@ fun TermsOfUseScreen() {
 private fun StyledSiteTitle(text: String) {
     Text(
         text = text,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.titleLarge
     )
 
     Spacer(modifier = Modifier.height(32.dp))
-
 }
 
 @Composable
