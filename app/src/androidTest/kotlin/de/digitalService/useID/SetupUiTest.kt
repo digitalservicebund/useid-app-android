@@ -66,9 +66,7 @@ class SetupUiTest {
         composeTestRule.activity.setContent {
             UseIDApp(appCoordinator)
         }
-
-//        composeTestRule.waitForIdle()
-
+        
         val startSetupButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_no)
         composeTestRule.onNodeWithText(startSetupButton).performClick()
 
