@@ -9,7 +9,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +28,10 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.composables.RegularBundButton
+import de.digitalService.useID.ui.composables.screens.destinations.AccessibilityScreenDestination
+import de.digitalService.useID.ui.composables.screens.destinations.ImpressumScreenDestination
+import de.digitalService.useID.ui.composables.screens.destinations.PrivacyScreenDestination
+import de.digitalService.useID.ui.composables.screens.destinations.TermsOfUseScreenDestination
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.Black
 import de.digitalService.useID.ui.theme.Gray300
@@ -68,7 +73,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        MoreSettingsCardBox()
+        MoreSettingsCardBox(viewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -108,7 +113,7 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
 }
 
 @Composable
-private fun MoreSettingsCardBox() {
+private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -122,16 +127,19 @@ private fun MoreSettingsCardBox() {
         CardButton(text = stringResource(R.string.homeScreen_more_askedQuestions_button), onClick = {})
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_privacy_button), onClick = {})
+        CardButton(text = stringResource(R.string.homeScreen_more_privacy_button), onClick = viewModel::onPrivacyButtonClicked)
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_accessibilityStatement_button), onClick = {})
+        CardButton(
+            text = stringResource(R.string.homeScreen_more_accessibilityStatement_button),
+            onClick = viewModel::onAccessibilityButtonClicked
+        )
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_impressum_button), onClick = {})
+        CardButton(text = stringResource(R.string.homeScreen_more_impressum_button), onClick = viewModel::onImpressumButtonClicked)
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_legalNotice_button), onClick = {})
+        CardButton(text = stringResource(R.string.homeScreen_more_legalNotice_button), onClick = viewModel::onTermsOfUseButtonClicked)
     }
 }
 
@@ -169,6 +177,10 @@ private fun CardButton(
 interface HomeScreenViewModelInterface {
     fun setupOnlineID()
     fun homeScreenLaunched()
+    fun onPrivacyButtonClicked()
+    fun onImpressumButtonClicked()
+    fun onAccessibilityButtonClicked()
+    fun onTermsOfUseButtonClicked()
 }
 
 @HiltViewModel
@@ -183,11 +195,31 @@ class HomeScreenViewModel @Inject constructor(
     override fun setupOnlineID() {
         setupCoordinator.startSetupIDCard()
     }
+
+    override fun onPrivacyButtonClicked() {
+        appCoordinator.navigate(PrivacyScreenDestination)
+    }
+
+    override fun onAccessibilityButtonClicked() {
+        appCoordinator.navigate(AccessibilityScreenDestination)
+    }
+
+    override fun onTermsOfUseButtonClicked() {
+        appCoordinator.navigate(TermsOfUseScreenDestination)
+    }
+
+    override fun onImpressumButtonClicked() {
+        appCoordinator.navigate(ImpressumScreenDestination)
+    }
 }
 
 private class PreviewViewModel : HomeScreenViewModelInterface {
     override fun setupOnlineID() {}
     override fun homeScreenLaunched() {}
+    override fun onPrivacyButtonClicked() {}
+    override fun onImpressumButtonClicked() {}
+    override fun onAccessibilityButtonClicked() {}
+    override fun onTermsOfUseButtonClicked() {}
 }
 
 @Preview(showBackground = true)
