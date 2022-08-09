@@ -64,7 +64,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        SetupUseIdCarBox(viewModel)
+        SetupUseIdCardBox(viewModel)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -75,7 +75,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
 }
 
 @Composable
-private fun SetupUseIdCarBox(viewModel: HomeScreenViewModelInterface) {
+private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
