@@ -53,6 +53,9 @@ class IdentificationUiTest {
     @BindValue
     val mockIdentificationFetchMetadataViewModel: IdentificationFetchMetadataViewModel = mockk(relaxed = true)
 
+    @BindValue
+    val mockStorageManager: StorageManager = mockk(relaxed = true)
+
     @Before
     fun before() {
         hiltRule.inject()
@@ -81,6 +84,8 @@ class IdentificationUiTest {
                 )
             )
         }
+
+        every { mockStorageManager.getIsFirstTimeUser() } returns true
 
         composeTestRule.activity.setContent {
             UseIDApp(appCoordinator)

@@ -43,6 +43,9 @@ class SetupUiTest {
     @BindValue
     val mockIdentificationCoordinator: IdentificationCoordinator = mockk(relaxed = true)
 
+    @BindValue
+    val mockStorageManager: StorageManager = mockk(relaxed = true)
+
     @Before
     fun before() {
         hiltRule.inject()
@@ -63,10 +66,12 @@ class SetupUiTest {
             appCoordinator.navigate(IdentificationSuccessDestination(testProvider, ""))
         }
 
+        every { mockStorageManager.getIsFirstTimeUser() } returns true
+
         composeTestRule.activity.setContent {
             UseIDApp(appCoordinator)
         }
-        
+
         val startSetupButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_no)
         composeTestRule.onNodeWithText(startSetupButton).performClick()
 
