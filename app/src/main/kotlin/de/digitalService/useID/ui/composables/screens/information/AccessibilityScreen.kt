@@ -7,10 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
+import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Destination
@@ -22,25 +24,25 @@ fun AccessibilityScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        StyledSiteTitle(text = "Erklärung zur Barrierefreiheit")
+        StyledSiteTitle(text = stringResource(R.string.accessibility_screen_title))
 
-        StyledTextBlock(text = "Stand: DD.MM.JJJJ")
-        StyledTextBlock(text = "Die Applikation \"AppName\" ist bemüht, im Einklang mit den nationalen Rechtsvorschriften zur Umsetzung der Richtlinie (EU) 2016/2102 des Europäischen Parlaments und des Rates barrierefrei zugänglich zu machen. Diese Erklärung zur Barrierefreiheit gilt für die aktuell im Apple App Store beziehungsweise Google Playstore erreichbare Version xxx. Sie wurde am xx.xx.2022 erstellt.")
+        StyledTextBlock(text = stringResource(R.string.accessibility_updated_date))
+        StyledTextBlock(text = stringResource(R.string.accessibility_intro_text))
 
-        StyledMediumTitle(text = "Wie barrierefrei ist das Angebot?")
-        StyledTextBlock(text = "Diese Applikation wurde neu entwickelt. Das Team hat ein Accessibility Training absolviert, indem die meisten Bereiche der Applikation auf Barrierefreiheit überprüft wurden. Die Applikation ist größtenteils barrierefrei. An den unten aufgeführten Mängeln wird gearbeitet.")
-        StyledTextBlock(text = "Die Applikation \"AppName\" wird außerdem in den kommenden Wochen kontinuierlich auf Basis der Testergebnisse und der Rückmeldung der Nutzer:innen weiterentwickelt")
+        StyledMediumTitle(text = stringResource(R.string.accessibility_question_howAccessible_title))
+        StyledTextBlock(text = stringResource(R.string.accessibility_question_howAccessible_body1))
+        StyledTextBlock(text = stringResource(R.string.accessibility_question_howAccessible_body2))
 
-        StyledMediumTitle(text = "Welche Bereiche sind nicht barrierefrei?")
-        StyledTextBlock(text = "• Text Vergrößerung möglich?\n• Tastatur navigierbar?\n• Bildschirmlesegerät/Screenreader bedienbar?")
+        StyledMediumTitle(text = stringResource(R.string.accessibility_question_whatIsNotAccessible_title))
+        StyledTextBlock(text = stringResource(R.string.accessibility_question_whatIsNotAccessible_body))
 
-        StyledMediumTitle(text = "Kontakt und Feedback-Möglichkeit")
-        StyledTextBlock(text = "Sind Ihnen Mängel beim barrierefreien Zugang zu Inhalten von aufgefallen? Dann können Sie sich gerne bei uns melden: hilfe@inter.net")
+        StyledMediumTitle(text = stringResource(R.string.accessibility_feedbackPossibilities_title))
+        StyledTextBlock(text = stringResource(R.string.accessibility_feedbackPossibilities_body))
 
-        StyledMediumTitle(text = "Schlichtungsverfahren")
-        StyledTextBlock(text = "Beim Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen gibtes eine Schlichtungsstelle gemäß \$ 16 BGG. Die Schlichtungsstelle hat die Aufgabe, Konfliktezwischen Menschen mit Behinderungen und öffentlichen Stellen des Bundes zu lösen. Sie können die Schlichtungsstelle einschalten, wenn Sie mit den Antworten aus der oben genannten Kontaktmöglichkeit nicht zufrieden sind. Dabei geht es nicht darum, Gewinner oder Verlierer zu finden. Vielmehr ist es das Ziel, mit Hilfe der Schlichtungsstelle gemeinsam und außergerichtlich eine Lösung für ein Problem zufinden. Das Schlichtungsverfahren ist kostenlos. Sie brauchen auch keinen Rechtsbeistand. Auf der Internetseite der Schlichtungsstelle finden Sie alle Informationen zum Schlichtungsverfahren. Dort können Sie nachlesen, wie ein Schlichtungsverfahren abläuft und wie Sie den Antrag auf Schlichtung stellen. Sie können den Antrag auch in Leichter Spracheoder in Deutscher Gebärdensprache stellen.")
-        StyledTextBlock(text = "Sie erreichen die Schlichtungsstelle unter folgender Adresse:")
-        StyledTextBlock(text = "Schlichtungsstelle nach dem Behindertengleichstellungsgesetz bei dem Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen\nMauerstraße53\n10117 Berlin\nTelefon: 030 18 527 2805\nE-Mail: info@schlichtungsstelle-bgg.de\nInternet: www.schlichtungsstelle-bgg.de")
+        StyledMediumTitle(text = stringResource(R.string.accessibility_arbitrationProcedure_title))
+        StyledTextBlock(text = stringResource(R.string.accessibility_arbitrationProcedure_body1))
+        StyledTextBlock(text = stringResource(R.string.accessibility_arbitrationProcedure_contact_title))
+        StyledTextBlock(text = stringResource(R.string.accessibility_arbitrationProcedure_contact_info))
     }
 }
 

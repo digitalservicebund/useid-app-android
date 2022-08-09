@@ -7,46 +7,48 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
+import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Destination
 @Composable
-fun ImpressumScreen() {
+fun ImprintScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        StyledSiteTitle(text = "Impressum")
+        StyledSiteTitle(text = stringResource(R.string.imprint_screen_title))
 
-        StyledMediumTitle(text = "Angabe gemäß §5 TMG")
+        StyledMediumTitle(text = stringResource(R.string.imprint_duty_info))
 
-        StyledTextBlock(text = "Digital Service GmbH des Bundes\nPrinzessinenstraße 8-14\n10969 Belrin\nDeutschland")
+        StyledTextBlock(text = stringResource(R.string.imprint_address_body))
 
-        StyledSmallTitle(text = "Vertretung durch die Geschäftsführung:")
-        StyledTextBlock(text = "Frau Christina Lang, Herr Philipp Moser")
+        StyledSmallTitle(text = stringResource(R.string.imprint_managementRepresentation_title))
+        StyledTextBlock(text = stringResource(R.string.imprint_managementRepresentation_body))
 
-        StyledSmallTitle(text = "Alleingesellschafterin:")
-        StyledTextBlock(text = "Bundesrepublik Deutschland, vertreten durch das Bundeskanzleramt")
+        StyledSmallTitle(text = stringResource(R.string.imprint_soloShareholder_title))
+        StyledTextBlock(text = stringResource(R.string.imprint_soloShareholder_body))
 
-        StyledSmallTitle(text = "Handelsregister-Nummer:")
-        StyledTextBlock(text = "HRB 212879 B")
+        StyledSmallTitle(text = stringResource(R.string.imprint_companyRegistrationNumber_title))
+        StyledTextBlock(text = stringResource(R.string.imprint_companyRegistrationNumber_body))
 
-        StyledSmallTitle(text = "Registergericht:")
-        StyledTextBlock(text = "Berlin Charlottenburg")
+        StyledSmallTitle(text = stringResource(R.string.imprint_registryCourt_title))
+        StyledTextBlock(text = stringResource(R.string.imprint_registryCourt_body))
 
-        StyledSmallTitle(text = "Umsatzsteueridentifikationsnummer:")
-        StyledTextBlock(text = "DE327075535")
+        StyledSmallTitle(text = stringResource(R.string.imprint_vATNumber_title))
+        StyledTextBlock(text = stringResource(R.string.imprint_vATNumber_body))
 
-        StyledMediumTitle(text = "Kontakt")
+        StyledMediumTitle(text = stringResource(R.string.imprint_contact_title))
 
-        StyledSmallTitle(text = "E-Mail:")
-        StyledTextBlock(text = "adfldakflkdfkla@inter.net")
+        StyledSmallTitle(text = stringResource(R.string.imprint_mail_title))
+        StyledTextBlock(text = stringResource(R.string.imprint_email_body))
 
         StyledMediumTitle(text = "Lorem ipsum")
         StyledTextBlock(text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum")
@@ -98,6 +100,6 @@ private fun StyledTextBlock(text: String) {
 @Composable
 private fun Preview() {
     UseIDTheme {
-        ImpressumScreen()
+        ImprintScreen()
     }
 }

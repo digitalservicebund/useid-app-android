@@ -7,10 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.annotation.Destination
+import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Destination
@@ -22,9 +24,9 @@ fun TermsOfUseScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        StyledSiteTitle(text = "Nutzungsbedingungen")
+        StyledSiteTitle(text = stringResource(R.string.termsOfUse_screen_title))
 
-        StyledTextBlock(text = "Stand: DD.MM.JJJJ")
+        StyledTextBlock(text = stringResource(R.string.termsOfUseScreen_update_date))
 
         StyledMediumTitle(text = "Lorem ipsum")
         StyledTextBlock(text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum")

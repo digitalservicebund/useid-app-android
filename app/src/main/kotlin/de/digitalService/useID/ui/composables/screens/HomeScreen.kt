@@ -29,7 +29,7 @@ import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.composables.RegularBundButton
 import de.digitalService.useID.ui.composables.screens.destinations.AccessibilityScreenDestination
-import de.digitalService.useID.ui.composables.screens.destinations.ImpressumScreenDestination
+import de.digitalService.useID.ui.composables.screens.destinations.ImprintScreenDestination
 import de.digitalService.useID.ui.composables.screens.destinations.PrivacyScreenDestination
 import de.digitalService.useID.ui.composables.screens.destinations.TermsOfUseScreenDestination
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
@@ -136,7 +136,7 @@ private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
         )
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_impressum_button), onClick = viewModel::onImpressumButtonClicked)
+        CardButton(text = stringResource(R.string.homeScreen_more_imprint_button), onClick = viewModel::onImprintButtonClicked)
         StyledDivider()
 
         CardButton(text = stringResource(R.string.homeScreen_more_legalNotice_button), onClick = viewModel::onTermsOfUseButtonClicked)
@@ -178,7 +178,7 @@ interface HomeScreenViewModelInterface {
     fun setupOnlineID()
     fun homeScreenLaunched()
     fun onPrivacyButtonClicked()
-    fun onImpressumButtonClicked()
+    fun onImprintButtonClicked()
     fun onAccessibilityButtonClicked()
     fun onTermsOfUseButtonClicked()
 }
@@ -208,8 +208,8 @@ class HomeScreenViewModel @Inject constructor(
         appCoordinator.navigate(TermsOfUseScreenDestination)
     }
 
-    override fun onImpressumButtonClicked() {
-        appCoordinator.navigate(ImpressumScreenDestination)
+    override fun onImprintButtonClicked() {
+        appCoordinator.navigate(ImprintScreenDestination)
     }
 }
 
@@ -217,7 +217,7 @@ private class PreviewViewModel : HomeScreenViewModelInterface {
     override fun setupOnlineID() {}
     override fun homeScreenLaunched() {}
     override fun onPrivacyButtonClicked() {}
-    override fun onImpressumButtonClicked() {}
+    override fun onImprintButtonClicked() {}
     override fun onAccessibilityButtonClicked() {}
     override fun onTermsOfUseButtonClicked() {}
 }
