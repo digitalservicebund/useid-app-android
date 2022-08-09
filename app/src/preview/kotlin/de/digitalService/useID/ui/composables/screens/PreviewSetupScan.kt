@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.digitalService.useID.SecureStorageManagerInterface
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.SetupScan
@@ -54,6 +54,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             coordinator.onSettingPINSucceeded()
         }
     }
+
     fun simulateIncorrectTransportPIN() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -62,6 +63,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             innerViewModel.injectShouldShowError(ScanError.IncorrectPIN(2))
         }
     }
+
     fun simulateCANRequired() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -70,6 +72,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             innerViewModel.injectShouldShowError(ScanError.PINSuspended)
         }
     }
+
     fun simulatePUKRequired() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -83,13 +86,19 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
         override var shouldShowProgress: Boolean by mutableStateOf(false)
         override var errorState: ScanError? by mutableStateOf(null)
         override fun startSettingPIN(context: Context) {}
-        override fun onReEnteredTransportPIN(transportPIN: String, context: Context) { injectShouldShowError(null) }
+        override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {
+            injectShouldShowError(null)
+        }
+
         override fun onHelpButtonTapped() {}
-        override fun onCancel() { coordinator.cancelSetup() }
+        override fun onCancel() {
+            coordinator.cancelSetup()
+        }
 
         override fun injectShouldShowProgress(show: Boolean) {
             shouldShowProgress = show
         }
+
         override fun injectShouldShowError(error: ScanError?) {
             errorState = error
         }
@@ -104,7 +113,19 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewSetupScan() {
+    val fakeStorageManager = (object : StorageManagerType {
+        override fun getIsFirstTimeUser(): Boolean = false
+        override fun setIsNotFirstTimeUser() {}
+    })
+
     UseIDTheme {
-        PreviewSetupScan(PreviewSetupScanViewModel(SetupCoordinator(AppCoordinator())))
+        PreviewSetupScan(
+            PreviewSetupScanViewModel(
+                SetupCoordinator(
+                    AppCoordinator(fakeStorageManager),
+                    fakeStorageManager
+                )
+            )
+        )
     }
 }

@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadata
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadata
@@ -84,7 +85,10 @@ fun PreviewPreviewIdentificationFetchMetadata() {
         PreviewIdentificationFetchMetadata(
             PreviewIdentificationFetchMetadataViewModel(
                 IdentificationCoordinator(
-                    AppCoordinator()
+                    AppCoordinator((object : StorageManagerType {
+                        override fun getIsFirstTimeUser(): Boolean = false
+                        override fun setIsNotFirstTimeUser() {}
+                    }))
                 )
             )
         )

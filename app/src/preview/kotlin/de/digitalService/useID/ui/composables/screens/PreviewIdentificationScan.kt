@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationScan
@@ -109,7 +110,10 @@ fun PreviewPreviewIdentificationScan() {
         PreviewIdentificationScan(
             PreviewIdentificationScanViewModel(
                 IdentificationCoordinator(
-                    AppCoordinator()
+                    AppCoordinator(object : StorageManagerType{
+                        override fun getIsFirstTimeUser(): Boolean = false
+                        override fun setIsNotFirstTimeUser() {}
+                    })
                 )
             )
         )
