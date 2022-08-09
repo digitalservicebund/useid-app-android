@@ -44,10 +44,11 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSetupFinished() {
+        storageManager.setIsNotFirstTimeUser()
+
         tcTokenURL?.let {
             appCoordinator.startIdentification(it)
             tcTokenURL = null
-            storageManager.setIsFirstTimeUser()
         }
     }
 

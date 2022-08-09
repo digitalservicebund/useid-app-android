@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 interface StorageManagerType {
     fun getIsFirstTimeUser(): Boolean
-    fun setIsFirstTimeUser()
+    fun setIsNotFirstTimeUser()
 }
 
 @Singleton
@@ -25,7 +25,7 @@ class StorageManager @Inject constructor(@ApplicationContext context: Context) :
         return sharedPrefs.getBoolean(StorageKeys.FIRST_TIME_USER_KEY.name, true)
     }
 
-    override fun setIsFirstTimeUser() {
+    override fun setIsNotFirstTimeUser() {
         sharedPrefs.edit {
             putBoolean(StorageKeys.FIRST_TIME_USER_KEY.name, false)
         }

@@ -80,8 +80,8 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     fun finishIdentification() {
+        storageManager.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
-        storageManager.setIsFirstTimeUser()
     }
 
     private fun startIdentification(tcTokenURL: String) {
