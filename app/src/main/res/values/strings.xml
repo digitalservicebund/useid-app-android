@@ -128,4 +128,11 @@
     <string name="privacy_updated_date">Stand: DD.MM.JJJJ</string>
     <string name="termsOfUse_screen_title">Nutzungsbedingungen</string>
     <string name="termsOfUseScreen_update_date">Stand: DD.MM.JJJJ</string>
+    <string name="noNfc_screen_title"><![CDATA[<strong>Bürger:in</strong> App]]></string>
+    <string name="noNfc_info_title">NFC-Funktion nicht verfügbar</string>
+    <string name="noNfc_info_body">Leider hat das Smartphone keine NFC-Lesefunktion oder kann den NFC-Chip im Ausweis nicht auslesen.\n\nBitte nutzen Sie ein Smartphone mit NFC-Lesefunktion oder ein Kartenlesegerät.</string>
+    <string name="noNfc_moreInformation_link">Weitere Informationen</string>
+    <string name="ndcDeactivated_openSettings_button">Einstellungen anpassen</string>
+    <string name="nfcDeactivated_info_body">\"Bundes-Login\" hat aktuell keine Berechtigung die NFC-Funktion zu nutzen.</string>
+    <string name="nfcDeactivated_info_title">NFC-Funktion deaktiviert</string>
 </resources>

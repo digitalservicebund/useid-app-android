@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package de.digitalService.useID.ui.composables
 
 import android.os.Bundle
@@ -8,17 +10,23 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.AppCoordinatorType
+import de.digitalService.useID.ui.NfcAvailability
+import de.digitalService.useID.ui.composables.screens.noNfc.NfcDeactivatedScreen
+import de.digitalService.useID.ui.composables.screens.noNfc.NoNfcScreen
 import de.digitalService.useID.ui.theme.UseIDTheme
 import io.sentry.compose.withSentryObservableEffect
 
@@ -38,6 +46,22 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
             shouldShowBackButton = controller.previousBackStackEntry != null
         }
     })
+
+    if (appCoordinator.nfcAvailability.value != NfcAvailability.Available) {
+        Dialog(
+            onDismissRequest = {},
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            )
+        ) {
+            when (appCoordinator.nfcAvailability.value) {
+                NfcAvailability.NoNfc -> NoNfcScreen()
+                NfcAvailability.Deactivated -> NfcDeactivatedScreen()
+                NfcAvailability.Available -> {}
+            }
+        }
+    }
 
     UseIDTheme {
         ScreenWithTopBar(navigationIcon = {
@@ -60,17 +84,32 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
     }
 }
 
-private class PreviewAppCoordinator : AppCoordinatorType {
+private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvailability>) : AppCoordinatorType {
     override fun setNavController(navController: NavController) {}
     override fun navigate(route: Direction) {}
     override fun popToRoot() {}
     override fun startIdentification(tcTokenURL: String) {}
     override fun homeScreenLaunched(token: String?) {}
+    override fun setNfcAvailability(availability: NfcAvailability) {}
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
-fun PreviewUseIDApp() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator())
+private fun Preview1() {
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available)))
+}
+
+@Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
+@Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
+@Composable
+private fun Preview2() {
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc)))
+}
+
+@Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
+@Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
+@Composable
+private fun Preview3() {
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated)))
 }

@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.NfcAvailability
 import de.digitalService.useID.ui.composables.UseIDApp
 import javax.inject.Inject
 
@@ -32,6 +33,16 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             UseIDApp(appCoordinator)
+        }
+
+        nfcAdapter?.let {
+            if (it.isEnabled) {
+                appCoordinator.setNfcAvailability(NfcAvailability.Available)
+            } else {
+                appCoordinator.setNfcAvailability(NfcAvailability.Deactivated)
+            }
+        } ?: run {
+            appCoordinator.setNfcAvailability(NfcAvailability.NoNfc)
         }
     }
 

@@ -1,5 +1,9 @@
 package de.digitalService.useID.ui
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.currentCompositionLocalContext
+import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
@@ -10,11 +14,20 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface AppCoordinatorType {
+    val nfcAvailability: State<NfcAvailability>
+
     fun setNavController(navController: NavController)
     fun navigate(route: Direction)
     fun popToRoot()
     fun startIdentification(tcTokenURL: String)
     fun homeScreenLaunched(token: String?)
+    fun setNfcAvailability(availability: NfcAvailability)
+}
+
+enum class NfcAvailability{
+    Available,
+    Deactivated,
+    NoNfc
 }
 
 @Singleton
@@ -22,7 +35,10 @@ class AppCoordinator @Inject constructor(
     private val storageManager: StorageManagerType
 ) : AppCoordinatorType {
     private lateinit var navController: NavController
+
     private var firstTimeLaunch: Boolean = true
+
+    override val nfcAvailability: MutableState<NfcAvailability> = mutableStateOf(NfcAvailability.Available)
 
     override fun setNavController(navController: NavController) {
         this.navController = navController
@@ -45,5 +61,9 @@ class AppCoordinator @Inject constructor(
         if (storageManager.getIsFirstTimeUser()) {
             navigate(SetupIntroDestination(token))
         }
+    }
+
+    override fun setNfcAvailability(availability: NfcAvailability) {
+        nfcAvailability.value = availability
     }
 }
