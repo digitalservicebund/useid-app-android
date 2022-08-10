@@ -16,6 +16,8 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.destinations.SetupFinishDestination
 import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.util.MockNfcAdapterUtil
+import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -36,6 +38,9 @@ class SetupUiTest {
 
     @Inject
     lateinit var appCoordinator: AppCoordinator
+
+    @BindValue
+    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @BindValue
     val mockSetupScanViewModel: SetupScanViewModel = mockk(relaxed = true)

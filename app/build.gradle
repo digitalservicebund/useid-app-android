@@ -28,7 +28,7 @@ android {
         versionCode 10
         versionName "1.0"
 
-        testInstrumentationRunner "de.digitalService.useID.HiltTestRunner"
+        testInstrumentationRunner "de.digitalService.useID.util.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary true
         }
@@ -49,7 +49,7 @@ android {
     buildTypes {
         release {
             // Leave out optimization for now as this leads to a crash on app launch
-            
+
 //            minifyEnabled true
 //            shrinkResources true
 //            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

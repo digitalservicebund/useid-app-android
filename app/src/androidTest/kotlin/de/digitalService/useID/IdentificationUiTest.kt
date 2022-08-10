@@ -21,6 +21,8 @@ import de.digitalService.useID.ui.composables.screens.destinations.Identificatio
 import de.digitalService.useID.ui.composables.screens.destinations.SetupFinishDestination
 import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadataViewModel
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.util.MockNfcAdapterUtil
+import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Before
@@ -30,13 +32,14 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 class IdentificationUiTest {
-
-
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @BindValue
+    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Inject
     lateinit var appCoordinator: AppCoordinator

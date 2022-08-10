@@ -65,7 +65,7 @@ fun NfcDeactivatedScreen() {
                 MarkdownText(
                     markdown = stringResource(R.string.noNfc_screen_title),
                     fontSize = 30.sp,
-                    fontResource = R.font.bundes_sans_dtp_regular,
+                    fontResource = R.font.bundes_sans_dtp_regular
                 )
             }
 
@@ -83,7 +83,7 @@ private fun InfoCard() {
         border = BorderStroke(1.dp, Gray600),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier

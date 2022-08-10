@@ -36,7 +36,6 @@ import de.digitalService.useID.ui.theme.Gray600
 import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
-
 @Composable
 fun NoNfcScreen() {
     Surface(shape = RoundedCornerShape(15.dp)) {
@@ -64,7 +63,7 @@ fun NoNfcScreen() {
                 MarkdownText(
                     markdown = stringResource(R.string.noNfc_screen_title),
                     fontSize = 30.sp,
-                    fontResource = R.font.bundes_sans_dtp_regular,
+                    fontResource = R.font.bundes_sans_dtp_regular
                 )
             }
 
@@ -82,7 +81,7 @@ private fun InfoCard() {
         border = BorderStroke(1.dp, Gray600),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         shape = RoundedCornerShape(8.dp),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
@@ -120,7 +119,7 @@ private fun InfoCard() {
             ClickableText(
                 text = annotatedString,
                 onClick = {},
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall
             )
 
             Spacer(modifier = Modifier.height(16.dp))

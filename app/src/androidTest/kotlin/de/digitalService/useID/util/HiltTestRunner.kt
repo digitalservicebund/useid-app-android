@@ -1,4 +1,4 @@
-package de.digitalService.useID
+package de.digitalService.useID.util
 
 import android.app.Application
 import android.content.Context

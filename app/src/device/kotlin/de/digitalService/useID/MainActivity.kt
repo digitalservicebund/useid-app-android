@@ -11,9 +11,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.NfcAvailability
 import de.digitalService.useID.ui.composables.UseIDApp
+import de.digitalService.useID.util.NfcAdapterUtil
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,6 +24,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appCoordinator: AppCoordinator
+
+    @Inject
+    lateinit var nfcAdapterUtil: NfcAdapterUtil
 
     private var nfcAdapter: NfcAdapter? = null
 
@@ -39,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
         foregroundDispatch(this)
 
-        this.nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        this.nfcAdapter = nfcAdapterUtil.getNfcAdapter()
         nfcAdapter?.let {
             if (it.isEnabled) {
                 appCoordinator.setNfcAvailability(NfcAvailability.Available)

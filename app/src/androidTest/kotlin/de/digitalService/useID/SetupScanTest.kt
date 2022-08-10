@@ -6,11 +6,14 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.ScanError
 import de.digitalService.useID.ui.composables.screens.SetupScan
 import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
+import de.digitalService.useID.util.MockNfcAdapterUtil
+import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -20,11 +23,14 @@ import org.junit.Test
 @HiltAndroidTest
 class SetupScanTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
-    @get:Rule
+    @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
+
+    @BindValue
+    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Test
     fun openErrorDialogAndConfirmWithButton() {

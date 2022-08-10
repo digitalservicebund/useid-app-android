@@ -23,8 +23,8 @@ import androidx.navigation.NavDestination
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.R
+import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.AppCoordinatorType
-import de.digitalService.useID.ui.NfcAvailability
 import de.digitalService.useID.ui.composables.screens.noNfc.NfcDeactivatedScreen
 import de.digitalService.useID.ui.composables.screens.noNfc.NoNfcScreen
 import de.digitalService.useID.ui.theme.UseIDTheme
