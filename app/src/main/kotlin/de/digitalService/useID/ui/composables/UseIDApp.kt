@@ -47,23 +47,23 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
         }
     })
 
-    if (appCoordinator.nfcAvailability.value != NfcAvailability.Available) {
-        Dialog(
-            onDismissRequest = {},
-            properties = DialogProperties(
-                dismissOnBackPress = false,
-                dismissOnClickOutside = false
-            )
-        ) {
-            when (appCoordinator.nfcAvailability.value) {
-                NfcAvailability.NoNfc -> NoNfcScreen()
-                NfcAvailability.Deactivated -> NfcDeactivatedScreen()
-                NfcAvailability.Available -> {}
+    UseIDTheme {
+        if (appCoordinator.nfcAvailability.value != NfcAvailability.Available) {
+            Dialog(
+                onDismissRequest = {},
+                properties = DialogProperties(
+                    dismissOnBackPress = false,
+                    dismissOnClickOutside = false
+                )
+            ) {
+                when (appCoordinator.nfcAvailability.value) {
+                    NfcAvailability.NoNfc -> NoNfcScreen()
+                    NfcAvailability.Deactivated -> NfcDeactivatedScreen()
+                    NfcAvailability.Available -> {}
+                }
             }
         }
-    }
 
-    UseIDTheme {
         ScreenWithTopBar(navigationIcon = {
             if (shouldShowBackButton) {
                 IconButton(modifier = Modifier.testTag("backButton"), onClick = { navController.popBackStack() }) {
