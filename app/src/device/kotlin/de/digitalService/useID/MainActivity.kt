@@ -29,12 +29,17 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        this.nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
         setContent {
             UseIDApp(appCoordinator)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
+
+        foregroundDispatch(this)
+
+        this.nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         nfcAdapter?.let {
             if (it.isEnabled) {
                 appCoordinator.setNfcAvailability(NfcAvailability.Available)
@@ -44,12 +49,6 @@ class MainActivity : ComponentActivity() {
         } ?: run {
             appCoordinator.setNfcAvailability(NfcAvailability.NoNfc)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        foregroundDispatch(this)
     }
 
     override fun onPause() {
