@@ -52,7 +52,7 @@ class SetupScanViewModelTest {
         every { idCardManagerMock.changePin(contextMock) } returns flow {
             emit(EIDInteractionEvent.PINManagementStarted)
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfully(""))
+            emit(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
         }
 
         val viewModel = SetupScanViewModel(
@@ -237,7 +237,7 @@ class SetupScanViewModelTest {
             emit(EIDInteractionEvent.PINManagementStarted)
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = attempts, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfully(""))
+            emit(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
         }
 
         val viewModel = SetupScanViewModel(
@@ -341,7 +341,7 @@ class SetupScanViewModelTest {
         every { idCardManagerMock.changePin(contextMock) } returns flow {
             emit(EIDInteractionEvent.PINManagementStarted)
             emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfully(""))
+            emit(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
         }
 
         val viewModel = SetupScanViewModel(

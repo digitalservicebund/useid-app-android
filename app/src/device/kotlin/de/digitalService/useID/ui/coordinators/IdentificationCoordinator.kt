@@ -160,11 +160,9 @@ class IdentificationCoordinator @Inject constructor(
                         _scanEventFlow.emit(ScanEvent.CardAttached)
                         reachedScanState = true
                     }
-                    is EIDInteractionEvent.ProcessCompletedSuccessfully -> {
+                    is EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
                         logger.debug("Process completed successfully")
                         _scanEventFlow.emit(ScanEvent.Finished)
-
-                        // Handle refresh address here ...
 
                         requestAuthenticationEvent?.request?.subject?.let { subject ->
                             navigateOnMain(IdentificationSuccessDestination(subject, event.redirectURL))

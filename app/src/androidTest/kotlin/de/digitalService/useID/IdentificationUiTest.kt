@@ -64,7 +64,7 @@ class IdentificationUiTest {
         hiltRule.inject()
 
         val savedStateHandle = SavedStateHandle(mapOf(Pair("tcTokenURL", "https://tokenURL")))
-        setupIntroViewModel = SetupIntroViewModel(SetupCoordinator(appCoordinator, storageManager), savedStateHandle)
+        setupIntroViewModel = SetupIntroViewModel(SetupCoordinator(appCoordinator), savedStateHandle)
     }
 
     @Test

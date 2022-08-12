@@ -190,7 +190,7 @@ class SetupScanViewModel @Inject constructor(
                     EIDInteractionEvent.PINManagementStarted -> {
                         logger.debug("PIN management started.")
                     }
-                    is EIDInteractionEvent.ProcessCompletedSuccessfully -> {
+                    is EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
                         logger.debug("Process completed successfully.")
                         finishSetup()
                     }

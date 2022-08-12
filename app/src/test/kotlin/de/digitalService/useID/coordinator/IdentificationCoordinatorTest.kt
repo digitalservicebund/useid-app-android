@@ -146,7 +146,7 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(FetchMetadataEvent.Finished, fetchResults.get(1))
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
 
-        testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
+        testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Finished, scanResults.get(1))
@@ -189,7 +189,7 @@ class IdentificationCoordinatorTest {
 
         advanceUntilIdle()
 
-        testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
+        testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Finished, results.get(1))
@@ -224,7 +224,7 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
-        testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfully(testRedirectUrl)
+        testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
 
         val results = mutableListOf<ScanEvent>()
