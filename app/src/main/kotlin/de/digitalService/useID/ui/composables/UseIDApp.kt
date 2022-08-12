@@ -91,6 +91,7 @@ private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvail
     override fun startIdentification(tcTokenURL: String) {}
     override fun homeScreenLaunched(token: String?) {}
     override fun setNfcAvailability(availability: NfcAvailability) {}
+    override fun setIsNotFirstTimeUser() { }
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)

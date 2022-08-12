@@ -56,7 +56,7 @@ class SetupIntroViewModel @Inject constructor(private val setupCoordinator: Setu
     }
 
     override fun onNonFirstTimeUsage() {
-        setupCoordinator.onSetupFinished()
+        setupCoordinator.onSkipSetup()
     }
 }
 

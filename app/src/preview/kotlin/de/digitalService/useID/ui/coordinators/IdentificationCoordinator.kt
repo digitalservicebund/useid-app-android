@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
@@ -70,6 +71,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
     }
 
     fun finishIdentification() {
+        appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
     }
 

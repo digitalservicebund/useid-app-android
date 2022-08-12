@@ -122,8 +122,7 @@ fun PreviewPreviewSetupScan() {
         PreviewSetupScan(
             PreviewSetupScanViewModel(
                 SetupCoordinator(
-                    AppCoordinator(fakeStorageManager),
-                    fakeStorageManager
+                    AppCoordinator(fakeStorageManager)
                 )
             )
         )

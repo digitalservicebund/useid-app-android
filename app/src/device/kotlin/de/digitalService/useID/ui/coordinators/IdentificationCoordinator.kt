@@ -80,7 +80,7 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     fun finishIdentification() {
-        storageManager.setIsNotFirstTimeUser()
+        appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
     }
 

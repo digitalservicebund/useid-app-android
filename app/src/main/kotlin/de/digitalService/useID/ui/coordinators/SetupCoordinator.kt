@@ -8,8 +8,7 @@ import javax.inject.Singleton
 
 @Singleton
 class SetupCoordinator @Inject constructor(
-    private val appCoordinator: AppCoordinator,
-    private val storageManager: StorageManagerType
+    private val appCoordinator: AppCoordinator
 ) {
     private var tcTokenURL: String? = null
 
@@ -44,16 +43,25 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSetupFinished() {
-        storageManager.setIsNotFirstTimeUser()
+        appCoordinator.setIsNotFirstTimeUser()
+        handleSetupEnded()
+    }
 
-        tcTokenURL?.let {
-            appCoordinator.startIdentification(it)
-            tcTokenURL = null
-        }
+    fun onSkipSetup() {
+        handleSetupEnded()
     }
 
     fun cancelSetup() {
         appCoordinator.popToRoot()
         tcTokenURL = null
+    }
+
+    private fun handleSetupEnded() {
+        tcTokenURL?.let {
+            appCoordinator.startIdentification(it)
+            tcTokenURL = null
+        } ?: run {
+            appCoordinator.popToRoot()
+        }
     }
 }

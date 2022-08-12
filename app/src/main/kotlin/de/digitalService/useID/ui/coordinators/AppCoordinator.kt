@@ -8,6 +8,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.models.NfcAvailability
+import de.digitalService.useID.ui.composables.screens.destinations.HomeScreenDestination
 import de.digitalService.useID.ui.composables.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
 import javax.inject.Inject
@@ -22,6 +23,7 @@ interface AppCoordinatorType {
     fun startIdentification(tcTokenURL: String)
     fun homeScreenLaunched(token: String?)
     fun setNfcAvailability(availability: NfcAvailability)
+    fun setIsNotFirstTimeUser()
 }
 
 @Singleton
@@ -41,7 +43,7 @@ class AppCoordinator @Inject constructor(
     override fun navigate(route: Direction) = navController.navigate(route)
 
     override fun popToRoot() {
-        navController.popBackStack(route = SetupIntroDestination.route, inclusive = false)
+        navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)
     }
 
     override fun startIdentification(tcTokenURL: String) = navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL))
@@ -59,5 +61,9 @@ class AppCoordinator @Inject constructor(
 
     override fun setNfcAvailability(availability: NfcAvailability) {
         nfcAvailability.value = availability
+    }
+
+    override fun setIsNotFirstTimeUser() {
+        storageManager.setIsNotFirstTimeUser()
     }
 }
