@@ -156,7 +156,6 @@ class SetupScanViewModel @Inject constructor(
     override fun onCancel() = coordinator.cancelSetup()
 
     private fun finishSetup() {
-        secureStorageManager.clearStorage()
         coordinator.onSettingPINSucceeded()
     }
 

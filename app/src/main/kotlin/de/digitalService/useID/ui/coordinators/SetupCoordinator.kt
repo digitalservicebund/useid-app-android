@@ -1,6 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
-import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.composables.screens.destinations.*
 import javax.inject.Inject
@@ -8,15 +8,19 @@ import javax.inject.Singleton
 
 @Singleton
 class SetupCoordinator @Inject constructor(
-    private val appCoordinator: AppCoordinator
-) {
+    private val appCoordinator: AppCoordinator,
+    private val secureStorageManager: SecureStorageManagerInterface
+    ) {
     private var tcTokenURL: String? = null
 
     fun setTCTokenURL(tcTokenURL: String) {
         this.tcTokenURL = tcTokenURL
     }
 
-    fun startSetupIDCard() = appCoordinator.navigate(SetupPINLetterDestination)
+    fun startSetupIDCard() {
+        secureStorageManager.clearStorage()
+        appCoordinator.navigate(SetupPINLetterDestination)
+    }
 
     fun setupWithPINLetter() {
         appCoordinator.navigate(SetupTransportPINDestination)
@@ -52,11 +56,14 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun cancelSetup() {
+        secureStorageManager.clearStorage()
         appCoordinator.popToRoot()
         tcTokenURL = null
     }
 
     private fun handleSetupEnded() {
+        secureStorageManager.clearStorage()
+
         tcTokenURL?.let {
             appCoordinator.startIdentification(it)
             tcTokenURL = null
