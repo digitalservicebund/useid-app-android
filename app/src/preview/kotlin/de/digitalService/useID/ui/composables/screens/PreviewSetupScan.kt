@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.digitalService.useID.SecureStorageManager
+import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.ScanError
@@ -122,7 +124,14 @@ fun PreviewPreviewSetupScan() {
         PreviewSetupScan(
             PreviewSetupScanViewModel(
                 SetupCoordinator(
-                    AppCoordinator(fakeStorageManager)
+                    AppCoordinator(fakeStorageManager),
+                    object: SecureStorageManagerInterface{
+                        override fun setTransportPIN(value: String) {}
+                        override fun loadTransportPIN(): String? = "12"
+                        override fun setPersonalPIN(value: String) {}
+                        override fun loadPersonalPIN(): String? = "12"
+                        override fun clearStorage() {}
+                    }
                 )
             )
         )
