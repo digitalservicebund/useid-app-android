@@ -48,7 +48,12 @@ fun IdentificationSuccess(
             action = { viewModel.onButtonTapped(context) }
         )
     ) {
-        Column(verticalArrangement = Arrangement.Center, modifier = modifier.fillMaxHeight().padding(horizontal = 20.dp)) {
+        Column(
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier
+                .fillMaxHeight()
+                .padding(horizontal = 20.dp)
+        ) {
             Icon(imageVector = Icons.Filled.Check, contentDescription = null)
             Spacer(modifier = Modifier.height(20.dp))
             Text(stringResource(id = R.string.identification_success_title), style = MaterialTheme.typography.titleMedium)
@@ -77,9 +82,10 @@ data class IdentificationSuccessNavArgs(
 )
 
 @HiltViewModel
-class IdentificationSuccessViewModel @Inject constructor(private val identificationCoordinator: IdentificationCoordinator, savedStateHandle: SavedStateHandle) :
-    ViewModel(),
-    IdentificationSuccessViewModelInterface {
+class IdentificationSuccessViewModel @Inject constructor(
+    private val identificationCoordinator: IdentificationCoordinator,
+    savedStateHandle: SavedStateHandle
+) : ViewModel(), IdentificationSuccessViewModelInterface {
     override val provider: String
     private val refreshAddress: String
 

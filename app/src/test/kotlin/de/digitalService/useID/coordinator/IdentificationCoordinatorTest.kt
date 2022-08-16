@@ -647,4 +647,35 @@ class IdentificationCoordinatorTest {
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
     }
+
+    @Test
+    fun finishIdentification(){
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockCoroutineContextProvider,
+            mockStorageManager
+        )
+
+        identificationCoordinator.finishIdentification()
+
+        verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
+        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+    }
+
+    @Test
+    fun cancelIdentification(){
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockCoroutineContextProvider,
+            mockStorageManager
+        )
+
+        identificationCoordinator.cancelIdentification()
+
+        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+    }
 }
