@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.composables.BundButtonConfig
-import de.digitalService.useID.ui.composables.StandardStaticComposition
+import de.digitalService.useID.ui.components.BundButtonConfig
+import de.digitalService.useID.ui.components.StandardStaticComposition
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject

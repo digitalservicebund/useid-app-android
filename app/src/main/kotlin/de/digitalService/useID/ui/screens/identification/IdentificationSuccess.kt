@@ -25,8 +25,8 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.composables.BundButtonConfig
-import de.digitalService.useID.ui.composables.StandardButtonScreen
+import de.digitalService.useID.ui.components.BundButtonConfig
+import de.digitalService.useID.ui.components.StandardButtonScreen
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.theme.UseIDTheme

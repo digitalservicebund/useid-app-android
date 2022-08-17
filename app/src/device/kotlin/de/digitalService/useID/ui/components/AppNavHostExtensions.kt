@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel

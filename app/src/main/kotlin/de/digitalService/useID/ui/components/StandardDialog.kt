@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.components
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*

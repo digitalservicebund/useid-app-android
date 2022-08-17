@@ -21,7 +21,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
-import de.digitalService.useID.ui.composables.pin.PINEntryField
+import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject

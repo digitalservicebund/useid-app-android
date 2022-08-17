@@ -9,8 +9,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.composables.BundButtonConfig
-import de.digitalService.useID.ui.composables.StandardButtonScreen
+import de.digitalService.useID.ui.components.BundButtonConfig
+import de.digitalService.useID.ui.components.StandardButtonScreen
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable

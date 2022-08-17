@@ -20,8 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.startActivity
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.composables.BundButton
-import de.digitalService.useID.ui.composables.ButtonType
+import de.digitalService.useID.ui.components.BundButton
+import de.digitalService.useID.ui.components.ButtonType
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable

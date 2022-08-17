@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.components
 
 import android.text.Html
 import android.widget.TextView

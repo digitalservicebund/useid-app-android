@@ -27,7 +27,7 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.composables.ScreenWithTopBar
+import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.theme.UseIDTheme

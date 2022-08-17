@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

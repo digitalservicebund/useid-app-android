@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.composables.pin.PINEntryField
+import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable

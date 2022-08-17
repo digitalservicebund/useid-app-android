@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

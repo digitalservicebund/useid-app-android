@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.composables.ScanErrorAlertDialog
-import de.digitalService.useID.ui.composables.StandardDialog
+import de.digitalService.useID.ui.components.ScanErrorAlertDialog
+import de.digitalService.useID.ui.components.StandardDialog
 import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 

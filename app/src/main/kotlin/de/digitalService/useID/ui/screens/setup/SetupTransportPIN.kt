@@ -20,7 +20,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.ui.composables.pin.TransportPINEntryField
+import de.digitalService.useID.ui.components.pin.TransportPINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
