@@ -48,6 +48,29 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
     })
 
     UseIDTheme {
+        if (appCoordinator.nfcAvailability.value == NfcAvailability.NoNfc) {
+            NoNfcScreen()
+            return@UseIDTheme
+        }
+
+        ScreenWithTopBar(navigationIcon = {
+            if (shouldShowBackButton) {
+                IconButton(modifier = Modifier.testTag("backButton"), onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = stringResource(id = R.string.navigation_back)
+                    )
+                }
+            }
+        }) { topBarPadding ->
+            AppNavHost(
+                navController = navController,
+                modifier = Modifier
+                    .padding(top = topBarPadding)
+                    .fillMaxWidth()
+            )
+        }
+
         if (appCoordinator.nfcAvailability.value == NfcAvailability.Deactivated) {
             Dialog(
                 onDismissRequest = {},
@@ -57,28 +80,6 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
                 )
             ) {
                 NfcDeactivatedScreen()
-            }
-        }
-
-        if (appCoordinator.nfcAvailability.value == NfcAvailability.NoNfc) {
-            NoNfcScreen()
-        } else {
-            ScreenWithTopBar(navigationIcon = {
-                if (shouldShowBackButton) {
-                    IconButton(modifier = Modifier.testTag("backButton"), onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = stringResource(id = R.string.navigation_back)
-                        )
-                    }
-                }
-            }) { topBarPadding ->
-                AppNavHost(
-                    navController = navController,
-                    modifier = Modifier
-                        .padding(top = topBarPadding)
-                        .fillMaxWidth()
-                )
             }
         }
     }
@@ -91,7 +92,7 @@ private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvail
     override fun startIdentification(tcTokenURL: String) {}
     override fun homeScreenLaunched(token: String?) {}
     override fun setNfcAvailability(availability: NfcAvailability) {}
-    override fun setIsNotFirstTimeUser() { }
+    override fun setIsNotFirstTimeUser() {}
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
