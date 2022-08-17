@@ -12,7 +12,7 @@ import androidx.activity.compose.setContent
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.NfcAvailability
-import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.util.NfcAdapterUtil
 import javax.inject.Inject

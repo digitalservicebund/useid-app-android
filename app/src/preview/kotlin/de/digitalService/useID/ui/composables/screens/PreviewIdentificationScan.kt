@@ -16,11 +16,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.ScanError
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationScan
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationScanViewModelInterface
+import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.screens.identification.IdentificationScan
+import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

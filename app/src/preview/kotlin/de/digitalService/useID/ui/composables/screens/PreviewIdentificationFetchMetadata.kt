@@ -13,16 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadata
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadata
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadataViewModelInterface
+import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
+import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,7 +41,10 @@ fun PreviewIdentificationFetchMetadata(viewModel: PreviewIdentificationFetchMeta
 
 @HiltViewModel
 class PreviewIdentificationFetchMetadataViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel() {
-    fun simulateSuccess() { coordinator.startIdentificationProcess("") }
+    fun simulateSuccess() {
+        coordinator.startIdentificationProcess("")
+    }
+
     fun simulateConnectionError() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(false)

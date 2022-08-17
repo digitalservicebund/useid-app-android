@@ -12,11 +12,11 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute
-import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.composables.UseIDApp
+import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.screens.setup.SetupIntroViewModel
-import de.digitalService.useID.ui.screens.SetupScanViewModel
+import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.screens.destinations.SetupFinishDestination
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel

@@ -9,7 +9,6 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
-import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination

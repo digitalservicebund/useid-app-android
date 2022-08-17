@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.composables.pin
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

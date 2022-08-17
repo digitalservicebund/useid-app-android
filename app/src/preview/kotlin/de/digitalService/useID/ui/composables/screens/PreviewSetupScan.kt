@@ -15,14 +15,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.ScanError
-import de.digitalService.useID.ui.composables.screens.SetupScan
-import de.digitalService.useID.ui.composables.screens.SetupScanViewModelInterface
+import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.setup.SetupScan
+import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -125,7 +124,7 @@ fun PreviewPreviewSetupScan() {
             PreviewSetupScanViewModel(
                 SetupCoordinator(
                     AppCoordinator(fakeStorageManager),
-                    object: SecureStorageManagerInterface{
+                    object : SecureStorageManagerInterface {
                         override fun setTransportPIN(value: String) {}
                         override fun loadTransportPIN(): String? = "12"
                         override fun setPersonalPIN(value: String) {}

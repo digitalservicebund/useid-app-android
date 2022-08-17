@@ -1,7 +1,7 @@
 package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.SecureStorageManager
-import de.digitalService.useID.ui.screens.SetupTransportPINViewModel
+import de.digitalService.useID.ui.screens.setup.SetupTransportPINViewModel
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension

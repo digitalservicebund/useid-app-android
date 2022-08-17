@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui
+package de.digitalService.useID.ui.coordinators
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State

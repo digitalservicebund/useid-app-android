@@ -1,7 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
 import de.digitalService.useID.SecureStorageManagerInterface
-import de.digitalService.useID.ui.AppCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
 import javax.inject.Inject
 import javax.inject.Singleton

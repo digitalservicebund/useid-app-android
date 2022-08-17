@@ -9,8 +9,8 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.screens.SetupScan
-import de.digitalService.useID.ui.screens.SetupScanViewModelInterface
+import de.digitalService.useID.ui.screens.setup.SetupScan
+import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every

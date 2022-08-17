@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.screens
+package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
@@ -21,7 +21,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
-import de.digitalService.useID.ui.composables.PINEntryField
+import de.digitalService.useID.ui.composables.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
@@ -138,7 +138,8 @@ interface SetupPersonalPINViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINViewModel @Inject constructor(private val coordinator: SetupCoordinator, private val secureStorageManager: SecureStorageManagerInterface) : ViewModel(), SetupPersonalPINViewModelInterface {
+class SetupPersonalPINViewModel @Inject constructor(private val coordinator: SetupCoordinator, private val secureStorageManager: SecureStorageManagerInterface) : ViewModel(),
+    SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set
 

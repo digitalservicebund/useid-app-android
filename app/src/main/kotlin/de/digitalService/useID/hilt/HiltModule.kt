@@ -11,8 +11,8 @@ import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.StorageManager
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.idCardInterface.IDCardManager
-import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.AppCoordinatorType
+import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope

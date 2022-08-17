@@ -5,7 +5,7 @@ import android.net.Uri
 import android.util.Base64
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.idCardInterface.*
-import de.digitalService.useID.ui.AppCoordinator
+import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination

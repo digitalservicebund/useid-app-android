@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalComposeUiApi::class)
-
 package de.digitalService.useID.ui
 
 import android.os.Bundle
@@ -25,6 +23,7 @@ import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.R
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
+import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
 import de.digitalService.useID.ui.screens.noNfc.NoNfcScreen
 import de.digitalService.useID.ui.theme.UseIDTheme

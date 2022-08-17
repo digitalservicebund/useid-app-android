@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.screens
+package de.digitalService.useID.ui.screens.setup
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
@@ -29,6 +29,7 @@ import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel

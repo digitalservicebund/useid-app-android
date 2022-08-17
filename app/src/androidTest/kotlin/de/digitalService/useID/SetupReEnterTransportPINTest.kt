@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.ui.screens.SetupReEnterTransportPIN
-import de.digitalService.useID.ui.screens.SetupReEnterTransportPINViewModelInterface
+import de.digitalService.useID.ui.screens.setup.SetupReEnterTransportPIN
+import de.digitalService.useID.ui.screens.setup.SetupReEnterTransportPINViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every

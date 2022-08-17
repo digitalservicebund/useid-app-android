@@ -130,7 +130,7 @@ class IdentificationScanViewModel @Inject constructor(
 
     private fun collectScanEvents() {
         viewModelScope.launch(coroutineContextProvider.IO) {
-            coordinator.scanEventFlow.collect { event ->
+            coordinator.scanEventFlow.collect { event: ScanEvent ->
                 launch(coroutineContextProvider.Main) {
                     when (event) {
                         ScanEvent.CardRequested -> shouldShowProgress = false

@@ -30,8 +30,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.ScreenWithTopBar
-import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -112,7 +112,9 @@ fun ConnectionErrorDialog(
                     )
                 }
             },
-            modifier = Modifier.fillMaxSize().padding(vertical = 20.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp)
         ) { topPadding ->
             IdentificationFetchMetadataError(
                 onRetry = onRetry,
@@ -171,7 +173,7 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
 
     private fun collectFetchMetadataEvents() {
         viewModelScope.launch {
-            coordinator.fetchMetadataEventFlow.collect { event ->
+            coordinator.fetchMetadataEventFlow.collect { event: FetchMetadataEvent ->
                 when (event) {
                     FetchMetadataEvent.Started -> {
                         shouldShowProgressIndicator = true

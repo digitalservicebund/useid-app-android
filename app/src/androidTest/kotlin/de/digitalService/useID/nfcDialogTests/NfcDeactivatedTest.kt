@@ -11,8 +11,8 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.MainActivity
 import de.digitalService.useID.R
 import de.digitalService.useID.models.NfcAvailability
-import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.composables.UseIDApp
+import de.digitalService.useID.ui.UseIDApp
+import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
 import io.mockk.mockk
