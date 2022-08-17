@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package de.digitalService.useID.ui.screens.noNfc
 
 import android.content.Intent
