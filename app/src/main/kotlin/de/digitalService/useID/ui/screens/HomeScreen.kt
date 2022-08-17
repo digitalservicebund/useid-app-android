@@ -25,14 +25,14 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.composables.ButtonType
 import de.digitalService.useID.ui.composables.RegularBundButton
+import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.AccessibilityScreenDestination
 import de.digitalService.useID.ui.screens.destinations.ImprintScreenDestination
 import de.digitalService.useID.ui.screens.destinations.PrivacyScreenDestination
 import de.digitalService.useID.ui.screens.destinations.TermsOfUseScreenDestination
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.Black
 import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.Gray600

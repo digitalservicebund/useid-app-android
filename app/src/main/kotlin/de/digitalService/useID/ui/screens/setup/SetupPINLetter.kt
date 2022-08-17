@@ -34,7 +34,8 @@ interface SetupPINLetterScreenViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPINLetterViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel(),
+class SetupPINLetterViewModel @Inject constructor(private val coordinator: SetupCoordinator) :
+    ViewModel(),
     SetupPINLetterScreenViewModelInterface {
     override fun onTransportPINAvailable() { coordinator.setupWithPINLetter() }
     override fun onNoPINAvailable() { coordinator.setupWithoutPINLetter() }

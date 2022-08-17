@@ -32,7 +32,8 @@ interface SetupPersonalPINIntroViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel(),
+class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: SetupCoordinator) :
+    ViewModel(),
     SetupPersonalPINIntroViewModelInterface {
     override fun onSetPIN() {
         coordinator.onPersonalPINIntroFinished()

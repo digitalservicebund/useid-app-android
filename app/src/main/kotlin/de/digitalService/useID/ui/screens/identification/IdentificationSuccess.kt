@@ -27,8 +27,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.composables.BundButtonConfig
 import de.digitalService.useID.ui.composables.StandardButtonScreen
-import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 

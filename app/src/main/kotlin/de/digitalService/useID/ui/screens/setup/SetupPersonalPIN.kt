@@ -138,7 +138,8 @@ interface SetupPersonalPINViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINViewModel @Inject constructor(private val coordinator: SetupCoordinator, private val secureStorageManager: SecureStorageManagerInterface) : ViewModel(),
+class SetupPersonalPINViewModel @Inject constructor(private val coordinator: SetupCoordinator, private val secureStorageManager: SecureStorageManagerInterface) :
+    ViewModel(),
     SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
         private set

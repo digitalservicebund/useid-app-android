@@ -21,8 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.composables.ButtonType
-import de.digitalService.useID.ui.composables.RegularBundButton
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 class BundButtonConfig(
