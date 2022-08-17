@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.BodyText
+import de.digitalService.useID.ui.components.HtmlText
 import de.digitalService.useID.ui.components.LargeTitleText
 import de.digitalService.useID.ui.components.ScreenTitleText
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -26,15 +27,7 @@ fun PrivacyScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        ScreenTitleText(text = stringResource(R.string.privacy_screen_title))
-
-        BodyText(text = stringResource(R.string.privacy_updated_date))
-
-        LargeTitleText(text = "Lorem ipsum")
-        BodyText(text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum")
-
-        LargeTitleText(text = "Dolor sit amet")
-        BodyText(text = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum")
+        HtmlText(html = stringResource(id = R.string.privacy_html_text))
     }
 }
 
