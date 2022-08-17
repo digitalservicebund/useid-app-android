@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.components
 
+import android.graphics.Color
 import android.text.Html
 import android.widget.TextView
 import androidx.compose.runtime.Composable
@@ -18,6 +19,7 @@ fun HtmlText(html: String, modifier: Modifier = Modifier) {
         update = {
             it.text = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
             it.typeface = context.resources.getFont(R.font.bundes_sans_dtp_regular)
+            it.setTextColor(Color.BLACK)
         }
     )
 }
