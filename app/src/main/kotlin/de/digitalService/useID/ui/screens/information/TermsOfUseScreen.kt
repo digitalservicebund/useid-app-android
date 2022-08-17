@@ -10,10 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.BodyText
 import de.digitalService.useID.ui.components.HtmlText
-import de.digitalService.useID.ui.components.LargeTitleText
-import de.digitalService.useID.ui.components.ScreenTitleText
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Destination

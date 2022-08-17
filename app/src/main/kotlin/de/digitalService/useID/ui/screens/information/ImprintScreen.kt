@@ -12,7 +12,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.theme.UseIDTheme
-import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Destination
 @Composable
