@@ -48,7 +48,7 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
     })
 
     UseIDTheme {
-        if (appCoordinator.nfcAvailability.value != NfcAvailability.Available) {
+        if (appCoordinator.nfcAvailability.value == NfcAvailability.Deactivated) {
             Dialog(
                 onDismissRequest = {},
                 properties = DialogProperties(
@@ -56,30 +56,30 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
                     dismissOnClickOutside = false
                 )
             ) {
-                when (appCoordinator.nfcAvailability.value) {
-                    NfcAvailability.NoNfc -> NoNfcScreen()
-                    NfcAvailability.Deactivated -> NfcDeactivatedScreen()
-                    NfcAvailability.Available -> {}
-                }
+                NfcDeactivatedScreen()
             }
         }
 
-        ScreenWithTopBar(navigationIcon = {
-            if (shouldShowBackButton) {
-                IconButton(modifier = Modifier.testTag("backButton"), onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(id = R.string.navigation_back)
-                    )
+        if (appCoordinator.nfcAvailability.value == NfcAvailability.NoNfc) {
+            NoNfcScreen()
+        } else {
+            ScreenWithTopBar(navigationIcon = {
+                if (shouldShowBackButton) {
+                    IconButton(modifier = Modifier.testTag("backButton"), onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.navigation_back)
+                        )
+                    }
                 }
+            }) { topBarPadding ->
+                AppNavHost(
+                    navController = navController,
+                    modifier = Modifier
+                        .padding(top = topBarPadding)
+                        .fillMaxWidth()
+                )
             }
-        }) { topBarPadding ->
-            AppNavHost(
-                navController = navController,
-                modifier = Modifier
-                    .padding(top = topBarPadding)
-                    .fillMaxWidth()
-            )
         }
     }
 }
