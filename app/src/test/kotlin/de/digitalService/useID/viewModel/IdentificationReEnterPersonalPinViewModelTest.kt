@@ -1,7 +1,7 @@
 package de.digitalService.useID.viewModel
 
 import androidx.core.text.isDigitsOnly
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationReEnterPersonalPINViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationReEnterPersonalPINViewModel
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk

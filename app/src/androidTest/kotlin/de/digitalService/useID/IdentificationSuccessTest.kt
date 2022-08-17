@@ -9,8 +9,8 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationSuccess
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationSuccessViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationSuccess
+import de.digitalService.useID.ui.screens.identification.IdentificationSuccessViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every

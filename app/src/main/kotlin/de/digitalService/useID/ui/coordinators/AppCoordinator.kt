@@ -8,9 +8,9 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.models.NfcAvailability
-import de.digitalService.useID.ui.composables.screens.destinations.HomeScreenDestination
-import de.digitalService.useID.ui.composables.screens.destinations.IdentificationFetchMetadataDestination
-import de.digitalService.useID.ui.composables.screens.destinations.SetupIntroDestination
+import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
+import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
+import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -5,8 +5,8 @@ import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
-import de.digitalService.useID.ui.ScanError
-import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
+import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.screens.SetupScanViewModel
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import io.mockk.*
 import io.mockk.impl.annotations.MockK

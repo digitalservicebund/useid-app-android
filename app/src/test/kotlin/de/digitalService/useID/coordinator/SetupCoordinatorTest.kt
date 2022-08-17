@@ -2,7 +2,7 @@ package de.digitalService.useID.coordinator
 
 import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.composables.screens.destinations.*
+import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension

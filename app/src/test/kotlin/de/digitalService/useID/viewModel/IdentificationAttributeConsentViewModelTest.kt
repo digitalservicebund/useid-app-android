@@ -5,9 +5,9 @@ import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute
-import de.digitalService.useID.ui.composables.screens.destinations.IdentificationAttributeConsentDestination
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationAttributeConsentNavArgs
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationAttributeConsentViewModel
+import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
+import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentNavArgs
+import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentViewModel
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

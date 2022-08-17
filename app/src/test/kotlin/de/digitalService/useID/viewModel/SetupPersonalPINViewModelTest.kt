@@ -1,8 +1,8 @@
 package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.SecureStorageManager
-import de.digitalService.useID.ui.composables.screens.SetupPersonalPINViewModel
-import de.digitalService.useID.ui.composables.screens.SetupPersonalPINViewModelInterface
+import de.digitalService.useID.ui.screens.SetupPersonalPINViewModel
+import de.digitalService.useID.ui.screens.SetupPersonalPINViewModelInterface
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

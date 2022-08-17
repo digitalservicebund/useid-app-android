@@ -2,12 +2,12 @@ package de.digitalService.useID.ui.composables
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import de.digitalService.useID.ui.composables.screens.SetupScan
-import de.digitalService.useID.ui.composables.screens.SetupScanViewModel
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadata
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationFetchMetadataViewModel
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationScan
-import de.digitalService.useID.ui.composables.screens.identification.IdentificationScanViewModel
+import de.digitalService.useID.ui.screens.SetupScan
+import de.digitalService.useID.ui.screens.SetupScanViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
+import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationScan
+import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModel
 
 @Composable
 fun ConfigSpecificSetupScan() {

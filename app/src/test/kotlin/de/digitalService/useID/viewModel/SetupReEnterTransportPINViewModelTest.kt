@@ -1,6 +1,6 @@
 package de.digitalService.useID.viewModel
 
-import de.digitalService.useID.ui.composables.screens.SetupReEnterTransportPINViewModel
+import de.digitalService.useID.ui.screens.SetupReEnterTransportPINViewModel
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify

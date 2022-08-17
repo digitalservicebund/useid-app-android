@@ -6,11 +6,11 @@ import android.util.Base64
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.ui.AppCoordinator
-import de.digitalService.useID.ui.ScanError
-import de.digitalService.useID.ui.composables.screens.destinations.IdentificationPersonalPINDestination
-import de.digitalService.useID.ui.composables.screens.destinations.IdentificationScanDestination
-import de.digitalService.useID.ui.composables.screens.identification.FetchMetadataEvent
-import de.digitalService.useID.ui.composables.screens.identification.ScanEvent
+import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
+import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination
+import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
+import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.util.CoroutineContextProvider
 import io.mockk.*
