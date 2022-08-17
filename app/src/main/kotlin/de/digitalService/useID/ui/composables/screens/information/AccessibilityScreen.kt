@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.composables.HtmlText
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Destination
@@ -29,20 +30,6 @@ fun AccessibilityScreen() {
     ) {
         HtmlText(html = stringResource(id = R.string.accessibility_html_text))
     }
-}
-
-@Composable
-fun HtmlText(html: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-
-    AndroidView(
-        modifier = modifier,
-        factory = { context -> TextView(context) },
-        update = {
-            it.text = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-            it.typeface = context.resources.getFont(R.font.bundes_sans_dtp_regular)
-        }
-    )
 }
 
 @Preview(showBackground = true)
