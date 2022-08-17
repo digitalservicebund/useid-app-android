@@ -1,9 +1,9 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.components
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
-import de.digitalService.useID.ui.composables.screens.PreviewIdentificationFetchMetadata
-import de.digitalService.useID.ui.composables.screens.PreviewIdentificationScan
+import de.digitalService.useID.ui.components.screens.PreviewIdentificationFetchMetadata
+import de.digitalService.useID.ui.components.screens.PreviewIdentificationScan
 
 @Composable
 fun ConfigSpecificSetupScan() {

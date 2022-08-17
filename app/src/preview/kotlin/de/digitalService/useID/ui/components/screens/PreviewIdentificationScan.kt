@@ -1,6 +1,5 @@
-package de.digitalService.useID.ui.composables.screens
+package de.digitalService.useID.ui.components.screens
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text

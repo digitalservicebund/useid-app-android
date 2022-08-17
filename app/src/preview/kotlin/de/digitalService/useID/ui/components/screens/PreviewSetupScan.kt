@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.composables
+package de.digitalService.useID.ui.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
