@@ -81,9 +81,11 @@
     <string name="idScan_error_unknown_title">Fehler</string>
     <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="idScan_error_button_close">Schließen</string>
-    <string name="firstTimeUser_finish_title">Persönliche PIN gewählt und Online-Ausweis eingerichtet</string>
-    <string name="firstTimeUser_finish_body">Ihre persönliche PIN geben Sie jedes Mal ein, wenn Sie Ihren Ausweis online benutzen.</string>
-    <string name="firstTimeUser_finish_button">Schließen</string>
+    <string name="firstTimeUser_finish_title">Sie haben Ihren Online- Ausweis erfolgreich eingerichtet.</string>
+    <string name="firstTimeUser_finish_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion nutzen.</string>
+    <string name="firstTimeUser_finish_button">Fertig</string>
+    <string name="firstTimeUser_close_button">Schließen</string>
+    <string name="firstTimeUser_identify_button">Jetzt ausweisen</string>
     <string name="idScan_help_title">Ausweis wird nicht unterstützt.</string>
     <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger\n\nWenn Sie eines der oben genannten Dokumente benutzen und das Problem weiterhin auftritt, versuchen Sie diese Schritte:\n\n- Entfernen Sie die Karte von Ihrem Telefon und legen Sie sie erneut an das Telefon.\n- Wenn Sie eine sehr dicke Handyhülle haben, versuchen Sie, die Hülle zu entfernen.</string>
     <string name="homeScreen_title">Platzhalter Titel</string>

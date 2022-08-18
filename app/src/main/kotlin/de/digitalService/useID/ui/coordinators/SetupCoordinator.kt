@@ -16,6 +16,10 @@ class SetupCoordinator @Inject constructor(
         this.tcTokenURL = tcTokenURL
     }
 
+    fun hasTCTokenURL(): Boolean {
+        return this.tcTokenURL != null
+    }
+
     fun startSetupIDCard() {
         secureStorageManager.clearStorage()
         appCoordinator.navigate(SetupPINLetterDestination)
@@ -48,6 +52,10 @@ class SetupCoordinator @Inject constructor(
     fun onSetupFinished() {
         appCoordinator.setIsNotFirstTimeUser()
         handleSetupEnded()
+    }
+
+    fun onBackToHome() {
+        appCoordinator.popToRoot()
     }
 
     fun onSkipSetup() {
