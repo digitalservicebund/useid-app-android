@@ -7,7 +7,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.theme.UseIDTheme
-import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
 fun WhatIsNfcDialog(onButtonTap: () -> Unit) {
