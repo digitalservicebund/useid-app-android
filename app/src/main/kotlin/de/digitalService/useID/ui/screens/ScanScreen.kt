@@ -117,9 +117,7 @@ fun ScanScreen(
     }
 
     AnimatedVisibility(visible = whatIsNfcDialogShown) {
-        WhatIsNfcDialog(
-            onButtonTap = { whatIsNfcDialogShown = false }
-        )
+        WhatIsNfcDialog(onButtonTap = { whatIsNfcDialogShown = false })
     }
 
     AnimatedVisibility(visible = helpDialogShown) {

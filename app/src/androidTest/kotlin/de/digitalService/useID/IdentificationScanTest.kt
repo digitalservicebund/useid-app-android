@@ -9,6 +9,8 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModel
+import de.digitalService.useID.ui.screens.setup.SetupScan
+import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
@@ -163,5 +165,28 @@ class IdentificationScanTest {
 
         val progressIndicatorTag = "ProgressIndicator"
         composeTestRule.onNodeWithTag(progressIndicatorTag).assertIsDisplayed()
+    }
+
+    @Test
+    fun whatIsNfcDialogOpen() {
+        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns null
+
+        composeTestRule.activity.setContent {
+            SetupScan(viewModel = mockViewModel)
+        }
+
+        val whatIsNfcButton = composeTestRule.activity.getString(R.string.firstTimeUser_scan_whatIsNfc_button)
+        composeTestRule.onNodeWithText(whatIsNfcButton).performClick()
+
+        val whatIsNfcDialogTitle = composeTestRule.activity.getString(R.string.whatIsNfc_body)
+        composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertIsDisplayed()
+
+        val dialogCloseButton = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        composeTestRule.onNodeWithText(dialogCloseButton).performClick()
+
+        composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertDoesNotExist()
+
+        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
 }

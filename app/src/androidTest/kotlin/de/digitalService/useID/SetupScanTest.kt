@@ -87,4 +87,27 @@ class SetupScanTest {
 
         verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
+
+    @Test
+    fun whatIsNfcDialogOpen() {
+        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns null
+
+        composeTestRule.activity.setContent {
+            SetupScan(viewModel = mockViewModel)
+        }
+
+        val whatIsNfcButton = composeTestRule.activity.getString(R.string.firstTimeUser_scan_whatIsNfc_button)
+        composeTestRule.onNodeWithText(whatIsNfcButton).performClick()
+
+        val whatIsNfcDialogTitle = composeTestRule.activity.getString(R.string.whatIsNfc_body)
+        composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertIsDisplayed()
+
+        val dialogCloseButton = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        composeTestRule.onNodeWithText(dialogCloseButton).performClick()
+
+        composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertDoesNotExist()
+
+        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
+    }
 }
