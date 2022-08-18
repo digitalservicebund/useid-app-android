@@ -41,10 +41,9 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
 
-        foregroundDispatch(this)
-
         this.nfcAdapter = nfcAdapterUtil.getNfcAdapter()
         nfcAdapter?.let {
+            foregroundDispatch(this)
             if (it.isEnabled) {
                 appCoordinator.setNfcAvailability(NfcAvailability.Available)
             } else {
