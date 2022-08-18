@@ -43,8 +43,8 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
     )
 
     StandardButtonScreen(
-        primaryButton = if (viewModel.hasTcTokenUrl()) finishedButton else null,
-        secondaryButton = if (viewModel.hasTcTokenUrl()) identifyButton else finishedButton
+        primaryButton = if (viewModel.hasTcTokenUrl()) null else finishedButton,
+        secondaryButton = if (viewModel.hasTcTokenUrl()) finishedButton else identifyButton
     ) {
         Column(
             modifier = Modifier
@@ -132,7 +132,7 @@ class PreviewSetupFinishViewModel(private val hasTcTokenUrl: Boolean) : SetupFin
 
 @Preview(showBackground = true)
 @Composable
-private fun Preview1() {
+private fun PreviewHasToken() {
     UseIDTheme {
         SetupFinish(PreviewSetupFinishViewModel(true))
     }
@@ -140,7 +140,7 @@ private fun Preview1() {
 
 @Preview(showBackground = true)
 @Composable
-private fun Preview2() {
+private fun PreviewHasNoToken() {
     UseIDTheme {
         SetupFinish(PreviewSetupFinishViewModel(false))
     }

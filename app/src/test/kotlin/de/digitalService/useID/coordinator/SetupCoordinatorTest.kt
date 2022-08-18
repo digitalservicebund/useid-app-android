@@ -2,11 +2,12 @@ package de.digitalService.useID.coordinator
 
 import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.ui.coordinators.AppCoordinator
-import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.destinations.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import io.mockk.verify
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -188,5 +189,17 @@ class SetupCoordinatorTest {
         setupCoordinator.cancelSetup()
 
         verify(exactly = 2) { mockAppCoordinator.popToRoot() }
+    }
+
+    @Test
+    fun hasToken() {
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val testUrl = "tokenUrl"
+
+        Assertions.assertFalse(setupCoordinator.hasTCTokenURL())
+
+        setupCoordinator.setTCTokenURL(testUrl)
+
+        Assertions.assertTrue(setupCoordinator.hasTCTokenURL())
     }
 }
