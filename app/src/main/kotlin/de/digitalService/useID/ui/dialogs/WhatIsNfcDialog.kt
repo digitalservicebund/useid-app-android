@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.components
+package de.digitalService.useID.ui.dialogs
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -10,10 +10,10 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
-fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
+fun WhatIsNfcDialog(onButtonTap: () -> Unit) {
     StandardDialog(
-        title = { Text(stringResource(id = error.titleResID), style = MaterialTheme.typography.titleMedium) },
-        text = { MarkdownText(markdown = stringResource(id = error.textResID), fontResource = R.font.bundes_sans_dtp_regular) },
+        title = { Text(stringResource(id = R.string.whatIsNfc_title), style = MaterialTheme.typography.titleMedium) },
+        text = { Text(stringResource(id = R.string.whatIsNfc_body), style = MaterialTheme.typography.bodyMedium) },
         onButtonTap = onButtonTap
     )
 }

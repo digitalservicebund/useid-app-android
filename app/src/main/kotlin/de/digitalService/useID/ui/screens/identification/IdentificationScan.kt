@@ -156,7 +156,7 @@ private class PreviewIdentificationScanViewModel(
     override fun onNewPersonalPINEntered(pin: String) {}
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScan() {
     UseIDTheme {
@@ -164,7 +164,7 @@ fun PreviewIdentificationScan() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScanWithProgress() {
     UseIDTheme {
@@ -172,7 +172,7 @@ fun PreviewIdentificationScanWithProgress() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScanWithError() {
     UseIDTheme {

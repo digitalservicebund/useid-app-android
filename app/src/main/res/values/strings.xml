@@ -29,7 +29,8 @@
     <string name="firstTimeUser_personalPIN_PIN2TextFieldDescription">Eingabefeld Wiederholung PIN</string>
     <string name="firstTimeUser_scan_title">Legen Sie Ihren Ausweis dicht an die Rückseite Ihres Smartphones – fast geschafft!</string>
     <string name="firstTimeUser_scan_body">So wird Ihre persönliche PIN Ihrem Ausweis zugeordnet.</string>
-    <string name="firstTimeUser_scan_helpButton">Mein Ausweis wird nicht erkannt</string>
+    <string name="firstTimeUser_scan_whatIsNfc_button">Wie funktioniert die NFC-Technologie?</string>
+    <string name="firstTimeUser_scan_help_button">Mein Ausweis wird nicht erkannt</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
     <string name="firstTimeUser_scan_error_title_id_deactivated">Online-Ausweisfunktion deaktiviert</string>
@@ -105,4 +106,6 @@
     <string name="ndcDeactivated_openSettings_button">Einstellungen anpassen</string>
     <string name="nfcDeactivated_info_body">»Bundes Login« hat aktuell keine Berechtigung die NFC-Funktion zu nutzen.\n\nPassen Sie Ihre Einstellungen entsprechend an, um die Online-Ausweisfunktion nutzen zu können.</string>
     <string name="nfcDeactivated_info_title">NFC-Funktion deaktiviert</string>
+    <string name="whatIsNfc_title">Wie funktioniert die NFC-Technologie?</string>
+    <string name="whatIsNfc_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kure Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
 </resources>

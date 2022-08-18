@@ -18,8 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.components.ScanErrorAlertDialog
-import de.digitalService.useID.ui.components.StandardDialog
+import de.digitalService.useID.ui.dialogs.ScanErrorAlertDialog
+import de.digitalService.useID.ui.dialogs.StandardDialog
+import de.digitalService.useID.ui.dialogs.WhatIsNfcDialog
 import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -34,6 +35,7 @@ fun ScanScreen(
     modifier: Modifier = Modifier
 ) {
     var helpDialogShown by remember { mutableStateOf(false) }
+    var whatIsNfcDialogShown by remember { mutableStateOf(false) }
 
     errorState?.let { error ->
         when (error) {
@@ -61,17 +63,34 @@ fun ScanScreen(
             body,
             style = MaterialTheme.typography.bodySmall
         )
-        Button(
-            onClick = { helpDialogShown = true },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-                contentColor = MaterialTheme.colorScheme.onSecondary
-            ),
-            shape = MaterialTheme.shapes.small,
-            modifier = Modifier
-                .height(40.dp)
-        ) {
-            Text(stringResource(id = R.string.firstTimeUser_scan_helpButton))
+        Column {
+            Button(
+                onClick = { whatIsNfcDialogShown = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                ),
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .height(40.dp)
+            ) {
+                Text(stringResource(id = R.string.firstTimeUser_scan_whatIsNfc_button))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = { helpDialogShown = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                ),
+                shape = MaterialTheme.shapes.small,
+                modifier = Modifier
+                    .height(40.dp)
+            ) {
+                Text(stringResource(id = R.string.firstTimeUser_scan_help_button))
+            }
         }
     }
 
@@ -97,6 +116,12 @@ fun ScanScreen(
         }
     }
 
+    AnimatedVisibility(visible = whatIsNfcDialogShown) {
+        WhatIsNfcDialog(
+            onButtonTap = { whatIsNfcDialogShown = false }
+        )
+    }
+
     AnimatedVisibility(visible = helpDialogShown) {
         StandardDialog(
             title = {
@@ -116,7 +141,7 @@ fun ScanScreen(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun PreviewWithoutProgress() {
     UseIDTheme {
@@ -131,7 +156,7 @@ private fun PreviewWithoutProgress() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun PreviewWithProgress() {
     UseIDTheme {
@@ -146,7 +171,7 @@ private fun PreviewWithProgress() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun PreviewWithError() {
     UseIDTheme {
