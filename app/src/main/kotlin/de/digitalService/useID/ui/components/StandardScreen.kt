@@ -43,7 +43,7 @@ fun StandardButtonScreen(
         ) {
             secondaryButton?.let {
                 RegularBundButton(
-                    type = ButtonType.SECONDARY,
+                    type = ButtonType.PRIMARY,
                     onClick = it.action,
                     label = it.title
                 )
@@ -51,7 +51,7 @@ fun StandardButtonScreen(
             }
             primaryButton?.let {
                 RegularBundButton(
-                    type = ButtonType.PRIMARY,
+                    type = ButtonType.SECONDARY,
                     onClick = it.action,
                     label = it.title
                 )

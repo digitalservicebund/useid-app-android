@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,8 +22,8 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.ButtonType
-import de.digitalService.useID.ui.components.RegularBundButton
+import de.digitalService.useID.ui.components.BundButtonConfig
+import de.digitalService.useID.ui.components.StandardButtonScreen
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import de.digitalService.useID.ui.theme.Yellow300
@@ -33,103 +32,72 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-    ) {
-        Spacer(modifier = Modifier.height(64.dp))
+    val finishedButton = BundButtonConfig(
+        title = stringResource(id = R.string.firstTimeUser_finish_button),
+        action = viewModel::onCloseButtonClicked
+    )
 
+    val identifyButton = BundButtonConfig(
+        title = stringResource(id = R.string.firstTimeUser_identify_button),
+        action = viewModel::onIdentifyButtonClicked
+    )
+
+    StandardButtonScreen(
+        primaryButton = if (viewModel.hasTcTokenUrl()) finishedButton else null,
+        secondaryButton = if (viewModel.hasTcTokenUrl()) identifyButton else finishedButton
+    ) {
         Column(
-            modifier = Modifier.padding(horizontal = 20.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(
-                stringResource(id = R.string.firstTimeUser_finish_title),
-                style = MaterialTheme.typography.titleLarge
-            )
+            Spacer(modifier = Modifier.height(64.dp))
+
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp)
+            ) {
+                Text(
+                    stringResource(id = R.string.firstTimeUser_finish_title),
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Yellow300),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                    ) {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Outlined.Info,
+                                contentDescription = "",
+                                modifier = Modifier.padding(end = 6.dp)
+                            )
+
+                            Text(
+                                text = "Persönliche Ausweis-PIN gut merken",
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                            stringResource(id = R.string.firstTimeUser_finish_body),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Yellow300),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(20.dp)
-                ) {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Outlined.Info,
-                            contentDescription = "",
-                            modifier = Modifier.padding(end = 6.dp)
-                        )
-
-                        Text(
-                            text = "Persönliche Ausweis-PIN gut merken",
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(6.dp))
-
-                    Text(
-                        stringResource(id = R.string.firstTimeUser_finish_body),
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
+            Image(painter = painterResource(id = R.drawable.eids), contentDescription = "")
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Image(painter = painterResource(id = R.drawable.eids), contentDescription = "")
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        if (viewModel.hasTcTokenUrl()) {
-            ButtonsWithTcTokenUrl(viewModel = viewModel)
-        } else {
-            ButtonsWithoutTcTokenUrl(viewModel = viewModel)
-        }
-    }
-}
-
-@Composable
-private fun ButtonsWithTcTokenUrl(viewModel: SetupFinishViewModelInterface) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(20.dp)
-    ) {
-        RegularBundButton(
-            type = ButtonType.PRIMARY,
-            onClick = viewModel::onIdentifyButtonClicked,
-            label = stringResource(id = R.string.firstTimeUser_identify_button)
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        RegularBundButton(
-            type = ButtonType.SECONDARY,
-            onClick = viewModel::onCloseButtonClicked,
-            label = stringResource(id = R.string.firstTimeUser_finish_button)
-        )
-    }
-}
-
-@Composable
-private fun ButtonsWithoutTcTokenUrl(viewModel: SetupFinishViewModelInterface) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(20.dp)
-    ) {
-        RegularBundButton(
-            type = ButtonType.PRIMARY,
-            onClick = viewModel::onCloseButtonClicked,
-            label = stringResource(id = R.string.firstTimeUser_finish_button)
-        )
     }
 }
 
