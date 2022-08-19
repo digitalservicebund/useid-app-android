@@ -30,9 +30,9 @@ class SetupFinishTest {
     val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Test
-    fun setupFinish_hasToken() {
+    fun setupFinish_identificationPendingFalse() {
         val mockViewModel: SetupFinishViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.hasTcTokenUrl() } returns true
+        every { mockViewModel.identificationPending() } returns false
 
         composeTestRule.activity.setContent {
             SetupFinish(viewModel = mockViewModel)
@@ -50,9 +50,9 @@ class SetupFinishTest {
 
 
     @Test
-    fun setupFinish_hasNoToken() {
+    fun setupFinish_identificationPendingTrue() {
         val mockViewModel: SetupFinishViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.hasTcTokenUrl() } returns false
+        every { mockViewModel.identificationPending() } returns true
 
         composeTestRule.activity.setContent {
             SetupFinish(viewModel = mockViewModel)

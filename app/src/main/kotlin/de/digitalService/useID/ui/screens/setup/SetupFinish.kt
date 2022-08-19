@@ -43,8 +43,8 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
     )
 
     StandardButtonScreen(
-        primaryButton = if (viewModel.hasTcTokenUrl()) null else finishedButton,
-        secondaryButton = if (viewModel.hasTcTokenUrl()) finishedButton else identifyButton
+        primaryButton = if (viewModel.identificationPending()) finishedButton else null,
+        secondaryButton = if (viewModel.identificationPending()) identifyButton else finishedButton
     ) {
         Column(
             modifier = Modifier
@@ -103,7 +103,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 
 interface SetupFinishViewModelInterface {
     fun onCloseButtonClicked()
-    fun hasTcTokenUrl(): Boolean
+    fun identificationPending(): Boolean
     fun onIdentifyButtonClicked()
 }
 
@@ -111,7 +111,7 @@ interface SetupFinishViewModelInterface {
 class SetupFinishViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), SetupFinishViewModelInterface {
-    override fun hasTcTokenUrl(): Boolean {
+    override fun identificationPending(): Boolean {
         return setupCoordinator.identificationPending()
     }
 
@@ -126,7 +126,7 @@ class SetupFinishViewModel @Inject constructor(
 
 class PreviewSetupFinishViewModel(private val hasTcTokenUrl: Boolean) : SetupFinishViewModelInterface {
     override fun onCloseButtonClicked() {}
-    override fun hasTcTokenUrl(): Boolean = hasTcTokenUrl
+    override fun identificationPending(): Boolean = hasTcTokenUrl
     override fun onIdentifyButtonClicked() {}
 }
 
