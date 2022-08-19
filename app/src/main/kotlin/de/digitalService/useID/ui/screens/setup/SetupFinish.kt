@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -51,8 +52,6 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(64.dp))
-
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp)
             ) {
@@ -96,7 +95,11 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Image(painter = painterResource(id = R.drawable.eid_3_pin), contentDescription = "")
+            Image(
+                painter = painterResource(id = R.drawable.eid_3_pin),
+                contentDescription = "",
+                modifier = Modifier.align(CenterHorizontally)
+            )
         }
     }
 }
