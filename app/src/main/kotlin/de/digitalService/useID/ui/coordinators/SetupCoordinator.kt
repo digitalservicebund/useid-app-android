@@ -16,7 +16,7 @@ class SetupCoordinator @Inject constructor(
         this.tcTokenURL = tcTokenURL
     }
 
-    fun hasTCTokenURL(): Boolean {
+    fun identificationPending(): Boolean {
         return this.tcTokenURL != null
     }
 

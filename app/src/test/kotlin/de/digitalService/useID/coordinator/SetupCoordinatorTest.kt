@@ -196,10 +196,10 @@ class SetupCoordinatorTest {
         val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
         val testUrl = "tokenUrl"
 
-        Assertions.assertFalse(setupCoordinator.hasTCTokenURL())
+        Assertions.assertFalse(setupCoordinator.identificationPending())
 
         setupCoordinator.setTCTokenURL(testUrl)
 
-        Assertions.assertTrue(setupCoordinator.hasTCTokenURL())
+        Assertions.assertTrue(setupCoordinator.identificationPending())
     }
 }
