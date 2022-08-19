@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
@@ -12,8 +13,8 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 @Composable
 fun SetupResetPersonalPIN() {
     StandardStaticComposition(
-        title = "Neuen PIN-Brief bestellen",
-        body = "Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter www.pin-ruecksetzbrief-bestellen.de",
+        title = stringResource(R.string.setupResetPersonalPin_title),
+        body = stringResource(R.string.setupResetPersonalPin),
         imageID = R.drawable.ic_illustration_pin_letter,
         imageScaling = ContentScale.FillWidth
     )

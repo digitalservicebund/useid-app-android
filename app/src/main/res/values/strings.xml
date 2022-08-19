@@ -112,4 +112,6 @@
     <string name="homeScreen_titleBox_title">Ausweisen</string>
     <string name="homeScreen_titleBox_body">Öffnen Sie auf Ihrem Smartphone die Internetseite vom Anbieter und drücken Sie auf den Button »Mit Bundes Login ausweisen«</string>
     <string name="firstTimeUser_finish_infoBox_title">Persönliche Ausweis-PIN gut merken</string>
+    <string name="setupResetPersonalPin_title">Neuen PIN-Brief bestellen</string>
+    <string name="setupResetPersonalPin">Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter\n\nwww.pin-ruecksetzbrief-bestellen.de</string>
 </resources>
