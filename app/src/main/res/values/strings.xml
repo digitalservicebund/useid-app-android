@@ -82,7 +82,7 @@
     <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="idScan_error_button_close">Schließen</string>
     <string name="firstTimeUser_finish_title">Sie haben Ihren Online- Ausweis erfolgreich eingerichtet.</string>
-    <string name="firstTimeUser_finish_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion nutzen.</string>
+    <string name="firstTimeUser_finish_infoBox_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion nutzen.</string>
     <string name="firstTimeUser_finish_button">Fertig</string>
     <string name="firstTimeUser_close_button">Schließen</string>
     <string name="firstTimeUser_identify_button">Jetzt ausweisen</string>
@@ -109,4 +109,7 @@
     <string name="nfcDeactivated_info_title">NFC-Funktion deaktiviert</string>
     <string name="whatIsNfc_title">Wie funktioniert die NFC-Technologie?</string>
     <string name="whatIsNfc_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kure Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
+    <string name="homeScreen_titleBox_title">Ausweisen</string>
+    <string name="homeScreen_titleBox_body">Öffnen Sie auf Ihrem Smartphone die Internetseite vom Anbieter und drücken Sie auf den Button »Mit Bundes Login ausweisen«</string>
+    <string name="firstTimeUser_finish_infoBox_title">Persönliche Ausweis-PIN gut merken</string>
 </resources>

@@ -79,7 +79,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
                             )
 
                             Text(
-                                text = "Persönliche Ausweis-PIN gut merken",
+                                text = stringResource(R.string.firstTimeUser_finish_infoBox_title),
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -87,7 +87,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
                         Spacer(modifier = Modifier.height(6.dp))
 
                         Text(
-                            stringResource(id = R.string.firstTimeUser_finish_body),
+                            stringResource(id = R.string.firstTimeUser_finish_infoBox_body),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
@@ -112,7 +112,7 @@ class SetupFinishViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), SetupFinishViewModelInterface {
     override fun hasTcTokenUrl(): Boolean {
-        return setupCoordinator.hasTCTokenURL()
+        return setupCoordinator.identificationPending()
     }
 
     override fun onCloseButtonClicked() {

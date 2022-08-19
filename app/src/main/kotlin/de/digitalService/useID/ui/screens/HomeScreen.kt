@@ -56,13 +56,13 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "Ausweisen",
+                text = stringResource(R.string.homeScreen_titleBox_title),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 32.dp)
             )
             Text(
-                text = "Öffnen Sie auf Ihrem Smartphone die Internetseite vom Anbieter und drücken Sie auf den Button »Mit Bundes Login ausweisen«",
+                text = stringResource(R.string.homeScreen_titleBox_body),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(horizontal = 64.dp)
