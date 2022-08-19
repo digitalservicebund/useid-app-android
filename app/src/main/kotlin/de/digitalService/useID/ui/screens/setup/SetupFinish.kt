@@ -96,7 +96,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Image(painter = painterResource(id = R.drawable.eids), contentDescription = "")
+            Image(painter = painterResource(id = R.drawable.eid_3_pin), contentDescription = "")
         }
     }
 }

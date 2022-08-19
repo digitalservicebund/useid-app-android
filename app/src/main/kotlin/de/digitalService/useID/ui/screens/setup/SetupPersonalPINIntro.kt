@@ -21,7 +21,7 @@ fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = h
     StandardStaticComposition(
         title = stringResource(id = R.string.firstTimeUser_personalPINIntro_title),
         body = stringResource(id = R.string.firstTimeUser_personalPINIntro_body),
-        imageID = R.drawable.eids,
+        imageID = R.drawable.eid_3,
         imageScaling = ContentScale.Inside,
         primaryButton = BundButtonConfig(title = stringResource(id = R.string.firstTimeUser_personalPINIntro_continue), action = viewModel::onSetPIN)
     )

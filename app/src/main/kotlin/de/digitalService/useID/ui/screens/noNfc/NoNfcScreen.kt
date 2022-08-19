@@ -27,11 +27,14 @@ fun NoNfcScreen() {
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight(0.5f),
+                .fillMaxWidth(),
             color = Blue200
         ) {
-            Image(painter = painterResource(id = R.drawable.eids), contentDescription = "")
+            Image(
+                painter = painterResource(id = R.drawable.illustration_no_nfc),
+                contentDescription = "",
+                modifier = Modifier.padding(vertical = 32.dp)
+            )
         }
 
         Column(

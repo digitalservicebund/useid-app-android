@@ -29,7 +29,7 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
     StandardStaticComposition(
         title = stringResource(id = R.string.firstTimeUser_intro_title),
         body = stringResource(id = R.string.firstTimeUser_intro_body),
-        imageID = R.drawable.eids,
+        imageID = R.drawable.eid_3,
         imageScaling = ContentScale.Inside,
         primaryButton = BundButtonConfig(
             title = stringResource(id = R.string.firstTimeUser_intro_no),

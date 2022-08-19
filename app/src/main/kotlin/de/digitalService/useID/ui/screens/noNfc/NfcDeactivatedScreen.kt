@@ -11,6 +11,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -38,7 +40,11 @@ fun NfcDeactivatedScreen() {
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Image(painter = painterResource(id = R.drawable.eids), contentDescription = "")
+                Image(
+                    painter = painterResource(id = R.drawable.illustration_no_nfc),
+                    contentDescription = "",
+                    modifier = Modifier.padding(vertical = 16.dp).align(CenterHorizontally)
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 

@@ -14,7 +14,7 @@ fun SetupResetPersonalPIN() {
     StandardStaticComposition(
         title = "Neuen PIN-Brief bestellen",
         body = "Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter www.pin-ruecksetzbrief-bestellen.de",
-        imageID = R.drawable.pin_brief,
+        imageID = R.drawable.pin_letter,
         imageScaling = ContentScale.FillWidth
     )
 }

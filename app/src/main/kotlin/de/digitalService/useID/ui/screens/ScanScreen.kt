@@ -51,7 +51,7 @@ fun ScanScreen(
             .padding(vertical = 40.dp, horizontal = 20.dp)
     ) {
         Image(
-            painter = painterResource(id = R.drawable.eids),
+            painter = painterResource(id = R.drawable.eid_3),
             contentScale = ContentScale.Fit,
             contentDescription = ""
         )

@@ -108,7 +108,7 @@ fun PreviewOnboardingScreenTwoButtons() {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
-            imageID = R.drawable.eids,
+            imageID = R.drawable.eid_3,
             imageScaling = ContentScale.FillWidth,
             primaryButton = BundButtonConfig("Primary button", { }),
             secondaryButton = BundButtonConfig("Secondary button", { })
@@ -123,7 +123,7 @@ fun PreviewOnboardingScreenOneButton() {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
-            imageID = R.drawable.eids,
+            imageID = R.drawable.eid_3,
             imageScaling = ContentScale.FillWidth,
             primaryButton = BundButtonConfig("Primary button", { }),
             secondaryButton = null
@@ -138,7 +138,7 @@ fun PreviewOnboardingScreenNoButton() {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
-            imageID = R.drawable.eids,
+            imageID = R.drawable.eid_3,
             imageScaling = ContentScale.FillWidth,
             primaryButton = null,
             secondaryButton = null
