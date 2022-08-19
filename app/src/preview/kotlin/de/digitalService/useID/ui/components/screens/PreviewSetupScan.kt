@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.components
+package de.digitalService.useID.ui.components.screens
 
 import android.content.Context
 import androidx.compose.foundation.layout.*
@@ -29,8 +29,15 @@ import javax.inject.Inject
 
 @Composable
 fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel) {
-    Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
-        SetupScan(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            SetupScan(modifier = Modifier, viewModel.innerViewModel)
+        }
+
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier

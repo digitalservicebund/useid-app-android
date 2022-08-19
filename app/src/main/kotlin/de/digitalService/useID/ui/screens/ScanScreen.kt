@@ -1,21 +1,25 @@
 package de.digitalService.useID.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.dialogs.ScanErrorAlertDialog
@@ -45,51 +49,71 @@ fun ScanScreen(
     }
 
     Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxSize()
-            .padding(vertical = 40.dp, horizontal = 20.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.eid_3),
-            contentScale = ContentScale.Fit,
-            contentDescription = ""
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation_id_scan))
+
+        LottieAnimation(
+            composition = composition,
+            contentScale = ContentScale.FillWidth,
+            iterations = LottieConstants.IterateForever,
+
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
         )
-        Text(
-            title,
-            style = MaterialTheme.typography.titleLarge
-        )
-        Text(
-            body,
-            style = MaterialTheme.typography.bodySmall
-        )
-        Column {
-            Button(
-                onClick = { whatIsNfcDialogShown = true },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                ),
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier
-                    .height(40.dp)
-            ) {
-                Text(stringResource(id = R.string.firstTimeUser_scan_whatIsNfc_button))
-            }
+
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            Text(
+                title,
+                style = MaterialTheme.typography.titleLarge
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = { helpDialogShown = true },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                    contentColor = MaterialTheme.colorScheme.onSecondary
-                ),
-                shape = MaterialTheme.shapes.small,
-                modifier = Modifier
-                    .height(40.dp)
-            ) {
-                Text(stringResource(id = R.string.firstTimeUser_scan_help_button))
+            Text(
+                body,
+                style = MaterialTheme.typography.bodySmall
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column {
+                Button(
+                    onClick = { whatIsNfcDialogShown = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier
+                        .height(40.dp)
+                ) {
+                    Text(stringResource(id = R.string.firstTimeUser_scan_whatIsNfc_button))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = { helpDialogShown = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                        contentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
+                    shape = MaterialTheme.shapes.small,
+                    modifier = Modifier
+                        .height(40.dp)
+                ) {
+                    Text(stringResource(id = R.string.firstTimeUser_scan_help_button))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }

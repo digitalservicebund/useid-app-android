@@ -26,7 +26,10 @@ import javax.inject.Inject
 @Composable
 fun PreviewIdentificationFetchMetadata(viewModel: PreviewIdentificationFetchMetadataViewModel) {
     Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
-        IdentificationFetchMetadata(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
+        Column(modifier = Modifier.weight(1f)) {
+            IdentificationFetchMetadata(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
+        }
+
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier

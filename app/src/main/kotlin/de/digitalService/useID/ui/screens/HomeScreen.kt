@@ -54,7 +54,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             Image(
                 painter = painterResource(id = R.drawable.abstract_widget_phone),
                 contentDescription = "",
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.FillWidth
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -63,13 +63,17 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
                 text = stringResource(R.string.homeScreen_titleBox_title),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp)
             )
             Text(
                 text = stringResource(R.string.homeScreen_titleBox_body),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 64.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 64.dp)
             )
 
             Spacer(modifier = Modifier.height(32.dp))

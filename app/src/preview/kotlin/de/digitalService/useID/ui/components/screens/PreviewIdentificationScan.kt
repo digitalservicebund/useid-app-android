@@ -28,7 +28,10 @@ import javax.inject.Inject
 @Composable
 fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel) {
     Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
-        IdentificationScan(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
+        Column(modifier = Modifier.weight(1f)) {
+            IdentificationScan(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
+        }
+
         Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier

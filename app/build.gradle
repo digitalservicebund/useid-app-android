@@ -150,6 +150,8 @@ dependencies {
 
     implementation 'io.sentry:sentry-android:6.3.0'
     implementation 'io.sentry:sentry-compose-android:6.3.0'
+
+    implementation ("com.airbnb.android:lottie-compose:5.2.0")
 }
 
 kotlinter {
