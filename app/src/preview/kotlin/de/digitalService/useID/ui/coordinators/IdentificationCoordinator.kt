@@ -1,5 +1,7 @@
 package de.digitalService.useID.ui.coordinators
 
+import de.digitalService.useID.analytics.TrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
@@ -19,7 +21,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class IdentificationCoordinator @Inject constructor(private val appCoordinator: AppCoordinator) {
+class IdentificationCoordinator @Inject constructor(
+    private val appCoordinator: AppCoordinator,
+    private val trackerManager: TrackerManagerType
+) {
     private val logger by getLogger()
 
     private val _fetchMetadataEventFlow: MutableStateFlow<FetchMetadataEvent> = MutableStateFlow(FetchMetadataEvent.Started)
@@ -65,6 +70,7 @@ class IdentificationCoordinator @Inject constructor(private val appCoordinator: 
     fun finishIdentification() {
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
+        trackerManager.trackEvent(category = "identification", action = "buttonPressed", name = "continueToService")
     }
 
     fun onIDInteractionFinishedSuccessfully() {

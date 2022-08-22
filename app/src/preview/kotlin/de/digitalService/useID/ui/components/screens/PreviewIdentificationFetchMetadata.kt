@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.MockTrackerManager
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
@@ -93,7 +94,7 @@ fun PreviewPreviewIdentificationFetchMetadata() {
                         override fun getIsFirstTimeUser(): Boolean = false
                         override fun setIsNotFirstTimeUser() {}
                     }))
-                )
+                , MockTrackerManager())
             )
         )
     }

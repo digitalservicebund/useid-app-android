@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.MockTrackerManager
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
@@ -126,7 +127,7 @@ fun PreviewPreviewIdentificationScan() {
                         override fun getIsFirstTimeUser(): Boolean = false
                         override fun setIsNotFirstTimeUser() {}
                     })
-                )
+                , MockTrackerManager())
             )
         )
     }

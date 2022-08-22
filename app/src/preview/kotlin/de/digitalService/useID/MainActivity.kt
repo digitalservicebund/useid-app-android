@@ -7,6 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import de.digitalService.useID.analytics.TrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import javax.inject.Inject
@@ -15,6 +17,9 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var appCoordinator: AppCoordinator
+
+    @Inject
+    lateinit var trackerManager: TrackerManagerType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
@@ -28,7 +33,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            UseIDApp(appCoordinator)
+            UseIDApp(appCoordinator, trackerManager)
         }
     }
 }

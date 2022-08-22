@@ -12,6 +12,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.coordinators.AppCoordinator
@@ -26,6 +27,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appCoordinator: AppCoordinator
+
+    @Inject
+    lateinit var trackerManager: TrackerManagerType
 
     @Inject
     lateinit var nfcAdapterUtil: NfcAdapterUtil
@@ -44,7 +48,7 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            UseIDApp(appCoordinator)
+            UseIDApp(appCoordinator, trackerManager)
         }
     }
 

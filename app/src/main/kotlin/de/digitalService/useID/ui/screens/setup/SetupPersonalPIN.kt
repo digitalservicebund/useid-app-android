@@ -21,6 +21,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
+import de.digitalService.useID.analytics.TrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
@@ -58,7 +60,9 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)
+            modifier = modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = topPadding)
         ) {
             Text(
                 stringResource(id = R.string.firstTimeUser_personalPIN_title),
@@ -158,7 +162,11 @@ interface SetupPersonalPINViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPINViewModel @Inject constructor(private val coordinator: SetupCoordinator, private val secureStorageManager: SecureStorageManagerInterface) :
+class SetupPersonalPINViewModel @Inject constructor(
+    private val coordinator: SetupCoordinator,
+    private val secureStorageManager: SecureStorageManagerInterface,
+    private val trackerManager: TrackerManagerType
+) :
     ViewModel(),
     SetupPersonalPINViewModelInterface {
     override var pin1 by mutableStateOf("")
@@ -213,6 +221,8 @@ class SetupPersonalPINViewModel @Inject constructor(private val coordinator: Set
             pin2 = ""
             shouldShowError = true
             focus = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1
+
+            trackerManager.trackEvent(category = "firstTimeUser", action = "errorShown", name = "personalPINMismatch")
         }
     }
 

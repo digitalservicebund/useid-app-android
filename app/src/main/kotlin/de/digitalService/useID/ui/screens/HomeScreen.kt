@@ -25,6 +25,7 @@ import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.BuildConfig
 import de.digitalService.useID.R
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.components.ButtonType
 import de.digitalService.useID.ui.components.RegularBundButton
 import de.digitalService.useID.ui.coordinators.AppCoordinator
@@ -218,7 +219,8 @@ interface HomeScreenViewModelInterface {
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val appCoordinator: AppCoordinator
+    private val appCoordinator: AppCoordinator,
+    private val trackerManager: TrackerManagerType
 ) : ViewModel(), HomeScreenViewModelInterface {
 
     override fun homeScreenLaunched() {
@@ -227,6 +229,7 @@ class HomeScreenViewModel @Inject constructor(
 
     override fun setupOnlineID() {
         appCoordinator.startIdSetup(null)
+        trackerManager.trackEvent(category = "firstTimeUser", action = "buttonPressed", name = "start")
     }
 
     override fun onPrivacyButtonClicked() {

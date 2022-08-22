@@ -10,6 +10,8 @@ import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.StorageManager
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.TrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
@@ -47,4 +49,7 @@ abstract class SingletonBindingModule {
 
     @Binds
     abstract fun bindStorageManager(storageManager: StorageManager): StorageManagerType
+
+    @Binds
+    abstract fun bindTrackerManager(trackerManager: TrackerManager): TrackerManagerType
 }

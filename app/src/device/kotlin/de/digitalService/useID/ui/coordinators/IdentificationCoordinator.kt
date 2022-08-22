@@ -5,6 +5,8 @@ import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.TrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
@@ -33,6 +35,7 @@ class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     private val appCoordinator: AppCoordinator,
     private val idCardManager: IDCardManager,
+    private val trackerManager: TrackerManagerType,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
@@ -107,6 +110,10 @@ class IdentificationCoordinator @Inject constructor(
                     else -> {
                         _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
+
+                        if (pinCallback == null && !reachedScanState) {
+                            trackerManager.trackEvent(category = "identification", action = "loadingFailed", name = "attributes")
+                        }
                     }
                 }
             }.collect { event ->

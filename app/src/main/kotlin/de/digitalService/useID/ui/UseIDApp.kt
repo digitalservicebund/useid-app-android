@@ -3,6 +3,7 @@ package de.digitalService.useID.ui
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
@@ -10,6 +11,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.Direction
+import de.digitalService.useID.analytics.MockTrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
@@ -18,10 +21,17 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
-fun UseIDApp(appCoordinator: AppCoordinatorType) {
+fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerType) {
     val navController = rememberNavController().withSentryObservableEffect()
 
     appCoordinator.setNavController(navController)
+
+    val context = LocalContext.current
+    trackerManager.initTracker(context)
+
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        trackerManager.trackDestination(destination)
+    }
 
     UseIDTheme {
         if (appCoordinator.nfcAvailability.value == NfcAvailability.NoNfc) {
@@ -65,19 +75,19 @@ private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvail
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun Preview1() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available)))
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available)), MockTrackerManager())
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun Preview2() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc)))
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc)), MockTrackerManager())
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun Preview3() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated)))
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated)), MockTrackerManager())
 }

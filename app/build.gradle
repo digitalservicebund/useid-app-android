@@ -148,6 +148,7 @@ dependencies {
 
     implementation "com.mikepenz:aboutlibraries-core:10.4.0"
     implementation "com.mikepenz:aboutlibraries-compose:10.4.0"
+    implementation 'com.github.matomo-org:matomo-sdk-android:4.1.4'
 }
 
 kotlinter {
