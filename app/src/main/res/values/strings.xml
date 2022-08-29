@@ -1,16 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="appName" translatable="false">UseID</string>
-    <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits benutzt?</string>
-    <string name="firstTimeUser_intro_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger</string>
-    <string name="firstTimeUser_intro_yes">Ja, ich habe es bereits genutzt</string>
-    <string name="firstTimeUser_intro_no">Nein, jetzt Online-Ausweis einrichten</string>
-    <string name="firstTimeUser_pinLetter_title">Haben Sie noch Ihren PIN-Brief?</string>
-    <string name="firstTimeUser_pinLetter_body">Der PIN-Brief wurde Ihnen nach der Beantragung des Ausweises zugesandt.</string>
+    <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits eingerichtet\?</string>
+    <string name="firstTimeUser_intro_body">Bei der Einrichtung haben Sie Ihre persönliche Ausweis-PIN festgelegt.</string>
+    <string name="firstTimeUser_intro_yes">Jetzt Online-Ausweis einrichten</string>
+    <string name="firstTimeUser_intro_no">Bereits eingerichtet</string>
+    <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren  PIN-Brief noch\?</string>
+    <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
     <string name="firstTimeUser_pinLetter_yes">Ja, PIN-Brief vorhanden</string>
     <string name="firstTimeUser_pinLetter_no">Nein, neuen PIN-Brief bestellen</string>
     <string name="navigation_back">Zurück</string>
     <string name="navigation_cancel">Abbrechen</string>
-    <string name="firstTimeUser_transportPIN_title">Geben Sie Ihre 5-stellige Transport-PIN aus dem PIN-Brief ein</string>
+    <string name="firstTimeUser_transportPIN_title">Geben Sie die  Transport-PIN ein.</string>
     <string name="firstTimeUser_transportPIN_error">Inkorrekte Transport-PIN</string>
     <string name="firstTimeUser_transportPIN_tryAgain">Versuchen Sie es erneut.</string>
     <string name="firstTimeUser_transportPIN_switchToPersonalPIN">Klicken Sie hier, wenn Ihre PIN 6-stellig ist</string>
@@ -18,17 +19,17 @@
     <string name="firstTimeUser_transportPIN_error_incorrectPIN">Inkorrekte Transport-PIN</string>
     <string name="firstTimeUser_transportPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="firstTimeUser_transportPIN_error_noAttemptLeft">Sie haben keine Versuche mehr.</string>
-    <string name="firstTimeUser_personalPINIntro_title">Wählen Sie Ihre persönliche PIN für Ihren Ausweis</string>
-    <string name="firstTimeUser_personalPINIntro_body">Diese 6-stellige persönliche PIN geben Sie jedes Mal ein, wenn Sie Ihren Ausweis online benutzen.</string>
-    <string name="firstTimeUser_personalPINIntro_continue">Persönliche PIN wählen</string>
-    <string name="firstTimeUser_personalPIN_title">Wählen Sie Ihre persönliche PIN für Ihren Ausweis</string>
-    <string name="firstTimeUser_personalPIN_confirmation">Geben Sie Ihre persönliche PIN zur Bestätigung noch einmal ein.</string>
-    <string name="firstTimeUser_personalPIN_error_mismatch_title">Die beiden PINs stimmen nicht überein</string>
+    <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
+    <string name="firstTimeUser_personalPINIntro_body">Merken Sie sich Ihre persönliche Ausweis-PIN gut. Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
+    <string name="firstTimeUser_personalPINIntro_continue">Persönliche PIN vergeben</string>
+    <string name="firstTimeUser_personalPIN_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
+    <string name="firstTimeUser_personalPIN_confirmation">PIN zum Bestätigen bitte wiederholen</string>
+    <string name="firstTimeUser_personalPIN_error_mismatch_title">PINs stimmen nicht überein</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Versuchen Sie es erneut.</string>
     <string name="firstTimeUser_personalPIN_PIN1TextFieldDescription">Eingabefeld PIN</string>
     <string name="firstTimeUser_personalPIN_PIN2TextFieldDescription">Eingabefeld Wiederholung PIN</string>
-    <string name="firstTimeUser_scan_title">Legen Sie Ihren Ausweis dicht an die Rückseite Ihres Smartphones – fast geschafft!</string>
-    <string name="firstTimeUser_scan_body">So wird Ihre persönliche PIN Ihrem Ausweis zugeordnet.</string>
+    <string name="firstTimeUser_scan_title">Übertragen Sie Ihre neue PIN auf den Ausweis.</string>
+    <string name="firstTimeUser_scan_body">Fast geschafft! Halten Sie Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihrem Ausweis die neue PIN zuzuordnen.</string>
     <string name="firstTimeUser_scan_whatIsNfc_button">Wie funktioniert die NFC-Technologie?</string>
     <string name="firstTimeUser_scan_help_button">Mein Ausweis wird nicht erkannt</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
@@ -39,9 +40,9 @@
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="identification_fetchMetadata_pleaseWait">Einen Moment bitte…</string>
     <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
-    <string name="identification_attributeConsent_body">Mit Eingabe Ihrer persönlichen PIN gewähren Sie „%1s\" den Zugriff auf folgende Daten von Ihrem Ausweis:</string>
+    <string name="identification_attributeConsent_body">Der Anbieter möchte auf folgende Daten von Ihrem Personalausweis zugreifen:</string>
     <string name="identification_attributeConsent_button_additionalInformation">Weitere Informationen</string>
-    <string name="identification_attributeConsent_pinButton">Persönliche PIN eingeben</string>
+    <string name="identification_attributeConsent_pinButton">Freigabe erteilen</string>
     <string name="identification_attributeConsent_info_provider_info">Anbieterinformationen</string>
     <string name="identification_attributeConsent_info_provider">Anbieter</string>
     <string name="identification_attributeConsent_info_issuer">Aussteller des Berechtigungszertifikats</string>
@@ -60,25 +61,34 @@
     <string name="idCardAttribute_DG19">Residence Permit I</string>
     <string name="idCardAttribute_restrictedIdentification">Restricted Identification</string>
     <string name="idCardAttribute_ageVerification">Altersverifikation</string>
-    <string name="identification_personalPIN_title">Geben Sie Ihre persönliche PIN Ihres Ausweises ein</string>
+    <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
     <string name="identification_personalPIN_error_incorrectPIN">Inkorrekte persönliche PIN</string>
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
     <string name="identification_scan_body">So kann die Bürger:in-App überprüfen, ob die von Ihnen eingegebene persönliche PIN korrekt ist.</string>
-    <string name="identification_scan_title">Legen Sie Ihren Ausweis dicht an die Rückseite Ihres Smartphones</string>
+    <string name="identification_scan_title">Rufen Sie die Daten von Ihrem Ausweis ab.</string>
     <string name="identification_success_button">Schließen</string>
     <string name="identification_success_title">Sie haben sich erfolgreich ausgewiesen</string>
     <string name="identification_success_body">Machen Sie weiter bei %1s.</string>
-    <string name="identification_fetchMetadataError_title">Ein Fehler ist aufgetreten.</string>
-    <string name="identification_fetchMetadataError_body">Bitte versuchen Sie es noch einmal. Stellen Sie sicher, dass Sie eine gute Internetverbindung haben.</string>
+    <string name="identification_fetchMetadataError_title">Es ist ein Fehler aufgetreten.</string>
+    <string name="identification_fetchMetadataError_body">Bitte versuchen Sie es erneut. Stellen Sie dabei sicher, dass Sie mit dem Internet verbunden sind.</string>
     <string name="identification_fetchMetadataError_button">Erneut versuchen</string>
-    <string name="idScan_error_cardDeactivated_title">Für Ihren Ausweis ist die Online-Funktion nicht aktiviert</string>
-    <string name="idScan_error_cardDeactivated_body">Wenden Sie sich an Ihr Bürgeramt, um die Online-Ausweisfunktion zu akvitieren.\\n\\nSie wissen nicht, an wen Sie sich wenden können? Rufen Sie die 115 an oder informieren Sie sich unter https://behoredenfinder.de/</string>
-    <string name="idScan_error_suspended_title">Ihr Ausweis ist gesperrt</string>
-    <string name="idScan_error_suspended_body">### Warum ist Ihr Ausweis gesperrt?\n Da Sie Ihre PIN zwei Mal falsch eingeben haben, wurde Ihr Ausweis gesperrt.\n ### Was können Sie tun?\n Wir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.\n\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6-stelligen CAN in Kombination mit Ihrer PIN in der **AusweisApp2** entsperren.Ihre 6-stellige CAN finden Sie auf der Vorderseite Ihres Personalausweises. Alternativ können Sie im **Bürgeramt** Ihre PIN neu vergeben, sollten Sie diese vergessen haben.</string>
-    <string name="idScan_error_blocked_title">Ihr Ausweis ist blockiert</string>
-    <string name="idScan_error_blocked_body">### Warum ist Ihr Ausweis blockiert?\n Da Sie Ihre PIN ein drittes Mal falsch eingeben haben, wurde Ihr Ausweis blockiert.\n ### Was können Sie tun?\n Wir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der **AusweisApp2** oder im **Bürgeramt** entsperren.Ihre 10-stellige PUK finden Sie auf Ihrem PIN Brief.</string>
-    <string name="idScan_error_unknown_title">Fehler</string>
+    <string name="idScan_error_cardDeactivated_title">Für Ihren Ausweis ist die Online-Funktion nicht aktiviert.</string>
+    <string name="idScan_error_cardDeactivated_body">Wenden Sie sich an Ihr Bürgeramt, um die Online-Ausweisfunktion zu aktivieren.\\n\\nSie wissen nicht, an wen Sie sich wenden können\? \\n\\nRufen Sie die 115 an oder informieren Sie sich auf: \\n\\nhttps://behoredenfinder.de/</string>
+    <string name="idScan_error_suspended_title">Ihr Ausweis ist gesperrt.</string>
+    <string name="idScan_error_suspended_body">### Warum ist Ihr Ausweis gesperrt\?
+\n Da Sie Ihre persönliche Ausweis-PIN zwei Mal falsch eingegeben haben, wurde Ihr Ausweis gesperrt.
+\n ### Was können Sie tun\?
+\n Wir arbeiten daran Ihnen eine Lösung in der App anzubieten.
+\n
+\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6-stelligen CAN in Kombination mit Ihrer persönlichen Ausweis-PIN in der AusweisApp2 entsperren. Ihre 6-stellige CAN finden Sie auf der Vorderseite Ihres Ausweis.
+\n
+\nAlternativ können Sie im Bürgeramt Ihre persönliche Ausweis-PIN neu vergeben, sollten Sie diese vergessen haben.</string>
+    <string name="idScan_error_blocked_title">Ihr Ausweis ist blockiert.</string>
+    <string name="idScan_error_blocked_body">Da Sie Ihre persönliche Ausweis-PIN ein drittes mal falsch eingeben haben, wurde ihr Ausweis blockiert.
+\n
+\nIhren Ausweis können Sie nun nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren.</string>
+    <string name="idScan_error_unknown_title">Es ist ein Fehler aufgetreten.</string>
     <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="idScan_error_button_close">Schließen</string>
     <string name="firstTimeUser_finish_title">Sie haben Ihren Online- Ausweis erfolgreich eingerichtet.</string>
@@ -86,14 +96,22 @@
     <string name="firstTimeUser_finish_button">Fertig</string>
     <string name="firstTimeUser_close_button">Schließen</string>
     <string name="firstTimeUser_identify_button">Jetzt ausweisen</string>
-    <string name="idScan_help_title">Ausweis wird nicht unterstützt.</string>
-    <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Unionsbürger\n\nWenn Sie eines der oben genannten Dokumente benutzen und das Problem weiterhin auftritt, versuchen Sie diese Schritte:\n\n- Entfernen Sie die Karte von Ihrem Telefon und legen Sie sie erneut an das Telefon.\n- Wenn Sie eine sehr dicke Handyhülle haben, versuchen Sie, die Hülle zu entfernen.</string>
+    <string name="idScan_help_title">Ihr Ausweis wurde nicht erkannt.</string>
+    <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Bürgerinnen und Bürger der EU und des EWR.
+\n
+\nWenn Ihr Smartphone Ihren Ausweis nicht erkennt oder „Ausweis entfernt” anzeigt, probieren Sie folgende Schritte aus:
+\n
+\n- Bewegen Sie Ihren Ausweis von Ihrem Smartphone weg und legen Sie den Ausweis erneut dicht an die Rückseite. Probieren Sie verschiedene Positionen aus.
+\n- Wenn Sie eine dicke Schutzhülle haben, entfernen Sie die Hülle und probieren es dann erneut.
+\n- Überprüfen Sie, ob NFC aktiviert ist.
+\n- Stellen Sie NFC aus und wieder an.
+\n- Probieren Sie den Smartphone-Bildschirm aus- und wieder anzustellen.</string>
     <string name="homeScreen_title">Platzhalter Titel</string>
     <string name="homeScreen_more_subtitle">Mehr</string>
-    <string name="homeScreen_setupOnlineID_button">Online-Ausweise einrichten</string>
+    <string name="homeScreen_setupOnlineID_button">Online-Ausweis einrichten</string>
     <string name="homeScreen_more_settings_button">Einstellungen</string>
     <string name="homeScreen_more_license_button">Lizenzen</string>
-    <string name="homeScreen_more_termsOfUse_button">Nutzungsbedingungen</string>
+    <string name="homeScreen_more_termsOfUse_button">Datenschutz und Nutzungsbedingungen</string>
     <string name="homeScreen_more_accessibilityStatement_button">Barrierefreiheitserklärung</string>
     <string name="homeScreen_more_imprint_button">Impressum</string>
     <string name="noNfc_screen_title"><![CDATA[<strong>Bürger:in</strong> App]]></string>
