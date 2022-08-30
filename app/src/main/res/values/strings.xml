@@ -111,7 +111,7 @@
     <string name="homeScreen_setupOnlineID_button">Online-Ausweis einrichten</string>
     <string name="homeScreen_more_settings_button">Einstellungen</string>
     <string name="homeScreen_more_license_button">Lizenzen</string>
-    <string name="homeScreen_more_termsOfUse_button">Datenschutz und Nutzungsbedingungen</string>
+    <string name="homeScreen_more_termsOfUse_button">Nutzungsbedingungen</string>
     <string name="homeScreen_more_accessibilityStatement_button">Barrierefreiheitserklärung</string>
     <string name="homeScreen_more_imprint_button">Impressum</string>
     <string name="noNfc_screen_title"><![CDATA[<strong>Bürger:in</strong> App]]></string>
