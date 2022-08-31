@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.screens.information
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,8 +13,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.HtmlText
 import de.digitalService.useID.ui.theme.UseIDTheme
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Destination
 @Composable
@@ -24,7 +25,7 @@ fun AccessibilityScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        HtmlText(html = stringResource(id = R.string.accessibility_html_text))
+        MarkdownText(markdown = stringResource(id = R.string.accessibility_html_text))
     }
 }
 

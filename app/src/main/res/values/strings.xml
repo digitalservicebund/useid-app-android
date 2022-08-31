@@ -130,4 +130,92 @@
     <string name="firstTimeUser_finish_infoBox_title">Persönliche Ausweis-PIN gut merken</string>
     <string name="setupResetPersonalPin_title">Neuen PIN-Brief bestellen</string>
     <string name="setupResetPersonalPin">Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter\n\nwww.pin-ruecksetzbrief-bestellen.de</string>
+    <string name="accessibility_html_text">"Erklärung zur Barrierefreiheit
+ ------------------------------
+
+Stand: DD.MM.JJJJ
+
+Die Applikation \\"AppName\\" ist bemüht, im Einklang mit den nationalen Rechtsvorschriften zur Umsetzung der Richtlinie (EU) 2016/2102 des Europäischen Parlaments und des Rates barrierefrei zugänglich zu machen. Diese Erklärung zur Barrierefreiheit gilt für die aktuell im Apple App Store beziehungsweise Google Playstore erreichbare Version xxx. Sie wurde am xx.xx.2022 erstellt.
+
+#### Wie barrierefrei ist das Angebot?
+
+Diese Applikation wurde neu entwickelt. Das Team hat ein Accessibility Training absolviert, indem die meisten Bereiche der Applikation auf Barrierefreiheit überprüft wurden. Die Applikation ist größtenteils barrierefrei. An den unten aufgeführten Mängeln wird gearbeitet.
+
+Die Applikation \\"AppName\\" wird außerdem in den kommenden Wochen kontinuierlich auf Basis der Testergebnisse und der Rückmeldung der Nutzer:innen weiterentwickelt
+
+#### Welche Bereiche sind nicht barrierefrei?
+
+*   Text Vergrößerung möglich?
+*   Tastatur navigierbar?
+*   Bildschirmlesegerät/Screenreader bedienbar?
+
+#### Kontakt und Feedback-Möglichkeit
+
+Sind Ihnen Mängel beim barrierefreien Zugang zu Inhalten von aufgefallen? Dann können Sie sich gerne bei uns melden: [hilfe@inter.net](hilfe@inter.net)
+
+#### Schlichtungsverfahren
+
+Beim Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen gibtes eine Schlichtungsstelle gemäß \\$ 16 BGG. Die Schlichtungsstelle hat die Aufgabe, Konfliktezwischen Menschen mit Behinderungen und öffentlichen Stellen des Bundes zu lösen. Sie können die Schlichtungsstelle einschalten, wenn Sie mit den Antworten aus der oben genannten Kontaktmöglichkeit nicht zufrieden sind. Dabei geht es nicht darum, Gewinner oder Verlierer zu finden. Vielmehr ist es das Ziel, mit Hilfe der Schlichtungsstelle gemeinsam und außergerichtlich eine Lösung für ein Problem zufinden. Das Schlichtungsverfahren ist kostenlos. Sie brauchen auch keinen Rechtsbeistand. Auf der Internetseite der Schlichtungsstelle finden Sie alle Informationen zum Schlichtungsverfahren. Dort können Sie nachlesen, wie ein Schlichtungsverfahren abläuft und wie Sie den Antrag auf Schlichtung stellen. Sie können den Antrag auch in Leichter Spracheoder in Deutscher Gebärdensprache stellen.
+
+Sie erreichen die Schlichtungsstelle unter folgender Adresse:
+
+Schlichtungsstelle nach dem Behindertengleichstellungsgesetz bei dem Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen\u0020\u0020
+Mauerstraße 53\u0020\u0020
+10117 Berlin\u0020\u0020
+Telefon: 030 18 527 2805\u0020\u0020
+E-Mail: info@schlichtungsstelle-bgg.de\u0020\u0020
+Internet: www.schlichtungsstelle-bgg.de"</string>
+    <string name="imprint_html_text">"Impressum
+---------
+
+#### Angabe gemäß §5 TMG
+
+Digital Service GmbH des Bundes\u0020\u0020
+Prinzessinenstraße 8–14\u0020\u0020
+10969 Belrin\u0020\u0020
+Deutschland\u0020\u0020
+
+**Vertretung durch die Geschäftsführung:**\u0020\u0020
+Frau Christina Lang, Herr Philipp Moser
+
+**Alleingesellschafterin:**\u0020\u0020
+Bundesrepublik Deutschland, vertreten durch das Bundeskanzleramt
+
+**Handelsregister-Nummer:**\u0020\u0020
+HRB 212879 B
+
+**Registergericht:**\u0020\u0020
+Berlin Charlottenburg
+
+**Umsatzsteueridentifikationsnummer:**\u0020\u0020
+DE327075535
+
+#### Kontakt
+
+**E-Mail:**\u0020\u0020
+[adfldakflkdfkla@inter.net](http://www.google.de)"</string>
+    <string name="privacy_html_text">"Datenschutzerklärung
+--------------------
+
+Stand: DD.MM.JJJJ
+
+#### Lorem ipsum
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum
+
+#### Lorem ipsum
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum"</string>
+    <string name="termsOfUse_html_text">"Nutzungsbedingungen
+--------------------
+
+Stand: DD.MM.JJJJ
+
+#### Lorem ipsum
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum
+
+#### Lorem ipsum
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum"</string>
 </resources>

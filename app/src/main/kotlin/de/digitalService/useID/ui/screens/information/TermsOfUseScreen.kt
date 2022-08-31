@@ -12,6 +12,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.HtmlText
 import de.digitalService.useID.ui.theme.UseIDTheme
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Destination
 @Composable
@@ -22,7 +23,7 @@ fun TermsOfUseScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        HtmlText(html = stringResource(id = R.string.termsOfUse_html_text))
+        MarkdownText(markdown = stringResource(id = R.string.termsOfUse_html_text))
     }
 }
 
