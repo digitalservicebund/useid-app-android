@@ -5,13 +5,13 @@
     <string name="firstTimeUser_intro_body">Bei der Einrichtung haben Sie Ihre persönliche Ausweis-PIN festgelegt.</string>
     <string name="firstTimeUser_intro_yes">Jetzt Online-Ausweis einrichten</string>
     <string name="firstTimeUser_intro_no">Bereits eingerichtet</string>
-    <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren  PIN-Brief noch\?</string>
+    <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN-Brief noch\?</string>
     <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
     <string name="firstTimeUser_pinLetter_yes">Ja, PIN-Brief vorhanden</string>
     <string name="firstTimeUser_pinLetter_no">Nein, neuen PIN-Brief bestellen</string>
     <string name="navigation_back">Zurück</string>
     <string name="navigation_cancel">Abbrechen</string>
-    <string name="firstTimeUser_transportPIN_title">Geben Sie die  Transport-PIN ein.</string>
+    <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport-PIN ein.</string>
     <string name="firstTimeUser_transportPIN_error">Inkorrekte Transport-PIN</string>
     <string name="firstTimeUser_transportPIN_tryAgain">Versuchen Sie es erneut.</string>
     <string name="firstTimeUser_transportPIN_switchToPersonalPIN">Klicken Sie hier, wenn Ihre PIN 6-stellig ist</string>
