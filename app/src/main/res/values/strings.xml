@@ -85,15 +85,17 @@
 \n
 \nAlternativ können Sie im Bürgeramt Ihre persönliche Ausweis-PIN neu vergeben, sollten Sie diese vergessen haben.</string>
     <string name="idScan_error_blocked_title">Ihr Ausweis ist blockiert.</string>
-    <string name="idScan_error_blocked_body">Da Sie Ihre persönliche Ausweis-PIN ein drittes mal falsch eingeben haben, wurde ihr Ausweis blockiert.
-\n
-\nIhren Ausweis können Sie nun nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren.</string>
+    <string name="idScan_error_blocked_body">### Warum ist Ihr Ausweis blockiert\?
+\nDa Sie Ihre persönliche Ausweis-PIN ein drittes mal falsch eingeben haben, wurde ihr Ausweis blockiert.
+\n### Was können Sie tun\?
+\nWir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.
+\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10-stellige PUK finden Sie auf Ihrem PIN-Brief.</string>
     <string name="idScan_error_unknown_title">Es ist ein Fehler aufgetreten.</string>
     <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="idScan_error_button_close">Schließen</string>
     <string name="firstTimeUser_finish_title">Sie haben Ihren Online- Ausweis erfolgreich eingerichtet.</string>
     <string name="firstTimeUser_finish_infoBox_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion nutzen.</string>
-    <string name="firstTimeUser_finish_button">Fertig</string>
+    <string name="firstTimeUser_finish_button">Einrichtung abschließen</string>
     <string name="firstTimeUser_close_button">Schließen</string>
     <string name="firstTimeUser_identify_button">Jetzt ausweisen</string>
     <string name="idScan_help_title">Ihr Ausweis wurde nicht erkannt.</string>
