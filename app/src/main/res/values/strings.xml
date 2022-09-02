@@ -65,9 +65,9 @@
     <string name="identification_personalPIN_error_incorrectPIN">Inkorrekte persönliche PIN</string>
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
-    <string name="identification_scan_body">So kann die Bürger:in-App überprüfen, ob die von Ihnen eingegebene persönliche PIN korrekt ist.</string>
+    <string name="identification_scan_body">Halten Sie im nächsten Schritt Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
     <string name="identification_scan_title">Rufen Sie die Daten von Ihrem Ausweis ab.</string>
-    <string name="identification_success_button">Schließen</string>
+    <string name="identification_success_button">Weiter zum Anbieter</string>
     <string name="identification_success_title">Sie haben sich erfolgreich ausgewiesen</string>
     <string name="identification_success_body">Machen Sie weiter bei %1s.</string>
     <string name="identification_fetchMetadataError_title">Es ist ein Fehler aufgetreten.</string>
@@ -99,11 +99,11 @@
     <string name="firstTimeUser_close_button">Schließen</string>
     <string name="firstTimeUser_identify_button">Jetzt ausweisen</string>
     <string name="idScan_help_title">Ihr Ausweis wurde nicht erkannt.</string>
-    <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Bürgerinnen und Bürger der EU und des EWR.
+    <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Bürgerinnen und Bürger der Europäischen Union und des Europäischen Wirtschaftsraums.
 \n
 \nWenn Ihr Smartphone Ihren Ausweis nicht erkennt oder „Ausweis entfernt” anzeigt, probieren Sie folgende Schritte aus:
 \n
-\n- Bewegen Sie Ihren Ausweis von Ihrem Smartphone weg und legen Sie den Ausweis erneut dicht an die Rückseite. Probieren Sie verschiedene Positionen aus.
+\n- Bewegen Sie Ihren Ausweis von Ihrem Smartphone weg und legen Sie den Ausweis erneut dicht an die Rückseite. Probieren Sie verschiedene Positionen aus: Obere, mittlere und untere Rückseite.
 \n- Wenn Sie eine dicke Schutzhülle haben, entfernen Sie die Hülle und probieren es dann erneut.
 \n- Überprüfen Sie, ob NFC aktiviert ist.
 \n- Stellen Sie NFC aus und wieder an.
