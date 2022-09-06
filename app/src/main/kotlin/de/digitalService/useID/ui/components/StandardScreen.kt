@@ -42,7 +42,7 @@ fun StandardButtonScreen(
             modifier = Modifier
                 .padding(20.dp)
         ) {
-            secondaryButton?.let {
+            primaryButton?.let {
                 RegularBundButton(
                     type = ButtonType.PRIMARY,
                     onClick = it.action,
@@ -50,7 +50,7 @@ fun StandardButtonScreen(
                 )
                 Spacer(modifier = Modifier.height(15.dp))
             }
-            primaryButton?.let {
+            secondaryButton?.let {
                 RegularBundButton(
                     type = ButtonType.SECONDARY,
                     onClick = it.action,
@@ -66,7 +66,7 @@ fun StandardButtonScreen(
 @Composable
 fun StandardStaticComposition(
     title: String,
-    body: String,
+    body: String?,
     @DrawableRes imageID: Int,
     imageScaling: ContentScale,
     primaryButton: BundButtonConfig? = null,
@@ -78,21 +78,23 @@ fun StandardStaticComposition(
     ) { bottomPadding ->
         Column(
             modifier = Modifier
-                .padding(bottom = bottomPadding)
+                .padding(bottom = bottomPadding, start = 20.dp, end = 20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Text(
-                    title,
-                    style = MaterialTheme.typography.titleLarge
-                )
+            Text(
+                title,
+                style = MaterialTheme.typography.titleLarge
+            )
+            body?.let {
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     body,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+
             Spacer(modifier = Modifier.height(20.dp))
+
             Image(
                 painter = painterResource(id = imageID),
                 contentScale = imageScaling,
