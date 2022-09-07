@@ -3,6 +3,7 @@ package de.digitalService.useID.ui.components.pin
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -25,6 +26,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -75,8 +78,8 @@ fun PINEntryField(
                 .testTag("PINEntryField")
         )
         Surface(
-            shape = MaterialTheme.shapes.small,
-            color = MaterialTheme.colorScheme.background,
+            shape = RoundedCornerShape(8.dp),
+            color = Gray300,
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxSize()
@@ -102,6 +105,7 @@ fun PINEntryField(
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()
+                .padding(4.dp)
         )
     }
 }

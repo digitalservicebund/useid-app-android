@@ -45,7 +45,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
         viewModel.pin2.map { "$it " }
     )
 
-    ScreenWithTopBar(
+	ScreenWithTopBar(
         navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
     ) { topPadding ->
         Column(
@@ -56,6 +56,14 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
                 stringResource(id = R.string.firstTimeUser_personalPIN_title),
                 style = MaterialTheme.typography.titleLarge
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text(
+                stringResource(id = R.string.firstTimeUser_personalPIN_body),
+                style = MaterialTheme.typography.bodyLarge
+            )
+
             Spacer(modifier = Modifier.weight(1f))
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 PINEntryField(
@@ -221,7 +229,7 @@ private class PreviewSetupPersonalPINViewModel(
     override fun onBackButtonTapped() {}
 }
 
-@Preview(device = Devices.PIXEL_3A)
+@Preview(device = Devices.PIXEL_3A, showBackground = true)
 @Composable
 fun PreviewSetupPersonalPIN() {
     UseIDTheme {

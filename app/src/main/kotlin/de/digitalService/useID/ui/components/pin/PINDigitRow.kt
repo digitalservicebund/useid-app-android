@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.components.pin
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.digitalService.useID.ui.theme.Gray300
 
 @Composable
 fun PINDigitRow(input: String, digitCount: Int, obfuscation: Boolean, placeholder: Boolean, spacerPosition: Int?, modifier: Modifier = Modifier) {
-    Row(horizontalArrangement = Arrangement.SpaceAround, modifier = modifier) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceAround,
+        modifier = modifier.background(color = Gray300)
+    ) {
         for (position in 1..digitCount) {
             val char = input.toCharArray().getOrNull(position - 1)
             PINDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
