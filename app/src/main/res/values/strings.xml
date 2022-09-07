@@ -112,6 +112,7 @@
     <string name="homeScreen_more_subtitle">Mehr</string>
     <string name="homeScreen_setupOnlineID_button">Online-Ausweis einrichten</string>
     <string name="homeScreen_more_settings_button">Einstellungen</string>
+    <string name="homeScreen_more_privacy_button">Datenschutzerklärung</string>
     <string name="homeScreen_more_license_button">Lizenzen</string>
     <string name="homeScreen_more_termsOfUse_button">Nutzungsbedingungen</string>
     <string name="homeScreen_more_accessibilityStatement_button">Barrierefreiheitserklärung</string>

@@ -153,6 +153,9 @@ private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
+        CardButton(text = stringResource(R.string.homeScreen_more_privacy_button), onClick = viewModel::onPrivacyButtonClicked)
+        StyledDivider()
+
         CardButton(text = stringResource(R.string.homeScreen_more_license_button), onClick = viewModel::onLicenseButtonClicked)
         StyledDivider()
 
