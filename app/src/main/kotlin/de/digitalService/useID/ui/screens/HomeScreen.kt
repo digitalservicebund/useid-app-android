@@ -223,7 +223,7 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     override fun setupOnlineID() {
-        setupCoordinator.startSetupIDCard()
+        appCoordinator.startIdSetup()
     }
 
     override fun onPrivacyButtonClicked() {

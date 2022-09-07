@@ -20,6 +20,7 @@ interface AppCoordinatorType {
     fun setNavController(navController: NavController)
     fun navigate(route: Direction)
     fun popToRoot()
+    fun startIdSetup()
     fun startIdentification(tcTokenURL: String)
     fun homeScreenLaunched(token: String?)
     fun setNfcAvailability(availability: NfcAvailability)
@@ -46,6 +47,11 @@ class AppCoordinator @Inject constructor(
         navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)
     }
 
+    override fun startIdSetup() {
+        popToRoot()
+        navigate(SetupIntroDestination(null))
+    }
+
     override fun startIdentification(tcTokenURL: String) = navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL))
 
     override fun homeScreenLaunched(token: String?) {
@@ -55,7 +61,7 @@ class AppCoordinator @Inject constructor(
         firstTimeLaunch = false
 
         if (storageManager.getIsFirstTimeUser()) {
-            navigate(SetupIntroDestination(token))
+            startIdSetup()
         }
     }
 
