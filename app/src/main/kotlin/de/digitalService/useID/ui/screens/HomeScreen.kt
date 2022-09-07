@@ -2,6 +2,7 @@
 
 package de.digitalService.useID.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,10 +30,7 @@ import de.digitalService.useID.ui.components.ButtonType
 import de.digitalService.useID.ui.components.RegularBundButton
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
-import de.digitalService.useID.ui.screens.destinations.AccessibilityScreenDestination
-import de.digitalService.useID.ui.screens.destinations.ImprintScreenDestination
-import de.digitalService.useID.ui.screens.destinations.PrivacyScreenDestination
-import de.digitalService.useID.ui.screens.destinations.TermsOfUseScreenDestination
+import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.theme.*
 import javax.inject.Inject
 
@@ -156,7 +154,7 @@ private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        CardButton(text = stringResource(R.string.homeScreen_more_license_button), onClick = {})
+        CardButton(text = stringResource(R.string.homeScreen_more_license_button), onClick = viewModel::onLicenseButtonClicked)
         StyledDivider()
 
         CardButton(
@@ -210,6 +208,7 @@ interface HomeScreenViewModelInterface {
     fun onImprintButtonClicked()
     fun onAccessibilityButtonClicked()
     fun onTermsOfUseButtonClicked()
+    fun onLicenseButtonClicked()
 }
 
 @HiltViewModel
@@ -237,6 +236,11 @@ class HomeScreenViewModel @Inject constructor(
         appCoordinator.navigate(TermsOfUseScreenDestination)
     }
 
+    override fun onLicenseButtonClicked() {
+        appCoordinator.navigate(DependenciesScreenDestination)
+        Log.d("OwnLog", "HomeScreenViewModel.onLicenseButtonClicked: ")
+    }
+
     override fun onImprintButtonClicked() {
         appCoordinator.navigate(ImprintScreenDestination)
     }
@@ -249,6 +253,7 @@ private class PreviewViewModel : HomeScreenViewModelInterface {
     override fun onImprintButtonClicked() {}
     override fun onAccessibilityButtonClicked() {}
     override fun onTermsOfUseButtonClicked() {}
+    override fun onLicenseButtonClicked() {}
 }
 
 @Preview(showBackground = true)

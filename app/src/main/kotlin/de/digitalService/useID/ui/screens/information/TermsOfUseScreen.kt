@@ -10,7 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.HtmlText
 import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
