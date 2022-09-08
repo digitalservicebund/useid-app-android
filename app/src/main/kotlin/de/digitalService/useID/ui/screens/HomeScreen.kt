@@ -238,7 +238,6 @@ class HomeScreenViewModel @Inject constructor(
 
     override fun onLicenseButtonClicked() {
         appCoordinator.navigate(DependenciesScreenDestination)
-        Log.d("OwnLog", "HomeScreenViewModel.onLicenseButtonClicked: ")
     }
 
     override fun onImprintButtonClicked() {
