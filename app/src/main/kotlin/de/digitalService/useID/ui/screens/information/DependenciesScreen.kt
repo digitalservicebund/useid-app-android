@@ -10,10 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mikepenz.aboutlibraries.entity.License
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.ramcosta.composedestinations.annotation.Destination
+import de.digitalService.useID.R
 
 @Destination
 @Composable
@@ -36,7 +38,7 @@ fun DependenciesScreen() {
             },
             confirmButton = {
                 Button(onClick = { dialogText = null }) {
-                    Text(text = "Ok")
+                    Text(text = stringResource(R.string.licenseDialog_confirm_button))
                 }
             },
             containerColor = Color.White
