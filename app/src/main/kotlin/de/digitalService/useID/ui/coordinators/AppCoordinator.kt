@@ -19,6 +19,7 @@ interface AppCoordinatorType {
 
     fun setNavController(navController: NavController)
     fun navigate(route: Direction)
+    fun pop()
     fun popToRoot()
     fun startIdSetup()
     fun startIdentification(tcTokenURL: String)
@@ -42,6 +43,10 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun navigate(route: Direction) = navController.navigate(route)
+
+    override fun pop() {
+        navController.popBackStack()
+    }
 
     override fun popToRoot() {
         navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)

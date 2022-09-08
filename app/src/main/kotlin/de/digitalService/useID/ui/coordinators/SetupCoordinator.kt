@@ -58,6 +58,10 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.popToRoot()
     }
 
+    fun onBackTapped() {
+        appCoordinator.pop()
+    }
+
     fun onSkipSetup() {
         handleSetupEnded()
     }

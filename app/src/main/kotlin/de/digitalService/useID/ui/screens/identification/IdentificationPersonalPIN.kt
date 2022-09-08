@@ -16,6 +16,9 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -34,30 +37,36 @@ fun IdentificationPersonalPIN(
 
     val focusRequester = remember { FocusRequester() }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(horizontal = 20.dp)
-    ) {
-        Text(
-            stringResource(id = R.string.identification_personalPIN_title),
-            style = MaterialTheme.typography.titleLarge
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        PINEntryField(
-            value = viewModel.pin,
-            digitCount = 6,
-            obfuscation = false,
-            spacerPosition = 3,
-            onValueChanged = viewModel::userInputPIN,
-            contentDescription = pinEntryFieldDescription,
-            focusRequester = focusRequester,
-            onDone = viewModel::onDone,
-            modifier = Modifier
-                .padding(top = 50.dp)
-                .width(240.dp)
-                .height(56.dp)
-        )
-        Spacer(modifier = Modifier.weight(1f))
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(
+            icon = NavigationIcon.Cancel,
+            onClick = viewModel::onCancelButtonTapped)
+    ) { topPadding ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)
+        ) {
+            Text(
+                stringResource(id = R.string.identification_personalPIN_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            PINEntryField(
+                value = viewModel.pin,
+                digitCount = 6,
+                obfuscation = false,
+                spacerPosition = 3,
+                onValueChanged = viewModel::userInputPIN,
+                contentDescription = pinEntryFieldDescription,
+                focusRequester = focusRequester,
+                onDone = viewModel::onDone,
+                modifier = Modifier
+                    .padding(top = 50.dp)
+                    .width(240.dp)
+                    .height(56.dp)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -70,6 +79,7 @@ interface IdentificationPersonalPINViewModelInterface {
 
     fun userInputPIN(value: String)
     fun onDone()
+    fun onCancelButtonTapped()
 }
 
 @HiltViewModel
@@ -90,6 +100,8 @@ class IdentificationPersonalPINViewModel @Inject constructor(
         }
     }
 
+    override fun onCancelButtonTapped() = coordinator.cancelIdentification()
+
     private fun checkPINString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
 }
 
@@ -98,6 +110,7 @@ class PreviewIdentificationPersonalPINViewModel(
 ) : IdentificationPersonalPINViewModelInterface {
     override fun userInputPIN(value: String) { }
     override fun onDone() { }
+    override fun onCancelButtonTapped() {}
 }
 
 @Preview

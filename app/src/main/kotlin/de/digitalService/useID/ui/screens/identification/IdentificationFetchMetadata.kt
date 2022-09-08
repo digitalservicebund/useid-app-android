@@ -29,6 +29,8 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
@@ -45,36 +47,44 @@ fun IdentificationFetchMetadata(
     modifier: Modifier = Modifier,
     viewModel: IdentificationFetchMetadataViewModelInterface = hiltViewModel<IdentificationFetchMetadataViewModel>()
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
-            .padding(20.dp)
-            .fillMaxSize()
-    ) {
-        Spacer(modifier = Modifier.weight(.5f))
-        Box {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.primary,
-                strokeWidth = 10.dp,
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(70.dp)
-            )
-        }
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(
+            icon = NavigationIcon.Cancel,
+            onClick = viewModel::onCancelButtonTapped
+        )
+    ) { topPadding ->
         Column(
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(.5f)
+            modifier = modifier
+                .padding(20.dp)
+                .padding(top = topPadding)
+                .fillMaxSize()
         ) {
-            Text(
-                stringResource(id = R.string.identification_fetchMetadata_pleaseWait),
-                style = MaterialTheme.typography.bodySmall
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                stringResource(id = R.string.identification_fetchMetadata_loadingData),
-                style = MaterialTheme.typography.bodySmall
-            )
+            Spacer(modifier = Modifier.weight(.5f))
+            Box {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 10.dp,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(70.dp)
+                )
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.weight(.5f)
+            ) {
+                Text(
+                    stringResource(id = R.string.identification_fetchMetadata_pleaseWait),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    stringResource(id = R.string.identification_fetchMetadata_loadingData),
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
         }
     }
 
@@ -104,14 +114,7 @@ fun ConnectionErrorDialog(
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
         ScreenWithTopBar(
-            navigationIcon = {
-                IconButton(onClick = onCancel) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(id = R.string.navigation_cancel)
-                    )
-                }
-            },
+            navigationButton = NavigationButton(NavigationIcon.Cancel, onCancel),
             modifier = Modifier
                 .fillMaxSize()
                 .padding(vertical = 20.dp)
@@ -139,6 +142,7 @@ interface IdentificationFetchMetadataViewModelInterface {
     fun fetchMetadata()
     fun onErrorCancel()
     fun onErrorRetry()
+    fun onCancelButtonTapped()
 }
 
 @HiltViewModel
@@ -171,6 +175,8 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
         coordinator.startIdentificationProcess(tcTokenURL)
     }
 
+    override fun onCancelButtonTapped() = coordinator.cancelIdentification()
+
     private fun collectFetchMetadataEvents() {
         viewModelScope.launch {
             coordinator.fetchMetadataEventFlow.collect { event: FetchMetadataEvent ->
@@ -197,6 +203,7 @@ class PreviewIdentificationFetchMetadataViewModel(
     override fun fetchMetadata() {}
     override fun onErrorCancel() {}
     override fun onErrorRetry() {}
+    override fun onCancelButtonTapped() {}
 }
 
 @Preview(device = Devices.PIXEL_3A)

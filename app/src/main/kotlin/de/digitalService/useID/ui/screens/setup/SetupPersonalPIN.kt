@@ -21,6 +21,9 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManagerInterface
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -42,74 +45,78 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
         viewModel.pin2.map { "$it " }
     )
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(horizontal = 20.dp)
-    ) {
-        Text(
-            stringResource(id = R.string.firstTimeUser_personalPIN_title),
-            style = MaterialTheme.typography.titleLarge
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            PINEntryField(
-                value = viewModel.pin1,
-                digitCount = 6,
-                obfuscation = true,
-                spacerPosition = 3,
-                onValueChanged = viewModel::userInputPIN1,
-                contentDescription = pin1EntryFieldDescription,
-                focusRequester = focusRequesterPIN1,
-                modifier = Modifier
-                    .width(240.dp)
-                    .height(56.dp)
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
+    ) { topPadding ->
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)
+        ) {
+            Text(
+                stringResource(id = R.string.firstTimeUser_personalPIN_title),
+                style = MaterialTheme.typography.titleLarge
             )
+            Spacer(modifier = Modifier.weight(1f))
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                PINEntryField(
+                    value = viewModel.pin1,
+                    digitCount = 6,
+                    obfuscation = true,
+                    spacerPosition = 3,
+                    onValueChanged = viewModel::userInputPIN1,
+                    contentDescription = pin1EntryFieldDescription,
+                    focusRequester = focusRequesterPIN1,
+                    modifier = Modifier
+                        .width(240.dp)
+                        .height(56.dp)
+                )
 
-            AnimatedVisibility(viewModel.shouldShowPIN2EntryField) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        stringResource(id = R.string.firstTimeUser_personalPIN_confirmation),
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    )
-                    PINEntryField(
-                        value = viewModel.pin2,
-                        digitCount = 6,
-                        obfuscation = true,
-                        spacerPosition = 3,
-                        onValueChanged = viewModel::userInputPIN2,
-                        contentDescription = pin2EntryFieldDescription,
-                        focusRequester = focusRequesterPIN2,
-                        modifier = Modifier
-                            .width(240.dp)
-                            .height(56.dp)
-                    )
+                AnimatedVisibility(viewModel.shouldShowPIN2EntryField) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            stringResource(id = R.string.firstTimeUser_personalPIN_confirmation),
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                        PINEntryField(
+                            value = viewModel.pin2,
+                            digitCount = 6,
+                            obfuscation = true,
+                            spacerPosition = 3,
+                            onValueChanged = viewModel::userInputPIN2,
+                            contentDescription = pin2EntryFieldDescription,
+                            focusRequester = focusRequesterPIN2,
+                            modifier = Modifier
+                                .width(240.dp)
+                                .height(56.dp)
+                        )
+                    }
+                }
+
+                AnimatedVisibility(viewModel.shouldShowError) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.semantics(mergeDescendants = true) { }
+                    ) {
+                        Text(
+                            stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_title),
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                        Text(
+                            stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_body),
+                            style = MaterialTheme.typography.bodySmall,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                    }
                 }
             }
-
-            AnimatedVisibility(viewModel.shouldShowError) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.semantics(mergeDescendants = true) { }
-                ) {
-                    Text(
-                        stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_title),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    )
-                    Text(
-                        stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_body),
-                        style = MaterialTheme.typography.bodySmall,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 10.dp)
-                    )
-                }
-            }
+            Spacer(modifier = Modifier.weight(1f))
         }
-        Spacer(modifier = Modifier.weight(1f))
     }
 
     LaunchedEffect(viewModel.focus) {
@@ -135,6 +142,8 @@ interface SetupPersonalPINViewModelInterface {
 
     fun userInputPIN1(value: String)
     fun userInputPIN2(value: String)
+
+    fun onBackButtonTapped()
 }
 
 @HiltViewModel
@@ -195,6 +204,8 @@ class SetupPersonalPINViewModel @Inject constructor(private val coordinator: Set
             focus = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1
         }
     }
+
+    override fun onBackButtonTapped() = coordinator.onBackTapped()
 }
 
 //region Preview
@@ -207,6 +218,7 @@ private class PreviewSetupPersonalPINViewModel(
 ) : SetupPersonalPINViewModelInterface {
     override fun userInputPIN1(value: String) {}
     override fun userInputPIN2(value: String) {}
+    override fun onBackButtonTapped() {}
 }
 
 @Preview(device = Devices.PIXEL_3A)

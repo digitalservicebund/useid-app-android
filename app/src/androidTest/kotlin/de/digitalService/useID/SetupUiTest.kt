@@ -82,7 +82,7 @@ class SetupUiTest {
 
         composeTestRule.onNodeWithText(startSetupButton).assertDoesNotExist()
 
-        val backButtonTag = "backButton"
+        val backButtonTag = "navigationButton"
         composeTestRule.onNodeWithTag(backButtonTag).performClick()
 
         composeTestRule.onNodeWithText(startSetupButton).performClick()

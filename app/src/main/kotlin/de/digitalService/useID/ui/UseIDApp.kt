@@ -31,19 +31,8 @@ import io.sentry.compose.withSentryObservableEffect
 @Composable
 fun UseIDApp(appCoordinator: AppCoordinatorType) {
     val navController = rememberNavController().withSentryObservableEffect()
-    var shouldShowBackButton by remember { mutableStateOf(false) }
 
     appCoordinator.setNavController(navController)
-
-    navController.addOnDestinationChangedListener(object : NavController.OnDestinationChangedListener {
-        override fun onDestinationChanged(
-            controller: NavController,
-            destination: NavDestination,
-            arguments: Bundle?
-        ) {
-            shouldShowBackButton = controller.previousBackStackEntry != null
-        }
-    })
 
     UseIDTheme {
         if (appCoordinator.nfcAvailability.value == NfcAvailability.NoNfc) {
@@ -51,23 +40,11 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
             return@UseIDTheme
         }
 
-        ScreenWithTopBar(navigationIcon = {
-            if (shouldShowBackButton) {
-                IconButton(modifier = Modifier.testTag("backButton"), onClick = { navController.popBackStack() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(id = R.string.navigation_back)
-                    )
-                }
-            }
-        }) { topBarPadding ->
-            AppNavHost(
-                navController = navController,
-                modifier = Modifier
-                    .padding(top = topBarPadding)
-                    .fillMaxWidth()
-            )
-        }
+        AppNavHost(
+            navController = navController,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
 
         if (appCoordinator.nfcAvailability.value == NfcAvailability.Deactivated) {
             Dialog(
@@ -86,6 +63,7 @@ fun UseIDApp(appCoordinator: AppCoordinatorType) {
 private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvailability>) : AppCoordinatorType {
     override fun setNavController(navController: NavController) {}
     override fun navigate(route: Direction) {}
+    override fun pop() {}
     override fun popToRoot() {}
     override fun startIdSetup() {}
     override fun startIdentification(tcTokenURL: String) {}

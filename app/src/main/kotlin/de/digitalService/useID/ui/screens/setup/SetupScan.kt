@@ -27,6 +27,8 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
@@ -47,21 +49,25 @@ fun SetupScan(
 ) {
     val context = LocalContext.current
 
-    ScanScreen(
-        title = stringResource(id = R.string.firstTimeUser_scan_title),
-        body = stringResource(id = R.string.firstTimeUser_scan_body),
-        errorState = viewModel.errorState,
-        onIncorrectPIN = { attempts ->
-            TransportPINDialog(
-                attempts = attempts,
-                onCancel = viewModel::onCancel,
-                onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
-            )
-        },
-        onCancel = viewModel::onCancel,
-        showProgress = viewModel.shouldShowProgress,
-        modifier = modifier
-    )
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
+    ) { topPadding ->
+        ScanScreen(
+            title = stringResource(id = R.string.firstTimeUser_scan_title),
+            body = stringResource(id = R.string.firstTimeUser_scan_body),
+            errorState = viewModel.errorState,
+            onIncorrectPIN = { attempts ->
+                TransportPINDialog(
+                    attempts = attempts,
+                    onCancel = viewModel::onCancel,
+                    onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
+                )
+            },
+            onCancel = viewModel::onCancel,
+            showProgress = viewModel.shouldShowProgress,
+            modifier = modifier.padding(top = topPadding)
+        )
+    }
 
     LaunchedEffect(Unit) {
         viewModel.startSettingPIN(context)
@@ -79,14 +85,7 @@ private fun TransportPINDialog(
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
         ScreenWithTopBar(
-            navigationIcon = {
-                androidx.compose.material3.IconButton(onClick = onCancel) {
-                    androidx.compose.material3.Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(id = R.string.navigation_cancel)
-                    )
-                }
-            },
+            navigationButton = NavigationButton(NavigationIcon.Cancel, onCancel),
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
             val focusManager = LocalFocusManager.current
@@ -114,6 +113,7 @@ interface SetupScanViewModelInterface {
     fun startSettingPIN(context: Context)
     fun onReEnteredTransportPIN(transportPIN: String, context: Context)
     fun onHelpButtonTapped()
+    fun onBackButtonTapped()
 
     fun onCancel()
 }
@@ -152,6 +152,7 @@ class SetupScanViewModel @Inject constructor(
     }
 
     override fun onHelpButtonTapped() {}
+    override fun onBackButtonTapped() = coordinator.onBackTapped()
 
     override fun onCancel() = coordinator.cancelSetup()
 
@@ -237,6 +238,7 @@ class PreviewSetupScanViewModel(
     override fun startSettingPIN(context: Context) {}
     override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}
     override fun onHelpButtonTapped() {}
+    override fun onBackButtonTapped() {}
     override fun onCancel() {}
 }
 

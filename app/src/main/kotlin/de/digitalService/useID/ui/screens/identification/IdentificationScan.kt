@@ -20,6 +20,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
@@ -35,21 +37,27 @@ fun IdentificationScan(
     modifier: Modifier = Modifier,
     viewModel: IdentificationScanViewModelInterface = hiltViewModel<IdentificationScanViewModel>()
 ) {
-    ScanScreen(
-        title = stringResource(id = R.string.identification_scan_title),
-        body = stringResource(id = R.string.identification_scan_body),
-        errorState = viewModel.errorState,
-        onIncorrectPIN = { attempts ->
-            PINDialog(
-                attempts = attempts,
-                onCancel = viewModel::onCancelIdentification,
-                onNewPINEntered = viewModel::onNewPersonalPINEntered
-            )
-        },
-        onCancel = viewModel::onCancelIdentification,
-        showProgress = viewModel.shouldShowProgress,
-        modifier = modifier
-    )
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(
+            icon = NavigationIcon.Cancel,
+            onClick = viewModel::onCancelIdentification)
+    ) { topPadding ->
+        ScanScreen(
+            title = stringResource(id = R.string.identification_scan_title),
+            body = stringResource(id = R.string.identification_scan_body),
+            errorState = viewModel.errorState,
+            onIncorrectPIN = { attempts ->
+                PINDialog(
+                    attempts = attempts,
+                    onCancel = viewModel::onCancelIdentification,
+                    onNewPINEntered = viewModel::onNewPersonalPINEntered
+                )
+            },
+            onCancel = viewModel::onCancelIdentification,
+            showProgress = viewModel.shouldShowProgress,
+            modifier = modifier.padding(top = topPadding)
+        )
+    }
 }
 
 @Composable
@@ -63,14 +71,7 @@ private fun PINDialog(
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
         ScreenWithTopBar(
-            navigationIcon = {
-                IconButton(onClick = onCancel) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(id = R.string.navigation_cancel)
-                    )
-                }
-            },
+            navigationButton = NavigationButton(NavigationIcon.Cancel, onCancel),
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
             val focusManager = LocalFocusManager.current

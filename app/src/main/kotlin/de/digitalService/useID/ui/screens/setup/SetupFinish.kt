@@ -25,6 +25,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.BundButtonConfig
+import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.StandardButtonScreen
 import de.digitalService.useID.ui.components.StandardStaticComposition
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
@@ -41,13 +42,16 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
         BundButtonConfig(stringResource(id = R.string.firstTimeUser_done_close), viewModel::onCloseButtonClicked)
     }
 
-    StandardStaticComposition(
-        title = stringResource(id = R.string.firstTimeUser_done_title),
-        body = null,
-        imageID = R.drawable.eid_3_pin,
-        imageScaling = ContentScale.Inside,
-        primaryButton = buttonConfig
-    )
+    ScreenWithTopBar { topPadding ->
+        StandardStaticComposition(
+            title = stringResource(id = R.string.firstTimeUser_done_title),
+            body = null,
+            imageID = R.drawable.eid_3_pin,
+            imageScaling = ContentScale.Inside,
+            primaryButton = buttonConfig,
+            modifier = Modifier.padding(top = topPadding)
+        )
+    }
 }
 
 interface SetupFinishViewModelInterface {

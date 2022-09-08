@@ -20,6 +20,9 @@ import de.digitalService.useID.R
 import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.TransportPINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -33,18 +36,22 @@ fun SetupTransportPIN(
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    Column(modifier = modifier.padding(horizontal = 20.dp)) {
-        Text(
-            text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
-            style = MaterialTheme.typography.titleLarge
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-        TransportPINEntryField(
-            value = viewModel.transportPIN,
-            onValueChanged = viewModel::onInputChanged,
-            onDone = viewModel::onDoneTapped,
-            focusRequester = focusRequester
-        )
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
+    ) { topPadding ->
+        Column(modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)) {
+            Text(
+                text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+            TransportPINEntryField(
+                value = viewModel.transportPIN,
+                onValueChanged = viewModel::onInputChanged,
+                onDone = viewModel::onDoneTapped,
+                focusRequester = focusRequester
+            )
+        }
     }
 
     LaunchedEffect(Unit) {
@@ -57,10 +64,12 @@ interface SetupTransportPINViewModelInterface {
 
     fun onInputChanged(value: String)
     fun onDoneTapped()
+    fun onBackButtonTapped()
 }
 
 @HiltViewModel
 class SetupTransportPINViewModel(
+    private val coordinator: SetupCoordinator,
     private val secureStorageManager: SecureStorageManagerInterface,
     private val onDone: () -> Unit
 ) :
@@ -72,6 +81,7 @@ class SetupTransportPINViewModel(
         coordinator: SetupCoordinator,
         secureStorageManager: SecureStorageManager
     ) : this(
+        coordinator = coordinator,
         secureStorageManager = secureStorageManager,
         onDone = coordinator::onTransportPINEntered
     )
@@ -92,6 +102,8 @@ class SetupTransportPINViewModel(
             logger.debug("Transport PIN too short.")
         }
     }
+
+    override fun onBackButtonTapped() = coordinator.onBackTapped()
 }
 
 //region Preview
@@ -100,6 +112,7 @@ private class PreviewSetupTransportPINViewModel(
 ) : SetupTransportPINViewModelInterface {
     override fun onInputChanged(value: String) {}
     override fun onDoneTapped() {}
+    override fun onBackButtonTapped() {}
 }
 
 @Preview(widthDp = 300)

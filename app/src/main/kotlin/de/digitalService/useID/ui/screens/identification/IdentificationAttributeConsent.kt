@@ -30,10 +30,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute
-import de.digitalService.useID.ui.components.BundButton
-import de.digitalService.useID.ui.components.ButtonType
-import de.digitalService.useID.ui.components.RegularBundButton
-import de.digitalService.useID.ui.components.ScreenWithTopBar
+import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -48,40 +45,46 @@ fun IdentificationAttributeConsent(
     modifier: Modifier = Modifier,
     viewModel: IdentificationAttributeConsentViewModelInterface = hiltViewModel<IdentificationAttributeConsentViewModel>()
 ) {
-    Scaffold(bottomBar = {
-        RegularBundButton(
-            type = ButtonType.PRIMARY,
-            onClick = viewModel::onPINButtonTapped,
-            label = stringResource(id = R.string.identification_attributeConsent_continue),
-            modifier = Modifier
-                .padding(20.dp)
-        )
-    }, modifier = modifier) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(bottom = paddingValues.calculateBottomPadding())
-                .padding(horizontal = 20.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                viewModel.identificationProvider,
-                style = MaterialTheme.typography.titleLarge
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(
+            icon = NavigationIcon.Cancel,
+            onClick = viewModel::onCancelButtonTapped)
+    ) { topPadding ->
+        Scaffold(bottomBar = {
+            RegularBundButton(
+                type = ButtonType.PRIMARY,
+                onClick = viewModel::onPINButtonTapped,
+                label = stringResource(id = R.string.identification_attributeConsent_continue),
+                modifier = Modifier
+                    .padding(20.dp)
             )
-            Spacer(modifier = Modifier.padding(5.dp))
-            Text(
-                stringResource(
-                    id = R.string.identification_attributeConsent_body,
-                    viewModel.identificationProvider
-                ),
-                style = MaterialTheme.typography.bodySmall
-            )
-            AttributeList(attributeIDs = viewModel.requiredReadAttributes)
-            Spacer(Modifier.height(20.dp))
-            BundButton(
-                type = ButtonType.SECONDARY,
-                onClick = viewModel::onInfoButtonTapped,
-                label = stringResource(id = R.string.identification_attributeConsent_button_additionalInformation)
-            )
+        }, modifier = modifier.padding(top = topPadding)) { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(bottom = paddingValues.calculateBottomPadding())
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    viewModel.identificationProvider,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(
+                    stringResource(
+                        id = R.string.identification_attributeConsent_body,
+                        viewModel.identificationProvider
+                    ),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                AttributeList(attributeIDs = viewModel.requiredReadAttributes)
+                Spacer(Modifier.height(20.dp))
+                BundButton(
+                    type = ButtonType.SECONDARY,
+                    onClick = viewModel::onInfoButtonTapped,
+                    label = stringResource(id = R.string.identification_attributeConsent_button_additionalInformation)
+                )
+            }
         }
     }
 
@@ -122,14 +125,7 @@ private fun AttributeList(attributeIDs: List<Int>) {
 private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: () -> Unit) {
     Dialog(onDismissRequest = onDismissalRequest) {
         ScreenWithTopBar(
-            navigationIcon = {
-                IconButton(onClick = onDismissalRequest) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = stringResource(id = R.string.navigation_cancel)
-                    )
-                }
-            },
+            navigationButton = NavigationButton(NavigationIcon.Cancel, onDismissalRequest),
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
             Column(
@@ -216,6 +212,7 @@ interface IdentificationAttributeConsentViewModelInterface {
     fun onInfoButtonTapped()
     fun onInfoDialogDismissalRequest()
     fun onPINButtonTapped()
+    fun onCancelButtonTapped()
 }
 
 @HiltViewModel
@@ -253,6 +250,8 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         coordinator.confirmAttributesForIdentification()
     }
 
+    override fun onCancelButtonTapped() = coordinator.cancelIdentification()
+
     private fun attributeDescriptionID(attribute: IDCardAttribute): Int = when (attribute) {
         IDCardAttribute.DG01 -> R.string.cardAttribute_dg01
         IDCardAttribute.DG02 -> R.string.cardAttribute_dg02
@@ -282,6 +281,7 @@ class PreviewIdentificationAttributeConsentViewModel(
     override fun onInfoButtonTapped() {}
     override fun onInfoDialogDismissalRequest() {}
     override fun onPINButtonTapped() {}
+    override fun onCancelButtonTapped() {}
 }
 
 private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean): IdentificationAttributeConsentViewModelInterface =

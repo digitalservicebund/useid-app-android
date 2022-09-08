@@ -66,6 +66,8 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(private va
             injectShouldShowError(false)
         }
 
+        override fun onCancelButtonTapped() = coordinator.cancelIdentification()
+
         override fun injectShouldShowProgress(show: Boolean) {
             shouldShowProgressIndicator = show
         }

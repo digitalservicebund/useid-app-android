@@ -11,20 +11,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Destination
 @Composable
-fun PrivacyScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        MarkdownText(markdown = stringResource(id = R.string.privacy_text))
+fun PrivacyScreen(
+    navigator: DestinationsNavigator
+) {
+    ScreenWithTopBar(
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() })
+    ) { topPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .padding(top = topPadding)
+                .verticalScroll(rememberScrollState())
+        ) {
+            MarkdownText(markdown = stringResource(id = R.string.privacy_text))
+        }
     }
 }
 
@@ -32,6 +44,6 @@ fun PrivacyScreen() {
 @Composable
 private fun Preview() {
     UseIDTheme {
-        PrivacyScreen()
+        PrivacyScreen(EmptyDestinationsNavigator)
     }
 }

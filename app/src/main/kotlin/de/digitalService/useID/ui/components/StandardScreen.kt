@@ -35,6 +35,7 @@ class BundButtonConfig(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StandardButtonScreen(
+    modifier: Modifier = Modifier,
     primaryButton: BundButtonConfig? = null,
     secondaryButton: BundButtonConfig? = null,
     content: @Composable (Dp) -> Unit
@@ -61,7 +62,9 @@ fun StandardButtonScreen(
                 )
             }
         }
-    }) {
+    },
+    modifier = modifier
+    ) {
         content(it.calculateBottomPadding())
     }
 }
@@ -72,16 +75,19 @@ fun StandardStaticComposition(
     body: String?,
     @DrawableRes imageID: Int,
     imageScaling: ContentScale,
+    modifier: Modifier = Modifier,
     primaryButton: BundButtonConfig? = null,
     secondaryButton: BundButtonConfig? = null
 ) {
     StandardButtonScreen(
+        modifier = modifier,
         primaryButton = primaryButton,
         secondaryButton = secondaryButton
     ) { bottomPadding ->
         Column(
             modifier = Modifier
-                .padding(bottom = bottomPadding, start = 20.dp, end = 20.dp)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = bottomPadding)
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
