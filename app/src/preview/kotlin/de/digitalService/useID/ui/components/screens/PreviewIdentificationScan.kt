@@ -42,6 +42,7 @@ fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel) {
             Button(onClick = { viewModel.simulateIncorrectPIN() }) { Text("❌") }
             Button(onClick = { viewModel.simulateCANRequired() }) { Text("CAN") }
             Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") }
+            Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("📵") }
         }
     }
 }
@@ -78,6 +79,15 @@ class PreviewIdentificationScanViewModel @Inject constructor(private val coordin
             delay(3000L)
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectErrorState(ScanError.PINBlocked)
+        }
+    }
+
+    fun simulateCardDeactivated(){
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectErrorState(ScanError.CardDeactivated)
         }
     }
 
