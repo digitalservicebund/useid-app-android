@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -153,8 +154,11 @@ fun ScanScreen(
                 )
             },
             text = {
+                val packageName = LocalContext.current.packageName
+                val imagePath = "android.resource://$packageName/${R.drawable.nfc_positions}"
+
                 MarkdownText(
-                    markdown = stringResource(id = R.string.scanError_cardUnreadable_body),
+                    markdown = stringResource(id = R.string.scanError_cardUnreadable_body, imagePath),
                     fontResource = R.font.bundes_sans_dtp_regular
                 )
             },
