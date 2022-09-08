@@ -54,7 +54,7 @@ fun IdentificationPersonalPIN(
             PINEntryField(
                 value = viewModel.pin,
                 digitCount = 6,
-                obfuscation = false,
+                obfuscation = true,
                 spacerPosition = 3,
                 onValueChanged = viewModel::userInputPIN,
                 contentDescription = pinEntryFieldDescription,
@@ -108,8 +108,8 @@ class IdentificationPersonalPINViewModel @Inject constructor(
 class PreviewIdentificationPersonalPINViewModel(
     override val pin: String
 ) : IdentificationPersonalPINViewModelInterface {
-    override fun userInputPIN(value: String) { }
-    override fun onDone() { }
+    override fun userInputPIN(value: String) {}
+    override fun onDone() {}
     override fun onCancelButtonTapped() {}
 }
 
