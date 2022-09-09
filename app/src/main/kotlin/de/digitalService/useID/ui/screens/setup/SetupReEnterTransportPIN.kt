@@ -26,12 +26,19 @@ fun SetupReEnterTransportPIN(
     val focusRequester = remember { FocusRequester() }
     val resources = LocalContext.current.resources
 
-    Column(modifier = modifier.padding(horizontal = 20.dp)) {
+    Column(modifier = modifier.padding(horizontal = 16.dp)) {
         Text(
             text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
             style = MaterialTheme.typography.titleLarge
         )
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = stringResource(id = R.string.firstTimeUser_transportPIN_body),
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
         TransportPINEntryField(
             value = viewModel.transportPIN,
             onValueChanged = viewModel::onInputChanged,
@@ -111,7 +118,7 @@ private class PreviewSetupReEnterTransportPINViewModel(
     override fun onDoneTapped() {}
 }
 
-@Preview(widthDp = 300)
+@Preview(widthDp = 300, showBackground = true)
 @Composable
 fun PreviewSetupReEnterTransportPINWithoutAttemptsNarrowDevice() {
     UseIDTheme {
@@ -119,7 +126,7 @@ fun PreviewSetupReEnterTransportPINWithoutAttemptsNarrowDevice() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupReEnterTransportPINWithoutAttempts() {
     UseIDTheme {
@@ -127,7 +134,7 @@ fun PreviewSetupReEnterTransportPINWithoutAttempts() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupReEnterTransportPINNullAttempts() {
     UseIDTheme {
@@ -135,7 +142,7 @@ fun PreviewSetupReEnterTransportPINNullAttempts() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupReEnterTransportPINOneAttempt() {
     UseIDTheme {
@@ -143,7 +150,7 @@ fun PreviewSetupReEnterTransportPINOneAttempt() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupReEnterTransportPINTwoAttempts() {
     UseIDTheme {

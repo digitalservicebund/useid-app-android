@@ -44,7 +44,16 @@ fun SetupTransportPIN(
                 text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
                 style = MaterialTheme.typography.titleLarge
             )
-            Spacer(modifier = Modifier.height(40.dp))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = stringResource(id = R.string.firstTimeUser_transportPIN_body),
+                style = MaterialTheme.typography.bodyLarge
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             TransportPINEntryField(
                 value = viewModel.transportPIN,
                 onValueChanged = viewModel::onInputChanged,
@@ -115,7 +124,7 @@ private class PreviewSetupTransportPINViewModel(
     override fun onBackButtonTapped() {}
 }
 
-@Preview(widthDp = 300)
+@Preview(widthDp = 300, showBackground = true)
 @Composable
 fun PreviewSetupTransportPINWithoutAttemptsNarrowDevice() {
     UseIDTheme {
@@ -123,7 +132,7 @@ fun PreviewSetupTransportPINWithoutAttemptsNarrowDevice() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPINWithoutAttempts() {
     UseIDTheme {
@@ -131,7 +140,7 @@ fun PreviewSetupTransportPINWithoutAttempts() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPINNullAttempts() {
     UseIDTheme {
@@ -139,7 +148,7 @@ fun PreviewSetupTransportPINNullAttempts() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPINOneAttempt() {
     UseIDTheme {
@@ -147,7 +156,7 @@ fun PreviewSetupTransportPINOneAttempt() {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPINTwoAttempts() {
     UseIDTheme {
