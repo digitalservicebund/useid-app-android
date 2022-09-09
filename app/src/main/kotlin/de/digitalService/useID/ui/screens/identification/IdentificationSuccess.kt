@@ -43,19 +43,18 @@ fun IdentificationSuccess(
     val context = LocalContext.current
 
     StandardButtonScreen(
-        primaryButton = BundButtonConfig(
+        secondaryButton = BundButtonConfig(
             stringResource(id = R.string.identification_done_continue),
             action = { viewModel.onButtonTapped(context) }
         )
     ) {
         Column(
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.Top,
             modifier = modifier
                 .fillMaxHeight()
                 .padding(horizontal = 20.dp)
         ) {
-            Icon(imageVector = Icons.Filled.Check, contentDescription = null)
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(64.dp))
             Text(stringResource(id = R.string.identification_done_title), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(20.dp))
 
