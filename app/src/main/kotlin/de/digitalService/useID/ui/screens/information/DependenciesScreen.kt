@@ -38,7 +38,7 @@ fun DependenciesScreen() {
             },
             confirmButton = {
                 Button(onClick = { dialogText = null }) {
-                    Text(text = stringResource(R.string.licenseDialog_confirm_button))
+                    Text(text = stringResource(R.string.licenseDialog_confirm))
                 }
             },
             containerColor = Color.White
