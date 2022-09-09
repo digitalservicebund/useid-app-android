@@ -10,7 +10,7 @@ import androidx.compose.ui.window.DialogProperties
 import de.digitalService.useID.R
 
 @Composable
-fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, onButtonTap: () -> Unit) {
+fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, buttonText: String = stringResource(id = R.string.scanError_close), onButtonTap: () -> Unit) {
     AlertDialog(
         onDismissRequest = { },
         confirmButton = {
@@ -21,7 +21,7 @@ fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, 
                     contentColor = MaterialTheme.colorScheme.primary
                 )
             ) {
-                Text(stringResource(id = R.string.scanError_close))
+                Text(buttonText)
             }
         },
         shape = RoundedCornerShape(10.dp),

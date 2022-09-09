@@ -6,13 +6,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,7 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -33,6 +30,7 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.launch
@@ -94,7 +92,6 @@ fun IdentificationFetchMetadata(
         exit = scaleOut(tween(100))
     ) {
         ConnectionErrorDialog(
-            onCancel = viewModel::onErrorCancel,
             onRetry = viewModel::onErrorRetry
         )
     }
@@ -106,25 +103,22 @@ fun IdentificationFetchMetadata(
 
 @Composable
 fun ConnectionErrorDialog(
-    onCancel: () -> Unit,
     onRetry: () -> Unit
 ) {
-    Dialog(
-        onDismissRequest = { },
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    ) {
-        ScreenWithTopBar(
-            navigationButton = NavigationButton(NavigationIcon.Cancel, onCancel),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 20.dp)
-        ) { topPadding ->
-            IdentificationFetchMetadataError(
-                onRetry = onRetry,
-                modifier = Modifier.padding(top = topPadding, start = 20.dp, end = 20.dp)
-            )
-        }
-    }
+    StandardDialog(title = {
+        Text(
+            stringResource(id = R.string.identification_fetchMetadataError_title),
+            style = MaterialTheme.typography.titleLarge
+        )
+    }, text = {
+        Text(
+            stringResource(id = R.string.identification_fetchMetadataError_body),
+            style = MaterialTheme.typography.bodySmall
+        )
+    },
+        buttonText = stringResource(id = R.string.identification_fetchMetadataError_retry),
+        onButtonTap = onRetry
+    )
 }
 
 data class IdentificationFetchMetadataNavArgs(
@@ -206,14 +200,14 @@ class PreviewIdentificationFetchMetadataViewModel(
     override fun onCancelButtonTapped() {}
 }
 
-@Preview(device = Devices.PIXEL_3A)
+@Preview(device = Devices.PIXEL_3A, showBackground = true)
 @Composable
 fun PreviewIdentificationFetchMetadata() {
     UseIDTheme {
         IdentificationFetchMetadata(
             viewModel = PreviewIdentificationFetchMetadataViewModel(
-                shouldShowProgressIndicator = true,
-                shouldShowError = false
+                shouldShowProgressIndicator = false,
+                shouldShowError = true
             )
         )
     }
