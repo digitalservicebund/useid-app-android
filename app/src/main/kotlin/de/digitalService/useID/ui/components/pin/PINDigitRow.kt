@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import de.digitalService.useID.ui.theme.Gray300
 
 @Composable
 fun PINDigitRow(
@@ -22,7 +21,7 @@ fun PINDigitRow(
     placeholder: Boolean,
     spacerPosition: Int?,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
+    backgroundColor: Color = MaterialTheme.colorScheme.background
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
@@ -33,9 +32,11 @@ fun PINDigitRow(
             PINDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
             spacerPosition?.let {
                 if (spacerPosition == position) {
-                    Spacer(modifier = Modifier
-                        .width(8.dp)
-                        .testTag("PINDigitRowSpacer"))
+                    Spacer(
+                        modifier = Modifier
+                            .width(8.dp)
+                            .testTag("PINDigitRowSpacer")
+                    )
                 }
             }
         }

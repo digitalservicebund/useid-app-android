@@ -6,11 +6,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -105,17 +102,19 @@ fun IdentificationFetchMetadata(
 fun ConnectionErrorDialog(
     onRetry: () -> Unit
 ) {
-    StandardDialog(title = {
-        Text(
-            stringResource(id = R.string.identification_fetchMetadataError_title),
-            style = MaterialTheme.typography.titleLarge
-        )
-    }, text = {
-        Text(
-            stringResource(id = R.string.identification_fetchMetadataError_body),
-            style = MaterialTheme.typography.bodySmall
-        )
-    },
+    StandardDialog(
+        title = {
+            Text(
+                stringResource(id = R.string.identification_fetchMetadataError_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+        },
+        text = {
+            Text(
+                stringResource(id = R.string.identification_fetchMetadataError_body),
+                style = MaterialTheme.typography.bodySmall
+            )
+        },
         buttonText = stringResource(id = R.string.identification_fetchMetadataError_retry),
         onButtonTap = onRetry
     )
@@ -134,7 +133,6 @@ interface IdentificationFetchMetadataViewModelInterface {
     val shouldShowError: Boolean
 
     fun fetchMetadata()
-    fun onErrorCancel()
     fun onErrorRetry()
     fun onCancelButtonTapped()
 }
@@ -159,10 +157,6 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
 
     override fun fetchMetadata() {
         coordinator.startIdentificationProcess(tcTokenURL)
-    }
-
-    override fun onErrorCancel() {
-        coordinator.cancelIdentification()
     }
 
     override fun onErrorRetry() {
@@ -195,7 +189,6 @@ class PreviewIdentificationFetchMetadataViewModel(
     override val shouldShowError: Boolean
 ) : IdentificationFetchMetadataViewModelInterface {
     override fun fetchMetadata() {}
-    override fun onErrorCancel() {}
     override fun onErrorRetry() {}
     override fun onCancelButtonTapped() {}
 }

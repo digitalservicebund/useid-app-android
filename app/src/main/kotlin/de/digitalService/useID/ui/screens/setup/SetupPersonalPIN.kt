@@ -33,9 +33,6 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINViewModelInterface = hiltViewModel<SetupPersonalPINViewModel>()) {
-    val focusRequesterPIN1 = remember { FocusRequester() }
-    val focusRequesterPIN2 = remember { FocusRequester() }
-
     val pin1EntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_textFieldLabel_first,
         viewModel.pin1.map { "$it " }
@@ -46,9 +43,19 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
         viewModel.pin2.map { "$it " }
     )
 
-	ScreenWithTopBar(
+    ScreenWithTopBar(
         navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
     ) { topPadding ->
+        val focusRequesterPIN1 = remember { FocusRequester() }
+        val focusRequesterPIN2 = remember { FocusRequester() }
+
+        LaunchedEffect(viewModel.focus) {
+            when (viewModel.focus) {
+                SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1 -> focusRequesterPIN1.requestFocus()
+                SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_2 -> focusRequesterPIN2.requestFocus()
+            }
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)
@@ -127,13 +134,6 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-        }
-    }
-
-    LaunchedEffect(viewModel.focus) {
-        when (viewModel.focus) {
-            SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1 -> focusRequesterPIN1.requestFocus()
-            SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_2 -> focusRequesterPIN2.requestFocus()
         }
     }
 }

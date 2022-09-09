@@ -44,9 +44,6 @@ class IdentificationCoordinatorTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockCoroutineContextProvider: CoroutineContextProvider
 
-    @MockK(relaxUnitFun = true)
-    lateinit var mockStorageManager: StorageManagerType
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
 
@@ -117,8 +114,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockAppCoordinator,
             mockIDCardManager,
-            mockCoroutineContextProvider,
-            mockStorageManager
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -177,7 +173,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -219,7 +214,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -255,7 +249,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -289,7 +282,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -314,7 +306,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -348,7 +339,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -382,7 +372,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -416,7 +405,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -443,7 +431,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -484,7 +471,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -519,7 +505,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -554,7 +539,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -594,7 +578,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -628,7 +611,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -655,7 +637,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.finishIdentification()
@@ -671,7 +652,6 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockCoroutineContextProvider,
-            mockStorageManager
         )
 
         identificationCoordinator.cancelIdentification()

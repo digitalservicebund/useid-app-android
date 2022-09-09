@@ -36,13 +36,17 @@ fun IdentificationPersonalPIN(
         viewModel.pin.map { "$it " }
     )
 
-    val focusRequester = remember { FocusRequester() }
-
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            onClick = viewModel::onCancelButtonTapped)
+            onClick = viewModel::onCancelButtonTapped
+        )
     ) { topPadding ->
+        val focusRequester = remember { FocusRequester() }
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)
@@ -51,7 +55,9 @@ fun IdentificationPersonalPIN(
                 stringResource(id = R.string.identification_personalPIN_title),
                 style = MaterialTheme.typography.titleLarge
             )
+
             Spacer(modifier = Modifier.weight(1f))
+
             PINEntryField(
                 value = viewModel.pin,
                 digitCount = 6,
@@ -67,12 +73,9 @@ fun IdentificationPersonalPIN(
                     .width(240.dp)
                     .height(56.dp)
             )
+
             Spacer(modifier = Modifier.weight(1f))
         }
-    }
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
     }
 }
 

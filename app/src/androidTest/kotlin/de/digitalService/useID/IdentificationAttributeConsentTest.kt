@@ -106,8 +106,8 @@ class IdentificationAttributeConsentTest {
         composeTestRule.onNodeWithText(testSubjectUrl).assertIsDisplayed()
         composeTestRule.onNodeWithText(testTerms).assertIsDisplayed()
 
-        val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
-        composeTestRule.onNodeWithContentDescription(cancelButton).performClick()
+        val cancelButtonTag = "navigationButton"
+        composeTestRule.onAllNodesWithTag(cancelButtonTag)[1].performClick()
 
         verify(exactly = 1) { viewModel.onInfoDialogDismissalRequest() }
     }

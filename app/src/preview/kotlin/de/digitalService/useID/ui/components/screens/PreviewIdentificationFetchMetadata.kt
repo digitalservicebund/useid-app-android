@@ -60,7 +60,6 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(private va
         override var shouldShowError: Boolean by mutableStateOf(false)
 
         override fun fetchMetadata() {}
-        override fun onErrorCancel() {}
         override fun onErrorRetry() {
             injectShouldShowProgress(true)
             injectShouldShowError(false)

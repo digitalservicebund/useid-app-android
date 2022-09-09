@@ -76,7 +76,7 @@ class IdentificationFetchMetadataTest {
         val errorCancelButtonTitle = composeTestRule.activity.getString(R.string.navigation_cancel)
         composeTestRule.onNodeWithContentDescription(errorCancelButtonTitle).performClick()
 
-        verify { viewModel.onErrorCancel() }
+        verify { viewModel.onCancelButtonTapped() }
 
     }
 }

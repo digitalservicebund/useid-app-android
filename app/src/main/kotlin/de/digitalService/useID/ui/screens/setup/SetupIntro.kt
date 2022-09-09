@@ -9,7 +9,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
@@ -22,7 +21,7 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
 @Destination(
-    navArgsDelegate = SetupIntroNavArgs::class,
+    navArgsDelegate = SetupIntroNavArgs::class
 )
 @Composable
 fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntroViewModel>()) {

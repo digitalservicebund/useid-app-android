@@ -82,6 +82,7 @@ class SetupCoordinatorTest {
         setupCoordinator.onSettingPINSucceeded()
 
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupFinishDestination) }
+        verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
     }
 
     @Test
@@ -91,7 +92,6 @@ class SetupCoordinatorTest {
         setupCoordinator.onSetupFinished()
 
         verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
-        verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
         verify(exactly = 0) { mockAppCoordinator.startIdentification(any()) }
@@ -106,7 +106,6 @@ class SetupCoordinatorTest {
         setupCoordinator.onSetupFinished()
 
         verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
-        verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 0) { mockAppCoordinator.popToRoot() }
 
         verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl) }
@@ -122,7 +121,6 @@ class SetupCoordinatorTest {
         setupCoordinator.onSetupFinished()
 
         verify(exactly = 2) { mockSecureStorageManager.clearStorage() }
-        verify(exactly = 2) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
         verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl) }

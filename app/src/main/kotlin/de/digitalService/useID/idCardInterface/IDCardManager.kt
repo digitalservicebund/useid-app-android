@@ -59,11 +59,11 @@ class IDCardManager {
         }
     }
 
-    private class StopServiceHandlerImplementation: StopServiceHandler {
+    private class StopServiceHandlerImplementation : StopServiceHandler {
         private val logger by getLogger()
 
         override fun onSuccess() {
-            logger.debug( "Terminated context successfully.")
+            logger.debug("Terminated context successfully.")
         }
 
         override fun onFailure(p0: ServiceErrorResponse?) {

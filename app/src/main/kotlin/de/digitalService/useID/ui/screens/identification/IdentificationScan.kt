@@ -1,8 +1,6 @@
 package de.digitalService.useID.ui.screens.identification
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -40,7 +38,8 @@ fun IdentificationScan(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            onClick = viewModel::onCancelIdentification)
+            onClick = viewModel::onCancelIdentification
+        )
     ) { topPadding ->
         ScanScreen(
             title = stringResource(id = R.string.identification_scan_title),

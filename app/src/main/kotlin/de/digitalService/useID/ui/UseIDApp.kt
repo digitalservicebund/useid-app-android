@@ -1,27 +1,16 @@
 package de.digitalService.useID.ui
 
-import android.os.Bundle
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.Direction
-import de.digitalService.useID.R
 import de.digitalService.useID.models.NfcAvailability
-import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
 import de.digitalService.useID.ui.screens.noNfc.NoNfcScreen

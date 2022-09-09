@@ -44,6 +44,8 @@ class IdentificationPersonalPinTest {
             IdentificationPersonalPIN(viewModel = mockViewModel)
         }
 
+//        composeTestRule.waitUntil(10000) { false }
+
         val pinEntryTestTag = "PINDigitField"
         composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(6)
 

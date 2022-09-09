@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.ForwardToInbox
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +21,6 @@ enum class NavigationIcon {
                 contentDescription = stringResource(id = R.string.navigation_cancel)
             )
         }
-
     },
     Back {
         @Composable
@@ -56,7 +54,8 @@ fun ScreenWithTopBar(
                         IconButton(
                             modifier = Modifier.testTag("navigationButton"),
                             onClick = navigationButton.onClick,
-                            content = { navigationButton.icon.Icon() })
+                            content = { navigationButton.icon.Icon() }
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(

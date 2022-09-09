@@ -34,11 +34,15 @@ fun SetupTransportPIN(
     modifier: Modifier = Modifier,
     viewModel: SetupTransportPINViewModelInterface = hiltViewModel<SetupTransportPINViewModel>()
 ) {
-    val focusRequester = remember { FocusRequester() }
-
     ScreenWithTopBar(
         navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
     ) { topPadding ->
+        val focusRequester = remember { FocusRequester() }
+
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+
         Column(modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)) {
             Text(
                 text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
@@ -61,10 +65,6 @@ fun SetupTransportPIN(
                 focusRequester = focusRequester
             )
         }
-    }
-
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
     }
 }
 

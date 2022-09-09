@@ -77,17 +77,10 @@ class SetupUiTest {
             UseIDApp(appCoordinator)
         }
 
-        val startSetupButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_no)
+        val startSetupButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_startSetup)
         composeTestRule.onNodeWithText(startSetupButton).performClick()
 
-        composeTestRule.onNodeWithText(startSetupButton).assertDoesNotExist()
-
-        val backButtonTag = "navigationButton"
-        composeTestRule.onNodeWithTag(backButtonTag).performClick()
-
-        composeTestRule.onNodeWithText(startSetupButton).performClick()
-
-        val pinLetterAvailableButton = composeTestRule.activity.getString(R.string.firstTimeUser_pinLetter_yes)
+        val pinLetterAvailableButton = composeTestRule.activity.getString(R.string.firstTimeUser_pinLetter_letterPresent)
         composeTestRule.onNodeWithText(pinLetterAvailableButton).performClick()
 
         val pinEntryFieldTag = "PINEntryField"
