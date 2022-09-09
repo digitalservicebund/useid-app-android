@@ -33,11 +33,11 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
             imageID = R.drawable.eid_3,
             imageScaling = ContentScale.Inside,
             primaryButton = BundButtonConfig(
-                title = stringResource(id = R.string.firstTimeUser_intro_yes),
+                title = stringResource(id = R.string.firstTimeUser_intro_startSetup),
                 action = viewModel::onFirstTimeUsage
             ),
             secondaryButton = BundButtonConfig(
-                title = stringResource(id = R.string.firstTimeUser_intro_no),
+                title = stringResource(id = R.string.firstTimeUser_intro_skipSetup),
                 action = viewModel::onNonFirstTimeUsage
             ),
             modifier = Modifier.padding(top = topPadding)

@@ -28,11 +28,11 @@ fun SetupPINLetter(viewModel: SetupPINLetterScreenViewModelInterface = hiltViewM
             imageID = R.drawable.pin_letter,
             imageScaling = ContentScale.FillWidth,
             primaryButton = BundButtonConfig(
-                title = stringResource(id = R.string.firstTimeUser_pinLetter_no),
+                title = stringResource(id = R.string.firstTimeUser_pinLetter_requestLetter),
                 action = viewModel::onNoPINAvailable
             ),
             secondaryButton = BundButtonConfig(
-                title = stringResource(id = R.string.firstTimeUser_pinLetter_yes),
+                title = stringResource(id = R.string.firstTimeUser_pinLetter_letterPresent),
                 action = viewModel::onTransportPINAvailable
             ),
 

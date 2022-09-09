@@ -29,9 +29,9 @@
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Falsche Transport-PIN</string>
     <string name="firstTimeUser_intro_body">Bei der Einrichtung haben Sie Ihre persönliche Ausweis-PIN festgelegt.</string>
-    <string name="firstTimeUser_intro_no">Jetzt Online-Ausweis einrichten</string>
+    <string name="firstTimeUser_intro_startSetup">Jetzt Online-Ausweis einrichten</string>
     <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits eingerichtet\?</string>
-    <string name="firstTimeUser_intro_yes">Bereits eingerichtet</string>
+    <string name="firstTimeUser_intro_skipSetup">Bereits eingerichtet</string>
     <string name="firstTimeUser_missingPINLetter_body">Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter\n\n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
     <string name="firstTimeUser_missingPINLetter_title">Neuen PIN-Brief bestellen</string>
     <string name="firstTimeUser_personalPIN_body">Merken Sie sich Ihre persönliche Ausweis-PIN gut. Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
@@ -46,9 +46,9 @@
     <string name="firstTimeUser_personalPINIntro_info_title">Persönliche Ausweis–PIN gut merken</string>
     <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
     <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
-    <string name="firstTimeUser_pinLetter_no">Nein, neuen PIN-Brief bestellen</string>
+    <string name="firstTimeUser_pinLetter_requestLetter">Nein, neuen PIN-Brief bestellen</string>
     <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN-Brief noch\?</string>
-    <string name="firstTimeUser_pinLetter_yes">Ja, PIN-Brief vorhanden</string>
+    <string name="firstTimeUser_pinLetter_letterPresent">Ja, PIN-Brief vorhanden</string>
     <string name="firstTimeUser_scan_body">Fast geschafft! Halten Sie Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihrem Ausweis die neue PIN zuzuordnen.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
