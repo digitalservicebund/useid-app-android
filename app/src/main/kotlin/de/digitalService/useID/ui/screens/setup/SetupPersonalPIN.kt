@@ -33,12 +33,12 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
     val focusRequesterPIN2 = remember { FocusRequester() }
 
     val pin1EntryFieldDescription = stringResource(
-        id = R.string.firstTimeUser_personalPIN_PIN1TextFieldDescription,
+        id = R.string.firstTimeUser_personalPIN_textFieldLabel_first,
         viewModel.pin1.map { "$it " }
     )
 
     val pin2EntryFieldDescription = stringResource(
-        id = R.string.firstTimeUser_personalPIN_PIN2TextFieldDescription,
+        id = R.string.firstTimeUser_personalPIN_textFieldLabel_second,
         viewModel.pin2.map { "$it " }
     )
 

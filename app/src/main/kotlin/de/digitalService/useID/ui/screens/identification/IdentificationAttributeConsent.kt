@@ -52,7 +52,7 @@ fun IdentificationAttributeConsent(
         RegularBundButton(
             type = ButtonType.PRIMARY,
             onClick = viewModel::onPINButtonTapped,
-            label = stringResource(id = R.string.identification_attributeConsent_pinButton),
+            label = stringResource(id = R.string.identification_attributeConsent_continue),
             modifier = Modifier
                 .padding(20.dp)
         )
@@ -142,11 +142,11 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
             ) {
                 Text(content.subject, style = MaterialTheme.typography.titleLarge)
                 Text(
-                    stringResource(id = R.string.identification_attributeConsent_info_provider_info),
+                    stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    stringResource(id = R.string.identification_attributeConsent_info_provider),
+                    stringResource(id = R.string.identification_attributeConsentInfo_provider),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Column {
@@ -160,7 +160,7 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                     )
                 }
                 Text(
-                    stringResource(id = R.string.identification_attributeConsent_info_issuer),
+                    stringResource(id = R.string.identification_attributeConsentInfo_issuer),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Column {
@@ -174,7 +174,7 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                     )
                 }
                 Text(
-                    stringResource(id = R.string.identification_attributeConsent_info_provider_info),
+                    stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
@@ -254,21 +254,21 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
     }
 
     private fun attributeDescriptionID(attribute: IDCardAttribute): Int = when (attribute) {
-        IDCardAttribute.DG01 -> R.string.idCardAttribute_DG01
-        IDCardAttribute.DG02 -> R.string.idCardAttribute_DG02
-        IDCardAttribute.DG03 -> R.string.idCardAttribute_DG03
-        IDCardAttribute.DG04 -> R.string.idCardAttribute_DG04
-        IDCardAttribute.DG05 -> R.string.idCardAttribute_DG05
-        IDCardAttribute.DG06 -> R.string.idCardAttribute_DG06
-        IDCardAttribute.DG07 -> R.string.idCardAttribute_DG07
-        IDCardAttribute.DG08 -> R.string.idCardAttribute_DG08
-        IDCardAttribute.DG09 -> R.string.idCardAttribute_DG09
-        IDCardAttribute.DG10 -> R.string.idCardAttribute_DG10
-        IDCardAttribute.DG13 -> R.string.idCardAttribute_DG13
-        IDCardAttribute.DG17 -> R.string.idCardAttribute_DG17
-        IDCardAttribute.DG19 -> R.string.idCardAttribute_DG19
-        IDCardAttribute.RESTRICTED_IDENTIFICATION -> R.string.idCardAttribute_restrictedIdentification
-        IDCardAttribute.AGE_VERIFICATION -> R.string.idCardAttribute_ageVerification
+        IDCardAttribute.DG01 -> R.string.cardAttribute_dg01
+        IDCardAttribute.DG02 -> R.string.cardAttribute_dg02
+        IDCardAttribute.DG03 -> R.string.cardAttribute_dg03
+        IDCardAttribute.DG04 -> R.string.cardAttribute_dg04
+        IDCardAttribute.DG05 -> R.string.cardAttribute_dg05
+        IDCardAttribute.DG06 -> R.string.cardAttribute_dg06
+        IDCardAttribute.DG07 -> R.string.cardAttribute_dg07
+        IDCardAttribute.DG08 -> R.string.cardAttribute_dg08
+        IDCardAttribute.DG09 -> R.string.cardAttribute_dg09
+        IDCardAttribute.DG10 -> R.string.cardAttribute_dg10
+        IDCardAttribute.DG13 -> R.string.cardAttribute_dg13
+        IDCardAttribute.DG17 -> R.string.cardAttribute_dg17
+        IDCardAttribute.DG19 -> R.string.cardAttribute_dg19
+        IDCardAttribute.RESTRICTED_IDENTIFICATION -> R.string.cardAttribute_restrictedIdentification
+        IDCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
     }
 }
 
@@ -288,11 +288,11 @@ private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean):
     PreviewIdentificationAttributeConsentViewModel(
         identificationProvider = "Grundsteuer",
         requiredReadAttributes = listOf(
-            R.string.idCardAttribute_DG01,
-            R.string.idCardAttribute_DG02,
-            R.string.idCardAttribute_DG03,
-            R.string.idCardAttribute_DG04,
-            R.string.idCardAttribute_DG05
+            R.string.cardAttribute_dg01,
+            R.string.cardAttribute_dg02,
+            R.string.cardAttribute_dg03,
+            R.string.cardAttribute_dg04,
+            R.string.cardAttribute_dg05
         ),
         shouldShowInfoDialog = infoDialog,
         infoDialogContent = ProviderInfoDialogContent(

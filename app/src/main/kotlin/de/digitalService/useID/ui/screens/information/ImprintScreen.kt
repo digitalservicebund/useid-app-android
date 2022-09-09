@@ -24,7 +24,7 @@ fun ImprintScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        MarkdownText(markdown = stringResource(id = R.string.imprint_html_text))
+        MarkdownText(markdown = stringResource(id = R.string.imprint_text))
     }
 }
 

@@ -21,7 +21,7 @@ fun TransportPINEntryField(
     focusRequester: FocusRequester
 ) {
     val description = stringResource(
-        id = R.string.firstTimeUser_transportPIN_PINTextFieldDescription,
+        id = R.string.firstTimeUser_transportPIN_textFieldLabel,
         value.map { "$it " }
     )
 

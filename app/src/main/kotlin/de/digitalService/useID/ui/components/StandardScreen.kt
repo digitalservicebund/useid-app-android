@@ -18,11 +18,14 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
+import dev.jeziellago.compose.markdowntext.MarkdownText
 
 class BundButtonConfig(
     val title: String,
@@ -87,10 +90,7 @@ fun StandardStaticComposition(
             )
             body?.let {
                 Spacer(modifier = Modifier.height(20.dp))
-                Text(
-                    body,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                MarkdownText(markdown = body, fontSize = 18.sp, fontResource = R.font.bundes_sans_dtp_regular)
             }
 
             Spacer(modifier = Modifier.height(20.dp))

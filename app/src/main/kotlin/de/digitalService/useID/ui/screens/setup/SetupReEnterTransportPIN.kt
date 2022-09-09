@@ -45,14 +45,9 @@ fun SetupReEnterTransportPIN(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                stringResource(id = R.string.firstTimeUser_transportPIN_error_incorrectPIN),
+                stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                stringResource(id = R.string.firstTimeUser_transportPIN_error_tryAgain),
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
             )
             val attemptString = if (viewModel.attempts > 0) {
                 resources.getQuantityString(
@@ -61,7 +56,7 @@ fun SetupReEnterTransportPIN(
                     viewModel.attempts
                 )
             } else {
-                stringResource(id = R.string.firstTimeUser_transportPIN_error_noAttemptLeft)
+                stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_noAttemptLeft)
             }
             Text(
                 attemptString,

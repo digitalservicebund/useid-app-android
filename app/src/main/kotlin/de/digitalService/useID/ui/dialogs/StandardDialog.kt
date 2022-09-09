@@ -21,7 +21,7 @@ fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, 
                     contentColor = MaterialTheme.colorScheme.primary
                 )
             ) {
-                Text(stringResource(id = R.string.idScan_error_button_close))
+                Text(stringResource(id = R.string.scanError_close))
             }
         },
         shape = RoundedCornerShape(10.dp),

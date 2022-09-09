@@ -95,7 +95,7 @@ fun ScanScreen(
                     modifier = Modifier
                         .height(40.dp)
                 ) {
-                    Text(stringResource(id = R.string.firstTimeUser_scan_whatIsNfc_button))
+                    Text(stringResource(id = R.string.scan_helpNFC))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -110,7 +110,7 @@ fun ScanScreen(
                     modifier = Modifier
                         .height(40.dp)
                 ) {
-                    Text(stringResource(id = R.string.firstTimeUser_scan_help_button))
+                    Text(stringResource(id = R.string.scan_helpScanning))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -148,13 +148,13 @@ fun ScanScreen(
         StandardDialog(
             title = {
                 Text(
-                    stringResource(id = R.string.idScan_help_title),
+                    stringResource(id = R.string.scanError_cardUnreadable_title),
                     style = MaterialTheme.typography.titleMedium
                 )
             },
             text = {
                 MarkdownText(
-                    markdown = stringResource(id = R.string.idScan_help_body),
+                    markdown = stringResource(id = R.string.scanError_cardUnreadable_body),
                     fontResource = R.font.bundes_sans_dtp_regular
                 )
             },

@@ -36,13 +36,13 @@ import javax.inject.Inject
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
     val buttonConfig = if (viewModel.identificationPending()) {
-        BundButtonConfig(stringResource(id = R.string.firstTimeUser_identify_button), viewModel::onIdentifyButtonClicked)
+        BundButtonConfig(stringResource(id = R.string.firstTimeUser_done_identify), viewModel::onIdentifyButtonClicked)
     } else {
-        BundButtonConfig(stringResource(id = R.string.firstTimeUser_finish_button), viewModel::onCloseButtonClicked)
+        BundButtonConfig(stringResource(id = R.string.firstTimeUser_done_close), viewModel::onCloseButtonClicked)
     }
 
     StandardStaticComposition(
-        title = stringResource(id = R.string.firstTimeUser_finish_title),
+        title = stringResource(id = R.string.firstTimeUser_done_title),
         body = null,
         imageID = R.drawable.eid_3_pin,
         imageScaling = ContentScale.Inside,

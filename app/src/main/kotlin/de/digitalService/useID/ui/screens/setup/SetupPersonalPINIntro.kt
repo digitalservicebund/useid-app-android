@@ -65,7 +65,7 @@ fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = h
                             )
 
                             Text(
-                                text = stringResource(R.string.firstTimeUser_finish_infoBox_title),
+                                text = stringResource(R.string.firstTimeUser_personalPINIntro_info_title),
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -73,7 +73,7 @@ fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = h
                         Spacer(modifier = Modifier.height(6.dp))
 
                         Text(
-                            stringResource(id = R.string.firstTimeUser_finish_infoBox_body),
+                            stringResource(id = R.string.firstTimeUser_personalPINIntro_info_body),
                             style = MaterialTheme.typography.bodySmall
                         )
                     }

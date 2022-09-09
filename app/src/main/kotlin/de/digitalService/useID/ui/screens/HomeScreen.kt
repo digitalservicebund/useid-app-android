@@ -57,7 +57,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(R.string.homeScreen_titleBox_title),
+                text = stringResource(R.string.home_header_title),
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -65,7 +65,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
                     .padding(horizontal = 32.dp)
             )
             Text(
-                text = stringResource(R.string.homeScreen_titleBox_body),
+                text = stringResource(R.string.home_header_body),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
@@ -85,7 +85,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(R.string.homeScreen_more_subtitle),
+                text = stringResource(R.string.home_more_title),
                 style = MaterialTheme.typography.titleLarge
             )
 
@@ -133,7 +133,7 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
             RegularBundButton(
                 type = ButtonType.PRIMARY,
                 onClick = viewModel::setupOnlineID,
-                label = stringResource(R.string.homeScreen_setupOnlineID_button),
+                label = stringResource(R.string.home_startSetup),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
@@ -153,22 +153,22 @@ private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
-        CardButton(text = stringResource(R.string.homeScreen_more_privacy_button), onClick = viewModel::onPrivacyButtonClicked)
+        CardButton(text = stringResource(R.string.home_more_privacy), onClick = viewModel::onPrivacyButtonClicked)
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_license_button), onClick = viewModel::onLicenseButtonClicked)
+        CardButton(text = stringResource(R.string.home_more_licenses), onClick = viewModel::onLicenseButtonClicked)
         StyledDivider()
 
         CardButton(
-            text = stringResource(R.string.homeScreen_more_accessibilityStatement_button),
+            text = stringResource(R.string.home_more_accessibilityStatement),
             onClick = viewModel::onAccessibilityButtonClicked
         )
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_termsOfUse_button), onClick = viewModel::onTermsOfUseButtonClicked)
+        CardButton(text = stringResource(R.string.home_more_terms), onClick = viewModel::onTermsOfUseButtonClicked)
         StyledDivider()
 
-        CardButton(text = stringResource(R.string.homeScreen_more_imprint_button), onClick = viewModel::onImprintButtonClicked)
+        CardButton(text = stringResource(R.string.home_more_imprint), onClick = viewModel::onImprintButtonClicked)
     }
 }
 

@@ -13,10 +13,10 @@ sealed class ScanError {
     val titleResID: Int
         get() {
             return when (this) {
-                PINSuspended -> R.string.idScan_error_suspended_title
-                PINBlocked -> R.string.idScan_error_blocked_title
-                CardDeactivated -> R.string.idScan_error_cardDeactivated_title
-                is Other -> R.string.idScan_error_unknown_title
+                PINSuspended -> R.string.scanError_cardSuspended_title
+                PINBlocked -> R.string.scanError_cardBlocked_title
+                CardDeactivated -> R.string.scanError_cardDeactivated_title
+                is Other -> R.string.scanError_unknown_title
                 else -> throw IllegalArgumentException()
             }
         }
@@ -24,10 +24,10 @@ sealed class ScanError {
     val textResID: Int
         get() {
             return when (this) {
-                PINSuspended -> R.string.idScan_error_suspended_body
-                PINBlocked -> R.string.idScan_error_blocked_body
-                CardDeactivated -> R.string.idScan_error_cardDeactivated_body
-                is Other -> R.string.idScan_error_unknown_body
+                PINSuspended -> R.string.scanError_cardSuspended_body
+                PINBlocked -> R.string.scanError_cardBlocked_body
+                CardDeactivated -> R.string.scanError_cardDeactivated_body
+                is Other -> R.string.scanError_unknown_body
                 else -> throw IllegalArgumentException()
             }
         }

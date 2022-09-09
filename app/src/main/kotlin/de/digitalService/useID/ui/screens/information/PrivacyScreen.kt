@@ -24,7 +24,7 @@ fun PrivacyScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        MarkdownText(markdown = stringResource(id = R.string.privacy_html_text))
+        MarkdownText(markdown = stringResource(id = R.string.privacy_text))
     }
 }
 

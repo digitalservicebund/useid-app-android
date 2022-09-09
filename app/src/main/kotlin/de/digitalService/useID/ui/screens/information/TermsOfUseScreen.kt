@@ -22,7 +22,7 @@ fun TermsOfUseScreen() {
             .padding(horizontal = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        MarkdownText(markdown = stringResource(id = R.string.termsOfUse_html_text))
+        MarkdownText(markdown = stringResource(id = R.string.termsOfUse_text))
     }
 }
 

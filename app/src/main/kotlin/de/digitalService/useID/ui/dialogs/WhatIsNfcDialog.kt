@@ -11,8 +11,8 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 @Composable
 fun WhatIsNfcDialog(onButtonTap: () -> Unit) {
     StandardDialog(
-        title = { Text(stringResource(id = R.string.whatIsNfc_title), style = MaterialTheme.typography.titleMedium) },
-        text = { Text(stringResource(id = R.string.whatIsNfc_body), style = MaterialTheme.typography.bodySmall) },
+        title = { Text(stringResource(id = R.string.helpNFC_title), style = MaterialTheme.typography.titleMedium) },
+        text = { Text(stringResource(id = R.string.helpNFC_body), style = MaterialTheme.typography.bodySmall) },
         onButtonTap = onButtonTap
     )
 }

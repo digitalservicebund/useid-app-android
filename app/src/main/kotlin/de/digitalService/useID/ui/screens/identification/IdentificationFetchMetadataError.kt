@@ -20,7 +20,7 @@ fun IdentificationFetchMetadataError(
 ) {
     StandardButtonScreen(
         primaryButton = BundButtonConfig(
-            stringResource(id = R.string.identification_fetchMetadataError_button),
+            stringResource(id = R.string.identification_fetchMetadataError_retry),
             onRetry
         )
     ) {

@@ -44,7 +44,7 @@ fun IdentificationSuccess(
 
     StandardButtonScreen(
         primaryButton = BundButtonConfig(
-            stringResource(id = R.string.identification_success_button),
+            stringResource(id = R.string.identification_done_continue),
             action = { viewModel.onButtonTapped(context) }
         )
     ) {
@@ -56,11 +56,11 @@ fun IdentificationSuccess(
         ) {
             Icon(imageVector = Icons.Filled.Check, contentDescription = null)
             Spacer(modifier = Modifier.height(20.dp))
-            Text(stringResource(id = R.string.identification_success_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(id = R.string.identification_done_title), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(20.dp))
 
             val provider = viewModel.provider
-            val bodyString = stringResource(id = R.string.identification_success_body, provider)
+            val bodyString = stringResource(id = R.string.identification_done_body, provider)
             val providerStartIndex = bodyString.indexOf(provider)
             val annotatedString = buildAnnotatedString {
                 append(bodyString)
