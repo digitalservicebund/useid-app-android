@@ -96,7 +96,10 @@ fun StandardStaticComposition(
             )
             body?.let {
                 Spacer(modifier = Modifier.height(20.dp))
-                MarkdownText(markdown = body, fontSize = 18.sp, fontResource = R.font.bundes_sans_dtp_regular)
+                MarkdownText(
+                    body,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
