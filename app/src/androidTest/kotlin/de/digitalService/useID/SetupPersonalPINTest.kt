@@ -54,26 +54,28 @@ class SetupPersonalPINTest {
             SetupPersonalPIN(viewModel = mockViewModel)
         }
 
-        val pinEntryTextFieldTag = "PINEntryField"
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
+        val pinEntryFieldTag = "PINEntryField"
+        val obfuscationTestTag = "Obfuscation"
 
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput(testPinInput)
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).assertIsFocused()
+
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performTextInput(testPinInput)
         testPin1State.value = testPinInput
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(6)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
 
-        composeTestRule.onAllNodesWithTag("PINEntryField").assertCountEquals(1)
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(1)
 
         testShouldShowPIN2EntryFieldState.value = true
         testFocusPinState.value = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_2
 
-        composeTestRule.onAllNodesWithTag("PINEntryField").assertCountEquals(2)
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(2)
 
-        composeTestRule.onAllNodesWithTag("PINEntryField")[1].assertIsFocused()
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[1].assertIsFocused()
 
-        composeTestRule.onAllNodesWithTag("PINEntryField")[1].performTextInput(testPinInput2)
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[1].performTextInput(testPinInput2)
         testPin2State.value = testPinInput2
 
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(10)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(10)
 
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_error_mismatch_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertDoesNotExist()

@@ -34,6 +34,7 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                     strokeWidth = 2f
                 )
             }
+            .testTag("PINDigitField")
     ) {
         if (input != null) {
             if (obfuscation) {
@@ -43,7 +44,7 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(10.dp)
-                        .testTag("PinEntry")
+                        .testTag("Obfuscation")
                 )
             } else {
                 Text(
@@ -51,7 +52,7 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                     style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .testTag("PinEntry")
+                        .testTag("PINEntry")
                 )
             }
         } else if (placeholder) {
@@ -61,7 +62,7 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(10.dp)
-                    .testTag("PinEntry")
+                    .testTag("Placeholder")
             )
         }
     }

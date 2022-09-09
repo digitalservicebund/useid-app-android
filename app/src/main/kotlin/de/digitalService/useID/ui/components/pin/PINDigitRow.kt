@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.ui.theme.Gray300
@@ -22,7 +23,7 @@ fun PINDigitRow(input: String, digitCount: Int, obfuscation: Boolean, placeholde
             PINDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
             spacerPosition?.let {
                 if (spacerPosition == position) {
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(8.dp).testTag("PINDigitRowSpacer"))
                 }
             }
         }

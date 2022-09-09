@@ -44,18 +44,21 @@ class IdentificationPersonalPinTest {
             IdentificationPersonalPIN(viewModel = mockViewModel)
         }
 
-        val pinEntryTextFieldTag = "PINEntryField"
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
+        val pinEntryTestTag = "PINDigitField"
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(6)
 
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput(testPinInput1)
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput(testPinInput2)
+        val pinEntryFieldTestTag = "PINEntryField"
+        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).assertIsFocused()
 
-        val pinEntryTag = "PinEntry"
+        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput1)
+        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput2)
+
+        val obfuscationTestTag = "Obfuscation"
         testPinState.value = testPinInput1
-        composeTestRule.onAllNodesWithTag(pinEntryTag).assertCountEquals(5)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(5)
 
         testPinState.value = testPinInput2
-        composeTestRule.onAllNodesWithTag(pinEntryTag).assertCountEquals(6)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
 
         verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput1) }
         verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput2) }

@@ -90,40 +90,40 @@ class SetupUiTest {
         val pinLetterAvailableButton = composeTestRule.activity.getString(R.string.firstTimeUser_pinLetter_yes)
         composeTestRule.onNodeWithText(pinLetterAvailableButton).performClick()
 
-        val pinEntryTextFieldTag = "PINEntryField"
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(5)
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
+        val pinEntryFieldTag = "PINEntryField"
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).assertIsFocused()
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performTextInput("12345")
+        composeTestRule.onAllNodesWithTag("PINEntry").assertCountEquals(5)
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performImeAction()
 
         val choosePersonalPinButton = composeTestRule.activity.getString(R.string.firstTimeUser_personalPINIntro_continue)
         composeTestRule.onNodeWithText(choosePersonalPinButton).performClick()
 
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(5)
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).assertIsFocused()
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performTextInput("12345")
+        composeTestRule.onAllNodesWithTag("Obfuscation").assertCountEquals(5)
 
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(1)
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(1)
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(1)
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performImeAction()
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(1)
 
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("6")
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(2)
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performTextInput("6")
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(2)
 
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[0].assertIsNotFocused()
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[1].assertIsFocused()
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[0].assertIsNotFocused()
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[1].assertIsFocused()
 
         val personalPinError = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_error_mismatch_title)
         composeTestRule.onNodeWithText(personalPinError).assertDoesNotExist()
 
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[1].performTextInput("111111")
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[1].performTextInput("111111")
 
         composeTestRule.onNodeWithText(personalPinError).assertIsDisplayed()
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(2)
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(2)
 
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[0].performTextInput("123456")
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag).assertCountEquals(2)
-        composeTestRule.onAllNodesWithTag(pinEntryTextFieldTag)[1].performTextInput("123456")
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[0].performTextInput("123456")
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(2)
+        composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[1].performTextInput("123456")
 
         val setupScanTitle = composeTestRule.activity.getString(R.string.firstTimeUser_scan_title)
         composeTestRule.onNodeWithText(setupScanTitle).assertIsDisplayed()
@@ -147,9 +147,9 @@ class SetupUiTest {
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
 
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).assertIsFocused()
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performTextInput("12345")
+        composeTestRule.onNodeWithTag(pinEntryFieldTag).performImeAction()
 
         verify(exactly = 1) { mockSetupScanViewModel.onReEnteredTransportPIN("12345", any()) }
 

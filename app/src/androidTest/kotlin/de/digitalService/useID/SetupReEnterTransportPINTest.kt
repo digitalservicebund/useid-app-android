@@ -79,39 +79,40 @@ class SetupReEnterTransportPINTest {
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
 
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(0)
+        val pinEntryTestTag = "PINEntry"
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(0)
 
         testTransportPin.value = "1"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(1)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(1)
 
         testTransportPin.value = "12"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(2)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(2)
 
         testTransportPin.value = "123"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(3)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(3)
 
         testTransportPin.value = "1234"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(4)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(4)
 
         testTransportPin.value = "12345"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(5)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(5)
 
         testTransportPin.value = "1"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(1)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(1)
 
         testTransportPin.value = "12345"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(5)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(5)
 
         testTransportPin.value = "123"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(3)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(3)
 
         testTransportPin.value = ""
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(0)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(0)
 
         testTransportPin.value = "1234567890"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(5)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(5)
 
         testTransportPin.value = "1234"
-        composeTestRule.onAllNodesWithTag("PinEntry").assertCountEquals(4)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(4)
     }
 }

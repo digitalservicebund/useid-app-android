@@ -50,7 +50,7 @@ class IdentificationReEnterPersonalPinTest {
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput(testPinInput1)
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput(testPinInput2)
 
-        val pinEntryTag = "PinEntry"
+        val pinEntryTag = "PINEntry"
         testPinState.value = testPinInput1
         composeTestRule.onAllNodesWithTag(pinEntryTag).assertCountEquals(5)
 
