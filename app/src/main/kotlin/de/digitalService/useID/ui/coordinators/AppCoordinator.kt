@@ -21,9 +21,9 @@ interface AppCoordinatorType {
     fun navigate(route: Direction)
     fun pop()
     fun popToRoot()
-    fun startIdSetup()
+    fun startIdSetup(tcTokenURL: String?)
     fun startIdentification(tcTokenURL: String)
-    fun homeScreenLaunched(token: String?)
+    fun homeScreenLaunched()
     fun setNfcAvailability(availability: NfcAvailability)
     fun setIsNotFirstTimeUser()
 }
@@ -34,7 +34,9 @@ class AppCoordinator @Inject constructor(
 ) : AppCoordinatorType {
     private lateinit var navController: NavController
 
-    private var firstTimeLaunch: Boolean = true
+    var tcTokenURL: String? = null
+
+    private var coldLaunch: Boolean = true
 
     override val nfcAvailability: MutableState<NfcAvailability> = mutableStateOf(NfcAvailability.Available)
 
@@ -52,22 +54,24 @@ class AppCoordinator @Inject constructor(
         navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)
     }
 
-    override fun startIdSetup() {
+    override fun startIdSetup(tcTokenURL: String?) {
         popToRoot()
-        navigate(SetupIntroDestination(null))
+        navigate(SetupIntroDestination(tcTokenURL))
     }
 
     override fun startIdentification(tcTokenURL: String) = navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL))
 
-    override fun homeScreenLaunched(token: String?) {
-        if (!firstTimeLaunch) {
-            return
-        }
-        firstTimeLaunch = false
-
+    override fun homeScreenLaunched() {
         if (storageManager.getIsFirstTimeUser()) {
-            startIdSetup()
+            if (coldLaunch || tcTokenURL != null) {
+                startIdSetup(tcTokenURL)
+            }
+        } else {
+            tcTokenURL?.let { startIdentification(it) }
         }
+
+        coldLaunch = false
+        tcTokenURL = null
     }
 
     override fun setNfcAvailability(availability: NfcAvailability) {

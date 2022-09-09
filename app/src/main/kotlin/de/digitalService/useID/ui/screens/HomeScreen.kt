@@ -19,7 +19,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import com.ramcosta.composedestinations.annotation.DeepLink
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +30,6 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.ButtonType
 import de.digitalService.useID.ui.components.RegularBundButton
 import de.digitalService.useID.ui.coordinators.AppCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.theme.*
 import javax.inject.Inject
@@ -110,6 +111,10 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
         }
     }
 }
+
+data class HomeScreenNavArgs(
+    val tcTokenURL: String?
+)
 
 @Composable
 private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
@@ -215,15 +220,15 @@ interface HomeScreenViewModelInterface {
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val appCoordinator: AppCoordinator,
-    private val setupCoordinator: SetupCoordinator
+    private val appCoordinator: AppCoordinator
 ) : ViewModel(), HomeScreenViewModelInterface {
+
     override fun homeScreenLaunched() {
-        appCoordinator.homeScreenLaunched(null)
+        appCoordinator.homeScreenLaunched()
     }
 
     override fun setupOnlineID() {
-        appCoordinator.startIdSetup()
+        appCoordinator.startIdSetup(null)
     }
 
     override fun onPrivacyButtonClicked() {

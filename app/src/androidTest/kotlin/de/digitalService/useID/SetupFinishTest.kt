@@ -45,7 +45,7 @@ class SetupFinishTest {
         composeTestRule.onNodeWithText(identifyButtonText).assertDoesNotExist()
 
         verify(exactly = 1) { mockViewModel.onCloseButtonClicked() }
-        verify(exactly = 0) { mockViewModel.onIdentifyButtonClicked() }
+        verify(exactly = 0) { mockViewModel.onButtonTapped() }
     }
 
 
@@ -65,6 +65,6 @@ class SetupFinishTest {
         composeTestRule.onNodeWithText(identifyButtonText).performClick()
 
         verify(exactly = 1) { mockViewModel.onCloseButtonClicked() }
-        verify(exactly = 1) { mockViewModel.onIdentifyButtonClicked() }
+        verify(exactly = 1) { mockViewModel.onButtonTapped() }
     }
 }

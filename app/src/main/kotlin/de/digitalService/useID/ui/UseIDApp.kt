@@ -65,9 +65,9 @@ private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvail
     override fun navigate(route: Direction) {}
     override fun pop() {}
     override fun popToRoot() {}
-    override fun startIdSetup() {}
+    override fun startIdSetup(tcTokenURL: String?) {}
     override fun startIdentification(tcTokenURL: String) {}
-    override fun homeScreenLaunched(token: String?) {}
+    override fun homeScreenLaunched() {}
     override fun setNfcAvailability(availability: NfcAvailability) {}
     override fun setIsNotFirstTimeUser() {}
 }

@@ -23,9 +23,6 @@ import javax.inject.Inject
 
 @Destination(
     navArgsDelegate = SetupIntroNavArgs::class,
-    deepLinks = [
-        DeepLink(uriPattern = "eid://127.0.0.1:24727/eID-Client?tcTokenURL={tcTokenURL}")
-    ]
 )
 @Composable
 fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntroViewModel>()) {

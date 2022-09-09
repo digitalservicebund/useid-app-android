@@ -2,23 +2,13 @@
 
 package de.digitalService.useID.ui.screens.setup
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
@@ -26,21 +16,21 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.BundButtonConfig
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.StandardButtonScreen
 import de.digitalService.useID.ui.components.StandardStaticComposition
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
-import de.digitalService.useID.ui.theme.Yellow300
 import javax.inject.Inject
 
 @Destination
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
-    val buttonConfig = if (viewModel.identificationPending()) {
-        BundButtonConfig(stringResource(id = R.string.firstTimeUser_done_identify), viewModel::onIdentifyButtonClicked)
+    val buttonLabelStringId = if (viewModel.identificationPending()) {
+        stringResource(id = R.string.firstTimeUser_done_identify)
     } else {
-        BundButtonConfig(stringResource(id = R.string.firstTimeUser_done_close), viewModel::onCloseButtonClicked)
+        stringResource(id = R.string.firstTimeUser_done_close)
     }
+
+    val buttonConfig = BundButtonConfig(buttonLabelStringId, viewModel::onButtonTapped)
 
     ScreenWithTopBar { topPadding ->
         StandardStaticComposition(
@@ -55,9 +45,8 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 }
 
 interface SetupFinishViewModelInterface {
-    fun onCloseButtonClicked()
     fun identificationPending(): Boolean
-    fun onIdentifyButtonClicked()
+    fun onButtonTapped()
 }
 
 @HiltViewModel
@@ -68,19 +57,14 @@ class SetupFinishViewModel @Inject constructor(
         return setupCoordinator.identificationPending()
     }
 
-    override fun onCloseButtonClicked() {
-        setupCoordinator.onBackToHome()
-    }
-
-    override fun onIdentifyButtonClicked() {
+    override fun onButtonTapped() {
         setupCoordinator.onSetupFinished()
     }
 }
 
 class PreviewSetupFinishViewModel(private val hasTcTokenUrl: Boolean) : SetupFinishViewModelInterface {
-    override fun onCloseButtonClicked() {}
     override fun identificationPending(): Boolean = hasTcTokenUrl
-    override fun onIdentifyButtonClicked() {}
+    override fun onButtonTapped() {}
 }
 
 @Preview(showBackground = true)

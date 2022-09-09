@@ -46,11 +46,11 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSettingPINSucceeded() {
+        appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.navigate(SetupFinishDestination)
     }
 
     fun onSetupFinished() {
-        appCoordinator.setIsNotFirstTimeUser()
         handleSetupEnded()
     }
 
