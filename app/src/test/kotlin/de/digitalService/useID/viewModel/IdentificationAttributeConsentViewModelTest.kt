@@ -57,9 +57,9 @@ class IdentificationAttributeConsentViewModelTest {
         )
 
         val expectedRequiredReadAttributes = listOf(
-            R.string.idCardAttribute_DG01,
-            R.string.idCardAttribute_DG02,
-            R.string.idCardAttribute_DG04,
+            R.string.cardAttribute_dg01,
+            R.string.cardAttribute_dg02,
+            R.string.cardAttribute_dg04,
         )
         Assertions.assertEquals(expectedRequiredReadAttributes, viewModel.requiredReadAttributes)
         Assertions.assertEquals(testIdentificationProvider, viewModel.identificationProvider)

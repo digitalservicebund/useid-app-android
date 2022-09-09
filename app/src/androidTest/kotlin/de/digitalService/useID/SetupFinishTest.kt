@@ -38,10 +38,10 @@ class SetupFinishTest {
             SetupFinish(viewModel = mockViewModel)
         }
 
-        val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_finish_button)
+        val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
         composeTestRule.onNodeWithText(finishButtonText).performClick()
 
-        val identifyButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_identify_button)
+        val identifyButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
         composeTestRule.onNodeWithText(identifyButtonText).assertDoesNotExist()
 
         verify(exactly = 1) { mockViewModel.onCloseButtonClicked() }
@@ -58,10 +58,10 @@ class SetupFinishTest {
             SetupFinish(viewModel = mockViewModel)
         }
 
-        val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_finish_button)
+        val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
         composeTestRule.onNodeWithText(finishButtonText).performClick()
 
-        val identifyButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_identify_button)
+        val identifyButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
         composeTestRule.onNodeWithText(identifyButtonText).performClick()
 
         verify(exactly = 1) { mockViewModel.onCloseButtonClicked() }

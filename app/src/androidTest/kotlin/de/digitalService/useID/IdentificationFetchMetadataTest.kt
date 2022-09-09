@@ -68,7 +68,7 @@ class IdentificationFetchMetadataTest {
         val errorDialogTitle = composeTestRule.activity.getString(R.string.identification_fetchMetadataError_title)
         composeTestRule.onNodeWithText(errorDialogTitle).assertIsDisplayed()
 
-        val errorRetryButtonTitle = composeTestRule.activity.getString(R.string.identification_fetchMetadataError_button)
+        val errorRetryButtonTitle = composeTestRule.activity.getString(R.string.identification_fetchMetadataError_retry)
         composeTestRule.onNodeWithText(errorRetryButtonTitle).performClick()
 
         verify { viewModel.onErrorRetry() }

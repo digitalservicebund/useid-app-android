@@ -99,14 +99,14 @@ class IdentificationUiTest {
 
         composeTestRule.onNodeWithText(skipSetupButton).assertDoesNotExist()
 
-        val dg01Text = composeTestRule.activity.getString(R.string.idCardAttribute_DG01)
+        val dg01Text = composeTestRule.activity.getString(R.string.cardAttribute_dg01)
         composeTestRule.onNodeWithText(dg01Text, substring = true).assertIsDisplayed()
-        val dg02Text = composeTestRule.activity.getString(R.string.idCardAttribute_DG02)
+        val dg02Text = composeTestRule.activity.getString(R.string.cardAttribute_dg02)
         composeTestRule.onNodeWithText(dg02Text, substring = true).assertIsDisplayed()
-        val dg04Text = composeTestRule.activity.getString(R.string.idCardAttribute_DG04)
+        val dg04Text = composeTestRule.activity.getString(R.string.cardAttribute_dg04)
         composeTestRule.onNodeWithText(dg04Text, substring = true).assertIsDisplayed()
 
-        val privateIdentificationButtonText = composeTestRule.activity.getString(R.string.identification_attributeConsent_pinButton)
+        val privateIdentificationButtonText = composeTestRule.activity.getString(R.string.identification_attributeConsent_continue)
         composeTestRule.onNodeWithText(privateIdentificationButtonText).performClick()
     }
 }

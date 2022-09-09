@@ -34,11 +34,11 @@ class IdentificationAttributeConsentTest {
         val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
         val testIdentificationProviderString = "testIdentificationProviderString"
         val testRequiredReadAttributes = listOf(
-            R.string.idCardAttribute_DG01,
-            R.string.idCardAttribute_DG02,
-            R.string.idCardAttribute_DG03,
-            R.string.idCardAttribute_DG04,
-            R.string.idCardAttribute_DG05,
+            R.string.cardAttribute_dg01,
+            R.string.cardAttribute_dg02,
+            R.string.cardAttribute_dg03,
+            R.string.cardAttribute_dg04,
+            R.string.cardAttribute_dg05,
         )
 
         every { viewModel.identificationProvider } returns testIdentificationProviderString
@@ -54,7 +54,7 @@ class IdentificationAttributeConsentTest {
             composeTestRule.onNodeWithText(attributeText, substring = true).assertIsDisplayed()
         }
 
-        val buttonText = composeTestRule.activity.getString(R.string.identification_attributeConsent_pinButton)
+        val buttonText = composeTestRule.activity.getString(R.string.identification_attributeConsent_continue)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
         verify(exactly = 1) { viewModel.onPINButtonTapped() }
@@ -66,11 +66,11 @@ class IdentificationAttributeConsentTest {
         val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
         val testIdentificationProviderString = "testIdentificationProviderString"
         val testRequiredReadAttributes = listOf(
-            R.string.idCardAttribute_DG01,
-            R.string.idCardAttribute_DG02,
-            R.string.idCardAttribute_DG03,
-            R.string.idCardAttribute_DG04,
-            R.string.idCardAttribute_DG05,
+            R.string.cardAttribute_dg01,
+            R.string.cardAttribute_dg02,
+            R.string.cardAttribute_dg03,
+            R.string.cardAttribute_dg04,
+            R.string.cardAttribute_dg05,
         )
 
         val testIssue = "ISSUE"

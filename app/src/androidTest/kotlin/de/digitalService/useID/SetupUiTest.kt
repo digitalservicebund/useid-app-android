@@ -135,7 +135,7 @@ class SetupUiTest {
         val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.value!!.titleResID)
         composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
 
-        val buttonText = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
         verify(exactly = 1) { mockSetupScanViewModel.onCancel() }
@@ -153,7 +153,7 @@ class SetupUiTest {
 
         verify(exactly = 1) { mockSetupScanViewModel.onReEnteredTransportPIN("12345", any()) }
 
-        val setupSuccessCloseButton = composeTestRule.activity.getString(R.string.firstTimeUser_finish_button)
+        val setupSuccessCloseButton = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
         composeTestRule.onNodeWithText(setupSuccessCloseButton).performClick()
     }
 }

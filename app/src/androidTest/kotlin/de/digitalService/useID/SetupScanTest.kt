@@ -48,7 +48,7 @@ class SetupScanTest {
         val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
         composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
 
-        val buttonText = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
         verify(exactly = 1) { mockViewModel.onCancel() }
@@ -97,13 +97,13 @@ class SetupScanTest {
             SetupScan(viewModel = mockViewModel)
         }
 
-        val whatIsNfcButton = composeTestRule.activity.getString(R.string.firstTimeUser_scan_whatIsNfc_button)
+        val whatIsNfcButton = composeTestRule.activity.getString(R.string.scan_helpNFC)
         composeTestRule.onNodeWithText(whatIsNfcButton).performClick()
 
-        val whatIsNfcDialogTitle = composeTestRule.activity.getString(R.string.whatIsNfc_body)
+        val whatIsNfcDialogTitle = composeTestRule.activity.getString(R.string.helpNFC_body)
         composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertIsDisplayed()
 
-        val dialogCloseButton = composeTestRule.activity.getString(R.string.idScan_error_button_close)
+        val dialogCloseButton = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(dialogCloseButton).performClick()
 
         composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertDoesNotExist()

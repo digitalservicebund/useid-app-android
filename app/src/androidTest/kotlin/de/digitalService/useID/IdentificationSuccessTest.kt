@@ -52,7 +52,7 @@ class IdentificationSuccessTest {
             IdentificationSuccess(viewModel = mockIdentificationSuccessViewModel)
         }
 
-        val button = composeTestRule.activity.getString(R.string.identification_success_button)
+        val button = composeTestRule.activity.getString(R.string.identification_done_continue)
         composeTestRule.onNodeWithText(button).performClick()
 
         composeTestRule.onNodeWithText(text = testProvider, substring = true).assertIsDisplayed()
