@@ -1,51 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="accessibility_html_text">"# Erklärung zur Barrierefreiheit\n\nStand: DD.MM.JJJJ\n\nDie Applikation \\"AppName\\" ist bemüht, im Einklang mit den nationalen Rechtsvorschriften zur Umsetzung der Richtlinie (EU) 2016/2102 des Europäischen Parlaments und des Rates barrierefrei zugänglich zu machen. Diese Erklärung zur Barrierefreiheit gilt für die aktuell im Apple App Store beziehungsweise Google Playstore erreichbare Version xxx. Sie wurde am xx.xx.2022 erstellt.\n\n#### Wie barrierefrei ist das Angebot?\n\nDiese Applikation wurde neu entwickelt. Das Team hat ein Accessibility Training absolviert, indem die meisten Bereiche der Applikation auf Barrierefreiheit überprüft wurden. Die Applikation ist größtenteils barrierefrei. An den unten aufgeführten Mängeln wird gearbeitet.\n\nDie Applikation \\"AppName\\" wird außerdem in den kommenden Wochen kontinuierlich auf Basis der Testergebnisse und der Rückmeldung der Nutzer:innen weiterentwickelt\n\n#### Welche Bereiche sind nicht barrierefrei?\n\n*   Text Vergrößerung möglich?\n*   Tastatur navigierbar?\n*   Bildschirmlesegerät/Screenreader bedienbar?\n\n#### Kontakt und Feedback-Möglichkeit\n\nSind Ihnen Mängel beim barrierefreien Zugang zu Inhalten von aufgefallen? Dann können Sie sich gerne bei uns melden: [hilfe@inter.net](hilfe@inter.net)\n\n#### Schlichtungsverfahren\n\nBeim Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen gibtes eine Schlichtungsstelle gemäß \\$ 16 BGG. Die Schlichtungsstelle hat die Aufgabe, Konfliktezwischen Menschen mit Behinderungen und öffentlichen Stellen des Bundes zu lösen. Sie können die Schlichtungsstelle einschalten, wenn Sie mit den Antworten aus der oben genannten Kontaktmöglichkeit nicht zufrieden sind. Dabei geht es nicht darum, Gewinner oder Verlierer zu finden. Vielmehr ist es das Ziel, mit Hilfe der Schlichtungsstelle gemeinsam und außergerichtlich eine Lösung für ein Problem zufinden. Das Schlichtungsverfahren ist kostenlos. Sie brauchen auch keinen Rechtsbeistand. Auf der Internetseite der Schlichtungsstelle finden Sie alle Informationen zum Schlichtungsverfahren. Dort können Sie nachlesen, wie ein Schlichtungsverfahren abläuft und wie Sie den Antrag auf Schlichtung stellen. Sie können den Antrag auch in Leichter Spracheoder in Deutscher Gebärdensprache stellen.\n\nSie erreichen die Schlichtungsstelle unter folgender Adresse:\n\nSchlichtungsstelle nach dem Behindertengleichstellungsgesetz bei dem Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen\\\nMauerstraße 53\\\n10117 Berlin\\\nTelefon: 030 18 527 2805\\\nE-Mail: info@schlichtungsstelle-bgg.de\\\nInternet: www.schlichtungsstelle-bgg.de"</string>
     <string name="appName" translatable="false">UseID</string>
-    <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits eingerichtet\?</string>
+    <string name="firstTimeUser_close_button">Schließen</string>
+    <string name="firstTimeUser_finish_button">Einrichtung abschließen</string>
+    <string name="firstTimeUser_finish_infoBox_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion nutzen.</string>
+    <string name="firstTimeUser_finish_infoBox_title">Persönliche Ausweis-PIN gut merken</string>
+    <string name="firstTimeUser_finish_title">Sie haben Ihren Online- Ausweis erfolgreich eingerichtet.</string>
+    <string name="firstTimeUser_identify_button">Jetzt ausweisen</string>
     <string name="firstTimeUser_intro_body">Bei der Einrichtung haben Sie Ihre persönliche Ausweis-PIN festgelegt.</string>
-    <string name="firstTimeUser_intro_yes">Jetzt Online-Ausweis einrichten</string>
     <string name="firstTimeUser_intro_no">Bereits eingerichtet</string>
-    <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN-Brief noch\?</string>
-    <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
-    <string name="firstTimeUser_pinLetter_yes">Ja, PIN-Brief vorhanden</string>
-    <string name="firstTimeUser_pinLetter_no">Nein, neuen PIN-Brief bestellen</string>
-    <string name="navigation_back">Zurück</string>
-    <string name="navigation_cancel">Abbrechen</string>
-    <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport-PIN ein.</string>
-    <string name="firstTimeUser_transportPIN_error">Inkorrekte Transport-PIN</string>
-    <string name="firstTimeUser_transportPIN_tryAgain">Versuchen Sie es erneut.</string>
-    <string name="firstTimeUser_transportPIN_switchToPersonalPIN">Klicken Sie hier, wenn Ihre PIN 6-stellig ist</string>
-    <string name="firstTimeUser_transportPIN_PINTextFieldDescription">Eingabefeld Transport-PIN</string>
-    <string name="firstTimeUser_transportPIN_error_incorrectPIN">Inkorrekte Transport-PIN</string>
-    <string name="firstTimeUser_transportPIN_error_tryAgain">Versuchen Sie es erneut.</string>
-    <string name="firstTimeUser_transportPIN_error_noAttemptLeft">Sie haben keine Versuche mehr.</string>
-    <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
-    <string name="firstTimeUser_personalPINIntro_body">Merken Sie sich Ihre persönliche Ausweis-PIN gut. Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
-    <string name="firstTimeUser_personalPINIntro_continue">Persönliche PIN vergeben</string>
-    <string name="firstTimeUser_personalPIN_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
-    <string name="firstTimeUser_personalPIN_confirmation">PIN zum Bestätigen bitte wiederholen</string>
-    <string name="firstTimeUser_personalPIN_error_mismatch_title">PINs stimmen nicht überein</string>
+    <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits eingerichtet\?</string>
+    <string name="firstTimeUser_intro_yes">Jetzt Online-Ausweis einrichten</string>
+    <string name="firstTimeUser_personalPIN_confirmation">PIN zum Bestätigen wiederholen</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Versuchen Sie es erneut.</string>
+    <string name="firstTimeUser_personalPIN_error_mismatch_title">PINs stimmen nicht überein</string>
     <string name="firstTimeUser_personalPIN_PIN1TextFieldDescription">Eingabefeld PIN</string>
     <string name="firstTimeUser_personalPIN_PIN2TextFieldDescription">Eingabefeld Wiederholung PIN</string>
-    <string name="firstTimeUser_scan_title">Übertragen Sie Ihre neue PIN auf den Ausweis.</string>
+    <string name="firstTimeUser_personalPIN_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
+    <string name="firstTimeUser_personalPINIntro_body">Merken Sie sich Ihre persönliche Ausweis-PIN gut. Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
+    <string name="firstTimeUser_personalPINIntro_continue">Persönliche Ausweis–PIN vergeben</string>
+    <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
+    <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
+    <string name="firstTimeUser_pinLetter_no">Nein, neuen PIN-Brief bestellen</string>
+    <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN-Brief noch\?</string>
+    <string name="firstTimeUser_pinLetter_yes">Ja, PIN-Brief vorhanden</string>
     <string name="firstTimeUser_scan_body">Fast geschafft! Halten Sie Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihrem Ausweis die neue PIN zuzuordnen.</string>
-    <string name="firstTimeUser_scan_whatIsNfc_button">Wie funktioniert die NFC-Technologie?</string>
-    <string name="firstTimeUser_scan_help_button">Mein Ausweis wird nicht erkannt</string>
-    <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
-    <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
-    <string name="firstTimeUser_scan_error_title_id_deactivated">Online-Ausweisfunktion deaktiviert</string>
+    <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
-    <string name="firstTimeUser_scan_error_button">Okay</string>
-    <string name="identification_fetchMetadata_pleaseWait">Einen Moment bitte…</string>
-    <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
-    <string name="identification_attributeConsent_body">Der Anbieter möchte auf folgende Daten von Ihrem Personalausweis zugreifen:</string>
-    <string name="identification_attributeConsent_button_additionalInformation">Weitere Informationen</string>
-    <string name="identification_attributeConsent_pinButton">Freigabe erteilen</string>
-    <string name="identification_attributeConsent_info_provider_info">Anbieterinformationen</string>
-    <string name="identification_attributeConsent_info_provider">Anbieter</string>
-    <string name="identification_attributeConsent_info_issuer">Aussteller des Berechtigungszertifikats</string>
+    <string name="firstTimeUser_scan_error_title_id_deactivated">Online-Ausweisfunktion deaktiviert</string>
+    <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
+    <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
+    <string name="firstTimeUser_scan_help_button">Mein Ausweis wird nicht erkannt</string>
+    <string name="firstTimeUser_scan_title">Übertragen Sie Ihre neue PIN auf den Ausweis.</string>
+    <string name="firstTimeUser_scan_whatIsNfc_button">Wie funktioniert die NFC-Technologie?</string>
+    <string name="firstTimeUser_transportPIN_error_incorrectPIN">Inkorrekte Transport-PIN</string>
+    <string name="firstTimeUser_transportPIN_error_noAttemptLeft">Sie haben keine Versuche mehr.</string>
+    <string name="firstTimeUser_transportPIN_error_tryAgain">Versuchen Sie es erneut.</string>
+    <string name="firstTimeUser_transportPIN_error">Inkorrekte Transport-PIN</string>
+    <string name="firstTimeUser_transportPIN_PINTextFieldDescription">Eingabefeld Transport-PIN</string>
+    <string name="firstTimeUser_transportPIN_switchToPersonalPIN">Klicken Sie hier, wenn Ihre PIN 6-stellig ist</string>
+    <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport-PIN ein.</string>
+    <string name="firstTimeUser_transportPIN_tryAgain">Versuchen Sie es erneut.</string>
+    <string name="homeScreen_more_accessibilityStatement_button">Barrierefreiheitserklärung</string>
+    <string name="homeScreen_more_imprint_button">Impressum</string>
+    <string name="homeScreen_more_license_button">Lizenzen</string>
+    <string name="homeScreen_more_privacy_button">Datenschutzerklärung</string>
+    <string name="homeScreen_more_settings_button">Einstellungen</string>
+    <string name="homeScreen_more_subtitle">Mehr</string>
+    <string name="homeScreen_more_termsOfUse_button">Nutzungsbedingungen</string>
+    <string name="homeScreen_setupOnlineID_button">Online-Ausweis einrichten</string>
+    <string name="homeScreen_title">Platzhalter Titel</string>
+    <string name="homeScreen_titleBox_body">Öffnen Sie auf Ihrem Smartphone die Internetseite vom Anbieter und drücken Sie auf den Button »Mit Bundes Login ausweisen«</string>
+    <string name="homeScreen_titleBox_title">Ausweisen</string>
+    <string name="idCardAttribute_ageVerification">Altersverifikation</string>
     <string name="idCardAttribute_DG01">Dokumentenart</string>
     <string name="idCardAttribute_DG02">Ausstellende Behörde</string>
     <string name="idCardAttribute_DG03">Ablaufdatum</string>
@@ -60,164 +69,52 @@
     <string name="idCardAttribute_DG17">Anschrift</string>
     <string name="idCardAttribute_DG19">Residence Permit I</string>
     <string name="idCardAttribute_restrictedIdentification">Restricted Identification</string>
-    <string name="idCardAttribute_ageVerification">Altersverifikation</string>
-    <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
+    <string name="identification_attributeConsent_body">Der Anbieter möchte auf folgende Daten von Ihrem Personalausweis zugreifen:</string>
+    <string name="identification_attributeConsent_button_additionalInformation">Weitere Informationen</string>
+    <string name="identification_attributeConsent_info_issuer">Aussteller des Berechtigungszertifikats</string>
+    <string name="identification_attributeConsent_info_provider_info">Anbieterinformationen</string>
+    <string name="identification_attributeConsent_info_provider">Anbieter</string>
+    <string name="identification_attributeConsent_pinButton">Freigabe erteilen</string>
+    <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
+    <string name="identification_fetchMetadata_pleaseWait">Einen Moment bitte…</string>
+    <string name="identification_fetchMetadataError_body">Bitte versuchen Sie es erneut. Stellen Sie dabei sicher, dass Sie mit dem Internet verbunden sind.</string>
+    <string name="identification_fetchMetadataError_button">Erneut versuchen</string>
+    <string name="identification_fetchMetadataError_title">Es ist ein Fehler aufgetreten.</string>
     <string name="identification_personalPIN_error_incorrectPIN">Inkorrekte persönliche PIN</string>
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
+    <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
     <string name="identification_scan_body">Halten Sie im nächsten Schritt Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
     <string name="identification_scan_title">Rufen Sie die Daten von Ihrem Ausweis ab.</string>
+    <string name="identification_success_body">Machen Sie weiter bei %1s.</string>
     <string name="identification_success_button">Weiter zum Anbieter</string>
     <string name="identification_success_title">Sie haben sich erfolgreich ausgewiesen</string>
-    <string name="identification_success_body">Machen Sie weiter bei %1s.</string>
-    <string name="identification_fetchMetadataError_title">Es ist ein Fehler aufgetreten.</string>
-    <string name="identification_fetchMetadataError_body">Bitte versuchen Sie es erneut. Stellen Sie dabei sicher, dass Sie mit dem Internet verbunden sind.</string>
-    <string name="identification_fetchMetadataError_button">Erneut versuchen</string>
-    <string name="idScan_error_cardDeactivated_title">Für Ihren Ausweis ist die Online-Funktion nicht aktiviert.</string>
-    <string name="idScan_error_cardDeactivated_body">Wenden Sie sich an Ihr Bürgeramt, um die Online-Ausweisfunktion zu aktivieren.\\n\\nSie wissen nicht, an wen Sie sich wenden können\? \\n\\nRufen Sie die 115 an oder informieren Sie sich auf: \\n\\nhttps://behoredenfinder.de/</string>
-    <string name="idScan_error_suspended_title">Ihr Ausweis ist gesperrt.</string>
-    <string name="idScan_error_suspended_body">### Warum ist Ihr Ausweis gesperrt\?
-\n Da Sie Ihre persönliche Ausweis-PIN zwei Mal falsch eingegeben haben, wurde Ihr Ausweis gesperrt.
-\n ### Was können Sie tun\?
-\n Wir arbeiten daran Ihnen eine Lösung in der App anzubieten.
-\n
-\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6-stelligen CAN in Kombination mit Ihrer persönlichen Ausweis-PIN in der AusweisApp2 entsperren. Ihre 6-stellige CAN finden Sie auf der Vorderseite Ihres Ausweis.
-\n
-\nAlternativ können Sie im Bürgeramt Ihre persönliche Ausweis-PIN neu vergeben, sollten Sie diese vergessen haben.</string>
+    <string name="idScan_error_blocked_body">### Warum ist Ihr Ausweis blockiert\?\n\nDa Sie Ihre persönliche Ausweis-PIN ein drittes mal falsch eingeben haben, wurde ihr Ausweis blockiert.\n\n### Was können Sie tun\?\n\nWir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.\n\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10-stellige PUK finden Sie auf Ihrem PIN-Brief.</string>
     <string name="idScan_error_blocked_title">Ihr Ausweis ist blockiert.</string>
-    <string name="idScan_error_blocked_body">### Warum ist Ihr Ausweis blockiert\?
-\nDa Sie Ihre persönliche Ausweis-PIN ein drittes mal falsch eingeben haben, wurde ihr Ausweis blockiert.
-\n### Was können Sie tun\?
-\nWir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.
-\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10-stellige PUK finden Sie auf Ihrem PIN-Brief.</string>
-    <string name="idScan_error_unknown_title">Es ist ein Fehler aufgetreten.</string>
-    <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="idScan_error_button_close">Schließen</string>
-    <string name="firstTimeUser_finish_title">Sie haben Ihren Online- Ausweis erfolgreich eingerichtet.</string>
-    <string name="firstTimeUser_finish_infoBox_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion nutzen.</string>
-    <string name="firstTimeUser_finish_button">Einrichtung abschließen</string>
-    <string name="firstTimeUser_close_button">Schließen</string>
-    <string name="firstTimeUser_identify_button">Jetzt ausweisen</string>
+    <string name="idScan_error_cardDeactivated_body">Wenden Sie sich an Ihr Bürgeramt, um die Online-Ausweisfunktion zu aktivieren.\\n\\nSie wissen nicht, an wen Sie sich wenden können\? \\n\\nRufen Sie die 115 an oder informieren Sie sich auf: \\n\\nhttps://behoredenfinder.de/</string>
+    <string name="idScan_error_cardDeactivated_title">Für Ihren Ausweis ist die Online-Funktion nicht aktiviert.</string>
+    <string name="idScan_error_suspended_body">### Warum ist Ihr Ausweis gesperrt\?\n\nDa Sie Ihre persönliche Ausweis-PIN zwei Mal falsch eingegeben haben, wurde Ihr Ausweis gesperrt.\n\n### Was können Sie tun\?\n\n Wir arbeiten daran Ihnen eine Lösung in der App anzubieten.\n\n\n\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6-stelligen CAN in Kombination mit Ihrer persönlichen Ausweis-PIN in der AusweisApp2 entsperren. Ihre 6-stellige CAN finden Sie auf der Vorderseite Ihres Ausweis.\n\n\n\nAlternativ können Sie im Bürgeramt Ihre persönliche Ausweis-PIN neu vergeben, sollten Sie diese vergessen haben.</string>
+    <string name="idScan_error_suspended_title">Ihr Ausweis ist gesperrt.</string>
+    <string name="idScan_error_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
+    <string name="idScan_error_unknown_title">Es ist ein Fehler aufgetreten.</string>
+    <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Bürgerinnen und Bürger der Europäischen Union und des Europäischen Wirtschaftsraums.\n\n\n\nWenn Ihr Smartphone Ihren Ausweis nicht erkennt oder „Ausweis entfernt” anzeigt, probieren Sie folgende Schritte aus:\n\n\n\n- Bewegen Sie Ihren Ausweis von Ihrem Smartphone weg und legen Sie den Ausweis erneut dicht an die Rückseite. Probieren Sie verschiedene Positionen aus: Obere, mittlere und untere Rückseite.\n\n- Wenn Sie eine dicke Schutzhülle haben, entfernen Sie die Hülle und probieren es dann erneut.\n\n- Überprüfen Sie, ob NFC aktiviert ist.\n\n- Stellen Sie NFC aus und wieder an.\n\n- Probieren Sie den Smartphone-Bildschirm aus- und wieder anzustellen.</string>
     <string name="idScan_help_title">Ihr Ausweis wurde nicht erkannt.</string>
-    <string name="idScan_help_body">Folgende Dokumente bieten die Funktion an: Deutscher Personalausweis, Elektronischer Aufenthaltstitel, eID-Karte für Bürgerinnen und Bürger der Europäischen Union und des Europäischen Wirtschaftsraums.
-\n
-\nWenn Ihr Smartphone Ihren Ausweis nicht erkennt oder „Ausweis entfernt” anzeigt, probieren Sie folgende Schritte aus:
-\n
-\n- Bewegen Sie Ihren Ausweis von Ihrem Smartphone weg und legen Sie den Ausweis erneut dicht an die Rückseite. Probieren Sie verschiedene Positionen aus: Obere, mittlere und untere Rückseite.
-\n- Wenn Sie eine dicke Schutzhülle haben, entfernen Sie die Hülle und probieren es dann erneut.
-\n- Überprüfen Sie, ob NFC aktiviert ist.
-\n- Stellen Sie NFC aus und wieder an.
-\n- Probieren Sie den Smartphone-Bildschirm aus- und wieder anzustellen.</string>
-    <string name="homeScreen_title">Platzhalter Titel</string>
-    <string name="homeScreen_more_subtitle">Mehr</string>
-    <string name="homeScreen_setupOnlineID_button">Online-Ausweis einrichten</string>
-    <string name="homeScreen_more_settings_button">Einstellungen</string>
-    <string name="homeScreen_more_privacy_button">Datenschutzerklärung</string>
-    <string name="homeScreen_more_license_button">Lizenzen</string>
-    <string name="homeScreen_more_termsOfUse_button">Nutzungsbedingungen</string>
-    <string name="homeScreen_more_accessibilityStatement_button">Barrierefreiheitserklärung</string>
-    <string name="homeScreen_more_imprint_button">Impressum</string>
-    <string name="noNfc_screen_title"><![CDATA[<strong>Bürger:in</strong> App]]></string>
-    <string name="noNfc_info_title">NFC-Funktion nicht verfügbar</string>
-    <string name="noNfc_info_body">Leider hat das Smartphone keine NFC-Lesefunktion oder kann den NFC-Chip im Ausweis nicht auslesen.\n\nBitte nutzen Sie ein Smartphone mit NFC-Lesefunktion oder ein Kartenlesegerät.</string>
-    <string name="noNfc_moreInformation_link">Weitere Informationen</string>
+    <string name="imprint_html_text">"### Impressum\n\n#### Angabe gemäß §5 TMG\n\nDigital Service GmbH des Bundes\\\nPrinzessinenstraße 8–14\\\n10969 Belrin\\\nDeutschland\\\n\n**Vertretung durch die Geschäftsführung:**\\\nFrau Christina Lang, Herr Philipp Moser\n\n**Alleingesellschafterin:**\\\nBundesrepublik Deutschland, vertreten durch das Bundeskanzleramt\n\n**Handelsregister-Nummer:**\\\nHRB 212879 B\n\n**Registergericht:**\\\nBerlin Charlottenburg\n\n**Umsatzsteueridentifikationsnummer:**\\\nDE327075535\n\n#### Kontakt\n\n**E-Mail:**\\\n[adfldakflkdfkla@inter.net](http://www.google.de)"</string>
+    <string name="licenseDialog_confirm_button">Ok</string>
+    <string name="navigation_back">Zurück</string>
+    <string name="navigation_cancel">Abbrechen</string>
     <string name="ndcDeactivated_openSettings_button">Einstellungen anpassen</string>
     <string name="nfcDeactivated_info_body">»Bundes Login« hat aktuell keine Berechtigung die NFC-Funktion zu nutzen.\n\nPassen Sie Ihre Einstellungen entsprechend an, um die Online-Ausweisfunktion nutzen zu können.</string>
     <string name="nfcDeactivated_info_title">NFC-Funktion deaktiviert</string>
-    <string name="whatIsNfc_title">Wie funktioniert die NFC-Technologie?</string>
-    <string name="whatIsNfc_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kure Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
-    <string name="homeScreen_titleBox_title">Ausweisen</string>
-    <string name="homeScreen_titleBox_body">Öffnen Sie auf Ihrem Smartphone die Internetseite vom Anbieter und drücken Sie auf den Button »Mit Bundes Login ausweisen«</string>
-    <string name="firstTimeUser_finish_infoBox_title">Persönliche Ausweis-PIN gut merken</string>
+    <string name="noNfc_info_body">Leider hat das Smartphone keine NFC-Lesefunktion oder kann den NFC-Chip im Ausweis nicht auslesen.\n\nBitte nutzen Sie ein Smartphone mit NFC-Lesefunktion oder ein Kartenlesegerät.</string>
+    <string name="noNfc_info_title">NFC-Funktion nicht verfügbar</string>
+    <string name="noNfc_moreInformation_link">Weitere Informationen</string>
+    <string name="noNfc_screen_title"><![CDATA[<strong>Bürger:in</strong> App]]></string>
+    <string name="privacy_html_text">"### Datenschutzerklärung\n\nStand: DD.MM.JJJJ\n\n#### Lorem ipsum\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum\n\n#### Lorem ipsum\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum"</string>
     <string name="setupResetPersonalPin_title">Neuen PIN-Brief bestellen</string>
     <string name="setupResetPersonalPin">Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter\n\nwww.pin-ruecksetzbrief-bestellen.de</string>
-    <string name="accessibility_html_text">"Erklärung zur Barrierefreiheit
- ------------------------------
-
-Stand: DD.MM.JJJJ
-
-Die Applikation \\"AppName\\" ist bemüht, im Einklang mit den nationalen Rechtsvorschriften zur Umsetzung der Richtlinie (EU) 2016/2102 des Europäischen Parlaments und des Rates barrierefrei zugänglich zu machen. Diese Erklärung zur Barrierefreiheit gilt für die aktuell im Apple App Store beziehungsweise Google Playstore erreichbare Version xxx. Sie wurde am xx.xx.2022 erstellt.
-
-#### Wie barrierefrei ist das Angebot?
-
-Diese Applikation wurde neu entwickelt. Das Team hat ein Accessibility Training absolviert, indem die meisten Bereiche der Applikation auf Barrierefreiheit überprüft wurden. Die Applikation ist größtenteils barrierefrei. An den unten aufgeführten Mängeln wird gearbeitet.
-
-Die Applikation \\"AppName\\" wird außerdem in den kommenden Wochen kontinuierlich auf Basis der Testergebnisse und der Rückmeldung der Nutzer:innen weiterentwickelt
-
-#### Welche Bereiche sind nicht barrierefrei?
-
-*   Text Vergrößerung möglich?
-*   Tastatur navigierbar?
-*   Bildschirmlesegerät/Screenreader bedienbar?
-
-#### Kontakt und Feedback-Möglichkeit
-
-Sind Ihnen Mängel beim barrierefreien Zugang zu Inhalten von aufgefallen? Dann können Sie sich gerne bei uns melden: [hilfe@inter.net](hilfe@inter.net)
-
-#### Schlichtungsverfahren
-
-Beim Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen gibtes eine Schlichtungsstelle gemäß \\$ 16 BGG. Die Schlichtungsstelle hat die Aufgabe, Konfliktezwischen Menschen mit Behinderungen und öffentlichen Stellen des Bundes zu lösen. Sie können die Schlichtungsstelle einschalten, wenn Sie mit den Antworten aus der oben genannten Kontaktmöglichkeit nicht zufrieden sind. Dabei geht es nicht darum, Gewinner oder Verlierer zu finden. Vielmehr ist es das Ziel, mit Hilfe der Schlichtungsstelle gemeinsam und außergerichtlich eine Lösung für ein Problem zufinden. Das Schlichtungsverfahren ist kostenlos. Sie brauchen auch keinen Rechtsbeistand. Auf der Internetseite der Schlichtungsstelle finden Sie alle Informationen zum Schlichtungsverfahren. Dort können Sie nachlesen, wie ein Schlichtungsverfahren abläuft und wie Sie den Antrag auf Schlichtung stellen. Sie können den Antrag auch in Leichter Spracheoder in Deutscher Gebärdensprache stellen.
-
-Sie erreichen die Schlichtungsstelle unter folgender Adresse:
-
-Schlichtungsstelle nach dem Behindertengleichstellungsgesetz bei dem Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen\u0020\u0020
-Mauerstraße 53\u0020\u0020
-10117 Berlin\u0020\u0020
-Telefon: 030 18 527 2805\u0020\u0020
-E-Mail: info@schlichtungsstelle-bgg.de\u0020\u0020
-Internet: www.schlichtungsstelle-bgg.de"</string>
-    <string name="imprint_html_text">"Impressum
----------
-
-#### Angabe gemäß §5 TMG
-
-Digital Service GmbH des Bundes\u0020\u0020
-Prinzessinenstraße 8–14\u0020\u0020
-10969 Belrin\u0020\u0020
-Deutschland\u0020\u0020
-
-**Vertretung durch die Geschäftsführung:**\u0020\u0020
-Frau Christina Lang, Herr Philipp Moser
-
-**Alleingesellschafterin:**\u0020\u0020
-Bundesrepublik Deutschland, vertreten durch das Bundeskanzleramt
-
-**Handelsregister-Nummer:**\u0020\u0020
-HRB 212879 B
-
-**Registergericht:**\u0020\u0020
-Berlin Charlottenburg
-
-**Umsatzsteueridentifikationsnummer:**\u0020\u0020
-DE327075535
-
-#### Kontakt
-
-**E-Mail:**\u0020\u0020
-[adfldakflkdfkla@inter.net](http://www.google.de)"</string>
-    <string name="privacy_html_text">"Datenschutzerklärung
---------------------
-
-Stand: DD.MM.JJJJ
-
-#### Lorem ipsum
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum
-
-#### Lorem ipsum
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum"</string>
-    <string name="termsOfUse_html_text">"Nutzungsbedingungen
---------------------
-
-Stand: DD.MM.JJJJ
-
-#### Lorem ipsum
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum
-
-#### Lorem ipsum
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum"</string>
-    <string name="licenseDialog_confirm_button">Ok</string>
+    <string name="termsOfUse_html_text">"### Nutzungsbedingungen\n\nStand: DD.MM.JJJJ\n\n#### Lorem ipsum\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum\n\n#### Lorem ipsum\n\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et iusto duo dolores e+ rum"</string>
+    <string name="whatIsNfc_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kure Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
+    <string name="whatIsNfc_title">Wie funktioniert die NFC-Technologie?</string>
 </resources>
