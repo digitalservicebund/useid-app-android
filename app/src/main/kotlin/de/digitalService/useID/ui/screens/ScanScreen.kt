@@ -50,7 +50,7 @@ fun ScanScreen(
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
@@ -58,16 +58,17 @@ fun ScanScreen(
 
         LottieAnimation(
             composition = composition,
-            contentScale = ContentScale.FillWidth,
+            contentScale = ContentScale.Fit,
             iterations = LottieConstants.IterateForever,
-
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
+                .aspectRatio(1.47f)
         )
 
+        Spacer(modifier = Modifier.padding(20.dp))
+
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
