@@ -27,7 +27,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -41,6 +40,7 @@ fun PINEntryField(
     contentDescription: String,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
+    backgroundColor: Color = MaterialTheme.colorScheme.background,
     onDone: () -> Unit = { }
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -79,7 +79,7 @@ fun PINEntryField(
         )
         Surface(
             shape = RoundedCornerShape(8.dp),
-            color = Gray300,
+            color = backgroundColor,
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxSize()
@@ -102,6 +102,7 @@ fun PINEntryField(
             obfuscation = obfuscation,
             placeholder = false,
             spacerPosition = spacerPosition,
+            backgroundColor = backgroundColor,
             modifier = Modifier
                 .align(Alignment.Center)
                 .fillMaxWidth()

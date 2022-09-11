@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.pin.PINEntryField
+import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
@@ -47,6 +48,7 @@ fun IdentificationReEnterPersonalPIN(
             contentDescription = pinEntryFieldDescription,
             focusRequester = focusRequester,
             onDone = viewModel::onDoneTapped,
+            backgroundColor = Gray300,
             modifier = Modifier
                 .padding(top = 50.dp)
                 .width(240.dp)

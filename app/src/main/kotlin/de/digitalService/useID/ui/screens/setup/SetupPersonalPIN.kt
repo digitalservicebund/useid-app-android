@@ -26,6 +26,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -74,6 +75,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
                     onValueChanged = viewModel::userInputPIN1,
                     contentDescription = pin1EntryFieldDescription,
                     focusRequester = focusRequesterPIN1,
+                    backgroundColor = Gray300,
                     modifier = Modifier
                         .width(240.dp)
                         .height(56.dp)
@@ -95,6 +97,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
                             onValueChanged = viewModel::userInputPIN2,
                             contentDescription = pin2EntryFieldDescription,
                             focusRequester = focusRequesterPIN2,
+                            backgroundColor = Gray300,
                             modifier = Modifier
                                 .width(240.dp)
                                 .height(56.dp)

@@ -21,6 +21,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -60,6 +61,7 @@ fun IdentificationPersonalPIN(
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequester,
                 onDone = viewModel::onDone,
+                backgroundColor = Gray300,
                 modifier = Modifier
                     .padding(top = 50.dp)
                     .width(240.dp)
