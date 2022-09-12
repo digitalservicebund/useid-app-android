@@ -3,6 +3,7 @@ package de.digitalService.useID.idCardInterface
 import android.content.Context
 import android.nfc.Tag
 import android.util.Log
+import de.digitalService.useID.getLogger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +17,8 @@ class IDCardManager {
 
     private val openECard = OpeneCard.createInstance()
     private var androidContextManager: AndroidContextManager? = null
+    private var activationController: ActivationController? = null
+    private var stopHandler: StopServiceHandler = StopServiceHandlerImplementation()
 
     private sealed class Task {
         data class EAC(val tokenURL: String) : Task()
@@ -56,10 +59,20 @@ class IDCardManager {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    private class StopServiceHandlerImplementation: StopServiceHandler {
+        private val logger by getLogger()
+
+        override fun onSuccess() {
+            logger.debug( "Terminated context successfully.")
+        }
+
+        override fun onFailure(p0: ServiceErrorResponse?) {
+            logger.error("Failed to terminate context: ${p0?.errorDescription()}")
+        }
+    }
+
     private fun executeTask(context: Context, task: Task): Flow<EIDInteractionEvent> = callbackFlow {
         androidContextManager = openECard.context(context)
-        var activationController: ActivationController? = null
 
         androidContextManager?.initializeContext(object : StartServiceHandler {
             override fun onSuccess(p0: ActivationSource?) {
@@ -87,19 +100,13 @@ class IDCardManager {
 
         awaitClose {
             Log.d(logTag, "Closing flow channel.")
-
-            activationController?.cancelOngoingAuthentication()
-            androidContextManager?.terminateContext(object : StopServiceHandler {
-                override fun onSuccess() {
-                    Log.d(logTag, "Terminated context successfully.")
-                }
-
-                override fun onFailure(p0: ServiceErrorResponse?) {
-                    Log.e(logTag, "Failed to terminate context: ${p0?.errorDescription()}")
-                }
-            })
-
-            androidContextManager = null
+            cancelTask()
         }
+    }
+
+    fun cancelTask() {
+        activationController?.cancelOngoingAuthentication()
+        androidContextManager?.terminateContext(stopHandler)
+        androidContextManager = null
     }
 }

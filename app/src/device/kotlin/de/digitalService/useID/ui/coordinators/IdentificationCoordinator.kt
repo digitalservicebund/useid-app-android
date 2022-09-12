@@ -33,8 +33,7 @@ class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     private val appCoordinator: AppCoordinator,
     private val idCardManager: IDCardManager,
-    private val coroutineContextProvider: CoroutineContextProviderType,
-    private val storageManager: StorageManagerType
+    private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
 
@@ -76,6 +75,7 @@ class IdentificationCoordinator @Inject constructor(
 
     fun cancelIdentification() {
         appCoordinator.popToRoot()
+        idCardManager.cancelTask()
     }
 
     fun finishIdentification() {
