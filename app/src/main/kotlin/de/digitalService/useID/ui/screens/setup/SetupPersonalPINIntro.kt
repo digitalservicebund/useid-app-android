@@ -39,7 +39,7 @@ fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = h
         )
     ) { topPadding ->
         StandardButtonScreen(
-            secondaryButton = BundButtonConfig(
+            primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.firstTimeUser_personalPINIntro_continue),
                 action = viewModel::onSetPIN
             ),
