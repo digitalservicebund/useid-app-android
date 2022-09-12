@@ -17,8 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         intent.data?.let { uri ->
-            val decodedUri = URLDecoder.decode(uri.toString(), "utf-8")
-            val tcTokenURL = Uri.parse(decodedUri).getQueryParameter("tcTokenURL")
+            val tcTokenURL = Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")
             appCoordinator.tcTokenURL = tcTokenURL
         }
 
