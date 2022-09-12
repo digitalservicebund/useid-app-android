@@ -16,7 +16,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        appCoordinator.tcTokenURL = intent.data?.toString()
+        intent.data?.let { uri ->
+            val decodedUri = URLDecoder.decode(uri.toString(), "utf-8")
+            val tcTokenURL = Uri.parse(decodedUri).getQueryParameter("tcTokenURL")
+            appCoordinator.tcTokenURL = tcTokenURL
+        }
 
         setContent {
             UseIDApp(appCoordinator)
