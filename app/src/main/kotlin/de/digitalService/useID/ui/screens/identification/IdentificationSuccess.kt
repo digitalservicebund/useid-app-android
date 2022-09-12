@@ -40,7 +40,7 @@ fun IdentificationSuccess(
     val context = LocalContext.current
 
     StandardButtonScreen(
-        secondaryButton = BundButtonConfig(
+        primaryButton = BundButtonConfig(
             stringResource(id = R.string.identification_done_continue),
             action = { viewModel.onButtonTapped(context) }
         )
