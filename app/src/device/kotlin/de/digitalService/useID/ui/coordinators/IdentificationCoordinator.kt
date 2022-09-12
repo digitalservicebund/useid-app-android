@@ -76,11 +76,13 @@ class IdentificationCoordinator @Inject constructor(
     fun cancelIdentification() {
         appCoordinator.popToRoot()
         idCardManager.cancelTask()
+        reachedScanState = false
     }
 
     fun finishIdentification() {
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
+        reachedScanState = false
     }
 
     private fun startIdentification(tcTokenURL: String) {
