@@ -12,12 +12,12 @@
         android:label="@string/appName"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.UseID">
+        android:theme="@style/Theme.App.Starting">
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
-            android:theme="@style/Theme.UseID"
+            android:theme="@style/Theme.App.Starting"
             android:launchMode="standard">
             <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/techlist" />
