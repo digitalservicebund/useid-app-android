@@ -42,7 +42,7 @@ fun IdentificationReEnterPersonalPIN(
         PINEntryField(
             value = viewModel.pin,
             digitCount = 6,
-            obfuscation = false,
+            obfuscation = true,
             spacerPosition = 3,
             onValueChanged = viewModel::userInputPIN,
             contentDescription = pinEntryFieldDescription,
