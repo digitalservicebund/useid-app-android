@@ -1,0 +1,47 @@
+name: Build a release version
+description: Build and upload the app with a specific stage
+
+inputs:
+  stage:
+    description: 'Stage to build'
+    required: true
+  gitTag:
+    description: 'Tag to check out'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check out repository code
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ inputs.gitTag }}
+    - name: Setup
+      uses: ./.github/actions/setup
+    - name: Deploy key store
+      shell: bash
+      env:
+        KEYSTORE_BASE64: ${{ env.KEYSTORE_BASE64 }}
+      run: |
+        KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
+        echo -n "$KEYSTORE_BASE64" | base64 --decode --output $KEYSTORE_PATH
+        echo "KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
+    - name: Deploy fastlane API key
+      shell: bash
+      env:
+        FASTLANE_API_KEY: ${{ env.FASTLANE_API_KEY }}
+      run: |
+        FASTLANE_API_KEY_PATH=$RUNNER_TEMP/fastlane_api_key.json
+        echo -n "$FASTLANE_API_KEY" > $FASTLANE_API_KEY_PATH
+        echo "FASTLANE_API_KEY_PATH=$FASTLANE_API_KEY_PATH" >> $GITHUB_ENV
+    - name: Build release and submit to Google Play Store
+      shell: bash
+      env:
+        KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
+        KEYSTORE_PASSWORD: ${{ env.KEYSTORE_PASSWORD }}
+        FASTLANE_API_KEY_PATH: ${{ env.FASTLANE_API_KEY_PATH }}
+        UPLOAD_KEY_PASSWORD: ${{ env.UPLOAD_KEY_PASSWORD }}
+        SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
+        SENTRY_ORG: digitalservice
+        SENTRY_PROJECT: useid-preview-android
+      run: bundle exec fastlane release stage:${{ inputs.stage }}
