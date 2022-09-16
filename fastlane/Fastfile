@@ -12,22 +12,27 @@ platform :android do
     gradle(tasks: ["clean", "lintKotlinMain", "lintDeviceDebug", "lintPreviewDebug"])
   end
 
-  desc "Update version name and bump version code"
-  lane :updateVersion do |options|
+  desc 'Bump version'
+  lane :bumpVersion do |options|
     skip_docs
     ensure_git_status_clean
+    
+    bumpBuildNumber = ENV['BUMP_BUILD_NUMBER'] || options[:bumpBuildNumber] || false
+    version = ENV['VERSION'] || options[:version]
+    
+    oldTag = "#{android_get_version_name}-#{android_get_version_code}"
+    android_set_version_name(version_name: version) unless version.nil? || version.empty?
+    increment_version_code(gradle_file_path: "app/build.gradle") unless bumpBuildNumber.nil? || !bumpBuildNumber
+    newTag = "#{android_get_version_name}-#{android_get_version_code}"
 
-    increment_version_code(gradle_file_path: "app/build.gradle")
+    puts "Writing new tag #{newTag} to github env: #{ENV['GITHUB_ENV']}"
+    sh("echo 'GIT_TAG=#{newTag}' >> #{ENV['GITHUB_ENV']}")
 
-    if options[:version_name]
-      android_set_version_name(version_name: options[:version_name])
-    end
+    return if oldTag == newTag
 
-    version_name = android_get_version_name
-    version_code = android_get_version_code
-
-    git_commit(path: "app/build.gradle", message: "Bump version to #{version_name}-#{version_code}")
-    push_to_git_remote
+    git_commit(path: "app/build.gradle", message: "Bump version to #{newTag}")
+    add_git_tag(tag: newTag)
+    push_to_git_remote(tags: false, push_options: ["tag #{newTag}"])
   end
 
   desc "Create new Playstore build and submit to Google Play Store"
