@@ -35,6 +35,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
+import de.digitalService.useID.ui.theme.Blue600
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
@@ -120,18 +121,22 @@ private fun TransportPINDialog(
                     )
                 },
                 text = {
-                    Text(
-                        text = stringResource(R.string.firstTimeUser_scan_cancelDialog_body)
-                    )
+                    Text(text = stringResource(R.string.firstTimeUser_scan_cancelDialog_body))
                 },
                 confirmButton = {
                     TextButton(onClick = onCancel) {
-                        Text(text = stringResource(R.string.firstTimeUser_scan_cancelDialog_confirm))
+                        Text(
+                            text = stringResource(R.string.firstTimeUser_scan_cancelDialog_confirm),
+                            color = Blue600
+                        )
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showCancelDialog = false }) {
-                        Text(text = stringResource(R.string.firstTimeUser_scan_cancelDialog_dismiss))
+                        Text(
+                            text = stringResource(R.string.firstTimeUser_scan_cancelDialog_dismiss),
+                            color = Blue600
+                        )
                     }
                 }
             )

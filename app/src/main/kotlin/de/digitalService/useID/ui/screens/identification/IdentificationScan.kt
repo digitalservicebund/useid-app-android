@@ -27,6 +27,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
+import de.digitalService.useID.ui.theme.Blue600
 import de.digitalService.useID.ui.theme.UseIDTheme
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.delay
@@ -107,12 +108,18 @@ private fun PINDialog(
                 },
                 confirmButton = {
                     TextButton(onClick = onCancel) {
-                        Text(text = stringResource(R.string.identification_scan_cancelDialog_confirm))
+                        Text(
+                            text = stringResource(R.string.identification_scan_cancelDialog_confirm),
+                            color = Blue600
+                        )
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showCancelDialog = false }) {
-                        Text(text = stringResource(R.string.identification_scan_cancelDialog_dismiss))
+                        Text(
+                            text = stringResource(R.string.identification_scan_cancelDialog_dismiss),
+                            color = Blue600
+                        )
                     }
                 }
             )
