@@ -51,7 +51,7 @@ class SetupScanTest {
         val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onCancel() }
+        verify(exactly = 1) { mockViewModel.onCancelConfirm() }
         verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
 

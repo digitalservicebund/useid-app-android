@@ -110,7 +110,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
 
         override fun onHelpButtonTapped() {}
         override fun onBackButtonTapped() = coordinator.onBackTapped()
-        override fun onCancel() {
+        override fun onCancelConfirm() {
             coordinator.cancelSetup()
         }
 

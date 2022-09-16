@@ -49,7 +49,9 @@ fun IdentificationPersonalPIN(
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)
+            modifier = modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = topPadding)
         ) {
             Text(
                 stringResource(id = R.string.identification_personalPIN_title),

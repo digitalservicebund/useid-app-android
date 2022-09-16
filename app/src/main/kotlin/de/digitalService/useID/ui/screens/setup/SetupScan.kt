@@ -1,7 +1,12 @@
 package de.digitalService.useID.ui.screens.setup
 
 import android.content.Context
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -48,7 +53,7 @@ fun SetupScan(
     val context = LocalContext.current
 
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onCancelConfirm)
     ) { topPadding ->
         ScanScreen(
             title = stringResource(id = R.string.firstTimeUser_scan_title),
@@ -57,11 +62,11 @@ fun SetupScan(
             onIncorrectPIN = { attempts ->
                 TransportPINDialog(
                     attempts = attempts,
-                    onCancel = viewModel::onCancel,
+                    onCancel = viewModel::onCancelConfirm,
                     onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
                 )
             },
-            onCancel = viewModel::onCancel,
+            onCancel = viewModel::onCancelConfirm,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
         )
@@ -82,8 +87,10 @@ private fun TransportPINDialog(
         onDismissRequest = { },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
+        var showCancelDialog by remember { mutableStateOf(false) }
+
         ScreenWithTopBar(
-            navigationButton = NavigationButton(NavigationIcon.Cancel, onCancel),
+            navigationButton = NavigationButton(NavigationIcon.Cancel) { showCancelDialog = true },
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
             val focusManager = LocalFocusManager.current
@@ -101,6 +108,34 @@ private fun TransportPINDialog(
                 focusManager.moveFocus(FocusDirection.Next)
             }
         }
+
+        if (showCancelDialog) {
+            AlertDialog(
+                onDismissRequest = { showCancelDialog = false },
+                properties = DialogProperties(),
+                title = {
+                    Text(
+                        text = stringResource(R.string.firstTimeUser_scan_cancelDialog_title),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.firstTimeUser_scan_cancelDialog_body)
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = onCancel) {
+                        Text(text = stringResource(R.string.firstTimeUser_scan_cancelDialog_confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showCancelDialog = false }) {
+                        Text(text = stringResource(R.string.firstTimeUser_scan_cancelDialog_dismiss))
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -112,8 +147,7 @@ interface SetupScanViewModelInterface {
     fun onReEnteredTransportPIN(transportPIN: String, context: Context)
     fun onHelpButtonTapped()
     fun onBackButtonTapped()
-
-    fun onCancel()
+    fun onCancelConfirm()
 }
 
 @HiltViewModel
@@ -150,9 +184,10 @@ class SetupScanViewModel @Inject constructor(
     }
 
     override fun onHelpButtonTapped() {}
+
     override fun onBackButtonTapped() = coordinator.onBackTapped()
 
-    override fun onCancel() = coordinator.cancelSetup()
+    override fun onCancelConfirm() = coordinator.cancelSetup()
 
     private fun finishSetup() {
         coordinator.onSettingPINSucceeded()
@@ -237,7 +272,7 @@ class PreviewSetupScanViewModel(
     override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}
     override fun onHelpButtonTapped() {}
     override fun onBackButtonTapped() {}
-    override fun onCancel() {}
+    override fun onCancelConfirm() {}
 }
 
 @Preview(device = Devices.PIXEL_3A)

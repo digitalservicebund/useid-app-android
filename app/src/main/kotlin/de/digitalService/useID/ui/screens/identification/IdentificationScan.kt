@@ -1,7 +1,11 @@
 package de.digitalService.useID.ui.screens.identification
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -69,8 +73,10 @@ private fun PINDialog(
         onDismissRequest = { },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
+        var showCancelDialog by remember { mutableStateOf(false) }
+
         ScreenWithTopBar(
-            navigationButton = NavigationButton(NavigationIcon.Cancel, onCancel),
+            navigationButton = NavigationButton(NavigationIcon.Cancel) { showCancelDialog = true },
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
             val focusManager = LocalFocusManager.current
@@ -82,6 +88,34 @@ private fun PINDialog(
                 delay(100L) // Workaround for https://issuetracker.google.com/issues/204502668
                 focusManager.moveFocus(FocusDirection.Next)
             }
+        }
+
+        if (showCancelDialog) {
+            AlertDialog(
+                onDismissRequest = { showCancelDialog = false },
+                properties = DialogProperties(),
+                title = {
+                    Text(
+                        text = stringResource(R.string.identification_scan_cancelDialog_title),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                },
+                text = {
+                    Text(
+                        text = stringResource(R.string.identification_scan_cancelDialog_body)
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = onCancel) {
+                        Text(text = stringResource(R.string.identification_scan_cancelDialog_confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showCancelDialog = false }) {
+                        Text(text = stringResource(R.string.identification_scan_cancelDialog_dismiss))
+                    }
+                }
+            )
         }
     }
 }
@@ -109,6 +143,7 @@ class IdentificationScanViewModel @Inject constructor(
 ) : ViewModel(), IdentificationScanViewModelInterface {
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
+
     override var errorState: ScanError? by mutableStateOf(null)
         private set
 
@@ -177,5 +212,13 @@ fun PreviewIdentificationScanWithProgress() {
 fun PreviewIdentificationScanWithError() {
     UseIDTheme {
         IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, ScanError.CardDeactivated))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewIdentificationScanWithCancelDialog() {
+    UseIDTheme {
+        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(false, null))
     }
 }

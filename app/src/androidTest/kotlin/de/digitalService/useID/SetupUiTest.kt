@@ -135,7 +135,7 @@ class SetupUiTest {
         val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockSetupScanViewModel.onCancel() }
+        verify(exactly = 1) { mockSetupScanViewModel.onCancelConfirm() }
         testErrorState.value = ScanError.IncorrectPIN(2)
 
         composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()

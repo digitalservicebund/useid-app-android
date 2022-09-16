@@ -376,7 +376,7 @@ class SetupScanViewModelTest {
             testScope
         )
 
-        viewModel.onCancel()
+        viewModel.onCancelConfirm()
 
         verify(exactly = 1) { coordinatorMock.cancelSetup() }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
