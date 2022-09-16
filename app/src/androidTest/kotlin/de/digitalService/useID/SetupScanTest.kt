@@ -3,6 +3,7 @@ package de.digitalService.useID
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
@@ -66,6 +67,24 @@ class SetupScanTest {
 
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
+
+        val cancelDialogTitle = composeTestRule.activity.getString(R.string.firstTimeUser_scan_cancelDialog_title)
+        composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
+
+        val cancelButtonTag = "Cancel"
+        composeTestRule.onNodeWithTag(cancelButtonTag).performClick()
+
+        composeTestRule.onNodeWithText(cancelDialogTitle).assertIsDisplayed()
+
+        val confirmButton = composeTestRule.activity.getString(R.string.firstTimeUser_scan_cancelDialog_confirm)
+        composeTestRule.onNodeWithText(confirmButton).performClick()
+
+        verify(exactly = 1) { mockViewModel.onCancelConfirm() }
+
+        val dismissButton = composeTestRule.activity.getString(R.string.firstTimeUser_scan_cancelDialog_dismiss)
+        composeTestRule.onNodeWithText(dismissButton).performClick()
+
+        composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
 
         verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }

@@ -52,7 +52,7 @@ fun ScreenWithTopBar(
                 navigationIcon = {
                     navigationButton?.let {
                         IconButton(
-                            modifier = Modifier.testTag("navigationButton"),
+                            modifier = Modifier.testTag(it.icon.name),
                             onClick = navigationButton.onClick,
                             content = { navigationButton.icon.Icon() }
                         )
