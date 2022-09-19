@@ -40,10 +40,12 @@ fun IdentificationScan(
     modifier: Modifier = Modifier,
     viewModel: IdentificationScanViewModelInterface = hiltViewModel<IdentificationScanViewModel>()
 ) {
+    var showCancelDialog by remember { mutableStateOf(false) }
+
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            onClick = viewModel::onCancelIdentification
+            onClick = { showCancelDialog = true }
         )
     ) { topPadding ->
         ScanScreen(
@@ -53,13 +55,47 @@ fun IdentificationScan(
             onIncorrectPIN = { attempts ->
                 PINDialog(
                     attempts = attempts,
-                    onCancel = viewModel::onCancelIdentification,
+                    onCancel = { showCancelDialog = true },
                     onNewPINEntered = viewModel::onNewPersonalPINEntered
                 )
             },
             onCancel = viewModel::onCancelIdentification,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
+        )
+    }
+
+    if (showCancelDialog) {
+        AlertDialog(
+            onDismissRequest = { showCancelDialog = false },
+            properties = DialogProperties(),
+            title = {
+                Text(
+                    text = stringResource(R.string.identification_scan_cancelDialog_title),
+                    style = MaterialTheme.typography.titleMedium
+                )
+            },
+            text = {
+                Text(
+                    text = stringResource(R.string.identification_scan_cancelDialog_body)
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = viewModel::onCancelIdentification) {
+                    Text(
+                        text = stringResource(R.string.identification_scan_cancelDialog_confirm),
+                        color = Blue600
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showCancelDialog = false }) {
+                    Text(
+                        text = stringResource(R.string.identification_scan_cancelDialog_dismiss),
+                        color = Blue600
+                    )
+                }
+            }
         )
     }
 }
@@ -74,10 +110,8 @@ private fun PINDialog(
         onDismissRequest = { },
         properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
     ) {
-        var showCancelDialog by remember { mutableStateOf(false) }
-
         ScreenWithTopBar(
-            navigationButton = NavigationButton(NavigationIcon.Cancel) { showCancelDialog = true },
+            navigationButton = NavigationButton(NavigationIcon.Cancel, onClick = onCancel),
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
             val focusManager = LocalFocusManager.current
@@ -89,40 +123,6 @@ private fun PINDialog(
                 delay(100L) // Workaround for https://issuetracker.google.com/issues/204502668
                 focusManager.moveFocus(FocusDirection.Next)
             }
-        }
-
-        if (showCancelDialog) {
-            AlertDialog(
-                onDismissRequest = { showCancelDialog = false },
-                properties = DialogProperties(),
-                title = {
-                    Text(
-                        text = stringResource(R.string.identification_scan_cancelDialog_title),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                },
-                text = {
-                    Text(
-                        text = stringResource(R.string.identification_scan_cancelDialog_body)
-                    )
-                },
-                confirmButton = {
-                    TextButton(onClick = onCancel) {
-                        Text(
-                            text = stringResource(R.string.identification_scan_cancelDialog_confirm),
-                            color = Blue600
-                        )
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showCancelDialog = false }) {
-                        Text(
-                            text = stringResource(R.string.identification_scan_cancelDialog_dismiss),
-                            color = Blue600
-                        )
-                    }
-                }
-            )
         }
     }
 }
