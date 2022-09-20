@@ -1,5 +1,9 @@
 default_platform(:android)
 
+def to_boolean(str)
+  str.downcase == 'true' || str == '1'
+end
+
 platform :android do
   desc "Runs all the tests"
   lane :test do
@@ -17,8 +21,8 @@ platform :android do
     skip_docs
     ensure_git_status_clean
     
-    bumpBuildNumber = ENV['BUMP_BUILD_NUMBER'] || options[:bumpBuildNumber] || false
-    version = ENV['VERSION'] || options[:version]
+    bumpBuildNumber = to_boolean(ENV['BUMP_BUILD_NUMBER'] || options[:bumpBuildNumber] || 'false')
+    version = ENV['VERSION'] || options[:version] || ''
 
     puts "Bumping version with version:#{version} bumpBuildNumber:#{bumpBuildNumber}"
     
