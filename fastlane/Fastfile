@@ -19,10 +19,16 @@ platform :android do
     
     bumpBuildNumber = ENV['BUMP_BUILD_NUMBER'] || options[:bumpBuildNumber] || false
     version = ENV['VERSION'] || options[:version]
+
+    puts "Bumping version with version:#{version} bumpBuildNumber:#{bumpBuildNumber}"
     
     oldTag = "#{android_get_version_name}-#{android_get_version_code}"
-    android_set_version_name(version_name: version) unless version.nil? || version.empty?
-    increment_version_code(gradle_file_path: "app/build.gradle") unless bumpBuildNumber.nil? || !bumpBuildNumber
+    unless version&.empty?
+      android_set_version_name(version_name: version)
+    end
+    if bumpBuildNumber
+      increment_version_code(gradle_file_path: "app/build.gradle")
+    end
     newTag = "#{android_get_version_name}-#{android_get_version_code}"
 
     puts "Writing new tag #{newTag} to github env: #{ENV['GITHUB_ENV']}"
