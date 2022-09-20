@@ -1,11 +1,18 @@
 name: Initial project setup
-description: Setup the system with brew, install java and android sdk, ruby and other dependencies
+description: Checkout the project and setup the system with brew, install java and android sdk, ruby and other dependencies
+
+inputs:
+  gitTag:
+    description: 'Tag to check out'
+    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Check out repository code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.gitTag }}
     - name: Install brews
       shell: bash
       run: brew bundle

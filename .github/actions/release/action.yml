@@ -30,12 +30,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Check out repository code
-      uses: actions/checkout@v2
-      with:
-        ref: ${{ inputs.gitTag }}
     - name: Setup
       uses: ./.github/actions/setup
+      with:
+        gitTag: ${{ inputs.gitTag }}
     - name: Deploy key store
       shell: bash
       env:
