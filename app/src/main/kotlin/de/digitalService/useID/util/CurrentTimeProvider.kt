@@ -9,7 +9,7 @@ interface CurrentTimeProviderInterface {
 }
 
 @Singleton
-class CurrentTimeProvider @Inject constructor(): CurrentTimeProviderInterface {
+class CurrentTimeProvider @Inject constructor() : CurrentTimeProviderInterface {
     override val currentTime: Long
         get() = Date().time
 }

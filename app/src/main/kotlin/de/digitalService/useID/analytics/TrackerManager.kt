@@ -31,7 +31,7 @@ class TrackerManager @Inject constructor(
 
     private lateinit var tracker: Tracker
 
-    override  fun initTracker(context: Context) {
+    override fun initTracker(context: Context) {
         tracker = TrackerBuilder.createDefault(apiUrl, siteId()).build(Matomo.getInstance(context))
     }
 
@@ -59,7 +59,7 @@ class TrackerManager @Inject constructor(
     }
 }
 
-class MockTrackerManager: TrackerManagerType {
+class MockTrackerManager : TrackerManagerType {
     override fun initTracker(context: Context) {}
     override fun trackDestination(destination: NavDestination) {}
     override fun trackEvent(category: String, action: String, name: String) { }

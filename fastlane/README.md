@@ -31,13 +31,13 @@ Runs all the tests
 
 Run Android linter and ktlint
 
-### android updateVersion
+### android bumpVersion
 
 ```sh
-[bundle exec] fastlane android updateVersion
+[bundle exec] fastlane android bumpVersion
 ```
 
-Update version name and bump version code
+Bump version
 
 ### android release
 
