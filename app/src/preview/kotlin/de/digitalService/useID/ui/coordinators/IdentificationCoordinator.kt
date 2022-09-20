@@ -25,7 +25,6 @@ class IdentificationCoordinator @Inject constructor(
     private val appCoordinator: AppCoordinator,
     private val trackerManager: TrackerManagerType
 ) {
-    private val logger by getLogger()
 
     private val _fetchMetadataEventFlow: MutableStateFlow<FetchMetadataEvent> = MutableStateFlow(FetchMetadataEvent.Started)
     val fetchMetadataEventFlow: StateFlow<FetchMetadataEvent>

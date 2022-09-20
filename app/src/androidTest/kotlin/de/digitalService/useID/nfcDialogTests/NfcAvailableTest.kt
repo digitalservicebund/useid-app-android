@@ -9,6 +9,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.MainActivity
 import de.digitalService.useID.R
+import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
@@ -39,6 +40,9 @@ class NfcAvailableTest {
         every { getNfcAdapter() } returns mockNfcAdapter
     }
 
+    @BindValue
+    val mockTrackerManager: TrackerManager = mockk(relaxed = true)
+
     @Inject
     lateinit var appCoordinator: AppCoordinator
 
@@ -50,7 +54,7 @@ class NfcAvailableTest {
     @Test
     fun nfcAvailableTest() {
         composeTestRule.activity.setContent {
-            UseIDApp(appCoordinator)
+            UseIDApp(appCoordinator, mockTrackerManager)
         }
 
         val nfcDialogTitle1 = composeTestRule.activity.getString(R.string.noNfc_info_title)

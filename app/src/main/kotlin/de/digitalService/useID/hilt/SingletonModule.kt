@@ -17,7 +17,10 @@ import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.CoroutineContextProviderType
+import de.digitalService.useID.util.CurrentTimeProvider
+import de.digitalService.useID.util.CurrentTimeProviderInterface
 import kotlinx.coroutines.CoroutineScope
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -26,30 +29,4 @@ class SingletonModule {
     @Provides
     @Singleton
     fun provideIDCardManager() = IDCardManager()
-}
-
-@Module
-@InstallIn(ViewModelComponent::class)
-class ViewModelModule {
-    @Provides
-    fun provideViewModelCoroutineScope(): CoroutineScope? = null
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class SingletonBindingModule {
-    @Binds
-    abstract fun bindAppCoordinator(appCoordinator: AppCoordinator): AppCoordinatorType
-
-    @Binds
-    abstract fun bindSecureStorageManager(secureStorageManager: SecureStorageManager): SecureStorageManagerInterface
-
-    @Binds
-    abstract fun bindCoroutineContextProvider(coroutineContextProvider: CoroutineContextProvider): CoroutineContextProviderType
-
-    @Binds
-    abstract fun bindStorageManager(storageManager: StorageManager): StorageManagerType
-
-    @Binds
-    abstract fun bindTrackerManager(trackerManager: TrackerManager): TrackerManagerType
 }

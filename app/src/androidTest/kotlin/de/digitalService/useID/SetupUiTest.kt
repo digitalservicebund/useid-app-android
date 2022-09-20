@@ -8,6 +8,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.UseIDApp
@@ -51,6 +52,9 @@ class SetupUiTest {
     @BindValue
     val mockStorageManager: StorageManager = mockk(relaxed = true)
 
+    @BindValue
+    val mockTrackerManager: TrackerManager = mockk(relaxed = true)
+
     @Before
     fun before() {
         hiltRule.inject()
@@ -74,7 +78,7 @@ class SetupUiTest {
         every { mockStorageManager.getIsFirstTimeUser() } returns true
 
         composeTestRule.activity.setContent {
-            UseIDApp(appCoordinator)
+            UseIDApp(appCoordinator, mockTrackerManager)
         }
 
         val startSetupButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_startSetup)
