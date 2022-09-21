@@ -7,7 +7,7 @@ inputs:
     required: true
   gitTag:
     description: 'Tag to check out'
-    required: true
+    required: false
   KEYSTORE_BASE64:
     description: 'Keystore in base64'
     required: true

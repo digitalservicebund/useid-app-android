@@ -27,7 +27,7 @@ platform :android do
     puts "Bumping version with version:#{version} bumpBuildNumber:#{bumpBuildNumber}"
     
     oldTag = "#{android_get_version_name}-#{android_get_version_code}"
-    unless version&.empty?
+    unless version.empty?
       android_set_version_name(version_name: version)
     end
     if bumpBuildNumber
@@ -35,10 +35,10 @@ platform :android do
     end
     newTag = "#{android_get_version_name}-#{android_get_version_code}"
 
+    next if oldTag == newTag
+
     puts "Writing new tag #{newTag} to github env: #{ENV['GITHUB_ENV']}"
     sh("echo 'GIT_TAG=#{newTag}' >> #{ENV['GITHUB_ENV']}")
-
-    next if oldTag == newTag
 
     git_commit(path: "app/build.gradle", message: "Bump version to #{newTag}")
     add_git_tag(tag: newTag)
