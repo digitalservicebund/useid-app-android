@@ -58,6 +58,11 @@ platform :android do
       productionRelease()
       next
     end
+
+    if options[:stage] == 'github' then
+      githubRelease()
+      next
+    end
   end
 
   desc "Create new Playstore preview build and submit to Google Play Store"
@@ -99,5 +104,35 @@ platform :android do
       skip_upload_screenshots: true,
       skip_upload_apk: true
     )
+  end
+
+  desc "Create new GitHub release containing an APK"
+  lane :githubRelease do |options|
+    skip_docs
+    ensure_git_status_clean
+
+    version_code = android_get_version_code
+    tag = "#{android_get_version_name}-#{version_code}"
+
+    gradle(
+      task: 'assemble',
+      flavor: "device",
+      build_type: 'Release',
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => "upload",
+        "android.injected.signing.key.password" => ENV["UPLOAD_KEY_PASSWORD"]
+      }
+    )
+
+    apk_path = Actions.lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+
+    changelog_dir = "metadata/android/en-US/changelogs"
+    specific_changelog_file = "#{changelog_dir}/#{version_code}.txt"
+
+    changelog_file = File.file?(specific_changelog_file) ? specific_changelog_file : "#{changelog_dir}/default.txt"
+
+    sh("gh release create #{tag} --draft --title #{tag} -F #{changelog_file} '#{apk_path}#BundesIdent-#{tag}.apk'")
   end
 end

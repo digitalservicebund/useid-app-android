@@ -50,7 +50,7 @@ runs:
         FASTLANE_API_KEY_PATH=$RUNNER_TEMP/fastlane_api_key.json
         echo -n "$FASTLANE_API_KEY" > $FASTLANE_API_KEY_PATH
         echo "FASTLANE_API_KEY_PATH=$FASTLANE_API_KEY_PATH" >> $GITHUB_ENV
-    - name: Build release and submit to Google Play Store
+    - name: Build release and submit to specified platform (Google Play Store / GitHub)
       shell: bash
       env:
         KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
@@ -60,4 +60,5 @@ runs:
         SENTRY_AUTH_TOKEN: ${{ inputs.SENTRY_AUTH_TOKEN }}
         SENTRY_ORG: digitalservice
         SENTRY_PROJECT: ${{ inputs.SENTRY_PROJECT }}
+        GH_TOKEN: ${{ inputs.GH_TOKEN }}
       run: bundle exec fastlane release stage:${{ inputs.stage }}

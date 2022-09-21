@@ -71,3 +71,20 @@ jobs:
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_PROJECT: useid-preview-android
+
+  # github:
+  #   runs-on: self-hosted
+  #   needs: bumpVersion
+  #   steps:
+  #     - name: Build
+  #       uses: ./.github/actions/release
+  #       with:
+  #         gitTag: ${{ needs.bumpVersion.outputs.gitTag }}
+  #         stage: github
+  #         KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+  #         FASTLANE_API_KEY: ${{ secrets.FASTLANE_API_KEY }}
+  #         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  #         UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+  #         SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  #         SENTRY_PROJECT: useid-android
+  #         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
