@@ -38,7 +38,7 @@ platform :android do
     puts "Writing new tag #{newTag} to github env: #{ENV['GITHUB_ENV']}"
     sh("echo 'GIT_TAG=#{newTag}' >> #{ENV['GITHUB_ENV']}")
 
-    return if oldTag == newTag
+    next if oldTag == newTag
 
     git_commit(path: "app/build.gradle", message: "Bump version to #{newTag}")
     add_git_tag(tag: newTag)
