@@ -1,6 +1,5 @@
 package de.digitalService.useID.coordinator
 
-import de.digitalService.useID.SecureStorageManager
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
@@ -17,22 +16,20 @@ class SetupCoordinatorTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockAppCoordinator: AppCoordinator
 
-    @MockK(relaxUnitFun = true)
-    lateinit var mockSecureStorageManager: SecureStorageManager
+    private val testPin = "testPin"
 
     @Test
     fun startSetupIDCard() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         setupCoordinator.startSetupIDCard()
 
-        verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupPINLetterDestination) }
     }
 
     @Test
     fun setupWithPINLetter() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         setupCoordinator.setupWithPINLetter()
 
@@ -41,7 +38,7 @@ class SetupCoordinatorTest {
 
     @Test
     fun setupWithoutPINLetter() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         setupCoordinator.setupWithoutPINLetter()
 
@@ -50,16 +47,19 @@ class SetupCoordinatorTest {
 
     @Test
     fun onTransportPINEntered() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
-        setupCoordinator.onTransportPINEntered()
+        Assertions.assertNull(setupCoordinator.transportPin)
 
+        setupCoordinator.onTransportPINEntered(testPin)
+
+        Assertions.assertEquals(testPin, setupCoordinator.transportPin)
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
     }
 
     @Test
     fun onPersonalPINIntroFinished() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         setupCoordinator.onPersonalPINIntroFinished()
 
@@ -68,16 +68,19 @@ class SetupCoordinatorTest {
 
     @Test
     fun onPersonalPINEntered() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
-        setupCoordinator.onPersonalPINEntered()
+        Assertions.assertNull(setupCoordinator.personalPin)
 
+        setupCoordinator.onPersonalPINEntered(testPin)
+
+        Assertions.assertEquals(testPin, setupCoordinator.personalPin)
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupScanDestination) }
     }
 
     @Test
     fun onSettingPINSucceeded() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         setupCoordinator.onSettingPINSucceeded()
 
@@ -87,11 +90,10 @@ class SetupCoordinatorTest {
 
     @Test
     fun onSetupFinished_noTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         setupCoordinator.onSetupFinished()
 
-        verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
         verify(exactly = 0) { mockAppCoordinator.startIdentification(any()) }
@@ -99,13 +101,12 @@ class SetupCoordinatorTest {
 
     @Test
     fun onSetupFinished_withTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
         setupCoordinator.onSetupFinished()
 
-        verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 0) { mockAppCoordinator.popToRoot() }
 
         verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl) }
@@ -113,14 +114,13 @@ class SetupCoordinatorTest {
 
     @Test
     fun onSetupFinished_withTcTokenUrlTwice() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
         setupCoordinator.onSetupFinished()
         setupCoordinator.onSetupFinished()
 
-        verify(exactly = 2) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
         verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl) }
@@ -128,11 +128,10 @@ class SetupCoordinatorTest {
 
     @Test
     fun onSkipSetup_noTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         setupCoordinator.onSkipSetup()
 
-        verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
@@ -141,13 +140,12 @@ class SetupCoordinatorTest {
 
     @Test
     fun onSkipSetup_withTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
         setupCoordinator.onSkipSetup()
 
-        verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 0) { mockAppCoordinator.popToRoot() }
 
@@ -156,14 +154,13 @@ class SetupCoordinatorTest {
 
     @Test
     fun onSkipSetup_withTcTokenUrlTwice() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
         setupCoordinator.onSkipSetup()
         setupCoordinator.onSkipSetup()
 
-        verify(exactly = 2) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
@@ -172,13 +169,12 @@ class SetupCoordinatorTest {
 
     @Test
     fun cancelSetup() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
         setupCoordinator.cancelSetup()
 
-        verify(exactly = 1) { mockSecureStorageManager.clearStorage() }
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
@@ -191,7 +187,7 @@ class SetupCoordinatorTest {
 
     @Test
     fun hasToken() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator, mockSecureStorageManager)
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
         val testUrl = "tokenUrl"
 
         Assertions.assertFalse(setupCoordinator.identificationPending())

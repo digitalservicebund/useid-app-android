@@ -24,7 +24,6 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
@@ -158,7 +157,6 @@ interface SetupScanViewModelInterface {
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
     private val coordinator: SetupCoordinator,
-    private val secureStorageManager: SecureStorageManagerInterface,
     private val idCardManager: IDCardManager,
     @Nullable coroutineScope: CoroutineScope? = null
 ) :
@@ -175,7 +173,7 @@ class SetupScanViewModel @Inject constructor(
         private set
 
     override fun startSettingPIN(context: Context) {
-        val transportPIN = secureStorageManager.loadTransportPIN() ?: run {
+        val transportPIN = coordinator.transportPin ?: run {
             logger.error("Transport PIN not available.")
             errorState = ScanError.Other(null)
             return
@@ -199,7 +197,7 @@ class SetupScanViewModel @Inject constructor(
     }
 
     private fun executePINManagement(transportPIN: String, context: Context) {
-        val newPIN = secureStorageManager.loadPersonalPIN() ?: run {
+        val newPIN = coordinator.personalPin ?: run {
             logger.error("Personal PIN not available.")
             errorState = ScanError.Other(null)
             return

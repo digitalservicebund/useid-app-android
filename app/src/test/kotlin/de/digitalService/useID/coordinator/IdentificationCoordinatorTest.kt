@@ -3,7 +3,6 @@ package de.digitalService.useID.coordinator
 import android.content.Context
 import android.net.Uri
 import android.util.Base64
-import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.ui.coordinators.AppCoordinator

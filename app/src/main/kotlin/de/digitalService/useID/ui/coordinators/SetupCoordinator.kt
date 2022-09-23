@@ -1,16 +1,20 @@
 package de.digitalService.useID.ui.coordinators
 
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.ui.screens.destinations.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SetupCoordinator @Inject constructor(
-    private val appCoordinator: AppCoordinator,
-    private val secureStorageManager: SecureStorageManagerInterface
+    private val appCoordinator: AppCoordinator
 ) {
     private var tcTokenURL: String? = null
+
+    var transportPin: String? = null
+        private set
+
+    var personalPin: String? = null
+        private set
 
     fun setTCTokenURL(tcTokenURL: String) {
         this.tcTokenURL = tcTokenURL
@@ -21,7 +25,8 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun startSetupIDCard() {
-        secureStorageManager.clearStorage()
+        transportPin = null
+        personalPin = null
         appCoordinator.navigate(SetupPINLetterDestination)
     }
 
@@ -33,7 +38,8 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.navigate(SetupResetPersonalPINDestination)
     }
 
-    fun onTransportPINEntered() {
+    fun onTransportPINEntered(newTransportPin: String) {
+        transportPin = newTransportPin
         appCoordinator.navigate(SetupPersonalPINIntroDestination)
     }
 
@@ -41,7 +47,8 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.navigate(SetupPersonalPINDestination)
     }
 
-    fun onPersonalPINEntered() {
+    fun onPersonalPINEntered(newPersonalPin: String) {
+        personalPin = newPersonalPin
         appCoordinator.navigate(SetupScanDestination)
     }
 
@@ -67,13 +74,15 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun cancelSetup() {
-        secureStorageManager.clearStorage()
+        transportPin = null
+        personalPin = null
         appCoordinator.popToRoot()
         tcTokenURL = null
     }
 
     private fun handleSetupEnded() {
-        secureStorageManager.clearStorage()
+        transportPin = null
+        personalPin = null
 
         tcTokenURL?.let {
             appCoordinator.startIdentification(it)

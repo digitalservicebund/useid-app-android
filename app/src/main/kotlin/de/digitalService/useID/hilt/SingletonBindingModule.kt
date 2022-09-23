@@ -4,8 +4,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.digitalService.useID.SecureStorageManager
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.StorageManager
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.analytics.TrackerManager
@@ -22,9 +20,6 @@ import de.digitalService.useID.util.CurrentTimeProviderInterface
 abstract class SingletonBindingModule {
     @Binds
     abstract fun bindAppCoordinator(appCoordinator: AppCoordinator): AppCoordinatorType
-
-    @Binds
-    abstract fun bindSecureStorageManager(secureStorageManager: SecureStorageManager): SecureStorageManagerInterface
 
     @Binds
     abstract fun bindCoroutineContextProvider(coroutineContextProvider: CoroutineContextProvider): CoroutineContextProviderType

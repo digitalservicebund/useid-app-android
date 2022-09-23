@@ -17,8 +17,6 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.SecureStorageManager
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
@@ -43,7 +41,11 @@ fun SetupTransportPIN(
             focusRequester.requestFocus()
         }
 
-        Column(modifier = modifier.padding(horizontal = 20.dp).padding(top = topPadding)) {
+        Column(
+            modifier = modifier
+                .padding(horizontal = 20.dp)
+                .padding(top = topPadding)
+        ) {
             Text(
                 text = stringResource(id = R.string.firstTimeUser_transportPIN_title),
                 style = MaterialTheme.typography.titleLarge
@@ -77,23 +79,11 @@ interface SetupTransportPINViewModelInterface {
 }
 
 @HiltViewModel
-class SetupTransportPINViewModel(
-    private val coordinator: SetupCoordinator,
-    private val secureStorageManager: SecureStorageManagerInterface,
-    private val onDone: () -> Unit
+class SetupTransportPINViewModel @Inject constructor(
+    private val coordinator: SetupCoordinator
 ) :
     ViewModel(), SetupTransportPINViewModelInterface {
     private val logger by getLogger()
-
-    @Inject
-    constructor(
-        coordinator: SetupCoordinator,
-        secureStorageManager: SecureStorageManager
-    ) : this(
-        coordinator = coordinator,
-        secureStorageManager = secureStorageManager,
-        onDone = coordinator::onTransportPINEntered
-    )
 
     override var transportPIN: String by mutableStateOf("")
         private set
@@ -104,9 +94,8 @@ class SetupTransportPINViewModel(
 
     override fun onDoneTapped() {
         if (transportPIN.length == 5) {
-            secureStorageManager.setTransportPIN(transportPIN)
+            coordinator.onTransportPINEntered(transportPIN)
             transportPIN = ""
-            onDone()
         } else {
             logger.debug("Transport PIN too short.")
         }

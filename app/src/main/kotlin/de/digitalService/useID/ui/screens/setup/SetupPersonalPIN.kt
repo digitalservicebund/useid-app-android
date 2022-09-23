@@ -20,7 +20,6 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
@@ -163,7 +162,6 @@ interface SetupPersonalPINViewModelInterface {
 @HiltViewModel
 class SetupPersonalPINViewModel @Inject constructor(
     private val coordinator: SetupCoordinator,
-    private val secureStorageManager: SecureStorageManagerInterface,
     private val trackerManager: TrackerManagerType
 ) :
     ViewModel(),
@@ -213,8 +211,7 @@ class SetupPersonalPINViewModel @Inject constructor(
 
     private fun handlePINInput() {
         if (pin1 == pin2) {
-            secureStorageManager.setPersonalPIN(pin1)
-            coordinator.onPersonalPINEntered()
+            coordinator.onPersonalPINEntered(pin1)
         } else {
             pin1 = ""
             pin2 = ""

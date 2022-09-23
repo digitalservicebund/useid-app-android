@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.digitalService.useID.SecureStorageManagerInterface
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
@@ -91,7 +90,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
         }
     }
 
-    fun simulateCardDeactivated(){
+    fun simulateCardDeactivated() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
             delay(3000L)
@@ -139,18 +138,7 @@ fun PreviewPreviewSetupScan() {
 
     UseIDTheme {
         PreviewSetupScan(
-            PreviewSetupScanViewModel(
-                SetupCoordinator(
-                    AppCoordinator(fakeStorageManager),
-                    object : SecureStorageManagerInterface {
-                        override fun setTransportPIN(value: String) {}
-                        override fun loadTransportPIN(): String? = "12"
-                        override fun setPersonalPIN(value: String) {}
-                        override fun loadPersonalPIN(): String? = "12"
-                        override fun clearStorage() {}
-                    }
-                )
-            )
+            PreviewSetupScanViewModel(SetupCoordinator(AppCoordinator(fakeStorageManager)))
         )
     }
 }
