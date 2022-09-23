@@ -54,6 +54,7 @@ class IdentificationCoordinator @Inject constructor(
     private var reachedScanState = false
 
     fun startIdentificationProcess(tcTokenURL: String) {
+        idCardManager.cancelTask()
         startIdentification(tcTokenURL)
     }
 

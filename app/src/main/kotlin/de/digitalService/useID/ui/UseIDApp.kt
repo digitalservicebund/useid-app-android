@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui
 
+import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -69,6 +70,7 @@ private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvail
     override fun homeScreenLaunched() {}
     override fun setNfcAvailability(availability: NfcAvailability) {}
     override fun setIsNotFirstTimeUser() {}
+    override fun handleDeepLink(uri: Uri) {}
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)

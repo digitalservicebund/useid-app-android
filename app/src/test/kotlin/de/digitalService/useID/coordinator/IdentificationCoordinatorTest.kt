@@ -124,6 +124,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         val scanResults = mutableListOf<ScanEvent>()
         val scanJob = identificationCoordinator.scanEventFlow
             .onEach(scanResults::add)
@@ -183,6 +185,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
             .onEach(results::add)
@@ -225,6 +229,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
 
@@ -261,6 +267,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
             .onEach(results::add)
@@ -295,6 +303,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {}
         advanceUntilIdle()
 
@@ -319,6 +329,8 @@ class IdentificationCoordinatorTest {
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -354,6 +366,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
             .onEach(results::add)
@@ -388,6 +402,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
             .onEach(results::add)
@@ -421,6 +437,9 @@ class IdentificationCoordinatorTest {
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
+
         advanceUntilIdle()
 
         testFlow.value = EIDInteractionEvent.RequestCardInsertion
@@ -448,6 +467,8 @@ class IdentificationCoordinatorTest {
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
 
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
@@ -490,6 +511,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
             .onEach(results::add)
@@ -525,6 +548,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         val results = mutableListOf<ScanEvent>()
         val job = identificationCoordinator.scanEventFlow
             .onEach(results::add)
@@ -559,6 +584,8 @@ class IdentificationCoordinatorTest {
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
 
         val scanResults = mutableListOf<ScanEvent>()
         val scanJob = identificationCoordinator.scanEventFlow
@@ -600,6 +627,8 @@ class IdentificationCoordinatorTest {
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
 
+        verify { mockIDCardManager.cancelTask() }
+
         var didCallCallback = false
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {
             didCallCallback = true
@@ -633,6 +662,8 @@ class IdentificationCoordinatorTest {
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
 
         var callbackCalledCount = 0
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {

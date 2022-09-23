@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
+import android.net.Uri
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -7,6 +8,7 @@ import androidx.navigation.NavController
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
@@ -26,16 +28,18 @@ interface AppCoordinatorType {
     fun homeScreenLaunched()
     fun setNfcAvailability(availability: NfcAvailability)
     fun setIsNotFirstTimeUser()
+    fun handleDeepLink(uri: Uri)
 }
 
 @Singleton
 class AppCoordinator @Inject constructor(
     private val storageManager: StorageManagerType
 ) : AppCoordinatorType {
+    private val logger by getLogger()
+
     private lateinit var navController: NavController
 
-    var tcTokenURL: String? = null
-
+    private var tcTokenURL: String? = null
     private var coldLaunch: Boolean = true
 
     override val nfcAvailability: MutableState<NfcAvailability> = mutableStateOf(NfcAvailability.Available)
@@ -80,5 +84,26 @@ class AppCoordinator @Inject constructor(
 
     override fun setIsNotFirstTimeUser() {
         storageManager.setIsNotFirstTimeUser()
+    }
+
+    override fun handleDeepLink(uri: Uri) {
+        if (uri.scheme != "eid") {
+            logger.debug("Unexpected URI scheme: ${uri.scheme}")
+            return
+        }
+
+        Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")?.let { url ->
+            tcTokenURL = url
+
+            if (!coldLaunch) {
+                if (navController.previousBackStackEntry != null) {
+                    popToRoot()
+                } else {
+                    homeScreenLaunched()
+                }
+            }
+        } ?: run {
+            logger.info("URL does not contain tcTokenURL parameter.")
+        }
     }
 }

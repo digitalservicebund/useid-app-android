@@ -15,8 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.NfcAvailability
-import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.UseIDApp
+import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.util.NfcAdapterUtil
 import javax.inject.Inject
 
@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
     lateinit var idCardManager: IDCardManager
 
     @Inject
-    lateinit var appCoordinator: AppCoordinator
+    lateinit var appCoordinator: AppCoordinatorType
 
     @Inject
     lateinit var trackerManager: TrackerManagerType
@@ -42,10 +42,7 @@ class MainActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
 
-        intent.data?.let { uri ->
-            val tcTokenURL = Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")
-            appCoordinator.tcTokenURL = tcTokenURL
-        }
+        handleNewIntent(intent)
 
         setContent {
             UseIDApp(appCoordinator, trackerManager)
@@ -75,11 +72,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
-        val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-        if (tag != null) {
-            idCardManager.handleNFCTag(tag)
-        }
+        handleNewIntent(intent)
     }
 
     private fun foregroundDispatch(activity: Activity) {
@@ -91,5 +84,21 @@ class MainActivity : ComponentActivity() {
 
         val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, flag)
         nfcAdapter?.enableForegroundDispatch(activity, nfcPendingIntent, null, null)
+    }
+
+    private fun handleNewIntent(intent: Intent) {
+        when (intent.action) {
+            NfcAdapter.ACTION_TAG_DISCOVERED -> {
+                intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)?.let {
+                    idCardManager.handleNFCTag(it)
+                }
+            }
+
+            Intent.ACTION_VIEW -> {
+                intent.data?.let {
+                    appCoordinator.handleDeepLink(it)
+                }
+            }
+        }
     }
 }
