@@ -33,7 +33,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.ui.theme.UseIDTheme
 
-
 @Composable
 fun PINEntryField(
     value: String,
@@ -66,7 +65,7 @@ fun PINEntryField(
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.NumberPassword,
-                imeAction = ImeAction.Done,
+                imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
                 onDone = { onDone() }
@@ -83,7 +82,7 @@ fun PINEntryField(
                 .semantics(mergeDescendants = true) {
                     this.contentDescription = contentDescription
                     stateDescription = value.replace(".".toRegex(), "$0 ")
-                },
+                }
         )
 
         PINDigitRow(
@@ -96,7 +95,6 @@ fun PINEntryField(
         )
     }
 }
-
 
 @Preview
 @Composable
@@ -116,7 +114,7 @@ fun PreviewPINEntryField() {
                 spacerPosition = 3,
                 contentDescription = "",
                 focusRequester = focusRequester,
-                modifier = Modifier.padding(64.dp),
+                modifier = Modifier.padding(64.dp)
             )
         }
     }
