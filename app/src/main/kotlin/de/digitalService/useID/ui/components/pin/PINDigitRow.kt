@@ -1,12 +1,10 @@
 package de.digitalService.useID.ui.components.pin
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -21,15 +19,14 @@ fun PINDigitRow(
     placeholder: Boolean,
     spacerPosition: Int?,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.background
 ) {
     Row(
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
-        modifier = modifier.background(color = backgroundColor)
+        modifier = modifier.fillMaxWidth().background(color = Color.Transparent)
     ) {
-        for (position in 1..digitCount) {
-            val char = input.toCharArray().getOrNull(position - 1)
-            PINDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
+        for (position in 0 until digitCount) {
+            val char = input.toCharArray().getOrNull(position)
             spacerPosition?.let {
                 if (spacerPosition == position) {
                     Spacer(
@@ -39,6 +36,8 @@ fun PINDigitRow(
                     )
                 }
             }
+
+            PINDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
         }
     }
 }

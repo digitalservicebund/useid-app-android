@@ -40,7 +40,7 @@ class PINDigitFieldTest {
                 onValueChanged = mockCallback,
                 digitCount = 6,
                 obfuscation = true,
-                spacerPosition = 0,
+                spacerPosition = null,
                 contentDescription = "",
                 focusRequester = focusRequester
             )
@@ -76,7 +76,7 @@ class PINDigitFieldTest {
                 onValueChanged = mockCallback,
                 digitCount = 6,
                 obfuscation = false,
-                spacerPosition = 0,
+                spacerPosition = null,
                 contentDescription = "",
                 focusRequester = focusRequester
             )

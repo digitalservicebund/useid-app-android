@@ -29,8 +29,8 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
             .drawBehind {
                 drawLine(
                     color = Color.Black,
-                    start = Offset(0f, size.height),
-                    end = Offset(size.width, size.height),
+                    start = Offset(size.width * 0.1f, size.height),
+                    end = Offset(size.width * 0.9f, size.height),
                     strokeWidth = 2f
                 )
             }
