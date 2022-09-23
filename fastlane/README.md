@@ -71,6 +71,14 @@ Create new Playstore production build and submit to Google Play Store
 
 Create new Playstore build and submit to Google Play Store
 
+### android githubRelease
+
+```sh
+[bundle exec] fastlane android githubRelease
+```
+
+Create new GitHub release containing an APK
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
