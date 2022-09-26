@@ -4,8 +4,8 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.SavedStateHandle
-import de.digitalService.useID.ui.screens.identification.IdentificationSuccessViewModel
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.screens.identification.IdentificationSuccessViewModel
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension

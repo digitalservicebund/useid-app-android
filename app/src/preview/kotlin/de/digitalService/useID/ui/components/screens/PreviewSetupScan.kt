@@ -131,10 +131,12 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewSetupScan() {
-    val fakeStorageManager = (object : StorageManagerType {
-        override fun getIsFirstTimeUser(): Boolean = false
-        override fun setIsNotFirstTimeUser() {}
-    })
+    val fakeStorageManager = (
+        object : StorageManagerType {
+            override fun getIsFirstTimeUser(): Boolean = false
+            override fun setIsNotFirstTimeUser() {}
+        }
+        )
 
     UseIDTheme {
         PreviewSetupScan(

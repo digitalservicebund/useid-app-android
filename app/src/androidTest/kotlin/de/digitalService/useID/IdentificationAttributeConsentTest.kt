@@ -38,7 +38,7 @@ class IdentificationAttributeConsentTest {
             R.string.cardAttribute_dg02,
             R.string.cardAttribute_dg03,
             R.string.cardAttribute_dg04,
-            R.string.cardAttribute_dg05,
+            R.string.cardAttribute_dg05
         )
 
         every { viewModel.identificationProvider } returns testIdentificationProviderString
@@ -60,7 +60,6 @@ class IdentificationAttributeConsentTest {
         verify(exactly = 1) { viewModel.onPINButtonTapped() }
     }
 
-
     @Test
     fun dialogTest() {
         val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
@@ -70,7 +69,7 @@ class IdentificationAttributeConsentTest {
             R.string.cardAttribute_dg02,
             R.string.cardAttribute_dg03,
             R.string.cardAttribute_dg04,
-            R.string.cardAttribute_dg05,
+            R.string.cardAttribute_dg05
         )
 
         val testIssue = "ISSUE"
@@ -88,7 +87,7 @@ class IdentificationAttributeConsentTest {
             testIssueUrl,
             testSubject,
             testSubjectUrl,
-            testTerms,
+            testTerms
         )
 
         composeTestRule.activity.setContent {

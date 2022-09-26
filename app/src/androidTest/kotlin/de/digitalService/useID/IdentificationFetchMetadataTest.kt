@@ -77,6 +77,5 @@ class IdentificationFetchMetadataTest {
         composeTestRule.onNodeWithContentDescription(errorCancelButtonTitle).performClick()
 
         verify { viewModel.onCancelButtonTapped() }
-
     }
 }

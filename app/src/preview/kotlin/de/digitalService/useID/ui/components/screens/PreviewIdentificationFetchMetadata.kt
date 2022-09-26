@@ -90,11 +90,16 @@ fun PreviewPreviewIdentificationFetchMetadata() {
         PreviewIdentificationFetchMetadata(
             PreviewIdentificationFetchMetadataViewModel(
                 IdentificationCoordinator(
-                    AppCoordinator((object : StorageManagerType {
-                        override fun getIsFirstTimeUser(): Boolean = false
-                        override fun setIsNotFirstTimeUser() {}
-                    }))
-                , MockTrackerManager())
+                    AppCoordinator(
+                        (
+                            object : StorageManagerType {
+                                override fun getIsFirstTimeUser(): Boolean = false
+                                override fun setIsNotFirstTimeUser() {}
+                            }
+                            )
+                    ),
+                    MockTrackerManager()
+                )
             )
         )
     }

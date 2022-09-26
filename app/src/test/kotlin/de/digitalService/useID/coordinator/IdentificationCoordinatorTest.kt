@@ -5,13 +5,13 @@ import android.net.Uri
 import android.util.Base64
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.*
-import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
-import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.util.CoroutineContextProvider
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -179,7 +179,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -223,7 +223,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -261,7 +261,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -297,7 +297,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -324,7 +324,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -360,7 +360,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -396,7 +396,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -432,7 +432,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -462,7 +462,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -505,7 +505,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -542,7 +542,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -579,7 +579,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -621,7 +621,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -657,7 +657,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenURL)
@@ -680,13 +680,13 @@ class IdentificationCoordinatorTest {
     }
 
     @Test
-    fun finishIdentification(){
+    fun finishIdentification() {
         val identificationCoordinator = IdentificationCoordinator(
             mockContext,
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.finishIdentification()
@@ -696,13 +696,13 @@ class IdentificationCoordinatorTest {
     }
 
     @Test
-    fun cancelIdentification(){
+    fun cancelIdentification() {
         val identificationCoordinator = IdentificationCoordinator(
             mockContext,
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
-            mockCoroutineContextProvider,
+            mockCoroutineContextProvider
         )
 
         identificationCoordinator.cancelIdentification()

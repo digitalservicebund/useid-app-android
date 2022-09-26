@@ -44,7 +44,6 @@ class SetupFinishTest {
         verify(exactly = 1) { mockViewModel.onButtonTapped() }
     }
 
-
     @Test
     fun setupFinish_identificationPendingTrue() {
         val mockViewModel: SetupFinishViewModelInterface = mockk(relaxed = true)

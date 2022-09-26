@@ -1,9 +1,9 @@
 package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModel
 import de.digitalService.useID.ui.screens.identification.ScanEvent
-import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.util.CoroutineContextProviderType
 import io.mockk.every
 import io.mockk.impl.annotations.MockK

@@ -1,8 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
-import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
-import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute

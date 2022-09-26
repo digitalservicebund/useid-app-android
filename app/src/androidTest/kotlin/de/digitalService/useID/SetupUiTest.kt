@@ -9,14 +9,14 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.analytics.TrackerManager
-import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.UseIDApp
-import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
+import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.screens.destinations.SetupFinishDestination
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
-import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every

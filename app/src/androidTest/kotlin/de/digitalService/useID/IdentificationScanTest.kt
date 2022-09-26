@@ -186,7 +186,6 @@ class IdentificationScanTest {
         composeTestRule.onNodeWithText(dismissButton).performClick()
 
         composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
-
     }
 
     @Test

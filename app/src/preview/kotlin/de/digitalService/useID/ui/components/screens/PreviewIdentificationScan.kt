@@ -83,7 +83,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(private val coordin
         }
     }
 
-    fun simulateCardDeactivated(){
+    fun simulateCardDeactivated() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
             delay(3000L)
@@ -123,11 +123,12 @@ fun PreviewPreviewIdentificationScan() {
         PreviewIdentificationScan(
             PreviewIdentificationScanViewModel(
                 IdentificationCoordinator(
-                    AppCoordinator(object : StorageManagerType{
+                    AppCoordinator(object : StorageManagerType {
                         override fun getIsFirstTimeUser(): Boolean = false
                         override fun setIsNotFirstTimeUser() {}
-                    })
-                , MockTrackerManager())
+                    }),
+                    MockTrackerManager()
+                )
             )
         )
     }

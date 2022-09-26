@@ -1,9 +1,9 @@
 package de.digitalService.useID.viewModel
 
 import androidx.lifecycle.SavedStateHandle
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel
-import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -56,7 +56,7 @@ class IdentificationFetchMetadataViewModelTest {
             savedStateHandle
         )
 
-        dispatcher.scheduler.advanceUntilIdle();
+        dispatcher.scheduler.advanceUntilIdle()
 
         assertFalse(viewModel.shouldShowError)
         assertTrue(viewModel.shouldShowProgressIndicator)
@@ -72,7 +72,7 @@ class IdentificationFetchMetadataViewModelTest {
             savedStateHandle
         )
 
-        dispatcher.scheduler.advanceUntilIdle();
+        dispatcher.scheduler.advanceUntilIdle()
 
         assertTrue(viewModel.shouldShowError)
         assertFalse(viewModel.shouldShowProgressIndicator)
@@ -88,7 +88,7 @@ class IdentificationFetchMetadataViewModelTest {
             savedStateHandle
         )
 
-        dispatcher.scheduler.advanceUntilIdle();
+        dispatcher.scheduler.advanceUntilIdle()
 
         assertFalse(viewModel.shouldShowError)
         assertFalse(viewModel.shouldShowProgressIndicator)

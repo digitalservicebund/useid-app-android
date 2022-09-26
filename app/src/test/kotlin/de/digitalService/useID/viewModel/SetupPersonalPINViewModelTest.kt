@@ -194,7 +194,6 @@ class SetupPersonalPINViewModelTest {
             assertEquals(testValue, viewModel.pin2)
 
             verify(exactly = 0) { coordinatorMock.onPersonalPINEntered(any()) }
-
         }
 
         @ParameterizedTest

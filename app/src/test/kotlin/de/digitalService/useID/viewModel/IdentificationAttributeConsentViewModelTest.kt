@@ -5,10 +5,10 @@ import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
 import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IDCardAttribute
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentNavArgs
 import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentViewModel
-import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -36,7 +36,7 @@ class IdentificationAttributeConsentViewModelTest {
             IDCardAttribute.DG02 to true,
             IDCardAttribute.DG03 to false,
             IDCardAttribute.DG04 to true,
-            IDCardAttribute.DG05 to false,
+            IDCardAttribute.DG05 to false
         )
 
         val mockNavArgs: IdentificationAttributeConsentNavArgs = mockk()
@@ -53,13 +53,13 @@ class IdentificationAttributeConsentViewModelTest {
 
         val viewModel = IdentificationAttributeConsentViewModel(
             mockIdentificationCoordinator,
-            mockSaveStateHandle,
+            mockSaveStateHandle
         )
 
         val expectedRequiredReadAttributes = listOf(
             R.string.cardAttribute_dg01,
             R.string.cardAttribute_dg02,
-            R.string.cardAttribute_dg04,
+            R.string.cardAttribute_dg04
         )
         Assertions.assertEquals(expectedRequiredReadAttributes, viewModel.requiredReadAttributes)
         Assertions.assertEquals(testIdentificationProvider, viewModel.identificationProvider)
@@ -72,5 +72,4 @@ class IdentificationAttributeConsentViewModelTest {
         Assertions.assertEquals(expectedRequiredReadAttributes, viewModel.requiredReadAttributes)
         Assertions.assertEquals(testIdentificationProvider, viewModel.identificationProvider)
     }
-
 }

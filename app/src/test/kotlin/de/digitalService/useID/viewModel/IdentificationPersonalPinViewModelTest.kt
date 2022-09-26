@@ -1,8 +1,8 @@
 package de.digitalService.useID.viewModel
 
 import androidx.core.text.isDigitsOnly
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPINViewModel
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPINViewModel
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -30,7 +30,7 @@ class IdentificationPersonalPinViewModelTest {
         )
 
         viewModel.userInputPIN(testValue)
-        assertEquals(testValue ,viewModel.pin)
+        assertEquals(testValue, viewModel.pin)
     }
 
     @Test
@@ -45,7 +45,7 @@ class IdentificationPersonalPinViewModelTest {
         )
 
         viewModel.userInputPIN(testValue)
-        assertEquals(testValue ,viewModel.pin)
+        assertEquals(testValue, viewModel.pin)
     }
 
     @Test
@@ -60,7 +60,7 @@ class IdentificationPersonalPinViewModelTest {
         )
 
         viewModel.userInputPIN(testValue)
-        assertEquals("" ,viewModel.pin)
+        assertEquals("", viewModel.pin)
     }
 
     @Test
@@ -75,7 +75,7 @@ class IdentificationPersonalPinViewModelTest {
         )
 
         viewModel.userInputPIN(testValue)
-        assertEquals("" ,viewModel.pin)
+        assertEquals("", viewModel.pin)
     }
 
     @Test
@@ -92,7 +92,7 @@ class IdentificationPersonalPinViewModelTest {
         viewModel.userInputPIN(testValue)
         viewModel.onDone()
 
-        assertEquals(testValue ,viewModel.pin)
+        assertEquals(testValue, viewModel.pin)
 
         verify(exactly = 1) { mockIdentificationCoordinator.onPINEntered(testValue) }
     }
@@ -111,7 +111,7 @@ class IdentificationPersonalPinViewModelTest {
         viewModel.userInputPIN(testValue)
         viewModel.onDone()
 
-        assertEquals(testValue ,viewModel.pin)
+        assertEquals(testValue, viewModel.pin)
 
         verify(exactly = 0) { mockIdentificationCoordinator.onPINEntered(testValue) }
     }
@@ -130,7 +130,7 @@ class IdentificationPersonalPinViewModelTest {
         viewModel.userInputPIN(testValue)
         viewModel.onDone()
 
-        assertEquals("" ,viewModel.pin)
+        assertEquals("", viewModel.pin)
 
         verify(exactly = 0) { mockIdentificationCoordinator.onPINEntered(testValue) }
     }

@@ -5,8 +5,8 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -374,7 +374,6 @@ class SetupScanViewModelTest {
 
         assertNull(viewModel.errorState)
     }
-
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
