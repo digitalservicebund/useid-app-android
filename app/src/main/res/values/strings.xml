@@ -235,6 +235,7 @@
 \n**Online-Beschwerde**
 \n
 \n[www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html ↗](https://www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html)</string>
+    <string name="scan_animationAccessibilityLabel">Legen Sie ihren Ausweis auf eine gerade Oberfläche, um Bewegungen bei dem Scanvorgang zu vermeiden. Legen Sie anschließend Ihr iPhone auf den Ausweis. Die obere Rückseite des iPhones sollte direkt auf dem Ausweis liegen. Warten Sie einen Moment, bis der Scanvorgang abgeschlossen wurde.</string>
     <string name="scan_helpNFC">Wie funktioniert die NFC-Technologie?</string>
     <string name="scan_helpScanning">Mein Ausweis wird nicht erkannt</string>
     <string name="scanError_cardBlocked_body">### Warum ist Ihr Ausweis blockiert\?\n\nDa Sie Ihre persönliche Ausweis-PIN ein drittes mal falsch eingeben haben, wurde ihr Ausweis blockiert.\n\n### Was können Sie tun\?\n\nWir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.\n\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10-stellige PUK finden Sie auf Ihrem PIN-Brief.</string>

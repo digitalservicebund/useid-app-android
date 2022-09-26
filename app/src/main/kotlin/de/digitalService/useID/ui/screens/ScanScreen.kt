@@ -52,6 +52,7 @@ fun ScanScreen(
     ) {
 //        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation_id_scan))
 //
+//        val animationDescription = stringResource(id = R.string.scan_animationAccessibilityLabel)
 //        LottieAnimation(
 //            composition = composition,
 //            contentScale = ContentScale.Fit,
@@ -59,6 +60,9 @@ fun ScanScreen(
 //            modifier = Modifier
 //                .fillMaxWidth()
 //                .aspectRatio(1.47f)
+//                .semantics(mergeDescendants = true) {
+//                    this.contentDescription = animationDescription
+//                }
 //        )
 
         Box(
