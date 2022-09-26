@@ -3,14 +3,17 @@ package de.digitalService.useID
 import android.app.Activity
 import android.app.PendingIntent
 import android.content.Intent
-import android.net.Uri
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.ui.graphics.Color
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.splashscreen.SplashScreenViewProvider
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.IDCardManager
@@ -18,6 +21,10 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.util.NfcAdapterUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,9 +44,16 @@ class MainActivity : ComponentActivity() {
     private var nfcAdapter: NfcAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            installSplashScreen()
+        val splashScreen = installSplashScreen()
+
+        var keepSplashScreen = true
+        splashScreen.setKeepOnScreenCondition { keepSplashScreen }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(600)
+            keepSplashScreen = false
         }
+
         super.onCreate(savedInstanceState)
 
         handleNewIntent(intent)

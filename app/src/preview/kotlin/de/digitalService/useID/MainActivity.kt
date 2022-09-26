@@ -13,6 +13,10 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -26,9 +30,16 @@ class MainActivity : ComponentActivity() {
     lateinit var trackerManager: TrackerManagerType
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            installSplashScreen()
+        val splashScreen = installSplashScreen()
+
+        var keepSplashScreen = true
+        splashScreen.setKeepOnScreenCondition { keepSplashScreen }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(600)
+            keepSplashScreen = false
         }
+
         super.onCreate(savedInstanceState)
 
         handleNewIntent(intent)
