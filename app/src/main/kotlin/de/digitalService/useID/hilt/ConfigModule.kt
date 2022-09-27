@@ -20,5 +20,5 @@ class ConfigModule {
 
     @Provides
     @Named(TRACKING_SESSION_TIMEOUT)
-    fun provideTrackingSessionTimeout(): Long = 1800L
+    fun provideTrackingSessionTimeout(): Long = 1800000L
 }
