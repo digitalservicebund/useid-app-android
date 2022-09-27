@@ -115,7 +115,9 @@ class SetupUiTest {
 
         composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[1].performTextInput("111111")
 
+        composeTestRule.onNodeWithText(personalPinError).performScrollTo()
         composeTestRule.onNodeWithText(personalPinError).assertIsDisplayed()
+
         composeTestRule.onAllNodesWithTag(pinEntryFieldTag).assertCountEquals(2)
 
         composeTestRule.onAllNodesWithTag(pinEntryFieldTag)[0].performTextInput("123456")

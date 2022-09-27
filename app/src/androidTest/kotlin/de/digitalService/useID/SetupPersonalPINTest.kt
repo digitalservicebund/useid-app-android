@@ -82,6 +82,7 @@ class SetupPersonalPINTest {
 
         testShouldShowErrorState.value = true
 
+        composeTestRule.onNodeWithText(transportPinDialogTitleText).performScrollTo()
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
 
         verify(exactly = 1) { mockViewModel.userInputPIN1(testPinInput) }

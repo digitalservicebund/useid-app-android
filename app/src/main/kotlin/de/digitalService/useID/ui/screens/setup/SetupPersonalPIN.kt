@@ -2,6 +2,8 @@ package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -32,7 +34,10 @@ import javax.inject.Inject
 
 @Destination
 @Composable
-fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINViewModelInterface = hiltViewModel<SetupPersonalPINViewModel>()) {
+fun SetupPersonalPIN(
+    modifier: Modifier = Modifier,
+    viewModel: SetupPersonalPINViewModelInterface = hiltViewModel<SetupPersonalPINViewModel>()
+) {
     val pin1EntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_textFieldLabel_first,
         viewModel.pin1.map { "$it " }
@@ -61,6 +66,7 @@ fun SetupPersonalPIN(modifier: Modifier = Modifier, viewModel: SetupPersonalPINV
             modifier = modifier
                 .padding(horizontal = 20.dp)
                 .padding(top = topPadding)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 stringResource(id = R.string.firstTimeUser_personalPIN_title),
