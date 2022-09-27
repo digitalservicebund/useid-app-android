@@ -87,11 +87,6 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun handleDeepLink(uri: Uri) {
-        if (uri.scheme != "eid") {
-            logger.debug("Unexpected URI scheme: ${uri.scheme}")
-            return
-        }
-
         Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")?.let { url ->
             tcTokenURL = url
 
