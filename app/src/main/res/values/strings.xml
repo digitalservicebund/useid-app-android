@@ -286,6 +286,8 @@
     <string name="scan_animationAccessibilityLabel">Legen Sie ihren Ausweis auf eine gerade Oberfläche, um Bewegungen bei dem Scanvorgang zu vermeiden. Legen Sie anschließend Ihr iPhone auf den Ausweis. Die obere Rückseite des iPhones sollte direkt auf dem Ausweis liegen. Warten Sie einen Moment, bis der Scanvorgang abgeschlossen wurde.</string>
     <string name="scan_helpNFC">Wie funktioniert die NFC-Technologie?</string>
     <string name="scan_helpScanning">Mein Ausweis wird nicht erkannt</string>
+    <string name="scanError_box_title">Ausweisprozess erneut starten</string>
+    <string name="scanError_box_body">Aufgrund eines Fehlers müssen Sie den Ausweisprozess erneut starten.</string>
     <string name="scanError_cardBlocked_body">### Warum ist Ihr Ausweis blockiert\?\n\nDa Sie Ihre persönliche Ausweis-PIN ein drittes mal falsch eingeben haben, wurde ihr Ausweis blockiert.\n\n### Was können Sie tun\?\n\nWir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.\n\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10-stellige PUK finden Sie auf Ihrem PIN-Brief.</string>
     <string name="scanError_cardBlocked_title">Ihr Ausweis ist blockiert.</string>
     <string name="scanError_cardDeactivated_body">Wenden Sie sich an Ihr Bürgeramt, um die Online-Ausweisfunktion zu aktivieren.\\n\\nSie wissen nicht, an wen Sie sich wenden können\? \\n\\nRufen Sie die 115 an oder informieren Sie sich auf: \\n\\nhttps://behoredenfinder.de/</string>
@@ -295,6 +297,7 @@
     <string name="scanError_cardUnreadable_body">Folgende deutsche Dokumente bieten die Funktion an: Personalausweis, elektronischer Aufenthaltstitel und die eID-Karte für Bürgerinnen und Bürger:innen der Europäischen Union und des Europäischen Wirtschaftsraums.\n\nWenn Ihr Smartphone Ihren Ausweis nicht erkennt oder „Ausweis entfernt” anzeigt, probieren Sie folgende Schritte aus:\n\n- Bewegen Sie Ihren Ausweis von Ihrem Smartphone weg und legen Sie den Ausweis erneut dicht an die Rückseite. Probieren Sie verschiedene Positionen aus: Obere, mittlere und untere Rückseite.\n\n![](%1$s)\n\n- Wenn Sie eine dicke Schutzhülle haben, entfernen Sie die Hülle und probieren es dann erneut.\n\n- Überprüfen Sie, ob NFC aktiviert ist.\n\n- Stellen Sie NFC aus und wieder an.\n\n- Probieren Sie den Smartphone-Bildschirm aus- und wieder anzustellen.\n\n- Stellen Sie sicher, dass Sie mit dem Internet verbunden sind.</string>
     <string name="scanError_cardUnreadable_title">Ihr Ausweis wurde nicht erkannt.</string>
     <string name="scanError_close">Schließen</string>
+    <string name="scanError_redirect">Zurück zum Anbieter</string>
     <string name="scanError_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="scanError_unknown_title">Es ist ein Fehler aufgetreten.</string>
     <string name="termsOfUse_text">"## Nutzungsbedingungen
