@@ -1,9 +1,7 @@
 package de.digitalService.useID.ui.components.pin
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.Circle
@@ -16,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,8 +23,7 @@ import androidx.compose.ui.unit.dp
 fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
     Box(
         modifier = Modifier
-            .width(30.dp)
-            .height(30.dp)
+            .size(30.dp)
             .drawBehind {
                 drawLine(
                     color = Color.Black,
@@ -47,9 +45,13 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                         .testTag("Obfuscation")
                 )
             } else {
+                val textStyle = MaterialTheme.typography.titleLarge
+                val fontSizeDp = with(LocalDensity.current) { textStyle.fontSize.value.dp.toSp() }
+
                 Text(
                     text = input.toString(),
                     style = MaterialTheme.typography.titleLarge,
+                    fontSize = fontSizeDp,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .testTag("PINEntry")
@@ -68,25 +70,25 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
     }
 }
 
-@Preview
+@Preview(showBackground = true, fontScale = 2f)
 @Composable
 fun PreviewPINDigitFieldWithInputNotObfuscated() {
     PINDigitField(input = '2', obfuscation = false, placeholder = false)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewPINDigitFieldWithInputObfuscated() {
     PINDigitField(input = '2', obfuscation = true, placeholder = false)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewPINDigitFieldWithoutInput() {
     PINDigitField(input = null, obfuscation = false, placeholder = false)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PreviewPINDigitFieldWithouInputAndPlaceholder() {
     PINDigitField(input = null, obfuscation = false, placeholder = true)
