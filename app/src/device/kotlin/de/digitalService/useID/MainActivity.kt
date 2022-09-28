@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
     override fun onPause() {
         super.onPause()
         nfcAdapter?.disableForegroundDispatch(this)
+        trackerManager.dispatch()
     }
 
     override fun onNewIntent(intent: Intent) {

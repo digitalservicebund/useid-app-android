@@ -51,6 +51,11 @@ class MainActivity : ComponentActivity() {
         intent?.let { handleNewIntent(it) }
     }
 
+    override fun onPause() {
+        super.onPause()
+        trackerManager.dispatch()
+    }
+
     private fun handleNewIntent(intent: Intent) {
         val intentData = intent.data
         if (intent.action == Intent.ACTION_VIEW && intentData != null) {
