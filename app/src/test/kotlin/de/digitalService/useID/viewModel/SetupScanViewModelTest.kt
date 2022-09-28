@@ -1,6 +1,8 @@
 package de.digitalService.useID.viewModel
 
 import android.content.Context
+import de.digitalService.useID.analytics.TrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
@@ -30,6 +32,9 @@ class SetupScanViewModelTest {
     lateinit var idCardManagerMock: IDCardManager
 
     @MockK(relaxUnitFun = true)
+    lateinit var mockTrackerManager: TrackerManagerType
+
+    @MockK(relaxUnitFun = true)
     lateinit var contextMock: Context
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -55,6 +60,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -80,6 +86,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -105,6 +112,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -135,6 +143,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -166,6 +175,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -198,6 +208,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -236,6 +247,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -270,6 +282,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -304,6 +317,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -341,6 +355,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -363,6 +378,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
@@ -383,6 +399,7 @@ class SetupScanViewModelTest {
         val viewModel = SetupScanViewModel(
             coordinatorMock,
             idCardManagerMock,
+            mockTrackerManager,
             testScope
         )
 
