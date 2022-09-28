@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package de.digitalService.useID.ui.components.pin
 
 import androidx.compose.foundation.background
@@ -8,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,7 +55,7 @@ fun PINEntryField(
     Box(
         modifier = modifier
             .background(backgroundColor)
-            .semantics(mergeDescendants = true) {
+            .semantics(mergeDescendants = false) {
                 this.contentDescription = contentDescription
                 stateDescription = value.replace(".".toRegex(), "$0 ") + cursorPositionDescription
             }
