@@ -112,7 +112,7 @@
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
     <string name="helpNFC_title">How does NFC technology work?</string>
-    <string name="home_header_body">Open the website of the provider on your smartphone and press the button \"Identify with BundesIdent\".</string>
+    <string name="home_header_body">Open the website of the provider on your smartphone and press the button \"Mit BundesIdent ausweisen\".</string>
     <string name="home_header_title">Identify</string>
     <string name="home_more_accessibilityStatement">Accessibility statement</string>
     <string name="home_more_imprint">Imprint</string>
