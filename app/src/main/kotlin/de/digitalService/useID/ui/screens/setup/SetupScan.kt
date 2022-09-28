@@ -24,6 +24,7 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
@@ -44,7 +45,9 @@ import kotlinx.coroutines.launch
 import javax.annotation.Nullable
 import javax.inject.Inject
 
-@Destination
+@Destination(
+    route = "firstTimeUser/scan"
+)
 @Composable
 fun SetupScan(
     modifier: Modifier = Modifier,
@@ -67,6 +70,8 @@ fun SetupScan(
                 )
             },
             onCancel = viewModel::onCancelConfirm,
+            onHelpDialogShown = viewModel::onHelpButtonTapped,
+            onNfcDialogShown = viewModel::onNfcButtonTapped,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
         )
@@ -150,6 +155,7 @@ interface SetupScanViewModelInterface {
     fun startSettingPIN(context: Context)
     fun onReEnteredTransportPIN(transportPIN: String, context: Context)
     fun onHelpButtonTapped()
+    fun onNfcButtonTapped()
     fun onBackButtonTapped()
     fun onCancelConfirm()
 }
@@ -158,6 +164,7 @@ interface SetupScanViewModelInterface {
 class SetupScanViewModel @Inject constructor(
     private val coordinator: SetupCoordinator,
     private val idCardManager: IDCardManager,
+    private val trackerManager: TrackerManagerType,
     @Nullable coroutineScope: CoroutineScope? = null
 ) :
     ViewModel(), SetupScanViewModelInterface {
@@ -186,7 +193,13 @@ class SetupScanViewModel @Inject constructor(
         executePINManagement(transportPIN, context)
     }
 
-    override fun onHelpButtonTapped() {}
+    override fun onHelpButtonTapped() {
+        trackerManager.trackScreen("firstTimeUser/scanHelp")
+    }
+
+    override fun onNfcButtonTapped() {
+        trackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo")
+    }
 
     override fun onBackButtonTapped() = coordinator.onBackTapped()
 
@@ -207,9 +220,15 @@ class SetupScanViewModel @Inject constructor(
             logger.debug("Starting PIN management flow.")
             idCardManager.changePin(context).catch { exception ->
                 errorState = when (exception) {
-                    is IDCardInteractionException.CardDeactivated -> ScanError.CardDeactivated
+                    is IDCardInteractionException.CardDeactivated -> {
+                        trackerManager.trackScreen("firstTimeUser/cardDeactivated")
+                        ScanError.CardDeactivated
+                    }
                     is IDCardInteractionException.CardBlocked -> ScanError.PINBlocked
-                    else -> ScanError.Other(exception.message)
+                    else -> {
+                        trackerManager.trackScreen("firstTimeUser/cardUnreadable")
+                        ScanError.Other(exception.message)
+                    }
                 }
             }.collect { event ->
                 when (event) {
@@ -244,15 +263,18 @@ class SetupScanViewModel @Inject constructor(
                                 return@collect
                             }
                             errorState = ScanError.IncorrectPIN(attempts)
+                            trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
                             cancel()
                         }
                     }
                     is EIDInteractionEvent.RequestCANAndChangedPIN -> {
                         errorState = ScanError.PINSuspended
+                        trackerManager.trackScreen("firstTimeUser/cardSuspended")
                         cancel()
                     }
                     is EIDInteractionEvent.RequestPUK -> {
                         errorState = ScanError.PINBlocked
+                        trackerManager.trackScreen("firstTimeUser/cardBlocked")
                         cancel()
                     }
                     else -> {
@@ -274,6 +296,7 @@ class PreviewSetupScanViewModel(
     override fun startSettingPIN(context: Context) {}
     override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}
     override fun onHelpButtonTapped() {}
+    override fun onNfcButtonTapped() {}
     override fun onBackButtonTapped() {}
     override fun onCancelConfirm() {}
 }

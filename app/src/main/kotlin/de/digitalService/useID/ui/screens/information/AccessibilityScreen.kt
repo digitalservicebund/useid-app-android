@@ -20,7 +20,9 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
-@Destination
+@Destination(
+    route = "accessibility"
+)
 @Composable
 fun AccessibilityScreen(
     navigator: DestinationsNavigator

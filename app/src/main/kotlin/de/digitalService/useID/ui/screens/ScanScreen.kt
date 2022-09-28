@@ -39,7 +39,9 @@ fun ScanScreen(
     onIncorrectPIN: @Composable (Int) -> Unit,
     onCancel: () -> Unit,
     showProgress: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onHelpDialogShown: () -> Unit = { },
+    onNfcDialogShown: () -> Unit = { }
 ) {
     var helpDialogShown by remember { mutableStateOf(false) }
     var whatIsNfcDialogShown by remember { mutableStateOf(false) }
@@ -94,7 +96,10 @@ fun ScanScreen(
 
             Column {
                 Button(
-                    onClick = { whatIsNfcDialogShown = true },
+                    onClick = {
+                        onNfcDialogShown()
+                        whatIsNfcDialogShown = true
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = MaterialTheme.colorScheme.onSecondary
@@ -109,7 +114,10 @@ fun ScanScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { helpDialogShown = true },
+                    onClick = {
+                        onHelpDialogShown()
+                        helpDialogShown = true
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.secondary,
                         contentColor = MaterialTheme.colorScheme.onSecondary

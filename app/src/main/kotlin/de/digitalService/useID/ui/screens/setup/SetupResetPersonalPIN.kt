@@ -16,7 +16,9 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.StandardStaticComposition
 import de.digitalService.useID.ui.theme.UseIDTheme
 
-@Destination
+@Destination(
+    route = "firstTimeUser/missingPINLetter"
+)
 @Composable
 fun SetupResetPersonalPIN(
     navigator: DestinationsNavigator

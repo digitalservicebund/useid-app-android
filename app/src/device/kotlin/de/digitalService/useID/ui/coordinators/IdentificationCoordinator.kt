@@ -104,8 +104,14 @@ class IdentificationCoordinator @Inject constructor(
                 logger.error("Identification error: $error")
 
                 when (error) {
-                    IDCardInteractionException.CardDeactivated -> _scanEventFlow.emit(ScanEvent.Error(ScanError.CardDeactivated))
-                    IDCardInteractionException.CardBlocked -> _scanEventFlow.emit(ScanEvent.Error(ScanError.CardBlocked))
+                    IDCardInteractionException.CardDeactivated -> {
+                        trackerManager.trackScreen("identification/cardDeactivated")
+                        _scanEventFlow.emit(ScanEvent.Error(ScanError.CardDeactivated))
+                    }
+                    IDCardInteractionException.CardBlocked -> {
+                        trackerManager.trackScreen("identification/cardUnreadable")
+                        _scanEventFlow.emit(ScanEvent.Error(ScanError.CardBlocked))
+                    }
                     else -> {
                         _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
@@ -144,16 +150,19 @@ class IdentificationCoordinator @Inject constructor(
                     is EIDInteractionEvent.RequestCAN -> {
                         logger.debug("Requesting CAN")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
+                        trackerManager.trackScreen("identification/cardSuspended")
                         cancel()
                     }
                     is EIDInteractionEvent.RequestPINAndCAN -> {
                         logger.debug("Requesting PIN and CAN")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
+                        trackerManager.trackScreen("identification/cardSuspended")
                         cancel()
                     }
                     is EIDInteractionEvent.RequestPUK -> {
                         logger.debug("Requesting PUK")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINBlocked))
+                        trackerManager.trackScreen("identification/cardBlocked")
                         cancel()
                     }
                     EIDInteractionEvent.RequestCardInsertion -> {

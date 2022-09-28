@@ -16,6 +16,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.analytics.MockTrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
@@ -49,7 +50,11 @@ fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel) {
 }
 
 @HiltViewModel
-class PreviewIdentificationScanViewModel @Inject constructor(private val coordinator: IdentificationCoordinator) : ViewModel() {
+class PreviewIdentificationScanViewModel @Inject constructor(
+    private val coordinator: IdentificationCoordinator,
+    private val trackerManager: TrackerManagerType
+) :
+    ViewModel() {
     fun simulateSuccess() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -73,6 +78,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(private val coordin
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectErrorState(ScanError.PINSuspended)
         }
+        trackerManager.trackScreen("identification/cardSuspended")
     }
     fun simulatePUKRequired() {
         viewModelScope.launch {
@@ -81,6 +87,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(private val coordin
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectErrorState(ScanError.PINBlocked)
         }
+        trackerManager.trackScreen("identification/cardBlocked")
     }
 
     fun simulateCardDeactivated() {
@@ -90,12 +97,14 @@ class PreviewIdentificationScanViewModel @Inject constructor(private val coordin
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectErrorState(ScanError.CardDeactivated)
         }
+        trackerManager.trackScreen("identification/cardDeactivated")
     }
 
     val innerViewModel = object : IdentificationScanViewModelInterfaceExtension {
         override var shouldShowProgress by mutableStateOf(false)
         override var errorState: ScanError? by mutableStateOf(null)
-        override fun onHelpButtonTapped() {}
+        override fun onHelpButtonTapped() = trackerManager.trackScreen("identification/scanHelp")
+        override fun onNfcButtonTapped() = trackerManager.trackEvent("identification", "alertShown", "NFCInfo")
         override fun onCancelIdentification() { coordinator.cancelIdentification() }
         override fun onNewPersonalPINEntered(pin: String) {
             errorState = null
@@ -128,7 +137,8 @@ fun PreviewPreviewIdentificationScan() {
                         override fun setIsNotFirstTimeUser() {}
                     }),
                     MockTrackerManager()
-                )
+                ),
+                MockTrackerManager()
             )
         )
     }

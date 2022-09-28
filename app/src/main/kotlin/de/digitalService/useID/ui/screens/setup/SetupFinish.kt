@@ -21,7 +21,9 @@ import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
-@Destination
+@Destination(
+    route = "firstTimeUser/done"
+)
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
     val buttonLabelStringId = if (viewModel.identificationPending()) {

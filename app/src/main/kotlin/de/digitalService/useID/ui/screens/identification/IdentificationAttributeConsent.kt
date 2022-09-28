@@ -36,6 +36,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Destination(
+    route = "identification/attributes",
     navArgsDelegate = IdentificationAttributeConsentNavArgs::class
 )
 @Composable

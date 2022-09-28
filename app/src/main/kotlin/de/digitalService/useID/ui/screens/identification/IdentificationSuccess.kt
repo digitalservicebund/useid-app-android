@@ -30,6 +30,7 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
 @Destination(
+    route = "identification/done",
     navArgsDelegate = IdentificationSuccessNavArgs::class
 )
 @Composable

@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.MockTrackerManager
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
@@ -53,7 +55,10 @@ fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel) {
 }
 
 @HiltViewModel
-class PreviewSetupScanViewModel @Inject constructor(private val coordinator: SetupCoordinator) : ViewModel() {
+class PreviewSetupScanViewModel @Inject constructor(
+    private val coordinator: SetupCoordinator,
+    private val trackerManager: TrackerManagerType
+) : ViewModel() {
     fun simulateSuccess() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -70,6 +75,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectShouldShowError(ScanError.IncorrectPIN(2))
         }
+        trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
     }
 
     fun simulateCANRequired() {
@@ -79,6 +85,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectShouldShowError(ScanError.PINSuspended)
         }
+        trackerManager.trackScreen("firstTimeUser/cardSuspended")
     }
 
     fun simulatePUKRequired() {
@@ -88,6 +95,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectShouldShowError(ScanError.PINBlocked)
         }
+        trackerManager.trackScreen("firstTimeUser/cardBlocked")
     }
 
     fun simulateCardDeactivated() {
@@ -97,6 +105,7 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectShouldShowError(ScanError.CardDeactivated)
         }
+        trackerManager.trackScreen("firstTimeUser/cardDeactivated")
     }
 
     val innerViewModel = object : SetupScanViewModelInterfaceExtension {
@@ -107,7 +116,8 @@ class PreviewSetupScanViewModel @Inject constructor(private val coordinator: Set
             injectShouldShowError(null)
         }
 
-        override fun onHelpButtonTapped() {}
+        override fun onHelpButtonTapped() = trackerManager.trackScreen("firstTimeUser/scanHelp")
+        override fun onNfcButtonTapped() = trackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo")
         override fun onBackButtonTapped() = coordinator.onBackTapped()
         override fun onCancelConfirm() {
             coordinator.cancelSetup()
@@ -140,7 +150,7 @@ fun PreviewPreviewSetupScan() {
 
     UseIDTheme {
         PreviewSetupScan(
-            PreviewSetupScanViewModel(SetupCoordinator(AppCoordinator(fakeStorageManager)))
+            PreviewSetupScanViewModel(SetupCoordinator(AppCoordinator(fakeStorageManager)), MockTrackerManager())
         )
     }
 }

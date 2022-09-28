@@ -21,6 +21,7 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
@@ -34,7 +35,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@Destination
+@Destination(
+    route = "identification/scan"
+)
 @Composable
 fun IdentificationScan(
     modifier: Modifier = Modifier,
@@ -60,6 +63,7 @@ fun IdentificationScan(
                 )
             },
             onCancel = viewModel::onCancelIdentification,
+            onHelpDialogShown = viewModel::onHelpButtonTapped,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
         )
@@ -139,6 +143,7 @@ interface IdentificationScanViewModelInterface {
     val errorState: ScanError?
 
     fun onHelpButtonTapped()
+    fun onNfcButtonTapped()
     fun onCancelIdentification()
     fun onNewPersonalPINEntered(pin: String)
 }
@@ -146,7 +151,8 @@ interface IdentificationScanViewModelInterface {
 @HiltViewModel
 class IdentificationScanViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator,
-    private val coroutineContextProvider: CoroutineContextProviderType
+    private val coroutineContextProvider: CoroutineContextProviderType,
+    private val trackerManager: TrackerManagerType
 ) : ViewModel(), IdentificationScanViewModelInterface {
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
@@ -159,6 +165,11 @@ class IdentificationScanViewModel @Inject constructor(
     }
 
     override fun onHelpButtonTapped() {
+        trackerManager.trackScreen("identification/scanHelp")
+    }
+
+    override fun onNfcButtonTapped() {
+        trackerManager.trackEvent("identification", "alertShown", "NFCInfo")
     }
 
     override fun onCancelIdentification() {
@@ -194,6 +205,7 @@ private class PreviewIdentificationScanViewModel(
     override val errorState: ScanError?
 ) : IdentificationScanViewModelInterface {
     override fun onHelpButtonTapped() {}
+    override fun onNfcButtonTapped() {}
     override fun onCancelIdentification() {}
     override fun onNewPersonalPINEntered(pin: String) {}
 }

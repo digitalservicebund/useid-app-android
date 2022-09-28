@@ -29,7 +29,9 @@ import de.digitalService.useID.ui.theme.Yellow300
 import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination(
+    route = "firstTimeUser/personalPINIntro"
+)
 @Composable
 fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = hiltViewModel<SetupPersonalPINIntroViewModel>()) {
     ScreenWithTopBar(
