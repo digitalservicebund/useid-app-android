@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,17 @@ fun SetupReEnterTransportPIN(
 ) {
     val focusRequester = remember { FocusRequester() }
     val resources = LocalContext.current.resources
+
+    val incorrectPinText = stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title)
+    val attemptString = if (viewModel.attempts > 0) {
+        resources.getQuantityString(
+            R.plurals.firstTimeUser_transportPIN_remainingAttempts,
+            viewModel.attempts,
+            viewModel.attempts
+        )
+    } else {
+        stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_noAttemptLeft)
+    }
 
     Column(modifier = modifier.padding(horizontal = 16.dp)) {
         Text(
@@ -43,28 +55,21 @@ fun SetupReEnterTransportPIN(
             value = viewModel.transportPIN,
             onValueChanged = viewModel::onInputChanged,
             onDone = viewModel::onDoneTapped,
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
+            extraContentDescription = "\n$incorrectPinText$attemptString"
         )
 
         Spacer(modifier = Modifier.height(40.dp))
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().semantics(true) {}
         ) {
             Text(
                 stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium
             )
-            val attemptString = if (viewModel.attempts > 0) {
-                resources.getQuantityString(
-                    R.plurals.firstTimeUser_transportPIN_remainingAttempts,
-                    viewModel.attempts,
-                    viewModel.attempts
-                )
-            } else {
-                stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_noAttemptLeft)
-            }
+
             Text(
                 attemptString,
                 style = MaterialTheme.typography.bodySmall,

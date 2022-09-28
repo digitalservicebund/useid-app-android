@@ -18,7 +18,8 @@ fun TransportPINEntryField(
     value: String,
     onValueChanged: (String) -> Unit,
     onDone: () -> Unit,
-    focusRequester: FocusRequester
+    focusRequester: FocusRequester,
+    extraContentDescription: String? = null
 ) {
     val description = stringResource(
         id = R.string.firstTimeUser_transportPIN_textFieldLabel,
@@ -43,7 +44,7 @@ fun TransportPINEntryField(
             digitCount = 5,
             obfuscation = false,
             spacerPosition = null,
-            contentDescription = description,
+            contentDescription = extraContentDescription?.let { description + it } ?: description,
             focusRequester = focusRequester,
             onDone = onDone,
             modifier = Modifier
