@@ -1,6 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="accessibility_text">"## Accessibility Statement\n\nThe BundesIdent app seeks to ensure that the app is accessible free of any barriers in compliance with the provisions of the German Federal Disability Equality Act (BGG) and the German Barrier-Free Information Technology Ordinance (BITV 2.0) in the implementation of Directive (EU) 2016/2102. This Accessibility Statement applies to version 1.0.0, which is currently available in the App Store. The Statement was drafted on 9 September 2022.\n\nThis Statement emanates from a self-assessment based on the current draft of the BIK BITV test for mobile apps ([github.com/BIK-BITV/BIK-App-Test ↗](https://github.com/BIK-BITV/BIK-App-Test)). In the near future, we are planning to have the app externally audited.\n\n### How barrier-free is the service?\n\nThis app has been newly developed. The shortcomings listed below are being worked on.\nThe BundesIdent app is also to be developed continuously in the coming weeks based on future auditing and feedback from users.\n\n### Which areas are not barrier-free?\n\nWe have set ourselves the objective of rectifying problems as quickly as possible. The following incompatibilities with BITV 2.0 exist in the current version:\n\n- We do not support dark mode at present (test step 11.7).\n- Landscape format is currently not supported (test step 11.1.3.4).\n- An error message in case of incorrect PIN entry (transport PIN as well as personal PIN) are not proactively read out (test step 11.5.2.11).\n- There is no direct labeling of PIN entries in the input field. This only takes place in the title of the screens (test step 11.3.3.2).\n- An unexpected change in context occurs at two points during entry of the personal PIN (test step 11.3.2.2).\n- The transport PIN input cannot be zoomed to 200% (test step 11.1.4.4).\n- The headings are not marked as such (test step 11.1.3.1).\n- We do not offer a second support channel (test step 12.2.3). Currently, we can only provide support via e-mail at [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de).\n- Not all names and roles of elements are reproduced correctly (test step 11.4.1.2).\n- Focus tracking is not possible in the PIN entries (test step 11.5.2.13).\n- Keyboard operation is virtually impossible (test steps 11.2.1.1 and 11.2.1.2) and the current focus in keyboard operation is not clear (test step 11.2.4.7).\n\n### Contact and feedback possibility\n\nHave you noticed any deficiencies in barrier-free access to content? If so, please feel free to contact us at: [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de).\n\n### Arbitration\n\nThe Federal Government's Commissioner for Matters relating to Persons with Disabilities has a conciliation body pursuant to § 16 of the German Federal Disability Equality Act (BGG). The conciliation board is assigned the task of resolving conflicts between persons with disabilities and federal public agencies. You can call upon the conciliation board if you are not satisfied with the answers from the above contact option. The aim is not to determine winners or losers. Rather, the goal is to find a solution to a problem jointly and out of court with the help of the conciliation board. The conciliation procedure is free of charge. Nor do you need any legal counsel. You will find all the information relating to the conciliation procedure on the website of the conciliation board. There you can read how a conciliation procedure works and how to submit an application for conciliation. You can also submit an application in plain language or in German sign language.\n\nYou can contact the conciliation board at the following address:\n\nConciliation Board under the German Federal Disability Equality Act (BGG) at the Federal Government's Commissioner for Matters relating to Persons with Disabilities\\\nMauerstraße 53\\\n10117 Berlin\\\nPhone: 030 18 527 2805\n\nE-Mail:\\\n[info@schlichtungsstelle-bgg.de ↗](mailto:info@schlichtungsstelle-bgg.de)\n\nInternet:\\\n[www.schlichtungsstelle-bgg.de ↗](https://www.schlichtungsstelle-bgg.de)"</string>
+    <string name="accessibility_text">## Accessibility Statement
+\n
+\nThe BundesIdent app seeks to ensure that the app is accessible free of any barriers in compliance with the provisions of the German Federal Disability Equality Act (BGG) and the German Barrier-Free Information Technology Ordinance (BITV 2.0) in the implementation of Directive (EU) 2016/2102. This Accessibility Statement applies to version 1.0.0, which is currently available in the App Store. The Statement was drafted on 9 September 2022.
+\n
+\nThis Statement emanates from a self-assessment based on the current draft of the BIK BITV test for mobile apps ([github.com/BIK-BITV/BIK-App-Test ↗](https://github.com/BIK-BITV/BIK-App-Test)). In the near future, we are planning to have the app externally audited.
+\n
+\n### How barrier-free is the service\?
+\n
+\nThis app has been newly developed. The shortcomings listed below are being worked on.
+\nThe BundesIdent app is also to be developed continuously in the coming weeks based on future auditing and feedback from users.
+\n
+\n### Which areas are not barrier-free\?
+\n
+\nWe have set ourselves the objective of rectifying problems as quickly as possible. The following incompatibilities with BITV 2.0 exist in the current version:
+\n
+\n- We do not support dark mode at present (test step 11.7).
+\n- Landscape format is currently not supported (test step 11.1.3.4).
+\n- An error message in case of incorrect PIN entry (transport PIN as well as personal PIN) are not proactively read out (test step 11.5.2.11).
+\n- There is no direct labeling of PIN entries in the input field. This only takes place in the title of the screens (test step 11.3.3.2).
+\n- An unexpected change in context occurs at two points during entry of the personal PIN (test step 11.3.2.2).
+\n- The transport PIN input cannot be zoomed to 200%% (test step 11.1.4.4).
+\n- The headings are not marked as such (test step 11.1.3.1).
+\n- We do not offer a second support channel (test step 12.2.3). Currently, we can only provide support via e-mail at [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de).
+\n- Not all names and roles of elements are reproduced correctly (test step 11.4.1.2).
+\n- Focus tracking is not possible in the PIN entries (test step 11.5.2.13).
+\n- Keyboard operation is virtually impossible (test steps 11.2.1.1 and 11.2.1.2) and the current focus in keyboard operation is not clear (test step 11.2.4.7).
+\n
+\n### Contact and feedback possibility
+\n
+\nHave you noticed any deficiencies in barrier-free access to content\? If so, please feel free to contact us at: [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de).
+\n
+\n### Arbitration
+\n
+\nThe Federal Government\'s Commissioner for Matters relating to Persons with Disabilities has a conciliation body pursuant to § 16 of the German Federal Disability Equality Act (BGG). The conciliation board is assigned the task of resolving conflicts between persons with disabilities and federal public agencies. You can call upon the conciliation board if you are not satisfied with the answers from the above contact option. The aim is not to determine winners or losers. Rather, the goal is to find a solution to a problem jointly and out of court with the help of the conciliation board. The conciliation procedure is free of charge. Nor do you need any legal counsel. You will find all the information relating to the conciliation procedure on the website of the conciliation board. There you can read how a conciliation procedure works and how to submit an application for conciliation. You can also submit an application in plain language or in German sign language.
+\n
+\nYou can contact the conciliation board at the following address:
+\n
+\nConciliation Board under the German Federal Disability Equality Act (BGG) at the Federal Government\'s Commissioner for Matters relating to Persons with Disabilities\\
+\nMauerstraße 53\\
+\n10117 Berlin\\
+\nPhone: [+49 (0)30 18 527 2805](tel:+4930 18 527 2805)
+\n
+\nE-Mail:\\
+\n[info@schlichtungsstelle-bgg.de ↗](mailto:info@schlichtungsstelle-bgg.de)
+\n
+\nInternet:\\
+\n[www.schlichtungsstelle-bgg.de ↗](https://www.schlichtungsstelle-bgg.de)</string>
     <string name="appName" translatable="false">UseID</string>
     <string name="cardAttribute_ageVerification">Comparative birth date for age verification</string>
     <string name="cardAttribute_dg01">Document type</string>
@@ -32,8 +78,8 @@
     <string name="firstTimeUser_intro_startSetup">Set up online ID card now</string>
     <string name="firstTimeUser_intro_title">Have you already set up your online ID card?</string>
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
-    <string name="firstTimeUser_missingPINLetter_body">"We are still working on this feature.For more information about the PIN reset letter, please visit **[www.pin-ruecksetzbrief-bestellen.de ](https://www.pin-ruecksetzbrief-bestellen.de)**"</string>
-    <string name="firstTimeUser_missingPINLetter_title">Order new PIN letter</string>
+    <string name="firstTimeUser_missingPINLetter_body">We are still working on this feature.For more information about the PIN reset letter, please visit **[www.pin-ruecksetzbrief-bestellen.de ](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
+    <string name="firstTimeUser_missingPINLetter_title">Order PIN reset letter</string>
     <string name="firstTimeUser_personalPIN_body">Make sure you remember your personal ID PIN. You will need it every time you use the online ID function in the future.</string>
     <string name="firstTimeUser_personalPIN_confirmation">Repeat PIN to confirm</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Try again.</string>
@@ -46,7 +92,7 @@
     <string name="firstTimeUser_personalPINIntro_info_title">Remember your personal ID card PIN</string>
     <string name="firstTimeUser_personalPINIntro_title">Now assign your personal ID card PIN.</string>
     <string name="firstTimeUser_pinLetter_body">You received the PIN letter by mail after applying for the ID card.</string>
-    <string name="firstTimeUser_pinLetter_requestLetter">No, order new PIN letter</string>
+    <string name="firstTimeUser_pinLetter_requestLetter">No, order PIN reset letter</string>
     <string name="firstTimeUser_pinLetter_title">Do you still have your PIN letter?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Yes, the PIN letter is available</string>
     <string name="firstTimeUser_scan_body">Almost there! Hold your ID card close to the back of the smartphone. The app uses NFC sensors in the smartphone and your ID card to assign the new PIN to your ID card.</string>
@@ -93,7 +139,60 @@
     <string name="identification_personalPIN_title">Enter your personal ID card PIN.</string>
     <string name="identification_scan_body">In the next step, hold your ID card close to the back of the smartphone. The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
     <string name="identification_scan_title">Retrieve the data from your ID card.</string>
-    <string name="imprint_text">"## Imprint\n\n### Responsible for the content\n\nDigitalService GmbH of the Federal Government\n- upon the commission of the German Federal Ministry of the Interior and Home Affairs-\\\nPrinzessinnenstraße 8-14\\\n10969 Berlin\n\n### Legal notice\n\nThe content on these pages (online forms, texts, images and graphics) is provided by the Federal Government's DigitalService GmbH des Bundes. It is intended solely for the personal service and personal information of users.\\\nThe content and works created by us on these pages are subject to German copyright law. Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of copyright law are subject to the prior written consent of the respective author or creator. Downloads and copies of this site are only permitted for private, non-commercial use.\\\nInsofar as the content on this site was not created by us, copyrights held by third parties are respected. In particular, third-party content is identified as such. Should you become aware of any copyright infringement, please inform us accordingly. If we become aware of any infringements, we shall remove such content immediately.\n\n### External links\n\nOur offer contains links to external websites of third parties, on whose contents we have no influence. Therefore, we cannot assume any liability for these external contents. The respective provider or operator of the sites is always responsible for the content of the linked sites. The linked pages were checked for possible legal violations at the time of linking. Illegal contents were not recognizable at the time of linking.\\\nHowever, a permanent control of the contents of the linked pages is not possible with reasonable effort without specific indications of a violation of law.\nIf we become aware of any legal violations on linked external pages, we shall remove the respective links immediately.\n\n### Contact\n\nE-mail address:\\ [eid@digitalservice.bund.de ](mailto:eid@digitalservice.bund.de)\n\nWebsite:\\\n[digitalservice.bund.de ](https://digitalservice.bund.de)\n\n### Other mandatory information\n**Commercial register number:**\\\nHRB 212879 B\n\n**Register Court:**\\\nBerlin Charlottenburg\n\n**Value-added tax identification number:**\\\nDE327075535"</string>
+    <string name="imprint_text">## Imprint
+\n
+\n### Responsible for the content
+\n
+\nDigitalService GmbH of the Federal Government
+\n- upon the commission of the German Federal Ministry of the Interior and Home Affairs-\\
+\nPrinzessinnenstraße 8-14\\
+\n10969 Berlin
+\n
+\n### Legal notice
+\n
+\nThe content on these pages (online forms, texts, images and graphics) is provided by the Federal Government\'s DigitalService GmbH des Bundes. It is intended solely for the personal service and personal information of users.\\
+\nThe content and works created by us on these pages are subject to German copyright law. Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of copyright law are subject to the prior written consent of the respective author or creator. Downloads and copies of this site are only permitted for private, non-commercial use.\\
+\nInsofar as the content on this site was not created by us, copyrights held by third parties are respected. In particular, third-party content is identified as such. Should you become aware of any copyright infringement, please inform us accordingly. If we become aware of any infringements, we shall remove such content immediately.
+\n
+\n### External links
+\n
+\nOur offer contains links to external websites of third parties, on whose contents we have no influence. Therefore, we cannot assume any liability for these external contents. The respective provider or operator of the sites is always responsible for the content of the linked sites. The linked pages were checked for possible legal violations at the time of linking. Illegal contents were not recognizable at the time of linking.\\
+\nHowever, a permanent control of the contents of the linked pages is not possible with reasonable effort without specific indications of a violation of law.
+\nIf we become aware of any legal violations on linked external pages, we shall remove the respective links immediately.
+\n
+\n### Contact
+\n
+\nE-mail address:\\
+\n[eid@digitalservice.bund.de ](mailto:eid@digitalservice.bund.de)
+\n
+\nWebsite:\\
+\n[digitalservice.bund.de ](https://digitalservice.bund.de)
+\n
+\n### Information obligations according to Art. 14 ODR-VR, § 36 VSBG
+\n
+\nThe European Commission provides a platform for online dispute resolution (OS): [ec.europa.eu/consumers/odr ↗](https://ec.europa.eu/consumers/odr).\\
+\nIn case of problems, we ask our users to contact us directly using the contact details provided.\\
+\nWe are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board.
+\n
+\n### Other mandatory information
+\n**Commercial register number:**\\
+\nHRB 212879 B
+\n
+\n**Managing directors:**\\
+\nChristina Lang, Philipp Moeser
+\n
+\n**Register court:**\\
+\nBerlin Charlottenburg
+\n
+\n**Value-added tax identification number:**\\
+\nDE327075535
+\n
+\n### Responsible for the content according to § 18 Abs. 2 MStV
+\n
+\nDigitalService GmbH des Bundes\\
+\nMs Christina Lang\\
+\nPrinzessinnenstraße 8-14\\
+\n10969 Berlin</string>
     <string name="licenseDialog_confirm">OK</string>
     <string name="navigation_back">Back</string>
     <string name="navigation_cancel">Cancel</string>
