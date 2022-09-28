@@ -457,4 +457,5 @@
     <string name="identification_scan_cancelDialog_body">Möchten Sie das Ausweisen beenden?</string>
     <string name="identification_scan_cancelDialog_confirm">Beenden</string>
     <string name="identification_scan_cancelDialog_dismiss">Abbrechen</string>
+    <string name="pinEntryField_accessibility_cursorPosition">Cursor an der Position %1$d.</string>
 </resources>

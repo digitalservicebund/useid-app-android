@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
@@ -48,8 +50,18 @@ fun PINEntryField(
 ) {
     var textFieldValueState by remember(value) { mutableStateOf(TextFieldValue(value, TextRange(value.length))) }
 
+    val cursorPositionDescription = stringResource(
+        id = R.string.pinEntryField_accessibility_cursorPosition,
+        textFieldValueState.selection.end + 1
+    )
+
     Box(
-        modifier = modifier.background(backgroundColor)
+        modifier = modifier
+            .background(backgroundColor)
+            .semantics(mergeDescendants = true) {
+                this.contentDescription = contentDescription
+                stateDescription = value.replace(".".toRegex(), "$0 ") + cursorPositionDescription
+            }
     ) {
         BasicTextField(
             value = textFieldValueState,
@@ -81,7 +93,7 @@ fun PINEntryField(
                 .testTag("PINEntryField")
                 .semantics(mergeDescendants = true) {
                     this.contentDescription = contentDescription
-                    stateDescription = value.replace(".".toRegex(), "$0 ")
+                    stateDescription = value.replace(".".toRegex(), "$0 ") + cursorPositionDescription
                 }
         )
 
