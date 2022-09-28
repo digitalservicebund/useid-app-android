@@ -99,6 +99,7 @@ platform :android do
       package_name: options[:package_name],
       json_key: ENV["FASTLANE_API_KEY_PATH"],
       release_status: 'draft',
+      version_name: "#{android_get_version_name} (#{android_get_version_code})",
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
