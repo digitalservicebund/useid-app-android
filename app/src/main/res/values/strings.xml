@@ -126,7 +126,7 @@
     <string name="identification_attributeConsentInfo_providerInfo">Anbieterinformationen</string>
     <string name="identification_attributeConsentInfo_terms">Terms</string>
     <string name="identification_done_body">Machen Sie weiter bei »%1s«.</string>
-    <string name="identification_done_continue">Weiter zum Anbieter</string>
+    <string name="identification_done_continue">Weiter zum Diensteanbieter</string>
     <string name="identification_done_title">Sie haben sich erfolgreich ausgewiesen.</string>
     <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
     <string name="identification_fetchMetadata_pleaseWait">Einen Moment bitte…</string>
@@ -350,7 +350,7 @@
     <string name="scanError_cardUnreadable_body">Folgende deutsche Dokumente bieten die Funktion an: Personalausweis, elektronischer Aufenthaltstitel und die eID-Karte für Bürgerinnen und Bürger:innen der Europäischen Union und des Europäischen Wirtschaftsraums.\n\nWenn Ihr Smartphone Ihren Ausweis nicht erkennt oder „Ausweis entfernt” anzeigt, probieren Sie folgende Schritte aus:\n\n- Bewegen Sie Ihren Ausweis von Ihrem Smartphone weg und legen Sie den Ausweis erneut dicht an die Rückseite. Probieren Sie verschiedene Positionen aus: Obere, mittlere und untere Rückseite.\n\n![](%1$s)\n\n- Wenn Sie eine dicke Schutzhülle haben, entfernen Sie die Hülle und probieren es dann erneut.\n\n- Überprüfen Sie, ob NFC aktiviert ist.\n\n- Stellen Sie NFC aus und wieder an.\n\n- Probieren Sie den Smartphone-Bildschirm aus- und wieder anzustellen.\n\n- Stellen Sie sicher, dass Sie mit dem Internet verbunden sind.</string>
     <string name="scanError_cardUnreadable_title">Ihr Ausweis wurde nicht erkannt.</string>
     <string name="scanError_close">Schließen</string>
-    <string name="scanError_redirect">Zurück zum Anbieter</string>
+    <string name="scanError_redirect">Zurück zum Diensteanbieter</string>
     <string name="scanError_unknown_body">Ein unbekannter Fehler ist aufgetreten.</string>
     <string name="scanError_unknown_title">Es ist ein Fehler aufgetreten.</string>
     <string name="termsOfUse_text">"## Nutzungsbedingungen
