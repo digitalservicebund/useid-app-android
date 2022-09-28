@@ -21,7 +21,7 @@
 \n- Eine Fehlermeldung bei falscher PIN Eingabe (Transport-PIN sowie persönliche PIN) werden nicht proaktiv vorgelesen (Prüfschritt 11.5.2.11).
 \n- Es ist keine direkte Beschriftung der PIN Eingaben direkt im Eingabefeld vorhanden. Diese existiert nur im Titel der Screens (Prüfschritt 11.3.3.2).
 \n- An zwei Stellen während der Persönlichen PIN Eingabe passiert eine unerwartete Kontextänderung (Prüfschritt 11.3.2.2).
-\n- Die Transport-PIN Eingabe ist nicht auf 200% zoombar (Prüfschritt 11.1.4.4).
+\n- Die Transport-PIN Eingabe ist nicht auf 200%% zoombar (Prüfschritt 11.1.4.4).
 \n- Die Überschriften werden nicht als solche ausgezeichnet (Prüfschritt 11.1.3.1).
 \n- Wir bieten keinen zweiten Supportweg an (Prüfschritt 12.2.3). Aktuell können wir nur über die E-Mail [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de) Support leisten.
 \n- Es werden nicht alle Namen und Rollen von Elementen korrekt wiedergegeben (Prüfschritt 11.4.1.2).
@@ -40,7 +40,7 @@
 \nSchlichtungsstelle nach dem Behindertengleichstellungsgesetz bei dem Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen\\
 \nMauerstraße 53\\
 \n10117 Berlin\\
-\nTelefon: 030 18 527 2805
+\nTelefon: [+49 (0)30 18 527 2805](tel:+4930 18 527 2805)
 \n
 \nE-Mail:\\
 \n[info@schlichtungsstelle-bgg.de ↗](mailto:info@schlichtungsstelle-bgg.de)
@@ -79,7 +79,7 @@
     <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits eingerichtet\?</string>
     <string name="firstTimeUser_intro_skipSetup">Bereits eingerichtet</string>
     <string name="firstTimeUser_missingPINLetter_body">Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter\n\n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
-    <string name="firstTimeUser_missingPINLetter_title">Neuen PIN-Brief bestellen</string>
+    <string name="firstTimeUser_missingPINLetter_title">PIN-Rücksetzbrief bestellen</string>
     <string name="firstTimeUser_personalPIN_body">Merken Sie sich Ihre persönliche Ausweis-PIN gut. Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
     <string name="firstTimeUser_personalPIN_confirmation">PIN zum Bestätigen wiederholen</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Versuchen Sie es erneut.</string>
@@ -92,7 +92,7 @@
     <string name="firstTimeUser_personalPINIntro_info_title">Persönliche Ausweis–PIN gut merken</string>
     <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
     <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
-    <string name="firstTimeUser_pinLetter_requestLetter">Nein, neuen PIN-Brief bestellen</string>
+    <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>
     <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN-Brief noch\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Ja, PIN-Brief vorhanden</string>
     <string name="firstTimeUser_scan_body">Fast geschafft! Halten Sie Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihrem Ausweis die neue PIN zuzuordnen.</string>
