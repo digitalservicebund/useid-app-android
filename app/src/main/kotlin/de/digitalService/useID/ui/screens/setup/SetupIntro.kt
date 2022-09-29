@@ -21,7 +21,6 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
 @Destination(
-    route = "firstTimeUser/intro",
     navArgsDelegate = SetupIntroNavArgs::class
 )
 @Composable

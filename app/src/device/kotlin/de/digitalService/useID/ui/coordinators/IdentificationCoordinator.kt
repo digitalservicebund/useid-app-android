@@ -85,6 +85,7 @@ class IdentificationCoordinator @Inject constructor(
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
         reachedScanState = false
+        trackerManager.trackEvent(category = "identification", action = "buttonPressed", name = "continueToService")
     }
 
     private fun startIdentification(tcTokenURL: String) {

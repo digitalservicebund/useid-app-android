@@ -26,9 +26,7 @@ import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
-@Destination(
-    route = "firstTimeUser/transportPIN"
-)
+@Destination
 @Composable
 fun SetupTransportPIN(
     modifier: Modifier = Modifier,

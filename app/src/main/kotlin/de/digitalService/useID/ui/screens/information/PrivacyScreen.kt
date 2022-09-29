@@ -20,9 +20,7 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.theme.UseIDTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
-@Destination(
-    route = "privacy"
-)
+@Destination
 @Composable
 fun PrivacyScreen(
     navigator: DestinationsNavigator

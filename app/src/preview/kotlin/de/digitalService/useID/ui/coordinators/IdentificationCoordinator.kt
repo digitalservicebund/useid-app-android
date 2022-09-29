@@ -66,8 +66,8 @@ class IdentificationCoordinator @Inject constructor(
 
     fun finishIdentification() {
         appCoordinator.setIsNotFirstTimeUser()
-        appCoordinator.popToRoot()
         trackerManager.trackEvent(category = "identification", action = "buttonPressed", name = "continueToService")
+        appCoordinator.popToRoot()
     }
 
     fun onIDInteractionFinishedSuccessfully() {

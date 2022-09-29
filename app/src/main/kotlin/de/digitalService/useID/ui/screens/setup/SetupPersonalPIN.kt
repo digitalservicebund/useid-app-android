@@ -32,9 +32,7 @@ import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
-@Destination(
-    route = "firstTimeUser/personalPIN"
-)
+@Destination
 @Composable
 fun SetupPersonalPIN(
     modifier: Modifier = Modifier,

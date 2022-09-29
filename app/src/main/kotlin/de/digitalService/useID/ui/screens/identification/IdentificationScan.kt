@@ -35,9 +35,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@Destination(
-    route = "identification/scan"
-)
+@Destination
 @Composable
 fun IdentificationScan(
     modifier: Modifier = Modifier,

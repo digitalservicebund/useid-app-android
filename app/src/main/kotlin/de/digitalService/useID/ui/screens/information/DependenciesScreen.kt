@@ -23,9 +23,7 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 
-@Destination(
-    route = "thirdPartyDependencies"
-)
+@Destination
 @Composable
 fun DependenciesScreen(
     navigator: DestinationsNavigator

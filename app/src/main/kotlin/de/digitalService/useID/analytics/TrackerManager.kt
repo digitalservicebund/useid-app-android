@@ -14,7 +14,6 @@ import javax.inject.Singleton
 
 interface TrackerManagerType {
     fun initTracker(context: Context)
-    fun trackDestination(destination: NavDestination)
     fun trackScreen(route: String)
     fun trackEvent(category: String, action: String, name: String)
     fun dispatch()
@@ -35,10 +34,6 @@ class TrackerManager @Inject constructor(
 
     override fun initTracker(context: Context) {
         tracker = TrackerBuilder.createDefault(apiUrl, siteId()).build(Matomo.getInstance(context))
-    }
-
-    override fun trackDestination(destination: NavDestination) {
-        destination.route?.let { trackScreen(it) }
     }
 
     override fun trackScreen(route: String) {
@@ -70,7 +65,6 @@ class TrackerManager @Inject constructor(
 
 class MockTrackerManager : TrackerManagerType {
     override fun initTracker(context: Context) {}
-    override fun trackDestination(destination: NavDestination) {}
     override fun trackScreen(route: String) {}
     override fun trackEvent(category: String, action: String, name: String) {}
     override fun dispatch() {}

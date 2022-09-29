@@ -45,9 +45,7 @@ import kotlinx.coroutines.launch
 import javax.annotation.Nullable
 import javax.inject.Inject
 
-@Destination(
-    route = "firstTimeUser/scan"
-)
+@Destination
 @Composable
 fun SetupScan(
     modifier: Modifier = Modifier,

@@ -16,9 +16,10 @@ import de.digitalService.useID.analytics.MockTrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
-import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
+import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
 import de.digitalService.useID.ui.screens.noNfc.NoNfcScreen
+import de.digitalService.useID.ui.screens.setup.SetupResetPersonalPIN
 import de.digitalService.useID.ui.theme.UseIDTheme
 import io.sentry.compose.withSentryObservableEffect
 
@@ -32,11 +33,36 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
     trackerManager.initTracker(context)
 
     navController.addOnDestinationChangedListener { _, destination, _ ->
-        if (destination.route == HomeScreenDestination.route) {
-            trackerManager.trackScreen("")
-        } else {
-            trackerManager.trackDestination(destination)
+        fun trackerRoute(flow: String, screen: String) = "$flow/$screen"
+
+        fun firstTimeUserRoute(screen: String) = trackerRoute("firstTimeUser", screen)
+        fun identificationRoute(screen: String) = trackerRoute("identification", screen)
+
+        val trackerRoute = when (destination.route) {
+            HomeScreenDestination.route -> "/"
+            SetupIntroDestination.route -> firstTimeUserRoute("intro")
+            SetupPINLetterDestination.route -> firstTimeUserRoute("PINLetter")
+            SetupResetPersonalPINDestination.route -> firstTimeUserRoute("missingPINLetter")
+            SetupTransportPINDestination.route -> firstTimeUserRoute("transportPIN")
+            SetupPersonalPINIntroDestination.route -> firstTimeUserRoute("personalPINIntro")
+            SetupPersonalPINDestination.route -> firstTimeUserRoute("personalPIN")
+            SetupScanDestination.route -> firstTimeUserRoute("scan")
+            SetupFinishDestination.route -> firstTimeUserRoute("done")
+
+            IdentificationFetchMetadataDestination.route -> identificationRoute("fetchMetadata")
+            IdentificationAttributeConsentDestination.route -> identificationRoute("attributes")
+            IdentificationPersonalPINDestination.route -> identificationRoute("personalPIN")
+            IdentificationScanDestination.route -> identificationRoute("scan")
+            IdentificationSuccessDestination.route -> identificationRoute("done")
+
+            ImprintScreenDestination.route -> "imprint"
+            AccessibilityScreenDestination.route -> "accessibility"
+            DependenciesScreenDestination.route -> "thirdPartyDependencies"
+            PrivacyScreenDestination.route -> "privacy"
+
+            else -> "unknown"
         }
+        trackerManager.trackScreen(trackerRoute)
     }
 
     UseIDTheme {

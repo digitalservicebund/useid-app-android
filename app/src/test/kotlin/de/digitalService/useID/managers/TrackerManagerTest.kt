@@ -52,7 +52,7 @@ class TrackerManagerTest {
     }
 
     @Test
-    fun trackDestination() {
+    fun trackScreen() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 2
 
         val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
@@ -60,39 +60,34 @@ class TrackerManagerTest {
 
         val route = "testRoute"
 
-        val destination: NavDestination = mockk()
-        every { destination.route } returns route
-
         mockkStatic("org.matomo.sdk.extra.TrackHelper")
         justRun { TrackHelper.track().screen(route).with(mockTracker) }
 
-        trackerManager.trackDestination(destination)
+        trackerManager.trackScreen(route)
 
         verify { TrackHelper.track().screen(route).with(mockTracker) }
     }
 
     @Test
-    fun trackDestinationWithoutNewSession() {
+    fun trackScreenWithoutNewSession() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 2
 
         val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
         trackerManager.initTracker(mockContext)
 
         val route = "testRoute"
-        val destination: NavDestination = mockk()
-        every { destination.route } returns route
 
         mockkStatic("org.matomo.sdk.extra.TrackHelper")
         justRun { TrackHelper.track().screen(route).with(mockTracker) }
 
-        trackerManager.trackDestination(destination)
-        trackerManager.trackDestination(destination)
+        trackerManager.trackScreen(route)
+        trackerManager.trackScreen(route)
 
         verify(exactly = 0) { mockTracker.reset() }
     }
 
     @Test
-    fun trackDestinationWithNewSession() {
+    fun trackScreenWithNewSession() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 12
 
         val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
@@ -100,16 +95,13 @@ class TrackerManagerTest {
 
         val route = "testRoute"
 
-        val destination: NavDestination = mockk()
-        every { destination.route } returns route
-
         mockkStatic("org.matomo.sdk.extra.TrackHelper")
         justRun { TrackHelper.track().screen(route).with(mockTracker) }
 
-        trackerManager.trackDestination(destination)
+        trackerManager.trackScreen(route)
         verify(exactly = 0) { mockTracker.reset() }
 
-        trackerManager.trackDestination(destination)
+        trackerManager.trackScreen(route)
         verify(exactly = 1) { mockTracker.reset() }
     }
 
