@@ -56,7 +56,7 @@ fun SetupScan(
     val context = LocalContext.current
 
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onCancelConfirm)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
     ) { topPadding ->
         ScanScreen(
             title = stringResource(id = R.string.firstTimeUser_scan_title),

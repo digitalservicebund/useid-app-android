@@ -221,13 +221,15 @@ class SetupPersonalPINViewModel @Inject constructor(
         if (pin1 == pin2) {
             coordinator.onPersonalPINEntered(pin1)
         } else {
-            pin1 = ""
-            pin2 = ""
             shouldShowError = true
-            focus = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1
-
             trackerManager.trackEvent(category = "firstTimeUser", action = "errorShown", name = "personalPINMismatch")
         }
+
+        pin1 = ""
+        pin2 = ""
+
+        focus = SetupPersonalPINViewModelInterface.PINEntryFieldFocus.PIN_1
+        shouldShowPIN2EntryField = false
     }
 
     override fun onBackButtonTapped() = coordinator.onBackTapped()

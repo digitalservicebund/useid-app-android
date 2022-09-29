@@ -150,8 +150,8 @@ class SetupPersonalPINViewModelTest {
             viewModel.userInputPIN1(testValue)
             viewModel.userInputPIN2(testValue)
 
-            assertEquals(testValue, viewModel.pin1)
-            assertEquals(testValue, viewModel.pin2)
+            assertEquals("", viewModel.pin1)
+            assertEquals("", viewModel.pin2)
 
             verify(exactly = 1) { coordinatorMock.onPersonalPINEntered(testValue) }
         }
