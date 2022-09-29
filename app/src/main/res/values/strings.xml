@@ -47,7 +47,6 @@
 \n
 \nInternet:\\
 \n[www.schlichtungsstelle-bgg.de ↗](https://www.schlichtungsstelle-bgg.de)</string>
-    <string name="appName" translatable="false">UseID</string>
     <string name="cardAttribute_ageVerification">Vergleichsgeburtsdatum für Altersverifikation</string>
     <string name="cardAttribute_dg01">Dokumententyp</string>
     <string name="cardAttribute_dg02">Ausgebender Staat</string>
