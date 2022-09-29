@@ -124,7 +124,7 @@
     <string name="home_startSetup">Set up online ID card</string>
     <string name="identification_attributeConsent_body">The service would like to access the following data from your ID card:</string>
     <string name="identification_attributeConsent_button_additionalInformation">More information</string>
-    <string name="identification_attributeConsent_continue">Provide release</string>
+    <string name="identification_attributeConsent_continue">Grant release</string>
     <string name="identification_attributeConsentInfo_issuer">Issuer of the authorization certificate</string>
     <string name="identification_attributeConsentInfo_provider">Provider</string>
     <string name="identification_attributeConsentInfo_providerInfo">Provider information</string>
