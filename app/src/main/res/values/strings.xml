@@ -2,7 +2,7 @@
 <resources>
     <string name="accessibility_text">## Erklärung zur Barrierefreiheit
 \n
-\nDie App BundesIdent ist bemüht, die App im Einklang mit den Bestimmungen des Behindertengleichstellungsgesetzes des Bundes (BGG) sowie der Barrierefreien-Informationstechnik-Verordnung (BITV 2.0) zur Umsetzung der Richtlinie (EU) 2016/2102 barrierefrei zugänglich zu machen. Diese Erklärung zur Barrierefreiheit gilt für die aktuell im App Store erreichbare Version 1.0.0-20. Die Erklärung wurde am 09.09.2022 erstellt.
+\nDie App BundesIdent ist bemüht, die App im Einklang mit den Bestimmungen des Behindertengleichstellungsgesetzes des Bundes (BGG) sowie der Barrierefreien-Informationstechnik-Verordnung (BITV 2.0) zur Umsetzung der Richtlinie (EU) 2016/2102 barrierefrei zugänglich zu machen. Diese Erklärung zur Barrierefreiheit gilt für die aktuell im Google Play Store erreichbare Version 1.0. Die Erklärung wurde am 09.09.2022 erstellt.
 \n
 \nDiese Erklärung beruht auf einer Selbstbewertung auf Basis des aktuellen Entwurfs des BIK BITV-Tests für mobile Apps ([github.com/BIK-BITV/BIK-App-Test ↗](https://github.com/BIK-BITV/BIK-App-Test)). In naher Zukunft streben wir eine externe Auditierung der App an.
 \n
@@ -336,7 +336,7 @@
 \n**Online-Beschwerde**
 \n
 \n[www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html ↗](https://www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html)</string>
-    <string name="scan_animationAccessibilityLabel">Legen Sie ihren Ausweis auf eine gerade Oberfläche, um Bewegungen bei dem Scanvorgang zu vermeiden. Legen Sie anschließend Ihr iPhone auf den Ausweis. Die obere Rückseite des iPhones sollte direkt auf dem Ausweis liegen. Warten Sie einen Moment, bis der Scanvorgang abgeschlossen wurde.</string>
+    <string name="scan_animationAccessibilityLabel">Legen Sie ihren Ausweis auf eine gerade Oberfläche, um Bewegungen bei dem Scanvorgang zu vermeiden. Legen Sie anschließend Ihr Smartphone auf den Ausweis. Die obere Rückseite des Smartphones sollte direkt auf dem Ausweis liegen. Warten Sie einen Moment, bis der Scanvorgang abgeschlossen wurde.</string>
     <string name="scan_helpNFC">Wie funktioniert die NFC-Technologie?</string>
     <string name="scan_helpScanning">Mein Ausweis wird nicht erkannt</string>
     <string name="scanError_box_title">Ausweisprozess erneut starten</string>
