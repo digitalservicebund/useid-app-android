@@ -82,7 +82,7 @@
 \nFor more information about the PIN reset letter, please visit
 \n
 \n**[www.pin-ruecksetzbrief-bestellen.de ](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
-    <string name="firstTimeUser_missingPINLetter_title">Order PIN reset letter</string>
+    <string name="firstTimeUser_missingPINLetter_title">Order PIN reset letter.</string>
     <string name="firstTimeUser_personalPIN_body">Make sure you remember your personal ID PIN. You will need it every time you use the online ID function in the future.</string>
     <string name="firstTimeUser_personalPIN_confirmation">Repeat PIN to confirm</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Try again.</string>
