@@ -336,7 +336,7 @@
 \n**Online-Beschwerde**
 \n
 \n[www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html ↗](https://www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html)</string>
-    <string name="scan_animationAccessibilityLabel">Legen Sie Ihr Smartphone auf eine gerade Oberfläche, um Bewegungen bei dem Scanvorgang zu vermeiden. Legen Sie anschließend Ihr iPhone auf den Ausweis. Die obere Rückseite des iPhones sollte direkt auf dem Ausweis liegen. Warten Sie einen Moment, bis der Scanvorgang abgeschlossen wurde.</string>
+    <string name="scan_animationAccessibilityLabel">Legen Sie Ihren Ausweis auf eine gerade Oberfläche, um Bewegungen bei dem Scanvorgang zu vermeiden. Legen Sie anschließend Ihr Smartphone auf den Ausweis. Die obere Rückseite des Smartphones sollte direkt auf dem Ausweis liegen. Warten Sie einen Moment, bis der Scanvorgang abgeschlossen wurde.</string>
     <string name="scan_helpNFC">Wie funktioniert die NFC-Technologie?</string>
     <string name="scan_helpScanning">Mein Ausweis wird nicht erkannt</string>
     <string name="scanError_box_title">Ausweisprozess erneut starten</string>
