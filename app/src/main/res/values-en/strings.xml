@@ -252,12 +252,12 @@
 \n
 \n### Under what circumstances may we share your data with third parties\?
 \n
-\nWe do not transfer your personal data to third parties for any purposes other than those listed in the following. We only disclose your personal data to third parties if:
+\nWe only disclose your personal data to third parties if:
 \n
-\n- you have provided your express consent to such,
-\n- disclosure is necessary for the assertion, exercise or defense of legal claims and there is no reason to assume that you have an overriding interest worthy of protection in the non-disclosure of your data,
-\n- in the event that there is a legal obligation to perform disclosure, and
-\n- this is legally permissible and necessary for the processing of a contractual relationship with you.
+\n- you have provided your express consent to such
+\n- disclosure is necessary for the assertion, exercise or defense of legal claims and there is no reason to assume that you have an overriding interest worthy of protection in the non-disclosure of your data
+\n- in the event that there is a legal obligation to perform disclosure
+\n- this is legally permissible and necessary for the processing of a contractual relationship with you
 \n
 \n### How long and where do we store your data\?
 \nNo personal data is stored at DigitalService in connection with the BundesIdent App.
@@ -280,7 +280,7 @@
 \n
 \nMatomo processes the following data within the app:
 \n
-\n- A randomly generated user ID that is created anew for each session. A new session starts after 30 minutes of user inactivity.
+\n- A randomly generated user ID that is created anew for each session. A new session starts after 30 minutes of user inactivity
 \n- Information about screens displayed in the app
 \n- Information about the operating system, device and application information (version, model, screen resolution, etc.) for an optimized application and to ensure data security
 \n- Information on whether an event has been successfully completed as well as error events (e.g., wrong pin entered, badge deactivated).
