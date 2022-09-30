@@ -78,7 +78,7 @@
     <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits eingerichtet\?</string>
     <string name="firstTimeUser_intro_skipSetup">Bereits eingerichtet</string>
     <string name="firstTimeUser_missingPINLetter_body">Wir arbeiten noch an dieser Funktion.\n\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter\n\n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
-    <string name="firstTimeUser_missingPINLetter_title">PIN-Rücksetzbrief bestellen</string>
+    <string name="firstTimeUser_missingPINLetter_title">PIN-Rücksetzbrief bestellen.</string>
     <string name="firstTimeUser_personalPIN_body">Merken Sie sich Ihre persönliche Ausweis-PIN gut. Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
     <string name="firstTimeUser_personalPIN_confirmation">PIN zum Bestätigen wiederholen</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Versuchen Sie es erneut.</string>
