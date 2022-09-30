@@ -21,7 +21,7 @@
 \n- Eine Fehlermeldung bei falscher PIN Eingabe (Transport-PIN sowie persönliche PIN) werden nicht proaktiv vorgelesen (Prüfschritt 11.5.2.11).
 \n- Es ist keine direkte Beschriftung der PIN Eingaben direkt im Eingabefeld vorhanden. Diese existiert nur im Titel der Screens (Prüfschritt 11.3.3.2).
 \n- An zwei Stellen während der Persönlichen PIN Eingabe passiert eine unerwartete Kontextänderung (Prüfschritt 11.3.2.2).
-\n- Die Transport-PIN Eingabe ist nicht auf 200%% zoombar (Prüfschritt 11.1.4.4).
+\n- Die Transport-PIN Eingabe ist nicht auf 200 % zoombar (Prüfschritt 11.1.4.4).
 \n- Die Überschriften werden nicht als solche ausgezeichnet (Prüfschritt 11.1.3.1).
 \n- Wir bieten keinen zweiten Supportweg an (Prüfschritt 12.2.3). Aktuell können wir nur über die E-Mail [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de) Support leisten.
 \n- Es werden nicht alle Namen und Rollen von Elementen korrekt wiedergegeben (Prüfschritt 11.4.1.2).
