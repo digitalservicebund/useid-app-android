@@ -2,7 +2,7 @@
 <resources>
     <string name="accessibility_text">## Accessibility Statement
 \n
-\nThe BundesIdent app seeks to ensure that the app is accessible free of any barriers in compliance with the provisions of the German Federal Disability Equality Act (BGG) and the German Barrier-Free Information Technology Ordinance (BITV 2.0) in the implementation of Directive (EU) 2016/2102. This Accessibility Statement applies to version 1.0.0, which is currently available in the App Store. The Statement was drafted on 9 September 2022.
+\nThe BundesIdent app seeks to ensure that the app is accessible free of any barriers in compliance with the provisions of the German Federal Disability Equality Act (BGG) and the German Barrier-Free Information Technology Ordinance (BITV 2.0) in the implementation of Directive (EU) 2016/2102. This Accessibility Statement applies to version 1.0, which is currently available in the Google Play Store. The Statement was drafted on 9 September 2022.
 \n
 \nThis Statement emanates from a self-assessment based on the current draft of the BIK BITV test for mobile apps ([github.com/BIK-BITV/BIK-App-Test ↗](https://github.com/BIK-BITV/BIK-App-Test)). In the near future, we are planning to have the app externally audited.
 \n
@@ -338,7 +338,7 @@
 \n**Online complaint**
 \n
 \n[www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html ↗](https://www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html)</string>
-    <string name="scan_animationAccessibilityLabel">Place your ID card on a flat surface to avoid movement during the scanning process. Then place your iPhone on top of the ID card. The top back side of the iPhone should be directly on the ID card. Wait a moment for the scan to complete.</string>
+    <string name="scan_animationAccessibilityLabel">Place your ID card on a flat surface to avoid movement during the scanning process. Then place your smartphone on top of the ID card. The top back side of the smartphone should be directly on the ID card. Wait a moment for the scan to complete.</string>
     <string name="scan_helpNFC">How does NFC technology work?</string>
     <string name="scan_helpScanning">My ID card is not recognized</string>
     <string name="scanError_box_title">Restart identification process</string>
