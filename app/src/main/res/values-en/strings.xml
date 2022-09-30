@@ -344,7 +344,19 @@
     <string name="scanError_box_body">Due to an error, you need to restart the identification process.</string>
     <string name="scanError_cardBlocked_body">"### Why is your ID card blocked?\n\nYour ID card has been blocked because you entered your personal ID card PIN incorrectly a third time.\n\n ### What can you do?\n\nWe are currently working on providing you with a solution in the app.\n\nIn the meantime, you can only unblock your ID card with your 10-digit PUK in AusweisApp2 or at the Bürgeramt. You can find your 10-digit PUK on your PIN letter."</string>
     <string name="scanError_cardBlocked_title">Your ID card is blocked.</string>
-    <string name="scanError_cardDeactivated_body">Contact your citizens\' registration office to activate the online ID function.\n\nYou do not know who to contact?\n\nCall 115 or find out more at:\n\nhttps://behoredenfinder.de/</string>
+    <string name="scanError_cardDeactivated_body">To be able to identify yourself online, you need an activated online ID function and your personal ID PIN.
+\n
+\n#### Activate afterwards with the PIN reset letter:
+\n
+\nFor more information, visit the following website:
+\n
+\n[www.pin-ruecksetzbrief-bestellen.de](https://www.pin-ruecksetzbrief-bestellen.de)
+\n
+\n#### Other options:
+\n
+\nUse the citizen hotline at 115 or check the following website for more information: 
+\n
+\n[www.behoerdenfinder.de](https://www.behoerdenfinder.de)</string>
     <string name="scanError_cardDeactivated_title">The online function is not activated for your ID card.</string>
     <string name="scanError_cardSuspended_body">"### Why is your ID card blocked?\n\nYour ID card has been blocked because you entered your personal ID card PIN incorrectly twice.\n\n### What can you do?\n\nWe are working to provide you with a solution in the app.\n\n\n\nIn the meantime, you can unlock your ID card using your 6-digit CAN in combination with your personal ID card PIN in the AusweisApp2. You can find your 6-digit CAN on the front of your ID card.\n\nAlternatively, you can reassign your personal ID PIN at the Bürgeramt if you have forgotten it."</string>
     <string name="scanError_cardSuspended_title">Your ID card is blocked.</string>
