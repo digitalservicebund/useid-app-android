@@ -252,10 +252,10 @@
 \n
 \nEine Übermittlung Ihrer persönlichen Daten an Dritte findet nur statt wenn:
 \n
-\n- Sie Ihre ausdrückliche Einwilligung dazu erteilt haben,
-\n- die Weitergabe zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen erforderlich ist und kein Grund zur Annahme besteht, dass Sie ein überwiegendes schutzwürdiges Interesse an der Nichtweitergabe Ihrer Daten haben,
+\n- Sie Ihre ausdrückliche Einwilligung dazu erteilt haben
+\n- die Weitergabe zur Geltendmachung, Ausübung oder Verteidigung von Rechtsansprüchen erforderlich ist und kein Grund zur Annahme besteht, dass Sie ein überwiegendes schutzwürdiges Interesse an der Nichtweitergabe Ihrer Daten haben
 \n- für den Fall, dass für die Weitergabe eine gesetzliche Verpflichtung besteht, sowie
-\n- dies gesetzlich zulässig und für die Abwicklung von Vertragsverhältnissen mit Ihnen erforderlich ist.
+\n- dies gesetzlich zulässig und für die Abwicklung von Vertragsverhältnissen mit Ihnen erforderlich ist
 \n
 \n### Wie lange und wo speichern wir Ihre Daten\?
 \nEs werden keine personenbezogene Daten beim DigitalService im Rahmen der BundesIdent App gespeichert.
@@ -278,7 +278,7 @@
 \n
 \nFolgende Daten verarbeitet Matomo innerhalb der App:
 \n
-\n- Eine zufallsgenerierter Benutzererkennung (user ID), die je Session neu erstellt wird. Eine neue Session startet nach 30 Minuten Inaktivität des Benutzers.
+\n- Eine zufallsgenerierte Benutzererkennung (user ID), die je Session neu erstellt wird. Eine neue Session startet nach 30 Minuten Inaktivität des Benutzers
 \n- Informationen über angezeigte Screens in der App
 \n- Information über das Betriebssystem, Geräte- und Anwendungsinformationen (Version, Modell, Bildschirmauflösung, etc.) für eine optimierte Anwendung und Gewährleistung der Datensicherheit
 \n- Informationen, ob ein Ereignis erfolgreich abgeschlossen wurde sowie Fehlerereignisse (z. B. falsche Pin eingegeben, Ausweis deaktiviert)
