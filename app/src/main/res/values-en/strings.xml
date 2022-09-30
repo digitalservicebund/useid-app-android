@@ -20,7 +20,7 @@
 \n- An error message in case of incorrect PIN entry (transport PIN as well as personal PIN) are not proactively read out (test step 11.5.2.11).
 \n- There is no direct labeling of PIN entries in the input field. This only takes place in the title of the screens (test step 11.3.3.2).
 \n- An unexpected change in context occurs at two points during entry of the personal PIN (test step 11.3.2.2).
-\n- The transport PIN input cannot be zoomed to 200%% (test step 11.1.4.4).
+\n- The transport PIN input cannot be zoomed to 200% (test step 11.1.4.4).
 \n- The headings are not marked as such (test step 11.1.3.1).
 \n- We do not offer a second support channel (test step 12.2.3). Currently, we can only provide support via e-mail at [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de).
 \n- Not all names and roles of elements are reproduced correctly (test step 11.4.1.2).
@@ -130,7 +130,7 @@
     <string name="identification_attributeConsentInfo_terms">Terms</string>
     <string name="identification_done_body">Continue at \"%1s\".</string>
     <string name="identification_done_continue">Continue to the provider</string>
-    <string name="identification_done_title">You have successfully demonstrated your identity.</string>
+    <string name="identification_done_title">You have successfully identified yourself.</string>
     <string name="identification_fetchMetadata_loadingData">The data is being loaded.</string>
     <string name="identification_fetchMetadata_pleaseWait">One moment please ...</string>
     <string name="identification_fetchMetadataError_body">Please try again. Make sure that you are connected to the Internet.</string>
