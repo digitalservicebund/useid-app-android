@@ -19,7 +19,6 @@ import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
 import de.digitalService.useID.ui.screens.noNfc.NoNfcScreen
-import de.digitalService.useID.ui.screens.setup.SetupResetPersonalPIN
 import de.digitalService.useID.ui.theme.UseIDTheme
 import io.sentry.compose.withSentryObservableEffect
 

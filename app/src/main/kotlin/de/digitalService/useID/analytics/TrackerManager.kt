@@ -1,7 +1,6 @@
 package de.digitalService.useID.analytics
 
 import android.content.Context
-import androidx.navigation.NavDestination
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.util.CurrentTimeProviderInterface
 import org.matomo.sdk.Matomo
