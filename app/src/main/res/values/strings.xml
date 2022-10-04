@@ -106,7 +106,7 @@
     <string name="firstTimeUser_transportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport-PIN ein.</string>
     <string name="helpNFC_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kure Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
-    <string name="helpNFC_title">Wie funktioniert die NFC-Technologie?</string>
+    <string name="helpNFC_title">So funktioniert die NFC-Technologie</string>
     <string name="home_header_body">Öffnen Sie auf Ihrem Smartphone die Internetseite vom Anbieter und drücken Sie auf den Button »Mit BundesIdent ausweisen«</string>
     <string name="home_header_title">Ausweisen</string>
     <string name="home_more_accessibilityStatement">Barrierefreiheitserklärung</string>
@@ -336,7 +336,7 @@
 \n
 \n[www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html ↗](https://www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html)</string>
     <string name="scan_animationAccessibilityLabel">Legen Sie Ihren Ausweis auf eine gerade Oberfläche, um Bewegungen bei dem Scanvorgang zu vermeiden. Legen Sie anschließend Ihr Smartphone auf den Ausweis. Die obere Rückseite des Smartphones sollte direkt auf dem Ausweis liegen. Warten Sie einen Moment, bis der Scanvorgang abgeschlossen wurde.</string>
-    <string name="scan_helpNFC">Wie funktioniert die NFC-Technologie?</string>
+    <string name="scan_helpNFC">So funktioniert die NFC-Technologie</string>
     <string name="scan_helpScanning">Mein Ausweis wird nicht erkannt</string>
     <string name="scanError_box_title">Ausweisprozess erneut starten</string>
     <string name="scanError_box_body">Aufgrund eines Fehlers müssen Sie den Ausweisprozess erneut starten.</string>
