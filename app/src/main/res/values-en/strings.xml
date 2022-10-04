@@ -112,7 +112,7 @@
     <string name="firstTimeUser_transportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
-    <string name="helpNFC_title">How does NFC technology work?</string>
+    <string name="helpNFC_title">How the NFC technology works</string>
     <string name="home_header_body">Open the website of the provider on your smartphone and press the button \"Mit BundesIdent ausweisen\".</string>
     <string name="home_header_title">Identify</string>
     <string name="home_more_accessibilityStatement">Accessibility statement</string>
@@ -340,7 +340,7 @@
 \n
 \n[www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html ↗](https://www.bfdi.bund.de/DE/Service/Beschwerden/beschwerden_node.html)</string>
     <string name="scan_animationAccessibilityLabel">Place your ID card on a flat surface to avoid movement during the scanning process. Then place your smartphone on top of the ID card. The top back side of the smartphone should be directly on the ID card. Wait a moment for the scan to complete.</string>
-    <string name="scan_helpNFC">How does NFC technology work?</string>
+    <string name="scan_helpNFC">How the NFC technology works</string>
     <string name="scan_helpScanning">My ID card is not recognized</string>
     <string name="scanError_box_title">Restart identification process</string>
     <string name="scanError_box_body">Due to an error, you need to restart the identification process.</string>
