@@ -91,11 +91,11 @@
     <string name="firstTimeUser_personalPIN_error_mismatch_title">PINs do not match</string>
     <string name="firstTimeUser_personalPIN_textFieldLabel_first">Personal PIN input field, six digits</string>
     <string name="firstTimeUser_personalPIN_textFieldLabel_second">Confirm personal PIN input field, six digits</string>
-    <string name="firstTimeUser_personalPIN_title">Now assign your personal ID card PIN.</string>
-    <string name="firstTimeUser_personalPINIntro_continue">Assign personal ID card PIN</string>
-    <string name="firstTimeUser_personalPINIntro_info_body">You will need this every time you use the online ID card function in the future.</string>
-    <string name="firstTimeUser_personalPINIntro_info_title">Remember your personal ID card PIN</string>
-    <string name="firstTimeUser_personalPINIntro_title">Now assign your personal ID card PIN.</string>
+    <string name="firstTimeUser_personalPIN_title">Now assign your personal ID PIN.</string>
+    <string name="firstTimeUser_personalPINIntro_continue">Assign personal ID PIN</string>
+    <string name="firstTimeUser_personalPINIntro_info_body">You will need this every time you use the online ID function in the future.</string>
+    <string name="firstTimeUser_personalPINIntro_info_title">Remember your personal ID PIN</string>
+    <string name="firstTimeUser_personalPINIntro_title">Now assign your personal ID PIN.</string>
     <string name="firstTimeUser_pinLetter_body">You received the PIN letter by mail after applying for the ID card.</string>
     <string name="firstTimeUser_pinLetter_requestLetter">No, order PIN reset letter</string>
     <string name="firstTimeUser_pinLetter_title">Do you still have your PIN letter?</string>
@@ -141,7 +141,7 @@
     <string name="identification_personalPIN_error_incorrectPIN">Incorrect personal PIN</string>
     <string name="identification_personalPIN_error_tryAgain">Try again.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">PIN input field</string>
-    <string name="identification_personalPIN_title">Enter your personal ID card PIN.</string>
+    <string name="identification_personalPIN_title">Enter your personal ID PIN.</string>
     <string name="identification_scan_body">In the next step, hold your ID card close to the back of the smartphone. The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
     <string name="identification_scan_title">Retrieve the data from your ID card.</string>
     <string name="imprint_text">## Imprint
@@ -344,7 +344,15 @@
     <string name="scan_helpScanning">My ID card is not recognized</string>
     <string name="scanError_box_title">Restart identification process</string>
     <string name="scanError_box_body">Due to an error, you need to restart the identification process.</string>
-    <string name="scanError_cardBlocked_body">"### Why is your ID card blocked?\n\nYour ID card has been blocked because you entered your personal ID card PIN incorrectly a third time.\n\n ### What can you do?\n\nWe are currently working on providing you with a solution in the app.\n\nIn the meantime, you can only unblock your ID card with your 10-digit PUK in AusweisApp2 or at the Bürgeramt. You can find your 10-digit PUK on your PIN letter."</string>
+    <string name="scanError_cardBlocked_body">### Why is your ID card blocked\?
+\n
+\nYour ID card has been blocked because you entered your personal ID PIN incorrectly a third time.
+\n
+\n ### What can you do\?
+\n
+\nWe are currently working on providing you with a solution in the app.
+\n
+\nIn the meantime, you can only unblock your ID card with your 10-digit PUK in AusweisApp2 or at the Bürgeramt. You can find your 10-digit PUK on your PIN letter.</string>
     <string name="scanError_cardBlocked_title">Your ID card is blocked.</string>
     <string name="scanError_cardDeactivated_body">To be able to identify yourself online, you need an activated online ID function and your personal ID PIN.
 \n
@@ -360,7 +368,19 @@
 \n
 \n[www.behoerdenfinder.de](https://www.behoerdenfinder.de)</string>
     <string name="scanError_cardDeactivated_title">The online function is not activated for your ID card.</string>
-    <string name="scanError_cardSuspended_body">"### Why is your ID card blocked?\n\nYour ID card has been blocked because you entered your personal ID card PIN incorrectly twice.\n\n### What can you do?\n\nWe are working to provide you with a solution in the app.\n\n\n\nIn the meantime, you can unlock your ID card using your 6-digit CAN in combination with your personal ID card PIN in the AusweisApp2. You can find your 6-digit CAN on the front of your ID card.\n\nAlternatively, you can reassign your personal ID PIN at the Bürgeramt if you have forgotten it."</string>
+    <string name="scanError_cardSuspended_body">### Why is your ID card blocked\?
+\n
+\nYour ID card has been blocked because you entered your personal ID PIN incorrectly twice.
+\n
+\n### What can you do\?
+\n
+\nWe are working to provide you with a solution in the app.
+\n
+\n
+\n
+\nIn the meantime, you can unlock your ID card using your 6-digit CAN in combination with your personal ID PIN in the AusweisApp2. You can find your 6-digit CAN on the front of your ID card.
+\n
+\nAlternatively, you can reassign your personal ID PIN at the Bürgeramt if you have forgotten it.</string>
     <string name="scanError_cardSuspended_title">Your ID card is blocked.</string>
     <string name="scanError_cardUnreadable_body">"The following documents offer the function: German identity card, electronic residence permit, eID card for citizens of the European Union and the European Economic Area.\n\n\n\nIf your smartphone does not recognize your ID card or displays \"ID card removed\", try the following steps:\n\n\n\n - Move your ID card away from your smartphone and then place the ID card close to the back of the smartphone once again. Try different positions: Top, middle, and back of the bottom.\n\n ![](%1$s)\n\n - If you have a thick protective case, remove the case and then try again.\n\n - Check if NFC is enabled.\n\n - Turn NFC off and back on again.\n\n - Try turning the smartphone screen off and on again."</string>
     <string name="scanError_cardUnreadable_title">Your ID card was not recognized.</string>
