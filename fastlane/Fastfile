@@ -7,7 +7,7 @@ end
 platform :android do
   desc "Runs all the tests"
   lane :test do
-    gradle(tasks: ["clean", "testDeviceDebugUnitTest"])
+    gradle(tasks: ["clean", "testDeviceReleaseUnitTest"])
     gradle(tasks: ["connectedDeviceDebugAndroidTest", "--info"])
   end
 
