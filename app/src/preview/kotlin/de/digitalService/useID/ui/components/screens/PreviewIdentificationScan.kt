@@ -15,11 +15,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.analytics.MockTrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -136,9 +136,9 @@ fun PreviewPreviewIdentificationScan() {
                         override fun getIsFirstTimeUser(): Boolean = false
                         override fun setIsNotFirstTimeUser() {}
                     }),
-                    MockTrackerManager()
+                    PreviewTrackerManager()
                 ),
-                MockTrackerManager()
+                PreviewTrackerManager()
             )
         )
     }

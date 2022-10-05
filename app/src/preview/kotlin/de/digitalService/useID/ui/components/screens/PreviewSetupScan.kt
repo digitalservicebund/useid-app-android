@@ -16,11 +16,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.analytics.MockTrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -150,7 +150,7 @@ fun PreviewPreviewSetupScan() {
 
     UseIDTheme {
         PreviewSetupScan(
-            PreviewSetupScanViewModel(SetupCoordinator(AppCoordinator(fakeStorageManager)), MockTrackerManager())
+            PreviewSetupScanViewModel(SetupCoordinator(AppCoordinator(fakeStorageManager)), PreviewTrackerManager())
         )
     }
 }

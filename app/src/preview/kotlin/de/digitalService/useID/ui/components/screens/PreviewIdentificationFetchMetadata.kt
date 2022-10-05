@@ -15,11 +15,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.analytics.MockTrackerManager
-import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -104,9 +103,9 @@ fun PreviewPreviewIdentificationFetchMetadata() {
                             }
                             )
                     ),
-                    MockTrackerManager()
+                    PreviewTrackerManager()
                 )
-            , MockTrackerManager())
+            , PreviewTrackerManager())
         )
     }
 }

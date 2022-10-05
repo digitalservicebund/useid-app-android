@@ -12,10 +12,10 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.Direction
-import de.digitalService.useID.analytics.MockTrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
+import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
 import de.digitalService.useID.ui.screens.noNfc.NoNfcScreen
@@ -106,20 +106,20 @@ private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvail
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
-private fun Preview1() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available)), MockTrackerManager())
+private fun PreviewNfc() {
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available)), PreviewTrackerManager())
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
-private fun Preview2() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc)), MockTrackerManager())
+private fun PreviewNoNfc() {
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc)), PreviewTrackerManager())
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
-private fun Preview3() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated)), MockTrackerManager())
+private fun PreviewNfcDeactivated() {
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated)), PreviewTrackerManager())
 }

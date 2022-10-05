@@ -11,13 +11,6 @@ import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
 
-interface TrackerManagerType {
-    fun initTracker(context: Context)
-    fun trackScreen(route: String)
-    fun trackEvent(category: String, action: String, name: String)
-    fun dispatch()
-}
-
 @Singleton
 class TrackerManager @Inject constructor(
     private val currentTimeProvider: CurrentTimeProviderInterface,
@@ -60,11 +53,4 @@ class TrackerManager @Inject constructor(
 
         lastActivity = currentTime
     }
-}
-
-class MockTrackerManager : TrackerManagerType {
-    override fun initTracker(context: Context) {}
-    override fun trackScreen(route: String) {}
-    override fun trackEvent(category: String, action: String, name: String) {}
-    override fun dispatch() {}
 }
