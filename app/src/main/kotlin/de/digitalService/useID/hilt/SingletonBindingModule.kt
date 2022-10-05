@@ -6,6 +6,8 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import de.digitalService.useID.StorageManager
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.IssueTrackerManager
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.coordinators.AppCoordinator
@@ -29,6 +31,9 @@ abstract class SingletonBindingModule {
 
     @Binds
     abstract fun bindTrackerManager(trackerManager: TrackerManager): TrackerManagerType
+
+    @Binds
+    abstract fun bindIssueTrackerManager(issueTrackerManager: IssueTrackerManager): IssueTrackerManagerType
 
     @Binds
     abstract fun bindCurrentTimeProvider(currentTimeProvider: CurrentTimeProvider): CurrentTimeProviderInterface

@@ -4,6 +4,7 @@ import android.content.Context
 import android.nfc.Tag
 import android.util.Log
 import de.digitalService.useID.getLogger
+import io.sentry.Sentry
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.Flow
@@ -54,7 +55,7 @@ class IDCardManager {
                     channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
                     channel.close()
                 }
-                else -> channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode))
+                else -> channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
             }
         }
     }
@@ -67,6 +68,8 @@ class IDCardManager {
         }
 
         override fun onFailure(p0: ServiceErrorResponse?) {
+            class ServiceErrorResponseError(message: String) : Exception(message)
+            Sentry.captureException(ServiceErrorResponseError("Status code: ${p0?.statusCode}"))
             logger.error("Failed to terminate context: ${p0?.errorDescription()}")
         }
     }

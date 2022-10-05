@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
@@ -17,6 +18,8 @@ import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDest
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProviderType
+import io.sentry.Sentry
+import io.sentry.SentryEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -34,6 +37,7 @@ class IdentificationCoordinator @Inject constructor(
     private val appCoordinator: AppCoordinator,
     private val idCardManager: IDCardManager,
     private val trackerManager: TrackerManagerType,
+    private val issueTrackerManager: IssueTrackerManagerType,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
@@ -119,6 +123,10 @@ class IdentificationCoordinator @Inject constructor(
 
                         if (pinCallback == null && !reachedScanState) {
                             trackerManager.trackEvent(category = "identification", action = "loadingFailed", name = "attributes")
+
+                            (error as? IDCardInteractionException)?.redacted?.let {
+                                issueTrackerManager.capture(it)
+                            }
                         }
                     }
                 }
@@ -185,7 +193,10 @@ class IdentificationCoordinator @Inject constructor(
                             navigateOnMain(IdentificationSuccessDestination(subject, event.redirectURL))
                         }
                     }
-                    else -> logger.debug("Unhandled authentication event: $event")
+                    else -> {
+                        logger.debug("Unhandled authentication event: $event")
+                        issueTrackerManager.capture(event.redacted)
+                    }
                 }
             }
         }

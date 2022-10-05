@@ -8,5 +8,19 @@ sealed class IDCardInteractionException(message: String? = null) : CancellationE
     class UnexpectedReadAttribute(message: String? = null) : IDCardInteractionException(message)
     object CardBlocked : IDCardInteractionException()
     object CardDeactivated : IDCardInteractionException()
-    class ProcessFailed(val resultCode: ActivationResultCode) : IDCardInteractionException()
+    class ProcessFailed(val resultCode: ActivationResultCode, val redirectUrl: String, val resultMinor: String) : IDCardInteractionException()
+
+    val redacted: RedactedIDCardInteractionException?
+        get() = when (this) {
+            is FrameworkError -> RedactedIDCardInteractionException.FrameworkError
+            is UnexpectedReadAttribute -> RedactedIDCardInteractionException.UnexpectedReadAttribute
+            is ProcessFailed -> RedactedIDCardInteractionException.ProcessFailed(this.resultCode, this.resultMinor)
+            else -> null
+        }
+}
+
+sealed class RedactedIDCardInteractionException(message: String? = null) : Exception(message) {
+    object FrameworkError : RedactedIDCardInteractionException()
+    object UnexpectedReadAttribute : RedactedIDCardInteractionException()
+    class ProcessFailed(resultCode: ActivationResultCode, resultMinor: String) : RedactedIDCardInteractionException("processFailed(resultCode: ${resultCode.name}, resultMinor: $resultMinor")
 }

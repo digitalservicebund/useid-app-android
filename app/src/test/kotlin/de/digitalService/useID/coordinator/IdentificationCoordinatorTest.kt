@@ -3,6 +3,7 @@ package de.digitalService.useID.coordinator
 import android.content.Context
 import android.net.Uri
 import android.util.Base64
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.models.ScanError
@@ -43,6 +44,9 @@ class IdentificationCoordinatorTest {
 
     @MockK(relaxUnitFun = true)
     lateinit var mockTrackerManager: TrackerManagerType
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockIssueTrackerManager: IssueTrackerManagerType
 
     @MockK(relaxUnitFun = true)
     lateinit var mockCoroutineContextProvider: CoroutineContextProvider
@@ -118,6 +122,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -179,6 +184,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -223,6 +229,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -261,6 +268,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -297,6 +305,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -324,6 +333,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -360,6 +370,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -396,6 +407,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -432,6 +444,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -462,6 +475,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -505,6 +519,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -542,6 +557,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -579,6 +595,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -621,6 +638,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -657,6 +675,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -686,6 +705,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 
@@ -702,6 +722,7 @@ class IdentificationCoordinatorTest {
             mockAppCoordinator,
             mockIDCardManager,
             mockTrackerManager,
+            mockIssueTrackerManager,
             mockCoroutineContextProvider
         )
 

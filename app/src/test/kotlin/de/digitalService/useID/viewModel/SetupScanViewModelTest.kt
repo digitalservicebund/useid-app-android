@@ -1,6 +1,7 @@
 package de.digitalService.useID.viewModel
 
 import android.content.Context
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
@@ -35,6 +36,9 @@ class SetupScanViewModelTest {
     lateinit var mockTrackerManager: TrackerManagerType
 
     @MockK(relaxUnitFun = true)
+    lateinit var mockIssueTrackerManager: IssueTrackerManagerType
+
+    @MockK(relaxUnitFun = true)
     lateinit var contextMock: Context
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -61,6 +65,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -87,6 +92,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -113,6 +119,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -144,6 +151,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -176,6 +184,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -209,6 +218,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -248,6 +258,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -283,6 +294,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -318,6 +330,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -356,6 +369,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -379,6 +393,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 
@@ -400,6 +415,7 @@ class SetupScanViewModelTest {
             coordinatorMock,
             idCardManagerMock,
             mockTrackerManager,
+            mockIssueTrackerManager,
             testScope
         )
 

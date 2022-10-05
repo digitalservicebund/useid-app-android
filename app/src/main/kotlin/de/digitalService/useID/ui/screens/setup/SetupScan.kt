@@ -24,6 +24,7 @@ import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
@@ -163,6 +164,7 @@ class SetupScanViewModel @Inject constructor(
     private val coordinator: SetupCoordinator,
     private val idCardManager: IDCardManager,
     private val trackerManager: TrackerManagerType,
+    private val issueTrackerManager: IssueTrackerManagerType,
     @Nullable coroutineScope: CoroutineScope? = null
 ) :
     ViewModel(), SetupScanViewModelInterface {
@@ -225,6 +227,11 @@ class SetupScanViewModel @Inject constructor(
                     is IDCardInteractionException.CardBlocked -> ScanError.PINBlocked
                     else -> {
                         trackerManager.trackScreen("firstTimeUser/cardUnreadable")
+
+                        (exception as? IDCardInteractionException)?.redacted?.let {
+                            issueTrackerManager.capture(it)
+                        }
+
                         ScanError.Other(exception.message)
                     }
                 }
@@ -278,6 +285,7 @@ class SetupScanViewModel @Inject constructor(
                     else -> {
                         logger.debug("Collected unexpected event: $event")
                         errorState = ScanError.Other(null)
+                        issueTrackerManager.capture(event.redacted)
                         cancel()
                     }
                 }
