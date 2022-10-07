@@ -68,7 +68,7 @@ fun SetupScan(
                     onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
                 )
             },
-            onCancel = viewModel::onCancelConfirm,
+            onErrorDialogButtonTap = viewModel::onCancelConfirm,
             onHelpDialogShown = viewModel::onHelpButtonTapped,
             onNfcDialogShown = viewModel::onNfcButtonTapped,
             showProgress = viewModel.shouldShowProgress,

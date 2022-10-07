@@ -37,7 +37,7 @@ fun ScanScreen(
     body: String,
     errorState: ScanError?,
     onIncorrectPIN: @Composable (Int) -> Unit,
-    onCancel: () -> Unit,
+    onErrorDialogButtonTap: () -> Unit,
     showProgress: Boolean,
     modifier: Modifier = Modifier,
     onHelpDialogShown: () -> Unit = { },
@@ -49,7 +49,7 @@ fun ScanScreen(
     errorState?.let { error ->
         when (error) {
             is ScanError.IncorrectPIN -> onIncorrectPIN(error.attempts)
-            else -> ScanErrorAlertDialog(error = error, onButtonTap = onCancel)
+            else -> ScanErrorAlertDialog(error = error, onButtonTap = onErrorDialogButtonTap)
         }
     }
 
@@ -177,6 +177,7 @@ fun ScanScreen(
                     fontResource = R.font.bundes_sans_dtp_regular
                 )
             },
+            buttonText = stringResource(id = R.string.scanError_close),
             onButtonTap = { helpDialogShown = false }
         )
     }
@@ -191,7 +192,7 @@ private fun PreviewWithoutProgress() {
             body = "Body",
             errorState = null,
             onIncorrectPIN = { },
-            onCancel = { },
+            onErrorDialogButtonTap = { },
             showProgress = false
         )
     }
@@ -206,7 +207,7 @@ private fun PreviewWithProgress() {
             body = "Body",
             errorState = null,
             onIncorrectPIN = { },
-            onCancel = { },
+            onErrorDialogButtonTap = { },
             showProgress = true
         )
     }
@@ -221,7 +222,7 @@ private fun PreviewWithError() {
             body = "Body",
             errorState = ScanError.PINSuspended,
             onIncorrectPIN = { },
-            onCancel = { },
+            onErrorDialogButtonTap = { },
             showProgress = false
         )
     }

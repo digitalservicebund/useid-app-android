@@ -45,13 +45,12 @@ class IdentificationScanTest {
         val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
 
-        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
-        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("${testErrorState.textResID}").assertIsDisplayed()
 
         val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTapped(any()) }
     }
 
     @Test
@@ -68,13 +67,12 @@ class IdentificationScanTest {
         val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
 
-        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
-        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("${testErrorState.textResID}").assertIsDisplayed()
 
         val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTapped(any()) }
     }
 
     @Test
@@ -91,13 +89,12 @@ class IdentificationScanTest {
         val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
 
-        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
-        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("${testErrorState.textResID}").assertIsDisplayed()
 
         val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTapped(any()) }
     }
 
     @Test
@@ -114,13 +111,68 @@ class IdentificationScanTest {
         val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
 
-        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
-        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
+        composeTestRule.onNodeWithTag("${testErrorState.textResID}").assertIsDisplayed()
 
         val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTapped(any()) }
+    }
+
+    @Test
+    fun openErrorDialogAndConfirmWithButton_ScanErrorCardErrorWithRedirect() {
+        val testErrorState = ScanError.CardErrorWithRedirect("")
+
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns testErrorState
+
+        composeTestRule.activity.setContent {
+            IdentificationScan(viewModel = mockViewModel)
+        }
+
+        val boxTitleText = composeTestRule.activity.getString(R.string.scanError_box_title)
+        composeTestRule.onNodeWithText(boxTitleText).assertIsDisplayed()
+
+        val boxBodyText = composeTestRule.activity.getString(R.string.scanError_box_body)
+        composeTestRule.onNodeWithText(boxBodyText).assertIsDisplayed()
+
+        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+
+        composeTestRule.onNodeWithTag("${testErrorState.textResID}").assertIsDisplayed()
+
+        val buttonText = composeTestRule.activity.getString(R.string.scanError_redirect)
+        composeTestRule.onNodeWithText(buttonText).performClick()
+
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTapped(any()) }
+    }
+
+    @Test
+    fun openErrorDialogAndConfirmWithButton_ScanErrorCardErrorWithoutRedirect() {
+        val testErrorState = ScanError.CardErrorWithoutRedirect
+
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        every { mockViewModel.errorState } returns testErrorState
+
+        composeTestRule.activity.setContent {
+            IdentificationScan(viewModel = mockViewModel)
+        }
+
+        val boxTitleText = composeTestRule.activity.getString(R.string.scanError_box_title)
+        composeTestRule.onNodeWithText(boxTitleText).assertIsDisplayed()
+
+        val boxBodyText = composeTestRule.activity.getString(R.string.scanError_box_body)
+        composeTestRule.onNodeWithText(boxBodyText).assertIsDisplayed()
+
+        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
+        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
+
+        composeTestRule.onNodeWithTag("${testErrorState.textResID}").assertIsDisplayed()
+
+        val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
+        composeTestRule.onNodeWithText(buttonText).performClick()
+
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonTapped(any()) }
     }
 
     @Test

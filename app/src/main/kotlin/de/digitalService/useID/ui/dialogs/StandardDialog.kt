@@ -3,14 +3,12 @@ package de.digitalService.useID.ui.dialogs
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import de.digitalService.useID.R
 
 @Composable
-fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, buttonText: String = stringResource(id = R.string.scanError_close), onButtonTap: () -> Unit) {
+fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, buttonText: String, onButtonTap: () -> Unit) {
     AlertDialog(
         onDismissRequest = { },
         confirmButton = {
@@ -35,6 +33,6 @@ fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, 
 @Preview
 @Composable
 private fun Preview() {
-    StandardDialog(title = { Text(text = "Test Dialog") }, text = { Text(text = "test Dialog text") }) {
+    StandardDialog(title = { Text(text = "Test Dialog") }, text = { Text(text = "test Dialog text") }, buttonText = "Button text") {
     }
 }

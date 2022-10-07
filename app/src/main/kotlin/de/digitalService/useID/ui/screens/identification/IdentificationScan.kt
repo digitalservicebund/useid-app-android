@@ -1,5 +1,8 @@
 package de.digitalService.useID.ui.screens.identification
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
@@ -9,12 +12,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,6 +46,7 @@ fun IdentificationScan(
     modifier: Modifier = Modifier,
     viewModel: IdentificationScanViewModelInterface = hiltViewModel<IdentificationScanViewModel>()
 ) {
+    val context = LocalContext.current
     var showCancelDialog by remember { mutableStateOf(false) }
 
     ScreenWithTopBar(
@@ -60,7 +66,7 @@ fun IdentificationScan(
                     onNewPINEntered = viewModel::onNewPersonalPINEntered
                 )
             },
-            onCancel = viewModel::onCancelIdentification,
+            onErrorDialogButtonTap = { viewModel.onErrorDialogButtonTapped(context) },
             onHelpDialogShown = viewModel::onHelpButtonTapped,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
@@ -142,6 +148,7 @@ interface IdentificationScanViewModelInterface {
 
     fun onHelpButtonTapped()
     fun onNfcButtonTapped()
+    fun onErrorDialogButtonTapped(context: Context)
     fun onCancelIdentification()
     fun onNewPersonalPINEntered(pin: String)
 }
@@ -168,6 +175,17 @@ class IdentificationScanViewModel @Inject constructor(
 
     override fun onNfcButtonTapped() {
         trackerManager.trackEvent("identification", "alertShown", "NFCInfo")
+    }
+
+    override fun onErrorDialogButtonTapped(context: Context) {
+        errorState?.let { error ->
+            if (error is ScanError.CardErrorWithRedirect) {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(error.redirectUrl))
+                ContextCompat.startActivity(context, intent, null)
+            }
+        }
+
+        coordinator.cancelIdentification()
     }
 
     override fun onCancelIdentification() {
@@ -204,6 +222,7 @@ private class PreviewIdentificationScanViewModel(
 ) : IdentificationScanViewModelInterface {
     override fun onHelpButtonTapped() {}
     override fun onNfcButtonTapped() {}
+    override fun onErrorDialogButtonTapped(context: Context) {}
     override fun onCancelIdentification() {}
     override fun onNewPersonalPINEntered(pin: String) {}
 }

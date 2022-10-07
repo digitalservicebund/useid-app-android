@@ -1,6 +1,13 @@
 package de.digitalService.useID.ui.components.screens
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,17 +42,19 @@ fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel) {
             IdentificationScan(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
         }
 
-        Row(
+        LazyRow(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         ) {
-            Button(onClick = { viewModel.simulateSuccess() }) { Text("✅") }
-            Button(onClick = { viewModel.simulateIncorrectPIN() }) { Text("❌") }
-            Button(onClick = { viewModel.simulateCANRequired() }) { Text("CAN") }
-            Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") }
-            Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("📵") }
+            item { Button(onClick = { viewModel.simulateSuccess() }) { Text("✅") } }
+            item { Button(onClick = { viewModel.simulateIncorrectPIN() }) { Text("PIN") } }
+            item { Button(onClick = { viewModel.simulateReadingErrorWithRedirect() }) { Text("❌➰") } }
+            item { Button(onClick = { viewModel.simulateReadingErrorWithoutRedirect() }) { Text("❌") } }
+            item { Button(onClick = { viewModel.simulateCANRequired() }) { Text("CAN") } }
+            item { Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") } }
+            item { Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("📵") } }
         }
     }
 }
@@ -69,6 +79,22 @@ class PreviewIdentificationScanViewModel @Inject constructor(
             delay(3000L)
             innerViewModel.injectShouldShowProgress(false)
             innerViewModel.injectErrorState(ScanError.IncorrectPIN(2))
+        }
+    }
+    fun simulateReadingErrorWithoutRedirect() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectErrorState(ScanError.CardErrorWithoutRedirect)
+        }
+    }
+    fun simulateReadingErrorWithRedirect() {
+        viewModelScope.launch {
+            innerViewModel.injectShouldShowProgress(true)
+            delay(3000L)
+            innerViewModel.injectShouldShowProgress(false)
+            innerViewModel.injectErrorState(ScanError.CardErrorWithRedirect("https://digitalservice.bund.de"))
         }
     }
     fun simulateCANRequired() {
@@ -105,6 +131,16 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         override var errorState: ScanError? by mutableStateOf(null)
         override fun onHelpButtonTapped() = trackerManager.trackScreen("identification/scanHelp")
         override fun onNfcButtonTapped() = trackerManager.trackEvent("identification", "alertShown", "NFCInfo")
+        override fun onErrorDialogButtonTapped(context: Context) {
+            errorState?.let { error ->
+                if (error is ScanError.CardErrorWithRedirect) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(error.redirectUrl))
+                    ContextCompat.startActivity(context, intent, null)
+                }
+            }
+
+            coordinator.cancelIdentification()
+        }
         override fun onCancelIdentification() { coordinator.cancelIdentification() }
         override fun onNewPersonalPINEntered(pin: String) {
             errorState = null

@@ -117,6 +117,17 @@ class IdentificationCoordinator @Inject constructor(
                         trackerManager.trackScreen("identification/cardUnreadable")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.CardBlocked))
                     }
+                    is IDCardInteractionException.ProcessFailed -> {
+                        _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
+
+                        val scanEvent = if (error.redirectUrl != null) {
+                            ScanEvent.Error(ScanError.CardErrorWithRedirect(error.redirectUrl))
+                        } else {
+                            ScanEvent.Error(ScanError.CardErrorWithoutRedirect)
+                        }
+
+                        _scanEventFlow.emit(scanEvent)
+                    }
                     else -> {
                         _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
