@@ -23,14 +23,14 @@
 \n- An zwei Stellen während der Persönlichen PIN Eingabe passiert eine unerwartete Kontextänderung (Prüfschritt 11.3.2.2).
 \n- Die Transport-PIN Eingabe ist nicht auf 200 % zoombar (Prüfschritt 11.1.4.4).
 \n- Die Überschriften werden nicht als solche ausgezeichnet (Prüfschritt 11.1.3.1).
-\n- Wir bieten keinen zweiten Supportweg an (Prüfschritt 12.2.3). Aktuell können wir nur über die E-Mail [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de) Support leisten.
+\n- Wir bieten keinen zweiten Supportweg an (Prüfschritt 12.2.3). Aktuell können wir nur über die E-Mail [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de) Support leisten.
 \n- Es werden nicht alle Namen und Rollen von Elementen korrekt wiedergegeben (Prüfschritt 11.4.1.2).
 \n- In den PIN Eingaben ist eine Fokusverfolgung nicht möglich (Prüfschritt 11.5.2.13).
 \n- Die Tastaturbedienung ist weitestgehend nicht möglich (Prüfschritt 11.2.1.1 und 11.2.1.2) und der aktuelle Fokus bei der Tastaturbedienung wird nicht deutlich (Prüfschritt 11.2.4.7).
 \n
 \n### Kontakt und Feedback-Möglichkeit
 \n
-\nSind Ihnen Mängel beim barrierefreien Zugang zu Inhalten aufgefallen\? Dann können Sie sich gerne bei uns melden: [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de).
+\nSind Ihnen Mängel beim barrierefreien Zugang zu Inhalten aufgefallen\? Dann können Sie sich gerne bei uns melden: [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de).
 \n
 \n### Schlichtungsverfahren
 \nBeim Beauftragten der Bundesregierung für die Belange von Menschen mit Behinderungen gibt es eine Schlichtungsstelle gemäß § 16 BGG. Die Schlichtungsstelle hat die Aufgabe, Konflikte zwischen Menschen mit Behinderungen und öffentlichen Stellen des Bundes zu lösen. Sie können die Schlichtungsstelle einschalten, wenn Sie mit den Antworten aus der oben genannten Kontaktmöglichkeit nicht zufrieden sind. Dabei geht es nicht darum, Gewinner oder Verlierer zu finden. Vielmehr ist es das Ziel, mit Hilfe der Schlichtungsstelle gemeinsam und außergerichtlich eine Lösung für ein Problem zu finden. Das Schlichtungsverfahren ist kostenlos. Sie brauchen auch keinen Rechtsbeistand. Auf der Internetseite der Schlichtungsstelle finden Sie alle Informationen zum Schlichtungsverfahren. Dort können Sie nachlesen, wie ein Schlichtungsverfahren abläuft und wie Sie den Antrag auf Schlichtung stellen. Sie können den Antrag auch in Leichter Sprache oder in Deutscher Gebärdensprache stellen.
@@ -161,7 +161,7 @@
 \n### Kontakt
 \n
 \nE-Mail-Adresse:\\
-\n[eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de)
+\n[hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)
 \n
 \nWebseite:\\
 \n[digitalservice.bund.de ↗](https://digitalservice.bund.de)
@@ -244,7 +244,7 @@
 \n
 \n### Welche personenbezogenen Daten verarbeiten wir\?
 \n
-\nNehmen Sie unter der im App Store, beziehungsweise auf der Support Website angegebenen E-Mail-Adresse ([eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de)) Kontakt zu uns auf, teilen Sie uns zumindest Ihre E-Mail-Adresse mit, sowie gegebenenfalls weitere Informationen, die Sie in Ihrer E-Mail preisgeben. Damit wir Ihr Anliegen bearbeiten können, müssen wir diese Daten verarbeiten. Rechtsgrundlage für die Verarbeitung Ihrer personenbezogenen Daten ist Art. 6 Abs. 1 DSGVO.
+\nNehmen Sie unter der im App Store, beziehungsweise auf der Support Website angegebenen E-Mail-Adresse ([hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)) Kontakt zu uns auf, teilen Sie uns zumindest Ihre E-Mail-Adresse mit, sowie gegebenenfalls weitere Informationen, die Sie in Ihrer E-Mail preisgeben. Damit wir Ihr Anliegen bearbeiten können, müssen wir diese Daten verarbeiten. Rechtsgrundlage für die Verarbeitung Ihrer personenbezogenen Daten ist Art. 6 Abs. 1 DSGVO.
 \n
 \nFür die Identifizierung in der App werden keine personenbezogenen Daten in der App gespeichert und weitergeleitet. Sofern die persönliche PIN in Kombination mit dem Ausweis übereinstimmt, erfolgt eine Autorisierung, die an den eID Server weitergeleitet wird. Der eID Server, in Verantwortlichkeit des Bundes, erhält die überprüfte Autorisierung und übermittelt die dort hinterlegten personenbezogenen Daten an den von Ihnen genutzten Service. Die Weiterleitung der personenbezogenen Daten vom eID Server erfolgt im Rahmen der Verantwortlichkeit des Bundes. Die dort gespeicherten Daten können wir als DigitalService nicht einsehen und werden in der BundesIdent App nicht gespeichert und verarbeitet.
 \n
@@ -409,7 +409,7 @@
 \n
 \n### § 5 Pflege und Support
 \n
-\n(1) Der Bund bietet nach eigenem Ermessen und ohne hierzu verpflichtet zu sein für Teile der App zusätzliche kostenfreie Supportleistungen in Form von Dokumentationen und online Hilfen im Internet unter der Adresse [https://github.com/digitalservicebund](https://github.com/digitalservicebund) an sowie unter der E-Mail-Adresse: [eid@digitalservice.bund.de ↗](mailto:eid@digitalservice.bund.de). Auch stellt er neue Versionen der App zur Verfügung. Hieraus erwächst jedoch kein Anspruch auf Mängelbeseitigung, auf Zertifizierung, auf Beibehaltung der Supportleistungen oder der Hotline und auf Überlassung neuer Versionen.
+\n(1) Der Bund bietet nach eigenem Ermessen und ohne hierzu verpflichtet zu sein für Teile der App zusätzliche kostenfreie Supportleistungen in Form von Dokumentationen und online Hilfen im Internet unter der Adresse [https://github.com/digitalservicebund](https://github.com/digitalservicebund) an sowie unter der E-Mail-Adresse: [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de). Auch stellt er neue Versionen der App zur Verfügung. Hieraus erwächst jedoch kein Anspruch auf Mängelbeseitigung, auf Zertifizierung, auf Beibehaltung der Supportleistungen oder der Hotline und auf Überlassung neuer Versionen.
 \n
 \n(2) Verfügbare neue Versionen der App können im Internet kostenfrei über allgemein zugängliche App-Stores heruntergeladen werden.
 \n
