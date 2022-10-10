@@ -18,8 +18,8 @@ android {
         applicationId "de.digitalService.useID"
         minSdk 28
         targetSdk 33
-        versionCode 28
-        versionName "1.0"
+        versionCode 29
+        versionName "1.0.1"
 
         testInstrumentationRunner "de.digitalService.useID.util.HiltTestRunner"
         vectorDrawables {
