@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,19 +11,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.Dialog
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player.REPEAT_MODE_ONE
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.dialogs.ScanErrorAlertDialog
@@ -46,6 +46,8 @@ fun ScanScreen(
     var helpDialogShown by remember { mutableStateOf(false) }
     var whatIsNfcDialogShown by remember { mutableStateOf(false) }
 
+    val context = LocalContext.current
+
     errorState?.let { error ->
         when (error) {
             is ScanError.IncorrectPIN -> onIncorrectPIN(error.attempts)
@@ -58,20 +60,34 @@ fun ScanScreen(
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
     ) {
-        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.animation_id_scan))
+        val exoPlayer = remember {
+            ExoPlayer.Builder(context).build().apply {
+                val mediaItem = MediaItem.fromUri(RawResourceDataSource.buildRawResourceUri(R.raw.animation_id_scan_video))
+                setMediaItem(mediaItem)
+                prepare()
+                repeatMode = REPEAT_MODE_ONE
+                playWhenReady = true
+            }
+        }
 
-        val animationDescription = stringResource(id = R.string.scan_animationAccessibilityLabel)
-        LottieAnimation(
-            composition = composition,
-            contentScale = ContentScale.Fit,
-            iterations = LottieConstants.IterateForever,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1.47f)
-                .semantics(mergeDescendants = true) {
-                    this.contentDescription = animationDescription
+        DisposableEffect(
+            AndroidView(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = false, onClick = { })
+                    .aspectRatio(1.47f),
+                factory = {
+                    PlayerView(context).apply {
+                        player = exoPlayer
+                        useController = false
+                    }
                 }
-        )
+            )
+        ) {
+            onDispose {
+                exoPlayer.release()
+            }
+        }
 
         Spacer(modifier = Modifier.padding(20.dp))
 

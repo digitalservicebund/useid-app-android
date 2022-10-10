@@ -134,6 +134,8 @@ dependencies {
 
     implementation 'com.github.jeziellago:compose-markdown:0.3.0'
 
+    implementation 'com.google.android.exoplayer:exoplayer:2.18.1'
+
     implementation 'org.openecard.clients:android-lib:2.1.2'
 
     implementation 'xerces:xercesImpl:2.12.0'
