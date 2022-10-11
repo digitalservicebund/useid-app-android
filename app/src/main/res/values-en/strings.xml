@@ -113,7 +113,7 @@
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
     <string name="helpNFC_title">How the NFC technology works</string>
-    <string name="home_header_body">Open the website of the provider on your smartphone and press the button \"Mit BundesIdent ausweisen\".</string>
+    <string name="home_header_body">Open the website of the provider on your smartphone and press the button “Mit BundesIdent ausweisen”.</string>
     <string name="home_header_title">Identify</string>
     <string name="home_more_accessibilityStatement">Accessibility statement</string>
     <string name="home_more_imprint">Imprint</string>
@@ -130,7 +130,7 @@
     <string name="identification_attributeConsentInfo_provider">Provider</string>
     <string name="identification_attributeConsentInfo_providerInfo">Provider information</string>
     <string name="identification_attributeConsentInfo_terms">Terms</string>
-    <string name="identification_done_body">Continue at \"%1s\".</string>
+    <string name="identification_done_body">Continue at “%1s”.</string>
     <string name="identification_done_continue">Continue to the provider</string>
     <string name="identification_done_title">You have successfully identified yourself.</string>
     <string name="identification_fetchMetadata_loadingData">The data is being loaded.</string>
@@ -202,7 +202,9 @@
     <string name="navigation_back">Back</string>
     <string name="navigation_cancel">Cancel</string>
     <string name="ndcDeactivated_openSettings_button">Customize settings</string>
-    <string name="nfcDeactivated_info_body">\"BundesIdent\" is currently not authorized to use the NFC function.\n\nAdjust your settings accordingly to be able to use the online ID function.</string>
+    <string name="nfcDeactivated_info_body">“BundesIdent” is currently not authorized to use the NFC function.
+\n
+\nAdjust your settings accordingly to be able to use the online ID function.</string>
     <string name="nfcDeactivated_info_title">NFC function disabled</string>
     <string name="noNfc_info_body">Unfortunately, the smartphone has no NFC reading function or cannot read the NFC chip in the ID card.\n\nPlease use a smartphone with NFC reading function or a card reader.</string>
     <string name="noNfc_info_title">NFC function not available</string>
