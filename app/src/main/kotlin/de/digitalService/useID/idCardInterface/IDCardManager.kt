@@ -52,8 +52,12 @@ class IDCardManager {
                     channel.close()
                 }
                 ActivationResultCode.REDIRECT -> {
-                    channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
-                    channel.close()
+                    if (p0.processResultMinor != null) {
+                        channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
+                    } else {
+                        channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
+                        channel.close()
+                    }
                 }
                 else -> channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
             }
