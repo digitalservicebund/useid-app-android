@@ -56,7 +56,13 @@ class IdentificationCoordinator @Inject constructor(
     private var reachedScanState = false
 
     fun startIdentificationProcess(tcTokenURL: String) {
+        logger.debug("Start identification process.")
         idCardManager.cancelTask()
+        reachedScanState = false
+        CoroutineScope(coroutineContextProvider.IO).launch {
+            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
+            _scanEventFlow.emit(ScanEvent.CardRequested)
+        }
         startIdentification(tcTokenURL)
     }
 
@@ -75,17 +81,20 @@ class IdentificationCoordinator @Inject constructor(
             logger.error("Cannot process PIN because there isn't any pin callback saved.")
             return
         }
+        logger.debug("Executing PIN callback.")
         pinCallback(pin)
         this.pinCallback = null
     }
 
     fun cancelIdentification() {
+        logger.debug("Cancel identification process.")
         appCoordinator.popToRoot()
         idCardManager.cancelTask()
         reachedScanState = false
     }
 
     fun finishIdentification() {
+        logger.debug("Finish identification process.")
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
         reachedScanState = false
@@ -162,8 +171,10 @@ class IdentificationCoordinator @Inject constructor(
                         pinCallback = event.pinCallback
 
                         if (event.attempts == null) {
+                            logger.debug("PIN request without attempts")
                             navigateOnMain(IdentificationPersonalPINDestination)
                         } else {
+                            logger.debug("PIN request with ${event.attempts} attempts")
                             _scanEventFlow.emit(ScanEvent.Error(ScanError.IncorrectPIN(attempts = event.attempts)))
                         }
                     }

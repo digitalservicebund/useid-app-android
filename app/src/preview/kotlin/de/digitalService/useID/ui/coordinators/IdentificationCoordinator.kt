@@ -48,6 +48,9 @@ class IdentificationCoordinator @Inject constructor(
                     readAttributes = IDCardAttribute.values().associateWith { true }
                 )
 
+            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
+            _scanEventFlow.emit(ScanEvent.CardRequested)
+
             CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(IdentificationAttributeConsentDestination(mockedRequest)) }
         }
     }
