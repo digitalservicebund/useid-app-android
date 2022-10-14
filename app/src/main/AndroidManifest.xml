@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="de.digitalService.useID">
 
     <uses-permission android:name="android.permission.NFC" />
@@ -20,7 +21,9 @@
             android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:theme="@style/Theme.App.Starting"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/techlist" />
             <intent-filter>
