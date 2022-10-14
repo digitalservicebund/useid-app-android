@@ -386,6 +386,29 @@ class SetupScanViewModelTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
+    fun onBack() = runTest {
+        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
+
+        val viewModel = SetupScanViewModel(
+            coordinatorMock,
+            idCardManagerMock,
+            mockTrackerManager,
+            mockIssueTrackerManager,
+            testScope
+        )
+
+        viewModel.onCancelConfirm()
+
+        verify(exactly = 1) { coordinatorMock.cancelSetup() }
+        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
+        verify(exactly = 1) { idCardManagerMock.cancelTask() }
+        verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
+
+        assertNull(viewModel.errorState)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun onCancel() = runTest {
         val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
 
@@ -401,6 +424,7 @@ class SetupScanViewModelTest {
 
         verify(exactly = 1) { coordinatorMock.cancelSetup() }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
+        verify(exactly = 1) { idCardManagerMock.cancelTask() }
         verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
 
         assertNull(viewModel.errorState)

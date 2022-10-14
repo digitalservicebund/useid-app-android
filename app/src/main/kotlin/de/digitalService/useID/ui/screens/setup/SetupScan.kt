@@ -201,9 +201,15 @@ class SetupScanViewModel @Inject constructor(
         trackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo")
     }
 
-    override fun onBackButtonTapped() = coordinator.onBackTapped()
+    override fun onBackButtonTapped() {
+        idCardManager.cancelTask()
+        coordinator.onBackTapped()
+    }
 
-    override fun onCancelConfirm() = coordinator.cancelSetup()
+    override fun onCancelConfirm() {
+        idCardManager.cancelTask()
+        coordinator.cancelSetup()
+    }
 
     private fun finishSetup() {
         coordinator.onSettingPINSucceeded()
