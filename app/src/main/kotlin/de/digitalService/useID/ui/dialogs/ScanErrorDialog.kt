@@ -7,6 +7,7 @@ import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -68,8 +69,11 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
 
+                val packageName = LocalContext.current.packageName
+                val imagePath = "android.resource://$packageName/${R.drawable.nfc_positions}"
+
                 MarkdownText(
-                    markdown = markDownResource(id = error.textResID),
+                    markdown = markDownResource(id = error.textResID, imagePath),
                     fontResource = R.font.bundes_sans_dtp_regular,
                     modifier = Modifier.testTag("${error.textResID}")
                 )
