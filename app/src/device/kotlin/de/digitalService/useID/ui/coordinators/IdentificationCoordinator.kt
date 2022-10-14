@@ -60,7 +60,6 @@ class IdentificationCoordinator @Inject constructor(
         idCardManager.cancelTask()
         reachedScanState = false
         CoroutineScope(coroutineContextProvider.IO).launch {
-            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
             _scanEventFlow.emit(ScanEvent.CardRequested)
         }
         startIdentification(tcTokenURL)
