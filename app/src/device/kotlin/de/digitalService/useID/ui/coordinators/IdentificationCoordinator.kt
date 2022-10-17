@@ -89,8 +89,8 @@ class IdentificationCoordinator @Inject constructor(
         logger.debug("Cancel identification process.")
         appCoordinator.popToRoot()
         appCoordinator.stopNFCTagHandling()
-        idCardManager.cancelTask()
         reachedScanState = false
+        idCardManager.cancelTask()
     }
 
     fun finishIdentification() {
@@ -135,7 +135,9 @@ class IdentificationCoordinator @Inject constructor(
                             ScanEvent.Error(ScanError.CardErrorWithoutRedirect)
                         }
 
-                        _scanEventFlow.emit(scanEvent)
+                        if (reachedScanState) {
+                            _scanEventFlow.emit(scanEvent)
+                        }
                     }
                     else -> {
                         _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)

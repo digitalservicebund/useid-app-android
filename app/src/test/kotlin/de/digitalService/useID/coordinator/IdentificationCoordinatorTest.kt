@@ -20,6 +20,7 @@ import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import org.junit.jupiter.api.AfterEach
@@ -616,6 +617,8 @@ class IdentificationCoordinatorTest {
     @Test
     fun startIdentificationProcess_ScanErrorWithoutRedirect() = runTest {
         val testFlow: Flow<EIDInteractionEvent> = flow {
+            emit(EIDInteractionEvent.CardRecognized)
+            delay(500L)
             throw IDCardInteractionException.ProcessFailed(ActivationResultCode.INTERNAL_ERROR, null, null)
         }
 
@@ -641,9 +644,14 @@ class IdentificationCoordinatorTest {
             .onEach(results::add)
             .launchIn(CoroutineScope(dispatcher))
 
+        advanceTimeBy(100L)
+
+        Assertions.assertEquals(ScanEvent.CardAttached, results.get(0))
+
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.Error(ScanError.CardErrorWithoutRedirect), results.get(0))
+        Assertions.assertEquals(2, results.size)
+        Assertions.assertEquals(ScanEvent.Error(ScanError.CardErrorWithoutRedirect), results.last())
 
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
 
@@ -653,6 +661,53 @@ class IdentificationCoordinatorTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun startIdentificationProcess_ScanErrorWithRedirect() = runTest {
+        val redirectUrl = "redirectUrl"
+
+        val testFlow: Flow<EIDInteractionEvent> = flow {
+            emit(EIDInteractionEvent.CardRecognized)
+            delay(500L)
+            throw IDCardInteractionException.ProcessFailed(ActivationResultCode.REDIRECT, redirectUrl, null)
+        }
+
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockTrackerManager,
+            mockIssueTrackerManager,
+            mockCoroutineContextProvider
+        )
+
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
+
+        val results = mutableListOf<ScanEvent>()
+        val job = identificationCoordinator.scanEventFlow
+            .onEach(results::add)
+            .launchIn(CoroutineScope(dispatcher))
+
+        advanceTimeBy(100L)
+
+        Assertions.assertEquals(ScanEvent.CardAttached, results.get(0))
+
+        advanceUntilIdle()
+
+        Assertions.assertEquals(2, results.size)
+        Assertions.assertEquals(ScanEvent.Error(ScanError.CardErrorWithRedirect(redirectUrl)), results.last())
+
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+
+        job.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun startIdentificationProcess_ProcessFailedAfterCancellation_BeforeScanState() = runTest {
         val redirectUrl = "redirectUrl"
 
         val testFlow: Flow<EIDInteractionEvent> = flow {
@@ -683,7 +738,56 @@ class IdentificationCoordinatorTest {
 
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.Error(ScanError.CardErrorWithRedirect(redirectUrl)), results.get(0))
+        Assertions.assertEquals(1, results.size)
+        Assertions.assertEquals(ScanEvent.CardRequested, results.get(0))
+
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+
+        job.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun startIdentificationProcess_ProcessFailedAfterCancellation_AfterScanState() = runTest {
+        val redirectUrl = "redirectUrl"
+
+        val testFlow: Flow<EIDInteractionEvent> = flow {
+            emit(EIDInteractionEvent.CardRecognized)
+            delay(500L)
+            throw IDCardInteractionException.ProcessFailed(ActivationResultCode.REDIRECT, null, "resultMinor")
+        }
+
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockTrackerManager,
+            mockIssueTrackerManager,
+            mockCoroutineContextProvider
+        )
+
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
+
+        val results = mutableListOf<ScanEvent>()
+        val job = identificationCoordinator.scanEventFlow
+            .onEach(results::add)
+            .launchIn(CoroutineScope(dispatcher))
+
+        advanceTimeBy(100L)
+
+        Assertions.assertEquals(ScanEvent.CardAttached, results.get(0))
+        identificationCoordinator.cancelIdentification()
+
+        advanceUntilIdle()
+
+        Assertions.assertEquals(1, results.size)
+        Assertions.assertEquals(ScanEvent.CardAttached, results.last())
 
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
 
