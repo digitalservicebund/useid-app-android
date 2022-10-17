@@ -460,6 +460,7 @@ class IdentificationCoordinatorTest {
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationScanDestination) }
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -500,8 +501,39 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(ScanEvent.CardAttached, results.get(1))
 
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
 
         job.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun startIdentificationProcess_CardInteractionComplete() = runTest {
+        val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
+
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockTrackerManager,
+            mockIssueTrackerManager,
+            mockCoroutineContextProvider
+        )
+
+        identificationCoordinator.startIdentificationProcess(testTokenURL)
+
+        verify { mockIDCardManager.cancelTask() }
+
+        advanceUntilIdle()
+
+        testFlow.value = EIDInteractionEvent.CardInteractionComplete
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

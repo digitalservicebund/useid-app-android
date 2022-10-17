@@ -21,10 +21,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val logger by getLogger()
+
     @Inject
     lateinit var idCardManager: IDCardManager
 
@@ -101,7 +104,15 @@ class MainActivity : ComponentActivity() {
         when (intent.action) {
             NfcAdapter.ACTION_TAG_DISCOVERED -> {
                 intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)?.let {
-                    idCardManager.handleNFCTag(it)
+                    if (appCoordinator.currentlyHandlingNFCTags) {
+                        try {
+                            idCardManager.handleNFCTag(it)
+                        } catch (e: IOException) {
+                            logger.error("IDCardManager failed to handle NFC tag.")
+                        }
+                    } else {
+                        logger.debug("Got new NFC tag but app coordinator is not awaiting any. Ignoring.")
+                    }
                 }
             }
 

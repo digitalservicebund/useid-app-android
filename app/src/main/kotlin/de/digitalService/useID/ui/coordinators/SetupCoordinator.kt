@@ -50,11 +50,13 @@ class SetupCoordinator @Inject constructor(
     fun onPersonalPINEntered(newPersonalPin: String) {
         personalPin = newPersonalPin
         appCoordinator.navigate(SetupScanDestination)
+        appCoordinator.startNFCTagHandling()
     }
 
     fun onSettingPINSucceeded() {
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.navigate(SetupFinishDestination)
+        appCoordinator.stopNFCTagHandling()
     }
 
     fun onSetupFinished() {
@@ -74,6 +76,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun cancelSetup() {
+        appCoordinator.stopNFCTagHandling()
         transportPin = null
         personalPin = null
         appCoordinator.popToRoot()

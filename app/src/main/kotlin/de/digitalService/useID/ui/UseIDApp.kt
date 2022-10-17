@@ -90,7 +90,10 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
     }
 }
 
-private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvailability>) : AppCoordinatorType {
+private class PreviewAppCoordinator(
+    override val nfcAvailability: State<NfcAvailability>,
+    override val currentlyHandlingNFCTags: Boolean
+) : AppCoordinatorType {
     override fun setNavController(navController: NavController) {}
     override fun navigate(route: Direction) {}
     override fun pop() {}
@@ -101,25 +104,27 @@ private class PreviewAppCoordinator(override val nfcAvailability: State<NfcAvail
     override fun setNfcAvailability(availability: NfcAvailability) {}
     override fun setIsNotFirstTimeUser() {}
     override fun handleDeepLink(uri: Uri) {}
+    override fun startNFCTagHandling() {}
+    override fun stopNFCTagHandling() {}
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun PreviewNfc() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available)), PreviewTrackerManager())
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false), PreviewTrackerManager())
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun PreviewNoNfc() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc)), PreviewTrackerManager())
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc), false), PreviewTrackerManager())
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun PreviewNfcDeactivated() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated)), PreviewTrackerManager())
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false), PreviewTrackerManager())
 }

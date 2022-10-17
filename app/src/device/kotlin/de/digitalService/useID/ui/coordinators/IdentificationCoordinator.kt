@@ -88,6 +88,7 @@ class IdentificationCoordinator @Inject constructor(
     fun cancelIdentification() {
         logger.debug("Cancel identification process.")
         appCoordinator.popToRoot()
+        appCoordinator.stopNFCTagHandling()
         idCardManager.cancelTask()
         reachedScanState = false
     }
@@ -200,6 +201,7 @@ class IdentificationCoordinator @Inject constructor(
                         if (!reachedScanState) {
                             navigateOnMain(IdentificationScanDestination)
                         }
+                        appCoordinator.startNFCTagHandling()
                     }
                     EIDInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized")
@@ -213,6 +215,10 @@ class IdentificationCoordinator @Inject constructor(
                         requestAuthenticationEvent?.request?.subject?.let { subject ->
                             navigateOnMain(IdentificationSuccessDestination(subject, event.redirectURL))
                         }
+                    }
+                    is EIDInteractionEvent.CardInteractionComplete -> {
+                        logger.debug("Card interaction complete.")
+                        appCoordinator.stopNFCTagHandling()
                     }
                     else -> {
                         logger.debug("Unhandled authentication event: $event")

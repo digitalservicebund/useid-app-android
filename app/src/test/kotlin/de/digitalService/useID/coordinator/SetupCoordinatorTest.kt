@@ -76,6 +76,7 @@ class SetupCoordinatorTest {
 
         Assertions.assertEquals(testPin, setupCoordinator.personalPin)
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupScanDestination) }
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
     }
 
     @Test
@@ -86,6 +87,7 @@ class SetupCoordinatorTest {
 
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupFinishDestination) }
         verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
+        verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
     }
 
     @Test
@@ -177,12 +179,14 @@ class SetupCoordinatorTest {
 
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+        verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
 
         verify(exactly = 0) { mockAppCoordinator.startIdentification(testUrl) }
 
         setupCoordinator.cancelSetup()
 
         verify(exactly = 2) { mockAppCoordinator.popToRoot() }
+        verify(exactly = 2) { mockAppCoordinator.stopNFCTagHandling() }
     }
 
     @Test

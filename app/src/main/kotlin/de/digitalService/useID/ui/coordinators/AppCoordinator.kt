@@ -18,6 +18,7 @@ import javax.inject.Singleton
 
 interface AppCoordinatorType {
     val nfcAvailability: State<NfcAvailability>
+    val currentlyHandlingNFCTags: Boolean
 
     fun setNavController(navController: NavController)
     fun navigate(route: Direction)
@@ -29,6 +30,8 @@ interface AppCoordinatorType {
     fun setNfcAvailability(availability: NfcAvailability)
     fun setIsNotFirstTimeUser()
     fun handleDeepLink(uri: Uri)
+    fun startNFCTagHandling()
+    fun stopNFCTagHandling()
 }
 
 @Singleton
@@ -43,6 +46,8 @@ class AppCoordinator @Inject constructor(
     private var coldLaunch: Boolean = true
 
     override val nfcAvailability: MutableState<NfcAvailability> = mutableStateOf(NfcAvailability.Available)
+    override var currentlyHandlingNFCTags: Boolean = false
+        private set
 
     override fun setNavController(navController: NavController) {
         this.navController = navController
@@ -100,5 +105,13 @@ class AppCoordinator @Inject constructor(
         } ?: run {
             logger.info("URL does not contain tcTokenURL parameter.")
         }
+    }
+
+    override fun startNFCTagHandling() {
+        currentlyHandlingNFCTags = true
+    }
+
+    override fun stopNFCTagHandling() {
+        currentlyHandlingNFCTags = false
     }
 }
