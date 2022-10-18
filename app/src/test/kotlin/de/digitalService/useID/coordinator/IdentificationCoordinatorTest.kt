@@ -158,11 +158,12 @@ class IdentificationCoordinatorTest {
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.Finished, scanResults.get(1))
+        Assertions.assertEquals(ScanEvent.Finished(testRedirectUrl), scanResults.get(1))
 
         scanJob.cancel()
         fetchJob.cancel()
-        verify(exactly = 2) { mockAppCoordinator.navigate(any()) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -204,7 +205,7 @@ class IdentificationCoordinatorTest {
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.Finished, results.get(1))
+        Assertions.assertEquals(ScanEvent.Finished(testRedirectUrl), results.get(1))
 
         job.cancel()
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
@@ -249,7 +250,7 @@ class IdentificationCoordinatorTest {
 
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.Finished, results.get(0))
+        Assertions.assertEquals(ScanEvent.Finished(testRedirectUrl), results.get(0))
 
         job.cancel()
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
@@ -749,8 +750,6 @@ class IdentificationCoordinatorTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun startIdentificationProcess_ProcessFailedAfterCancellation_AfterScanState() = runTest {
-        val redirectUrl = "redirectUrl"
-
         val testFlow: Flow<EIDInteractionEvent> = flow {
             emit(EIDInteractionEvent.CardRecognized)
             delay(500L)
@@ -911,23 +910,6 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(1, callbackCalledCount)
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
-    }
-
-    @Test
-    fun finishIdentification() {
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.finishIdentification()
-
-        verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
     }
 
     @Test

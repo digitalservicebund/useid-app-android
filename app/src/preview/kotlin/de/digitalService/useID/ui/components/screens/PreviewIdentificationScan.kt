@@ -3,9 +3,6 @@ package de.digitalService.useID.ui.components.screens
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Button
@@ -15,10 +12,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,6 +40,7 @@ fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel) {
         Column(modifier = Modifier.weight(1f)) {
             IdentificationScan(modifier = Modifier.fillMaxHeight(0.9f), viewModel.innerViewModel)
         }
+        val context = LocalContext.current
 
         LazyRow(
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -48,7 +48,7 @@ fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         ) {
-            item { Button(onClick = { viewModel.simulateSuccess() }) { Text("✅") } }
+            item { Button(onClick = { viewModel.simulateSuccess(context) }) { Text("✅") } }
             item { Button(onClick = { viewModel.simulateIncorrectPIN() }) { Text("PIN") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithRedirect() }) { Text("❌➰") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithoutRedirect() }) { Text("❌") } }
@@ -65,14 +65,18 @@ class PreviewIdentificationScanViewModel @Inject constructor(
     private val trackerManager: TrackerManagerType
 ) :
     ViewModel() {
-    fun simulateSuccess() {
+    fun simulateSuccess(context: Context) {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
             delay(3000L)
             innerViewModel.injectShouldShowProgress(false)
             coordinator.onIDInteractionFinishedSuccessfully()
+
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://digitalservice.bund.de"))
+            startActivity(context, intent, null)
         }
     }
+
     fun simulateIncorrectPIN() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -81,6 +85,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
             innerViewModel.injectErrorState(ScanError.IncorrectPIN(2))
         }
     }
+
     fun simulateReadingErrorWithoutRedirect() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -89,6 +94,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
             innerViewModel.injectErrorState(ScanError.CardErrorWithoutRedirect)
         }
     }
+
     fun simulateReadingErrorWithRedirect() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -97,6 +103,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
             innerViewModel.injectErrorState(ScanError.CardErrorWithRedirect("https://digitalservice.bund.de"))
         }
     }
+
     fun simulateCANRequired() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -106,6 +113,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         }
         trackerManager.trackScreen("identification/cardSuspended")
     }
+
     fun simulatePUKRequired() {
         viewModelScope.launch {
             innerViewModel.injectShouldShowProgress(true)
@@ -141,7 +149,11 @@ class PreviewIdentificationScanViewModel @Inject constructor(
 
             coordinator.cancelIdentification()
         }
-        override fun onCancelIdentification() { coordinator.cancelIdentification() }
+
+        override fun onCancelIdentification() {
+            coordinator.cancelIdentification()
+        }
+
         override fun onNewPersonalPINEntered(pin: String) {
             errorState = null
         }

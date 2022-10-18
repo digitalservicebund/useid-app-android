@@ -107,7 +107,7 @@ private fun AttributeList(attributeIDs: List<Int>) {
             .padding(top = 20.dp)
             .fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(horizontal =  24.dp).padding(top = 24.dp)) {
+        Column(modifier = Modifier.padding(horizontal = 24.dp).padding(top = 24.dp)) {
             attributeIDs.forEach { attributeId ->
                 Text(
                     "\u2022 ${stringResource(id = attributeId)}",

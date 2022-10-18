@@ -52,7 +52,6 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
             IdentificationAttributeConsentDestination.route -> identificationRoute("attributes")
             IdentificationPersonalPINDestination.route -> identificationRoute("personalPIN")
             IdentificationScanDestination.route -> identificationRoute("scan")
-            IdentificationSuccessDestination.route -> identificationRoute("done")
 
             ImprintScreenDestination.route -> "imprint"
             AccessibilityScreenDestination.route -> "accessibility"

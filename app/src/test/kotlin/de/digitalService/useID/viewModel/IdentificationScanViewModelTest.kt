@@ -1,5 +1,6 @@
 package de.digitalService.useID.viewModel
 
+import android.content.Context
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
@@ -22,6 +23,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
 class IdentificationScanViewModelTest {
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockContext: Context
 
     @MockK(relaxUnitFun = true)
     lateinit var mockCoordinator: IdentificationCoordinator
@@ -55,6 +59,7 @@ class IdentificationScanViewModelTest {
         }
 
         val viewModel = IdentificationScanViewModel(
+            mockContext,
             mockCoordinator,
             mockCoroutineContextProvider,
             mockTrackerManager
@@ -72,6 +77,7 @@ class IdentificationScanViewModelTest {
         }
 
         val viewModel = IdentificationScanViewModel(
+            mockContext,
             mockCoordinator,
             mockCoroutineContextProvider,
             mockTrackerManager
@@ -85,10 +91,11 @@ class IdentificationScanViewModelTest {
     @Test
     fun collectScanEvents_ScanErrorFinished() = runTest {
         every { mockCoordinator.scanEventFlow } returns flow {
-            emit(ScanEvent.Finished)
+            emit(ScanEvent.Finished(""))
         }
 
         val viewModel = IdentificationScanViewModel(
+            mockContext,
             mockCoordinator,
             mockCoroutineContextProvider,
             mockTrackerManager
@@ -108,6 +115,7 @@ class IdentificationScanViewModelTest {
         }
 
         val viewModel = IdentificationScanViewModel(
+            mockContext,
             mockCoordinator,
             mockCoroutineContextProvider,
             mockTrackerManager
@@ -126,6 +134,7 @@ class IdentificationScanViewModelTest {
         }
 
         val viewModel = IdentificationScanViewModel(
+            mockContext,
             mockCoordinator,
             mockCoroutineContextProvider,
             mockTrackerManager
@@ -147,6 +156,7 @@ class IdentificationScanViewModelTest {
         }
 
         val viewModel = IdentificationScanViewModel(
+            mockContext,
             mockCoordinator,
             mockCoroutineContextProvider,
             mockTrackerManager

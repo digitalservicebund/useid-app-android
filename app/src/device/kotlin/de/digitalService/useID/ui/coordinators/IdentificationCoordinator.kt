@@ -14,12 +14,9 @@ import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProviderType
-import io.sentry.Sentry
-import io.sentry.SentryEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -93,12 +90,12 @@ class IdentificationCoordinator @Inject constructor(
         idCardManager.cancelTask()
     }
 
-    fun finishIdentification() {
+    private fun finishIdentification() {
         logger.debug("Finish identification process.")
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.popToRoot()
         reachedScanState = false
-        trackerManager.trackEvent(category = "identification", action = "buttonPressed", name = "continueToService")
+        trackerManager.trackEvent(category = "identification", action = "success", name = "")
     }
 
     private fun startIdentification(tcTokenURL: String) {
@@ -212,10 +209,10 @@ class IdentificationCoordinator @Inject constructor(
                     }
                     is EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
                         logger.debug("Process completed successfully")
-                        _scanEventFlow.emit(ScanEvent.Finished)
+                        _scanEventFlow.emit(ScanEvent.Finished(event.redirectURL))
 
-                        requestAuthenticationEvent?.request?.subject?.let { subject ->
-                            navigateOnMain(IdentificationSuccessDestination(subject, event.redirectURL))
+                        requestAuthenticationEvent?.request?.subject?.let {
+                            finishIdentification()
                         }
                     }
                     is EIDInteractionEvent.CardInteractionComplete -> {

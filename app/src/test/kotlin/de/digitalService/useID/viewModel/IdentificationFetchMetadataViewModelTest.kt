@@ -1,12 +1,16 @@
 package de.digitalService.useID.viewModel
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
+import com.ramcosta.composedestinations.navargs.primitives.DestinationsStringNavType
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

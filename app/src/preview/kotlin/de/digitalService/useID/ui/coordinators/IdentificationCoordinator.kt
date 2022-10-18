@@ -7,7 +7,6 @@ import de.digitalService.useID.idCardInterface.IDCardAttribute
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import kotlinx.coroutines.CoroutineScope
@@ -64,13 +63,8 @@ class IdentificationCoordinator @Inject constructor(
         appCoordinator.popToRoot()
     }
 
-    fun finishIdentification() {
-        appCoordinator.setIsNotFirstTimeUser()
-        trackerManager.trackEvent(category = "identification", action = "buttonPressed", name = "continueToService")
-        appCoordinator.popToRoot()
-    }
-
     fun onIDInteractionFinishedSuccessfully() {
-        appCoordinator.navigate(IdentificationSuccessDestination(provider, "https://digitalservice.bund.de"))
+        appCoordinator.setIsNotFirstTimeUser()
+        appCoordinator.popToRoot()
     }
 }

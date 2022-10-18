@@ -20,11 +20,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
@@ -138,7 +140,7 @@ private fun PINDialog(
 sealed class ScanEvent {
     object CardRequested : ScanEvent()
     object CardAttached : ScanEvent()
-    object Finished : ScanEvent()
+    data class Finished(val redirectAddress: String) : ScanEvent()
     data class Error(val error: ScanError) : ScanEvent()
 }
 
@@ -155,6 +157,7 @@ interface IdentificationScanViewModelInterface {
 
 @HiltViewModel
 class IdentificationScanViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val coordinator: IdentificationCoordinator,
     private val coroutineContextProvider: CoroutineContextProviderType,
     private val trackerManager: TrackerManagerType
@@ -204,7 +207,11 @@ class IdentificationScanViewModel @Inject constructor(
                     when (event) {
                         ScanEvent.CardRequested -> shouldShowProgress = false
                         ScanEvent.CardAttached -> shouldShowProgress = true
-                        ScanEvent.Finished -> shouldShowProgress = false
+                        is ScanEvent.Finished -> {
+                            shouldShowProgress = false
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.redirectAddress))
+                            startActivity(context, intent, null)
+                        }
                         is ScanEvent.Error -> {
                             shouldShowProgress = false
                             errorState = event.error

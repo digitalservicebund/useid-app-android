@@ -13,7 +13,6 @@ import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.screens.destinations.IdentificationSuccessDestination
 import de.digitalService.useID.ui.screens.destinations.SetupFinishDestination
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
@@ -71,9 +70,6 @@ class SetupUiTest {
         }
 
         every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns MutableStateFlow(FetchMetadataEvent.Finished)
-        every { mockIdentificationCoordinator.startIdentificationProcess("") } answers {
-            appCoordinator.navigate(IdentificationSuccessDestination(testProvider, ""))
-        }
 
         every { mockStorageManager.getIsFirstTimeUser() } returns true
 
