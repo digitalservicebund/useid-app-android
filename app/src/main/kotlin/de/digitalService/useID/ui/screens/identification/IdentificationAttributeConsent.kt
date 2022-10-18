@@ -107,7 +107,7 @@ private fun AttributeList(attributeIDs: List<Int>) {
             .padding(top = 20.dp)
             .fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(start = 40.dp, top = 20.dp)) {
+        Column(modifier = Modifier.padding(horizontal =  24.dp).padding(top = 24.dp)) {
             attributeIDs.forEach { attributeId ->
                 Text(
                     "\u2022 ${stringResource(id = attributeId)}",
@@ -291,7 +291,16 @@ private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean):
             R.string.cardAttribute_dg02,
             R.string.cardAttribute_dg03,
             R.string.cardAttribute_dg04,
-            R.string.cardAttribute_dg05
+            R.string.cardAttribute_dg05,
+            R.string.cardAttribute_dg06,
+            R.string.cardAttribute_dg07,
+            R.string.cardAttribute_dg08,
+            R.string.cardAttribute_dg09,
+            R.string.cardAttribute_dg10,
+            R.string.cardAttribute_dg13,
+            R.string.cardAttribute_dg17,
+            R.string.cardAttribute_dg19,
+            R.string.cardAttribute_restrictedIdentification
         ),
         shouldShowInfoDialog = infoDialog,
         infoDialogContent = ProviderInfoDialogContent(
@@ -303,7 +312,7 @@ private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean):
         )
     )
 
-@Preview(device = Devices.PIXEL_3A)
+@Preview(device = Devices.PIXEL_3A, locale = "de")
 @Composable
 fun PreviewIdentificationAttributeConsent() {
     UseIDTheme {
