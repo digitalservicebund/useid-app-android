@@ -211,9 +211,7 @@ class IdentificationCoordinator @Inject constructor(
                         logger.debug("Process completed successfully")
                         _scanEventFlow.emit(ScanEvent.Finished(event.redirectURL))
 
-                        requestAuthenticationEvent?.request?.subject?.let {
-                            finishIdentification()
-                        }
+                        finishIdentification()
                     }
                     is EIDInteractionEvent.CardInteractionComplete -> {
                         logger.debug("Card interaction complete.")
