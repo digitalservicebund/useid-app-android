@@ -384,7 +384,27 @@
 \n
 \nAlternatively, you can reassign your personal ID PIN at the Bürgeramt if you have forgotten it.</string>
     <string name="scanError_cardSuspended_title">Your ID card is blocked.</string>
-    <string name="scanError_cardUnreadable_body">"The following documents offer the function: German identity card, electronic residence permit, eID card for citizens of the European Union and the European Economic Area.\n\n\n\nIf your smartphone does not recognize your ID card or displays \"ID card removed\", try the following steps:\n\n\n\n - Move your ID card away from your smartphone and then place the ID card close to the back of the smartphone once again. Try different positions: Top, middle, and back of the bottom.\n\n ![](%1$s)\n\n - If you have a thick protective case, remove the case and then try again.\n\n - Check if NFC is enabled.\n\n - Turn NFC off and back on again.\n\n - Try turning the smartphone screen off and on again."</string>
+    <string name="scanError_cardUnreadable_body">The following documents offer the function: German identity card, electronic residence permit, eID card for citizens of the European Union and the European Economic Area.
+\n
+\n
+\n
+\nIf your smartphone does not recognize your ID card or displays \"ID card removed\", try the following steps:
+\n
+\n
+\n
+\n - Move your ID card away from your smartphone and then place the ID card close to the back of the smartphone once again. Try different positions: Top, middle, and back of the bottom.
+\n
+\n ![](%1$s)
+\n
+\n - If you have a thick protective case, remove the case and then try again.
+\n
+\n - Check if NFC is enabled.
+\n
+\n - Turn NFC off and back on again.
+\n
+\n - Try turning the smartphone screen off and on again.
+\n
+\n- Make sure that you are connected to the Internet.</string>
     <string name="scanError_cardUnreadable_title">Your ID card was not recognized.</string>
     <string name="scanError_close">Close</string>
     <string name="scanError_redirect">Back to provider</string>
