@@ -24,9 +24,11 @@ private val BundesSans = FontFamily(
 
 private val largeTitle = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Bold, fontSize = 30.sp)
 private val title = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Bold, fontSize = 26.sp)
+private val titleSmall = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Bold, fontSize = 14.sp)
 private val header = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Bold, fontSize = 20.sp)
 private val bodyBold = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Bold, fontSize = 18.sp)
 private val body = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Normal, fontSize = 18.sp)
+private val bodyLarge = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Normal, fontSize = 16.sp)
 private val subtextBold = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Bold, fontSize = 16.sp)
 private val subtext = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Normal, fontSize = 16.sp)
 private val caption1 = TextStyle(fontFamily = BundesSans, fontWeight = FontWeight.Normal, fontSize = 14.sp)
@@ -35,7 +37,9 @@ private val caption2 = TextStyle(fontFamily = BundesSans, fontWeight = FontWeigh
 val UseIDTypography = Typography(
     titleLarge = largeTitle,
     titleMedium = title,
+    titleSmall = titleSmall,
     headlineMedium = header,
+    bodyLarge = bodyLarge,
     bodyMedium = bodyBold,
     bodySmall = body,
     labelLarge = subtextBold,

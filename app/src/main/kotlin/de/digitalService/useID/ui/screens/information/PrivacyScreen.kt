@@ -35,7 +35,10 @@ fun PrivacyScreen(
                 .padding(top = topPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            MarkdownText(markdown = markDownResource(id = R.string.privacy_text))
+            MarkdownText(
+                markdown = markDownResource(id = R.string.privacy_text),
+                fontResource = R.font.bundes_sans_dtp_regular
+            )
         }
     }
 }

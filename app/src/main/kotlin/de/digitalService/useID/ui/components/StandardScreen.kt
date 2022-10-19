@@ -97,7 +97,8 @@ fun StandardStaticComposition(
                 Spacer(modifier = Modifier.height(20.dp))
                 MarkdownText(
                     body,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    fontResource = R.font.bundes_sans_dtp_regular
                 )
             }
 

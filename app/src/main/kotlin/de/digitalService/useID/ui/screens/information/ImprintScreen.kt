@@ -35,7 +35,10 @@ fun ImprintScreen(
                 .padding(top = topPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            MarkdownText(markdown = markDownResource(id = R.string.imprint_text))
+            MarkdownText(
+                markdown = markDownResource(id = R.string.imprint_text),
+                fontResource = R.font.bundes_sans_dtp_regular
+            )
         }
     }
 }
