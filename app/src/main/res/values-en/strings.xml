@@ -81,7 +81,7 @@
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
     <string name="firstTimeUser_missingPINLetter_body">We are still working on this feature.
 \n
-\nFor more information about the PIN reset letter, please visit
+\nFor more information about the PIN reset letter, please visit:
 \n
 \n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
     <string name="firstTimeUser_missingPINLetter_title">Order PIN reset letter.</string>
