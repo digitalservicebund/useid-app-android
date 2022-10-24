@@ -210,6 +210,7 @@ class IdentificationScanViewModel @Inject constructor(
                         is ScanEvent.Finished -> {
                             shouldShowProgress = false
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.redirectAddress))
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(context, intent, null)
                         }
                         is ScanEvent.Error -> {

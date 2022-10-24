@@ -92,8 +92,10 @@ class IdentificationCoordinator @Inject constructor(
 
     private fun finishIdentification() {
         logger.debug("Finish identification process.")
-        appCoordinator.setIsNotFirstTimeUser()
-        appCoordinator.popToRoot()
+        CoroutineScope(Dispatchers.Main).launch {
+            appCoordinator.setIsNotFirstTimeUser()
+            appCoordinator.popToRoot()
+        }
         reachedScanState = false
         trackerManager.trackEvent(category = "identification", action = "success", name = "")
     }
