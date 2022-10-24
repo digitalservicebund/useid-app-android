@@ -121,7 +121,7 @@
     <string name="home_more_terms">Nutzungsbedingungen</string>
     <string name="home_more_title">Mehr</string>
     <string name="home_startSetup">Online-Ausweis einrichten</string>
-    <string name="identification_attributeConsent_body">Der Service möchte auf folgende Daten von Ihrem Ausweis zugreifen:</string>
+    <string name="identification_attributeConsent_body">Der Diensteanbieter möchte auf folgende Daten von Ihrem Ausweis zugreifen:</string>
     <string name="identification_attributeConsent_button_additionalInformation">Weitere Informationen</string>
     <string name="identification_attributeConsent_continue">Freigabe erteilen</string>
     <string name="identification_attributeConsentInfo_issuer">Aussteller des Berechtigungszertifikats</string>
@@ -140,7 +140,7 @@
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
     <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
-    <string name="identification_scan_body">Halten Sie im nächsten Schritt Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
+    <string name="identification_scan_body">Halten Sie jetzt Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
     <string name="identification_scan_title">Rufen Sie die Daten von Ihrem Ausweis ab.</string>
     <string name="imprint_text">## Impressum
 \n### Verantwortlich für die Inhalte
