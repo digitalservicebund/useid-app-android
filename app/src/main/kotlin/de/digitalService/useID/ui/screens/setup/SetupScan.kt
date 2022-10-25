@@ -179,6 +179,8 @@ class SetupScanViewModel @Inject constructor(
     override var errorState: ScanError? by mutableStateOf(null)
         private set
 
+    private var cancelled = false
+
     override fun startSettingPIN(context: Context) {
         val transportPIN = coordinator.transportPin ?: run {
             logger.error("Transport PIN not available.")
@@ -202,11 +204,13 @@ class SetupScanViewModel @Inject constructor(
     }
 
     override fun onBackButtonTapped() {
+        cancelled = true
         idCardManager.cancelTask()
         coordinator.onBackTapped()
     }
 
     override fun onCancelConfirm() {
+        cancelled = true
         idCardManager.cancelTask()
         coordinator.cancelSetup()
     }
@@ -222,9 +226,15 @@ class SetupScanViewModel @Inject constructor(
             return
         }
 
+        cancelled = false
+
         viewModelCoroutineScope.launch {
             logger.debug("Starting PIN management flow.")
             idCardManager.changePin(context).catch { exception ->
+                if (cancelled) {
+                    return@catch
+                }
+
                 errorState = when (exception) {
                     is IDCardInteractionException.CardDeactivated -> {
                         trackerManager.trackScreen("firstTimeUser/cardDeactivated")
