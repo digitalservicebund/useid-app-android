@@ -35,7 +35,8 @@ fun TermsOfUseScreen(
         ) {
             MarkdownText(
                 markdown = markDownResource(id = R.string.termsOfUse_text),
-                fontResource = R.font.bundes_sans_dtp_regular
+                fontResource = R.font.bundes_sans_dtp_regular,
+                modifier = Modifier.padding(bottom = 24.dp)
             )
         }
     }
