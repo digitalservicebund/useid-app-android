@@ -80,7 +80,8 @@ fun SetupPersonalPIN(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(24.dp))
+
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 PINEntryField(
                     value = viewModel.pin1,
