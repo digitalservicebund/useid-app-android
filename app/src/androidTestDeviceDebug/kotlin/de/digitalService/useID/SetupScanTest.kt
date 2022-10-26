@@ -33,30 +33,6 @@ class SetupScanTest {
     val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Test
-    fun openErrorDialogAndConfirmWithButton() {
-        val testErrorState = ScanError.Other(null)
-
-        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns testErrorState
-
-        composeTestRule.activity.setContent {
-            SetupScan(viewModel = mockViewModel)
-        }
-
-        val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.titleResID)
-        composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
-
-        val errorDialogDescriptionText = composeTestRule.activity.getString(testErrorState.titleResID)
-        composeTestRule.onNodeWithText(errorDialogDescriptionText).assertIsDisplayed()
-
-        val buttonText = composeTestRule.activity.getString(R.string.scanError_close)
-        composeTestRule.onNodeWithText(buttonText).performClick()
-
-        verify(exactly = 1) { mockViewModel.onCancelConfirm() }
-        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
-    }
-
-    @Test
     fun enterTransportPinDialogOpens() {
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
         every { mockViewModel.errorState } returns ScanError.IncorrectPIN(2)

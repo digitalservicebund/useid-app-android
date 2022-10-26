@@ -42,10 +42,11 @@ fun ScanErrorScreen(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .verticalScroll(rememberScrollState()),
+                    .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = stringResource(id = titleResId), style = MaterialTheme.typography.titleMedium
+                    text = stringResource(id = titleResId),
+                    style = MaterialTheme.typography.titleMedium
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))

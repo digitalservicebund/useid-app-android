@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
+import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.destinations.*
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -57,6 +58,18 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.navigate(SetupFinishDestination)
         appCoordinator.stopNFCTagHandling()
+    }
+
+    fun onScanError(scanError: ScanError) {
+        when (scanError) {
+            ScanError.PINSuspended -> appCoordinator.navigate(SetupCardSuspendedDestination)
+            ScanError.PINBlocked -> appCoordinator.navigate(SetupCardBlockedDestination)
+            ScanError.CardDeactivated -> appCoordinator.navigate(SetupCardDeactivatedDestination)
+            is ScanError.CardErrorWithRedirect -> appCoordinator.navigate(SetupCardUnreadableDestination(true))
+            ScanError.CardErrorWithoutRedirect -> appCoordinator.navigate(SetupCardUnreadableDestination(true))
+            is ScanError.Other -> appCoordinator.navigate(SetupOtherErrorDestination)
+            else -> {}
+        }
     }
 
     fun onSetupFinished() {

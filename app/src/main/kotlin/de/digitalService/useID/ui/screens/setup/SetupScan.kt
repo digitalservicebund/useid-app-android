@@ -68,7 +68,6 @@ fun SetupScan(
                     onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
                 )
             },
-            onErrorDialogButtonTap = viewModel::onCancelConfirm,
             onHelpDialogShown = viewModel::onHelpButtonTapped,
             onNfcDialogShown = viewModel::onNfcButtonTapped,
             showProgress = viewModel.shouldShowProgress,
@@ -149,7 +148,7 @@ private fun TransportPINDialog(
 
 interface SetupScanViewModelInterface {
     val shouldShowProgress: Boolean
-    val errorState: ScanError?
+    val errorState: ScanError.IncorrectPIN?
 
     fun startSettingPIN(context: Context)
     fun onReEnteredTransportPIN(transportPIN: String, context: Context)
@@ -176,7 +175,7 @@ class SetupScanViewModel @Inject constructor(
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
 
-    override var errorState: ScanError? by mutableStateOf(null)
+    override var errorState: ScanError.IncorrectPIN? by mutableStateOf(null)
         private set
 
     private var cancelled = false
@@ -184,7 +183,8 @@ class SetupScanViewModel @Inject constructor(
     override fun startSettingPIN(context: Context) {
         val transportPIN = coordinator.transportPin ?: run {
             logger.error("Transport PIN not available.")
-            errorState = ScanError.Other(null)
+
+            coordinator.onScanError(ScanError.Other(null))
             return
         }
         executePINManagement(transportPIN, context)
@@ -222,7 +222,7 @@ class SetupScanViewModel @Inject constructor(
     private fun executePINManagement(transportPIN: String, context: Context) {
         val newPIN = coordinator.personalPin ?: run {
             logger.error("Personal PIN not available.")
-            errorState = ScanError.Other(null)
+            coordinator.onScanError(ScanError.Other(null))
             return
         }
 
@@ -235,12 +235,15 @@ class SetupScanViewModel @Inject constructor(
                     return@catch
                 }
 
-                errorState = when (exception) {
+                when (exception) {
                     is IDCardInteractionException.CardDeactivated -> {
                         trackerManager.trackScreen("firstTimeUser/cardDeactivated")
-                        ScanError.CardDeactivated
+
+                        coordinator.onScanError(ScanError.CardDeactivated)
                     }
-                    is IDCardInteractionException.CardBlocked -> ScanError.PINBlocked
+                    is IDCardInteractionException.CardBlocked -> {
+                        coordinator.onScanError(ScanError.PINBlocked)
+                    }
                     else -> {
                         trackerManager.trackScreen("firstTimeUser/cardUnreadable")
 
@@ -248,7 +251,7 @@ class SetupScanViewModel @Inject constructor(
                             issueTrackerManager.capture(it)
                         }
 
-                        ScanError.Other(exception.message)
+                        coordinator.onScanError(ScanError.Other(exception.message))
                     }
                 }
             }.collect { event ->
@@ -289,18 +292,21 @@ class SetupScanViewModel @Inject constructor(
                         }
                     }
                     is EIDInteractionEvent.RequestCANAndChangedPIN -> {
-                        errorState = ScanError.PINSuspended
+                        coordinator.onScanError(ScanError.PINSuspended)
+
                         trackerManager.trackScreen("firstTimeUser/cardSuspended")
                         cancel()
                     }
                     is EIDInteractionEvent.RequestPUK -> {
-                        errorState = ScanError.PINBlocked
+                        coordinator.onScanError(ScanError.PINBlocked)
+
                         trackerManager.trackScreen("firstTimeUser/cardBlocked")
                         cancel()
                     }
                     else -> {
                         logger.debug("Collected unexpected event: $event")
-                        errorState = ScanError.Other(null)
+                        coordinator.onScanError(ScanError.Other(null))
+
                         issueTrackerManager.capture(event.redacted)
                         cancel()
                     }
@@ -312,7 +318,7 @@ class SetupScanViewModel @Inject constructor(
 
 class PreviewSetupScanViewModel(
     override val shouldShowProgress: Boolean,
-    override val errorState: ScanError?
+    override val errorState: ScanError.IncorrectPIN?
 ) :
     SetupScanViewModelInterface {
     override fun startSettingPIN(context: Context) {}
@@ -347,7 +353,7 @@ fun PreviewSetupScanWithError() {
         SetupScan(
             viewModel = PreviewSetupScanViewModel(
                 false,
-                ScanError.PINSuspended
+                ScanError.IncorrectPIN(2)
             )
         )
     }

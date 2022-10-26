@@ -12,14 +12,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -48,7 +46,6 @@ fun IdentificationScan(
     modifier: Modifier = Modifier,
     viewModel: IdentificationScanViewModelInterface = hiltViewModel<IdentificationScanViewModel>()
 ) {
-    val context = LocalContext.current
     var showCancelDialog by remember { mutableStateOf(false) }
 
     ScreenWithTopBar(
@@ -68,7 +65,6 @@ fun IdentificationScan(
                     onNewPINEntered = viewModel::onNewPersonalPINEntered
                 )
             },
-            onErrorDialogButtonTap = { viewModel.onErrorDialogButtonTapped(context) },
             onHelpDialogShown = viewModel::onHelpButtonTapped,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
@@ -146,7 +142,7 @@ sealed class ScanEvent {
 
 interface IdentificationScanViewModelInterface {
     val shouldShowProgress: Boolean
-    val errorState: ScanError?
+    val errorState: ScanError.IncorrectPIN?
 
     fun onHelpButtonTapped()
     fun onNfcButtonTapped()
@@ -165,7 +161,7 @@ class IdentificationScanViewModel @Inject constructor(
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
 
-    override var errorState: ScanError? by mutableStateOf(null)
+    override var errorState: ScanError.IncorrectPIN? by mutableStateOf(null)
         private set
 
     init {
@@ -182,13 +178,6 @@ class IdentificationScanViewModel @Inject constructor(
 
     override fun onErrorDialogButtonTapped(context: Context) {
         coordinator.cancelIdentification()
-
-        errorState?.let { error ->
-            if (error is ScanError.CardErrorWithRedirect) {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(error.redirectUrl))
-                ContextCompat.startActivity(context, intent, null)
-            }
-        }
     }
 
     override fun onCancelIdentification() {
@@ -209,13 +198,17 @@ class IdentificationScanViewModel @Inject constructor(
                         ScanEvent.CardAttached -> shouldShowProgress = true
                         is ScanEvent.Finished -> {
                             shouldShowProgress = false
+
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.redirectAddress))
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             startActivity(context, intent, null)
                         }
                         is ScanEvent.Error -> {
                             shouldShowProgress = false
-                            errorState = event.error
+
+                            if (event.error is ScanError.IncorrectPIN) {
+                                errorState = event.error
+                            }
                         }
                     }
                 }
@@ -226,7 +219,7 @@ class IdentificationScanViewModel @Inject constructor(
 
 private class PreviewIdentificationScanViewModel(
     override val shouldShowProgress: Boolean,
-    override val errorState: ScanError?
+    override val errorState: ScanError.IncorrectPIN?
 ) : IdentificationScanViewModelInterface {
     override fun onHelpButtonTapped() {}
     override fun onNfcButtonTapped() {}
@@ -255,7 +248,7 @@ fun PreviewIdentificationScanWithProgress() {
 @Composable
 fun PreviewIdentificationScanWithError() {
     UseIDTheme {
-        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, ScanError.CardDeactivated))
+        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, ScanError.IncorrectPIN(2)))
     }
 }
 

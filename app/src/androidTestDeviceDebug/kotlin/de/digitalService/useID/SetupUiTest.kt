@@ -61,7 +61,7 @@ class SetupUiTest {
 
     @Test
     fun test() {
-        val testErrorState: MutableState<ScanError?> = mutableStateOf(null)
+        val testErrorState: MutableState<ScanError.IncorrectPIN?> = mutableStateOf(null)
         val testProvider = "testProvider"
 
         every { mockSetupScanViewModel.errorState } answers { testErrorState.value }
@@ -123,7 +123,7 @@ class SetupUiTest {
         val setupScanTitle = composeTestRule.activity.getString(R.string.firstTimeUser_scan_title)
         composeTestRule.onNodeWithText(setupScanTitle).assertIsDisplayed()
 
-        testErrorState.value = ScanError.PINSuspended
+        testErrorState.value = ScanError.IncorrectPIN(2)
         val errorDialogTitleText = composeTestRule.activity.getString(testErrorState.value!!.titleResID)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()
 

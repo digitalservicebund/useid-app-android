@@ -11,9 +11,7 @@ import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination
+import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProviderType
@@ -133,27 +131,36 @@ class IdentificationCoordinator @Inject constructor(
                 when (error) {
                     IDCardInteractionException.CardDeactivated -> {
                         trackerManager.trackScreen("identification/cardDeactivated")
+
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.CardDeactivated))
+                        navigateOnMain(IdentificationCardDeactivatedDestination)
                     }
                     IDCardInteractionException.CardBlocked -> {
                         trackerManager.trackScreen("identification/cardUnreadable")
-                        _scanEventFlow.emit(ScanEvent.Error(ScanError.CardBlocked))
+
+                        _scanEventFlow.emit(ScanEvent.Error(ScanError.PINBlocked))
+                        navigateOnMain(IdentificationCardBlockedDestination)
                     }
                     is IDCardInteractionException.ProcessFailed -> {
                         _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
 
-                        val scanEvent = if (error.redirectUrl != null) {
-                            ScanEvent.Error(ScanError.CardErrorWithRedirect(error.redirectUrl))
-                        } else {
-                            ScanEvent.Error(ScanError.CardErrorWithoutRedirect)
-                        }
-
                         if (reachedScanState) {
+                            val scanEvent = if (error.redirectUrl != null) {
+                                navigateOnMain(IdentificationCardUnreadableDestination(true, error.redirectUrl))
+                                ScanEvent.Error(ScanError.CardErrorWithRedirect(error.redirectUrl))
+                            } else {
+                                navigateOnMain(IdentificationCardUnreadableDestination(true, null))
+                                ScanEvent.Error(ScanError.CardErrorWithoutRedirect)
+                            }
                             _scanEventFlow.emit(scanEvent)
+                        } else {
+                            navigateOnMain(IdentificationOtherErrorDestination(tcTokenURL))
                         }
                     }
                     else -> {
                         _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
+
+                        navigateOnMain(IdentificationOtherErrorDestination(tcTokenURL))
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
 
                         if (pinCallback == null && !reachedScanState) {
@@ -201,18 +208,24 @@ class IdentificationCoordinator @Inject constructor(
                     is EIDInteractionEvent.RequestCAN -> {
                         logger.debug("Requesting CAN")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
+                        navigateOnMain(IdentificationCardSuspendedDestination)
+
                         trackerManager.trackScreen("identification/cardSuspended")
                         cancel()
                     }
                     is EIDInteractionEvent.RequestPINAndCAN -> {
                         logger.debug("Requesting PIN and CAN")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
+                        navigateOnMain(IdentificationCardSuspendedDestination)
+
                         trackerManager.trackScreen("identification/cardSuspended")
                         cancel()
                     }
                     is EIDInteractionEvent.RequestPUK -> {
                         logger.debug("Requesting PUK")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINBlocked))
+                        navigateOnMain(IdentificationCardBlockedDestination)
+
                         trackerManager.trackScreen("identification/cardBlocked")
                         cancel()
                     }

@@ -15,9 +15,7 @@ import javax.inject.Inject
 
 @Destination(navArgsDelegate = SetupCardUnreadableNavArgs::class)
 @Composable
-fun SetupCardUnreadable(
-    viewModel: SetupCardUnreadableViewModel = hiltViewModel()
-) {
+fun SetupCardUnreadable(viewModel: SetupCardUnreadableViewModel = hiltViewModel()) {
     ScanErrorScreen(
         titleResId = R.string.scanError_cardUnreadable_title,
         bodyResId = R.string.scanError_cardUnreadable_body,
@@ -48,5 +46,5 @@ class SetupCardUnreadableViewModel @Inject constructor(
 }
 
 data class SetupCardUnreadableNavArgs(
-    val errorCard: Boolean,
+    val errorCard: Boolean
 )

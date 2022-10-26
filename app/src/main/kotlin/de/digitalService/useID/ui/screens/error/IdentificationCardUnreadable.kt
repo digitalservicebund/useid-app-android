@@ -24,10 +24,12 @@ fun IdentificationCardUnreadable(
 ) {
     val context = LocalContext.current
 
+    val buttonTextStringId = viewModel.redirectUrl?.let { R.string.scanError_redirect } ?: R.string.scanError_close
+
     ScanErrorScreen(
         titleResId = R.string.scanError_cardUnreadable_title,
         bodyResId = R.string.scanError_cardUnreadable_body,
-        buttonTitleResId = R.string.scanError_close,
+        buttonTitleResId = buttonTextStringId,
         showErrorCard = viewModel.errorCard,
         onNavigationButtonTapped = { viewModel.onCancelButtonPressed(context) },
         onButtonTapped = { viewModel.onCancelButtonPressed(context) }
@@ -37,10 +39,10 @@ fun IdentificationCardUnreadable(
 @HiltViewModel
 class IdentificationCardUnreadableViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val coordinator: IdentificationCoordinator,
+    private val coordinator: IdentificationCoordinator
 ) : ViewModel() {
     val errorCard: Boolean
-    val redirectUrl: String
+    val redirectUrl: String?
 
     init {
         val args = IdentificationCardUnreadableDestination.argsFrom(savedStateHandle)
@@ -49,8 +51,10 @@ class IdentificationCardUnreadableViewModel @Inject constructor(
     }
 
     fun onCancelButtonPressed(context: Context) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
-        ContextCompat.startActivity(context, intent, null)
+        redirectUrl?.let {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
+            ContextCompat.startActivity(context, intent, null)
+        }
 
         coordinator.cancelIdentification()
     }
@@ -58,5 +62,5 @@ class IdentificationCardUnreadableViewModel @Inject constructor(
 
 data class IdentificationCardUnreadableNavArgs(
     val errorCard: Boolean,
-    val redirectUrl: String
+    val redirectUrl: String?
 )

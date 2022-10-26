@@ -6,7 +6,6 @@ sealed class ScanError {
     data class IncorrectPIN(val attempts: Int) : ScanError()
     object PINSuspended : ScanError()
     object PINBlocked : ScanError()
-    object CardBlocked : ScanError()
     object CardDeactivated : ScanError()
     data class CardErrorWithRedirect(val redirectUrl: String) : ScanError()
     object CardErrorWithoutRedirect : ScanError()

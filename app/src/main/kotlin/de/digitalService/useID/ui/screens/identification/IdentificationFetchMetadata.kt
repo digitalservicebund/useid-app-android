@@ -1,10 +1,5 @@
 package de.digitalService.useID.ui.screens.identification
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
@@ -27,13 +22,11 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalAnimationApi::class)
 @Destination(
     navArgsDelegate = IdentificationFetchMetadataNavArgs::class
 )
@@ -83,41 +76,9 @@ fun IdentificationFetchMetadata(
         }
     }
 
-    AnimatedVisibility(
-        visible = viewModel.shouldShowError,
-        enter = scaleIn(tween(200)),
-        exit = scaleOut(tween(100))
-    ) {
-        ConnectionErrorDialog(
-            onRetry = viewModel::onErrorRetry
-        )
-    }
-
     LaunchedEffect(Unit) {
         viewModel.fetchMetadata()
     }
-}
-
-@Composable
-fun ConnectionErrorDialog(
-    onRetry: () -> Unit
-) {
-    StandardDialog(
-        title = {
-            Text(
-                stringResource(id = R.string.identification_fetchMetadataError_title),
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        text = {
-            Text(
-                stringResource(id = R.string.identification_fetchMetadataError_body),
-                style = MaterialTheme.typography.bodySmall
-            )
-        },
-        buttonText = stringResource(id = R.string.identification_fetchMetadataError_retry),
-        onButtonTap = onRetry
-    )
 }
 
 data class IdentificationFetchMetadataNavArgs(
@@ -130,10 +91,8 @@ enum class FetchMetadataEvent {
 
 interface IdentificationFetchMetadataViewModelInterface {
     val shouldShowProgressIndicator: Boolean
-    val shouldShowError: Boolean
 
     fun fetchMetadata()
-    fun onErrorRetry()
     fun onCancelButtonTapped()
 }
 
@@ -143,9 +102,6 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), IdentificationFetchMetadataViewModelInterface {
     override var shouldShowProgressIndicator: Boolean by mutableStateOf(false)
-        private set
-
-    override var shouldShowError: Boolean by mutableStateOf(false)
         private set
 
     private val tcTokenURL: String
@@ -158,26 +114,16 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     override fun fetchMetadata() {
         coordinator.startIdentificationProcess(tcTokenURL)
     }
-
-    override fun onErrorRetry() {
-        coordinator.startIdentificationProcess(tcTokenURL)
-    }
-
+    
     override fun onCancelButtonTapped() = coordinator.cancelIdentification()
 
     private fun collectFetchMetadataEvents() {
         viewModelScope.launch {
             coordinator.fetchMetadataEventFlow.collect { event: FetchMetadataEvent ->
-                when (event) {
-                    FetchMetadataEvent.Started -> {
-                        shouldShowProgressIndicator = true
-                        shouldShowError = false
-                    }
-                    FetchMetadataEvent.Finished -> shouldShowProgressIndicator = false
-                    FetchMetadataEvent.Error -> {
-                        shouldShowProgressIndicator = false
-                        shouldShowError = true
-                    }
+                shouldShowProgressIndicator = when (event) {
+                    FetchMetadataEvent.Started -> true
+                    FetchMetadataEvent.Finished -> false
+                    FetchMetadataEvent.Error -> false
                 }
             }
         }
@@ -185,11 +131,9 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
 }
 
 class PreviewIdentificationFetchMetadataViewModel(
-    override val shouldShowProgressIndicator: Boolean,
-    override val shouldShowError: Boolean
+    override val shouldShowProgressIndicator: Boolean
 ) : IdentificationFetchMetadataViewModelInterface {
     override fun fetchMetadata() {}
-    override fun onErrorRetry() {}
     override fun onCancelButtonTapped() {}
 }
 
@@ -199,8 +143,7 @@ fun PreviewIdentificationFetchMetadata() {
     UseIDTheme {
         IdentificationFetchMetadata(
             viewModel = PreviewIdentificationFetchMetadataViewModel(
-                shouldShowProgressIndicator = false,
-                shouldShowError = true
+                shouldShowProgressIndicator = false
             )
         )
     }

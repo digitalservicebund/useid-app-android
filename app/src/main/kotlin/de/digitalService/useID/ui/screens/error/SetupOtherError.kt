@@ -5,15 +5,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.ScanErrorScreen
-import de.digitalService.useID.ui.screens.error.viewModel.IdentificationCardErrorViewModel
+import de.digitalService.useID.ui.screens.error.viewModel.SetupCardErrorViewModel
 
 @Destination
 @Composable
-fun IdentificationCardBlocked(viewModel: IdentificationCardErrorViewModel = hiltViewModel()) {
+fun SetupOtherError(viewModel: SetupCardErrorViewModel = hiltViewModel()) {
     ScanErrorScreen(
-        titleResId = R.string.scanError_cardBlocked_title,
-        bodyResId = R.string.scanError_cardBlocked_body,
-        buttonTitleResId = R.string.identification_fetchMetadataError_retry,
+        titleResId = R.string.scanError_unknown_title,
+        bodyResId = R.string.scanError_unknown_body,
+        buttonTitleResId = R.string.scanError_close,
         onNavigationButtonTapped = viewModel::onNavigationButtonTapped,
         onButtonTapped = viewModel::onButtonTapped
     )

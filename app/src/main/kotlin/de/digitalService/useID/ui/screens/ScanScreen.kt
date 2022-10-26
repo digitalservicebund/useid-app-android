@@ -25,7 +25,6 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.dialogs.ScanErrorAlertDialog
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.dialogs.WhatIsNfcDialog
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -35,9 +34,8 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 fun ScanScreen(
     title: String,
     body: String,
-    errorState: ScanError?,
+    errorState: ScanError.IncorrectPIN?,
     onIncorrectPIN: @Composable (Int) -> Unit,
-    onErrorDialogButtonTap: () -> Unit,
     showProgress: Boolean,
     modifier: Modifier = Modifier,
     onHelpDialogShown: () -> Unit = { },
@@ -49,10 +47,7 @@ fun ScanScreen(
     val context = LocalContext.current
 
     errorState?.let { error ->
-        when (error) {
-            is ScanError.IncorrectPIN -> onIncorrectPIN(error.attempts)
-            else -> ScanErrorAlertDialog(error = error, onButtonTap = onErrorDialogButtonTap)
-        }
+        onIncorrectPIN(error.attempts)
     }
 
     Column(
@@ -208,7 +203,6 @@ private fun PreviewWithoutProgress() {
             body = "Body",
             errorState = null,
             onIncorrectPIN = { },
-            onErrorDialogButtonTap = { },
             showProgress = false
         )
     }
@@ -223,7 +217,6 @@ private fun PreviewWithProgress() {
             body = "Body",
             errorState = null,
             onIncorrectPIN = { },
-            onErrorDialogButtonTap = { },
             showProgress = true
         )
     }
@@ -236,9 +229,8 @@ private fun PreviewWithError() {
         ScanScreen(
             title = "Title",
             body = "Body",
-            errorState = ScanError.PINSuspended,
+            errorState = ScanError.IncorrectPIN(2),
             onIncorrectPIN = { },
-            onErrorDialogButtonTap = { },
             showProgress = false
         )
     }
