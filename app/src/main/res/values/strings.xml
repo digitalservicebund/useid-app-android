@@ -91,8 +91,8 @@
     <string name="firstTimeUser_personalPIN_textFieldLabel_second">Eingabefeld Persönliche PIN bestätigen, sechsstellig</string>
     <string name="firstTimeUser_personalPIN_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
     <string name="firstTimeUser_personalPINIntro_continue">Persönliche Ausweis–PIN vergeben</string>
-    <string name="firstTimeUser_personalPINIntro_info_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
-    <string name="firstTimeUser_personalPINIntro_info_title">Persönliche Ausweis–PIN gut merken</string>
+    <string name="firstTimeUser_personalPINIntro_info_body">Vergeben Sie eine PIN, die nicht leicht zu erraten ist.</string>
+    <string name="firstTimeUser_personalPINIntro_info_title">Geburtsdatum nicht als PIN nutzen</string>
     <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
     <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
     <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>
