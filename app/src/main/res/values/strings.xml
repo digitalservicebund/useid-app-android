@@ -131,8 +131,8 @@
     <string name="identification_done_body">Machen Sie weiter bei »%1s«.</string>
     <string name="identification_done_continue">Weiter zum Diensteanbieter</string>
     <string name="identification_done_title">Sie haben sich erfolgreich ausgewiesen.</string>
-    <string name="identification_fetchMetadata_loadingData">Die Daten werden geladen.</string>
-    <string name="identification_fetchMetadata_pleaseWait">Einen Moment bitte…</string>
+    <string name="identification_fetchMetadata_loadingData">" "</string>
+    <string name="identification_fetchMetadata_pleaseWait">Laden</string>
     <string name="identification_fetchMetadataError_body">Bitte versuchen Sie es erneut. Stellen Sie dabei sicher, dass Sie mit dem Internet verbunden sind.</string>
     <string name="identification_fetchMetadataError_retry">Erneut versuchen</string>
     <string name="identification_fetchMetadataError_title">Es ist ein Fehler aufgetreten.</string>
