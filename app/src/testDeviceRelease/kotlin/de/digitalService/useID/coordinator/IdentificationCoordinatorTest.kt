@@ -89,7 +89,7 @@ class IdentificationCoordinatorTest {
     }
 
     private val testTokenURL = "https://token"
-    private val testURL = "eid://127.0.0.1/eID-Client?tokenURL="
+    private val testURL = "bundesident://127.0.0.1/eID-Client?tokenURL="
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
