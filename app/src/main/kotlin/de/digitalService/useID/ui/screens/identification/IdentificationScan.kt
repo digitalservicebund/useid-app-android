@@ -181,14 +181,14 @@ class IdentificationScanViewModel @Inject constructor(
     }
 
     override fun onErrorDialogButtonTapped(context: Context) {
+        coordinator.cancelIdentification()
+
         errorState?.let { error ->
             if (error is ScanError.CardErrorWithRedirect) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(error.redirectUrl))
                 ContextCompat.startActivity(context, intent, null)
             }
         }
-
-        coordinator.cancelIdentification()
     }
 
     override fun onCancelIdentification() {

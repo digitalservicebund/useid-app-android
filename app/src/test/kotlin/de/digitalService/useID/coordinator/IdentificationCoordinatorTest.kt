@@ -912,8 +912,9 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun cancelIdentification() {
+    fun cancelIdentification() = runTest {
         val identificationCoordinator = IdentificationCoordinator(
             mockContext,
             mockAppCoordinator,
@@ -924,6 +925,8 @@ class IdentificationCoordinatorTest {
         )
 
         identificationCoordinator.cancelIdentification()
+
+        advanceUntilIdle()
 
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
     }

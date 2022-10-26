@@ -51,6 +51,7 @@ class IdentificationCoordinator @Inject constructor(
     private var pinCallback: ((String) -> Unit)? = null
 
     private var reachedScanState = false
+    private var listenToEvents = false
 
     fun startIdentificationProcess(tcTokenURL: String) {
         logger.debug("Start identification process.")
@@ -84,23 +85,31 @@ class IdentificationCoordinator @Inject constructor(
 
     fun cancelIdentification() {
         logger.debug("Cancel identification process.")
-        appCoordinator.popToRoot()
+        listenToEvents = false
         appCoordinator.stopNFCTagHandling()
+        CoroutineScope(Dispatchers.Main).launch {
+            appCoordinator.popToRoot()
+            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
+        }
         reachedScanState = false
         idCardManager.cancelTask()
     }
 
     private fun finishIdentification() {
         logger.debug("Finish identification process.")
+        listenToEvents = false
+        appCoordinator.setIsNotFirstTimeUser()
         CoroutineScope(Dispatchers.Main).launch {
-            appCoordinator.setIsNotFirstTimeUser()
             appCoordinator.popToRoot()
+            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
         }
         reachedScanState = false
         trackerManager.trackEvent(category = "identification", action = "success", name = "")
     }
 
     private fun startIdentification(tcTokenURL: String) {
+        listenToEvents = true
+
         val fullURL = Uri
             .Builder()
             .scheme("http")
@@ -115,6 +124,11 @@ class IdentificationCoordinator @Inject constructor(
 
             idCardManager.identify(context, fullURL).catch { error ->
                 logger.error("Identification error: $error")
+
+                if (!listenToEvents) {
+                    logger.debug("Emit: Ignoring error because the coordinator is not listening anymore.")
+                    return@catch
+                }
 
                 when (error) {
                     IDCardInteractionException.CardDeactivated -> {
@@ -152,6 +166,11 @@ class IdentificationCoordinator @Inject constructor(
                     }
                 }
             }.collect { event ->
+                if (!listenToEvents) {
+                    logger.debug("Emit: Ignoring event because the coordinator is not listening anymore.")
+                    return@collect
+                }
+
                 when (event) {
                     EIDInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started")
                     is EIDInteractionEvent.RequestAuthenticationRequestConfirmation -> {
