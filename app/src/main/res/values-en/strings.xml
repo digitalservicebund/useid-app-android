@@ -142,7 +142,7 @@
     <string name="identification_personalPIN_error_tryAgain">Try again.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">PIN input field</string>
     <string name="identification_personalPIN_title">Enter your personal ID PIN.</string>
-    <string name="identification_scan_body">Now hold your ID card close to the back of the smartphone. The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
+    <string name="identification_scan_body">Hold your ID card close to the back of the smartphone. The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
     <string name="identification_scan_title">Retrieve the data from your ID card.</string>
     <string name="imprint_text">## Imprint
 \n### Responsible for the content
