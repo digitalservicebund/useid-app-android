@@ -68,7 +68,14 @@ class AppCoordinator @Inject constructor(
         navigate(SetupIntroDestination(tcTokenURL))
     }
 
-    override fun startIdentification(tcTokenURL: String) = navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL))
+    override fun startIdentification(tcTokenURL: String) {
+        if (nfcAvailability.value != NfcAvailability.Available) {
+            logger.warn("Do not start identification because NFC is not available.")
+            return
+        }
+
+        navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL))
+    }
 
     override fun homeScreenLaunched() {
         if (storageManager.getIsFirstTimeUser()) {
