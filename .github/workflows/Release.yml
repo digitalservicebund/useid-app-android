@@ -53,6 +53,10 @@ jobs:
           FASTLANE_API_KEY: ${{ secrets.FASTLANE_API_KEY }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          MATOMO_HOST: ${{ secrets.MATOMO_HOST_PRODUCTION }}
+          MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID_PRODUCTION }}
+          SENTRY_PUBLIC_KEY: ${{ secrets.SENTRY_PUBLIC_KEY_PRODUCTION }}
+          SENTRY_PROJECT_ID: ${{ secrets.SENTRY_PROJECT_ID_PRODUCTION }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_PROJECT: useid-android
 
@@ -69,6 +73,10 @@ jobs:
           FASTLANE_API_KEY: ${{ secrets.FASTLANE_API_KEY }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          MATOMO_HOST: ${{ secrets.MATOMO_HOST_PREVIEW }}
+          MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID_PREVIEW }}
+          SENTRY_PUBLIC_KEY: ${{ secrets.SENTRY_PUBLIC_KEY_PREVIEW }}
+          SENTRY_PROJECT_ID: ${{ secrets.SENTRY_PROJECT_ID_PREVIEW }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_PROJECT: useid-preview-android
 
@@ -85,6 +93,10 @@ jobs:
           FASTLANE_API_KEY: ${{ secrets.FASTLANE_API_KEY }}
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+          MATOMO_HOST: ${{ secrets.MATOMO_HOST_PRODUCTION }}
+          MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID_PRODUCTION }}
+          SENTRY_PUBLIC_KEY: ${{ secrets.SENTRY_PUBLIC_KEY_PRODUCTION }}
+          SENTRY_PROJECT_ID: ${{ secrets.SENTRY_PROJECT_ID_PRODUCTION }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_PROJECT: useid-android
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -2,6 +2,7 @@ package de.digitalService.useID.analytics
 
 import android.content.Context
 import de.digitalService.useID.getLogger
+import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.util.CurrentTimeProviderInterface
 import org.matomo.sdk.Matomo
 import org.matomo.sdk.Tracker
@@ -14,9 +15,9 @@ import javax.inject.Singleton
 @Singleton
 class TrackerManager @Inject constructor(
     private val currentTimeProvider: CurrentTimeProviderInterface,
-    @Named("TRACKING_SESSION_TIMEOUT") private val sessionTimeout: Long,
-    @Named("TRACKING_API_URL") private val apiUrl: String
-
+    @Named(ConfigModule.TRACKING_SESSION_TIMEOUT) private val sessionTimeout: Long,
+    @Named(ConfigModule.TRACKING_API_URL) private val apiUrl: String,
+    @Named(ConfigModule.TRACKING_SITE_ID) private val siteId: Int
 ) : TrackerManagerType {
     private val logger by getLogger()
 
@@ -25,7 +26,7 @@ class TrackerManager @Inject constructor(
     private lateinit var tracker: Tracker
 
     override fun initTracker(context: Context) {
-        tracker = TrackerBuilder.createDefault(apiUrl, siteId()).build(Matomo.getInstance(context))
+        tracker = TrackerBuilder.createDefault(apiUrl, siteId).build(Matomo.getInstance(context))
     }
 
     override fun trackScreen(route: String) {

@@ -1,8 +1,12 @@
 package de.digitalService.useID.hilt
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Bundle
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 
@@ -12,13 +16,35 @@ class ConfigModule {
     companion object {
         const val TRACKING_API_URL = "TRACKING_API_URL"
         const val TRACKING_SESSION_TIMEOUT = "TRACKING_SESSION_TIMEOUT"
+        const val TRACKING_SITE_ID = "TRACKING_SITE_ID"
+
+        const val SENTRY_DSN = "SENTRY_DSN"
     }
 
     @Provides
     @Named(TRACKING_API_URL)
-    fun provideTrackingApiUrl(): String = "https://bund.matomo.cloud/matomo.php"
+    fun provideTrackingApiUrl(@ApplicationContext context: Context): String {
+        val matomoHost = getMetadata(context).getString("matomoHost")
+        return "https://$matomoHost/matomo.php"
+    }
 
     @Provides
     @Named(TRACKING_SESSION_TIMEOUT)
     fun provideTrackingSessionTimeout(): Long = 1800000L
+
+    @Provides
+    @Named(TRACKING_SITE_ID)
+    fun provideTrackingSiteId(@ApplicationContext context: Context): Int =
+        getMetadata(context).getInt("matomoSiteId")
+
+    @Provides
+    @Named(SENTRY_DSN)
+    fun provideSentryDsn(@ApplicationContext context: Context): String {
+        val sentryPublicKey = getMetadata(context).getString("sentryPublicKey")
+        val sentryProjectId = getMetadata(context).getInt("sentryProjectId")
+
+        return "https://$sentryPublicKey@o1248831.ingest.sentry.io/$sentryProjectId"
+    }
+
+    private fun getMetadata(context: Context): Bundle = context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA).metaData
 }

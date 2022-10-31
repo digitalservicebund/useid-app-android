@@ -31,6 +31,7 @@ class TrackerManagerTest {
     lateinit var mockMatomo: Matomo
 
     private val testUrl = "https://example.com"
+    private val testSiteId = 5
 
     @BeforeEach
     fun setUp() {
@@ -38,24 +39,24 @@ class TrackerManagerTest {
         every { Matomo.getInstance(mockContext) } returns mockMatomo
 
         mockkStatic("org.matomo.sdk.TrackerBuilder")
-        every { TrackerBuilder.createDefault(testUrl, 3).build(mockMatomo) } returns mockTracker
+        every { TrackerBuilder.createDefault(testUrl, testSiteId).build(mockMatomo) } returns mockTracker
     }
 
     @Test
     fun initialization() {
         every { mockCurrentTimeProvider.currentTime } returns 0
 
-        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
+        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl, testSiteId)
         trackerManager.initTracker(mockContext)
 
-        verify { TrackerBuilder.createDefault(testUrl, 3).build(mockMatomo) }
+        verify { TrackerBuilder.createDefault(testUrl, testSiteId).build(mockMatomo) }
     }
 
     @Test
     fun trackScreen() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 2
 
-        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
+        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl, testSiteId)
         trackerManager.initTracker(mockContext)
 
         val route = "testRoute"
@@ -72,7 +73,7 @@ class TrackerManagerTest {
     fun trackScreenWithoutNewSession() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 2
 
-        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
+        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl, testSiteId)
         trackerManager.initTracker(mockContext)
 
         val route = "testRoute"
@@ -90,7 +91,7 @@ class TrackerManagerTest {
     fun trackScreenWithNewSession() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 12
 
-        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
+        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl, testSiteId)
         trackerManager.initTracker(mockContext)
 
         val route = "testRoute"
@@ -109,7 +110,7 @@ class TrackerManagerTest {
     fun trackEvent() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 2
 
-        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
+        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl, testSiteId)
         trackerManager.initTracker(mockContext)
 
         val category = "category"
@@ -128,7 +129,7 @@ class TrackerManagerTest {
     fun trackEventWithoutNewSession() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 2
 
-        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
+        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl, testSiteId)
         trackerManager.initTracker(mockContext)
 
         val category = "category"
@@ -148,7 +149,7 @@ class TrackerManagerTest {
     fun trackEventWithNewSession() {
         every { mockCurrentTimeProvider.currentTime } returns 0 andThen 1 andThen 12
 
-        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl)
+        val trackerManager = TrackerManager(mockCurrentTimeProvider, 10L, testUrl, testSiteId)
         trackerManager.initTracker(mockContext)
 
         val category = "category"

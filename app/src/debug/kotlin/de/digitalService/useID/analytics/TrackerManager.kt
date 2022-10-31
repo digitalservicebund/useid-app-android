@@ -1,14 +1,7 @@
 package de.digitalService.useID.analytics
 
 import android.content.Context
-import de.digitalService.useID.getLogger
-import de.digitalService.useID.util.CurrentTimeProviderInterface
-import org.matomo.sdk.Matomo
-import org.matomo.sdk.Tracker
-import org.matomo.sdk.TrackerBuilder
-import org.matomo.sdk.extra.TrackHelper
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton

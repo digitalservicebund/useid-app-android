@@ -87,6 +87,10 @@ platform :android do
       flavor: options[:flavor],
       build_type: 'Release',
       properties: {
+        "sentryPublicKey" => ENV["SENTRY_PUBLIC_KEY"],
+        "sentryProjectId" => ENV["SENTRY_PROJECT_ID"],
+        "matomoHost" => ENV["MATOMO_HOST"],
+        "matomoSiteId" => ENV["MATOMO_SITE_ID"],
         "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
         "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
         "android.injected.signing.key.alias" => "upload",
@@ -120,6 +124,10 @@ platform :android do
       flavor: "device",
       build_type: 'Release',
       properties: {
+        "sentryPublicKey" => ENV["SENTRY_PUBLIC_KEY"],
+        "sentryProjectId" => ENV["SENTRY_PROJECT_ID"],
+        "matomoHost" => ENV["MATOMO_HOST"],
+        "matomoSiteId" => ENV["MATOMO_SITE_ID"],
         "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
         "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
         "android.injected.signing.key.alias" => "upload",

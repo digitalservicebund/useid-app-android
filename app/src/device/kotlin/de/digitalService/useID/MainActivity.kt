@@ -12,17 +12,20 @@ import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.util.NfcAdapterUtil
+import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -40,6 +43,10 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var nfcAdapterUtil: NfcAdapterUtil
 
+    @Inject
+    @Named(ConfigModule.SENTRY_DSN)
+    lateinit var sentryDsn: String
+
     private var nfcAdapter: NfcAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +61,8 @@ class MainActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
+
+        Sentry.init(sentryDsn)
 
         handleNewIntent(intent)
 

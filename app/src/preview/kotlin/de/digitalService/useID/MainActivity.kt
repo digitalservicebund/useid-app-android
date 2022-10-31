@@ -7,13 +7,16 @@ import androidx.activity.compose.setContent
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
+import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Named
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,6 +27,10 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var trackerManager: TrackerManagerType
+
+    @Inject
+    @Named(ConfigModule.SENTRY_DSN)
+    lateinit var sentryDsn: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -37,6 +44,8 @@ class MainActivity : ComponentActivity() {
         }
 
         super.onCreate(savedInstanceState)
+
+        Sentry.init(sentryDsn)
 
         handleNewIntent(intent)
 

@@ -53,9 +53,12 @@
                 <data android:pathPattern="/eID-Client" />
             </intent-filter>
         </activity>
-        <meta-data android:name="io.sentry.dsn" android:value="${sentryURL}" />
-        <meta-data android:name="io.sentry.traces.sample-rate" android:value="1.0" />
-        <meta-data android:name="io.sentry.traces.user-interaction.enable" android:value="false" />
+        <meta-data android:name="sentryPublicKey" android:value="${sentryPublicKey}" />
+        <meta-data android:name="sentryProjectId" android:value="${sentryProjectId}" />
+        <meta-data android:name="matomoHost" android:value="${matomoHost}" />
+        <meta-data android:name="matomoSiteId" android:value="${matomoSiteId}" />
+
+        <meta-data android:name="io.sentry.auto-init" android:value="false" />
     </application>
 
 </manifest>

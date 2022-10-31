@@ -25,6 +25,13 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        manifestPlaceholders = [
+                sentryPublicKey: findProperty("sentryPublicKey"),
+                sentryProjectId: findProperty("sentryProjectId"),
+                matomoHost: findProperty("matomoHost"),
+                matomoSiteId: findProperty("matomoSiteId"),
+        ]
     }
 
     lintOptions {
@@ -52,13 +59,11 @@ android {
     productFlavors {
         device {
             dimension = "nfc"
-            manifestPlaceholders = [sentryURL: "https://887dace5d9c94ccf9110cfa1a90a124f@o1248831.ingest.sentry.io/6593737"]
         }
         preview {
             dimension = "nfc"
             applicationIdSuffix = ".Preview"
             versionNameSuffix = "-preview"
-            manifestPlaceholders = [sentryURL: "https://d9b44d7779d7498c8cc2250eb3af253d@o1248831.ingest.sentry.io/6589522"]
         }
     }
 
