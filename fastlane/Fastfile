@@ -8,7 +8,7 @@ platform :android do
   desc "Runs all the tests"
   lane :test do
     gradle(tasks: ["clean", "testDeviceReleaseUnitTest"])
-    gradle(tasks: ["connectedDeviceDebugAndroidTest", "--info"])
+    gradle(tasks: ["-Pandroid.experimental.androidTest.useUnifiedTestPlatform=true", "testDevicesGroupDeviceDebugAndroidTest", "--info"])
   end
 
   desc "Run Android linter and ktlint"

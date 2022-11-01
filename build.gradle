@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        compose_version = '1.3.0-rc01'
+        compose_version = '1.3.0'
         mockk_version = '1.12.5'
     }
 
