@@ -1,7 +1,6 @@
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -36,7 +35,6 @@ class IdentificationFetchMetadataTest {
         val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.shouldShowProgressIndicator } returns true
-        every { viewModel.shouldShowError } returns false
 
         composeTestRule.activity.setContent {
             IdentificationFetchMetadata(viewModel = viewModel)
@@ -48,30 +46,6 @@ class IdentificationFetchMetadataTest {
 
         val errorDialogTitle = composeTestRule.activity.getString(R.string.identification_fetchMetadataError_title)
         composeTestRule.onNodeWithText(errorDialogTitle).assertDoesNotExist()
-    }
-
-    @Test
-    fun error() {
-        val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
-
-        every { viewModel.shouldShowProgressIndicator } returns true
-        every { viewModel.shouldShowError } returns true
-
-        composeTestRule.activity.setContent {
-            IdentificationFetchMetadata(viewModel = viewModel)
-        }
-
-        composeTestRule.waitForIdle()
-
-        verify(exactly = 1) { viewModel.fetchMetadata() }
-
-        val errorDialogTitle = composeTestRule.activity.getString(R.string.identification_fetchMetadataError_title)
-        composeTestRule.onNodeWithText(errorDialogTitle).assertIsDisplayed()
-
-        val errorRetryButtonTitle = composeTestRule.activity.getString(R.string.identification_fetchMetadataError_retry)
-        composeTestRule.onNodeWithText(errorRetryButtonTitle).performClick()
-
-        verify { viewModel.onErrorRetry() }
 
         val errorCancelButtonTitle = composeTestRule.activity.getString(R.string.navigation_cancel)
         composeTestRule.onNodeWithContentDescription(errorCancelButtonTitle).performClick()

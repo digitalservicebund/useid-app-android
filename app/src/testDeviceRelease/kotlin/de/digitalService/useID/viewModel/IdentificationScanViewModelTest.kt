@@ -124,7 +124,7 @@ class IdentificationScanViewModelTest {
         runCurrent()
 
         Assertions.assertFalse(viewModel.shouldShowProgress)
-        Assertions.assertEquals(testError, viewModel.errorState)
+        Assertions.assertNull(viewModel.errorState)
     }
 
     @Test
@@ -164,7 +164,7 @@ class IdentificationScanViewModelTest {
 
         runCurrent()
 
-        Assertions.assertEquals(testError, viewModel.errorState)
+        Assertions.assertNull(viewModel.errorState)
 
         viewModel.onNewPersonalPINEntered(testPin)
 

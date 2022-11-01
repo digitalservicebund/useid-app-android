@@ -2,7 +2,6 @@ package de.digitalService.useID.viewModel
 
 import android.content.Context
 import de.digitalService.useID.analytics.IssueTrackerManagerType
-import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
@@ -102,7 +101,7 @@ class SetupScanViewModelTest {
 
         verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        assertEquals(ScanError.Other(null), viewModel.errorState)
+        assertNull(viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -129,7 +128,7 @@ class SetupScanViewModelTest {
 
         verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        assertEquals(ScanError.Other(null), viewModel.errorState)
+        assertNull(viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -162,7 +161,7 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(ScanError.CardDeactivated, viewModel.errorState)
+        assertNull(viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -195,7 +194,7 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(ScanError.PINBlocked, viewModel.errorState)
+        assertNull(viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -229,7 +228,7 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(ScanError.Other(exception_message), viewModel.errorState)
+        assertNull(viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -306,7 +305,7 @@ class SetupScanViewModelTest {
         verify(exactly = 0) { pinCallback(any(), any(), any()) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(ScanError.PINSuspended, viewModel.errorState)
+        assertNull(viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -342,7 +341,7 @@ class SetupScanViewModelTest {
         verify(exactly = 0) { pinCallback(any()) }
         verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
 
-        assertEquals(ScanError.PINBlocked, viewModel.errorState)
+        assertNull(viewModel.errorState)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
