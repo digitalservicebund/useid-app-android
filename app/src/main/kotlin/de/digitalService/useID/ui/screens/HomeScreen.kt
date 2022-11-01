@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package de.digitalService.useID.ui.screens
 
 import androidx.compose.foundation.*
@@ -48,6 +46,8 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
                 .fillMaxWidth()
                 .background(Blue300)
         ) {
+            Spacer(modifier = Modifier.height(60.dp))
+
             Image(
                 painter = painterResource(id = R.drawable.abstract_widget_phone),
                 contentDescription = "",
