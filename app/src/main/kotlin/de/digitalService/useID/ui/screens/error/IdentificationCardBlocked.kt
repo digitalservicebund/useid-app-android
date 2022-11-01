@@ -13,7 +13,7 @@ fun IdentificationCardBlocked(viewModel: IdentificationCardErrorViewModel = hilt
     ScanErrorScreen(
         titleResId = R.string.scanError_cardBlocked_title,
         bodyResId = R.string.scanError_cardBlocked_body,
-        buttonTitleResId = R.string.identification_fetchMetadataError_retry,
+        buttonTitleResId = R.string.scanError_close,
         onNavigationButtonTapped = viewModel::onNavigationButtonTapped,
         onButtonTapped = viewModel::onButtonTapped
     )
