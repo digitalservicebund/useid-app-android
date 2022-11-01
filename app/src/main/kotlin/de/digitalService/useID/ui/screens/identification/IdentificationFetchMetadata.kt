@@ -114,7 +114,7 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     override fun fetchMetadata() {
         coordinator.startIdentificationProcess(tcTokenURL)
     }
-    
+
     override fun onCancelButtonTapped() = coordinator.cancelIdentification()
 
     private fun collectFetchMetadataEvents() {

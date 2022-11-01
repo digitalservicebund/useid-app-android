@@ -15,10 +15,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.*
-import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
+import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.openecard.mobile.activation.ActivationResultCode
@@ -90,21 +91,14 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewIdentificationFetchMetadata() {
-//    UseIDTheme {
-//        PreviewIdentificationFetchMetadata(
-//            PreviewIdentificationFetchMetadataViewModel(
-//                IdentificationCoordinator(
-//                    AppCoordinator(
-//                        (
-//                            object : StorageManagerType {
-//                                override fun getIsFirstTimeUser(): Boolean = false
-//                                override fun setIsNotFirstTimeUser() {}
-//                            }
-//                            )
-//                    ),
-//                    PreviewTrackerManager(),
-//                )
-//            , PreviewTrackerManager())
-//        )
-//    }
+    UseIDTheme {
+        PreviewIdentificationFetchMetadata(
+            PreviewIdentificationFetchMetadataViewModel(IDCardManager(), PreviewTrackerManager()),
+            object : IdentificationFetchMetadataViewModelInterface {
+                override val shouldShowProgressIndicator: Boolean = false
+                override fun fetchMetadata() {}
+                override fun onCancelButtonTapped() {}
+            }
+        )
+    }
 }

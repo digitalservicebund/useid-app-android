@@ -7,7 +7,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -18,8 +17,11 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
-import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModelInterface
+import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,12 +29,14 @@ import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 @Composable
-fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel, identificationScanViewModel: IdentificationScanViewModel) {
+fun PreviewIdentificationScan(
+    viewModel: PreviewIdentificationScanViewModel,
+    identificationScanViewModel: IdentificationScanViewModelInterface
+) {
     Column(verticalArrangement = Arrangement.Top, modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.weight(1f)) {
             IdentificationScan(modifier = Modifier.fillMaxHeight(0.9f), identificationScanViewModel)
         }
-        val context = LocalContext.current
 
         LazyRow(
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -40,7 +44,7 @@ fun PreviewIdentificationScan(viewModel: PreviewIdentificationScanViewModel, ide
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         ) {
-            item { Button(onClick = { viewModel.simulateSuccess(context) }) { Text("✅") } }
+            item { Button(onClick = { viewModel.simulateSuccess() }) { Text("✅") } }
             item { Button(onClick = { viewModel.simulateIncorrectPIN() }) { Text("PIN") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithRedirect() }) { Text("❌➰") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithoutRedirect() }) { Text("❌") } }
@@ -56,7 +60,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
     private val trackerManager: TrackerManagerType,
     private val idCardManager: IDCardManager
 ) : ViewModel() {
-    fun simulateSuccess(context: Context) {
+    fun simulateSuccess() {
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
@@ -131,18 +135,22 @@ class PreviewIdentificationScanViewModel @Inject constructor(
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewIdentificationScan() {
-//    UseIDTheme {
-//        PreviewIdentificationScan(
-//            PreviewIdentificationScanViewModel(
-//                IdentificationCoordinator(
-//                    AppCoordinator(object : StorageManagerType {
-//                        override fun getIsFirstTimeUser(): Boolean = false
-//                        override fun setIsNotFirstTimeUser() {}
-//                    }),
-//                    PreviewTrackerManager()
-//                ),
-//                PreviewTrackerManager()
-//            )
-//        )
-//    }
+    UseIDTheme {
+        PreviewIdentificationScan(
+            PreviewIdentificationScanViewModel(
+                PreviewTrackerManager(),
+                IDCardManager()
+            ),
+            object : IdentificationScanViewModelInterface {
+                override val shouldShowProgress: Boolean = false
+                override val errorState: ScanError.IncorrectPIN? = null
+
+                override fun onHelpButtonTapped() {}
+                override fun onNfcButtonTapped() {}
+                override fun onErrorDialogButtonTapped(context: Context) {}
+                override fun onCancelIdentification() {}
+                override fun onNewPersonalPINEntered(pin: String) {}
+            }
+        )
+    }
 }

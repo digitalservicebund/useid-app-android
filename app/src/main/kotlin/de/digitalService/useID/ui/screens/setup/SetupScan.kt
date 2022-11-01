@@ -165,8 +165,7 @@ class SetupScanViewModel @Inject constructor(
     private val trackerManager: TrackerManagerType,
     private val issueTrackerManager: IssueTrackerManagerType,
     @Nullable coroutineScope: CoroutineScope? = null
-) :
-    ViewModel(), SetupScanViewModelInterface {
+) : ViewModel(), SetupScanViewModelInterface {
     private val logger by getLogger()
 
     private val viewModelCoroutineScope: CoroutineScope = coroutineScope ?: viewModelScope

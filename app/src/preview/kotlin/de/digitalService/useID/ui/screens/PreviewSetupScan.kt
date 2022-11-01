@@ -1,5 +1,6 @@
 package de.digitalService.useID.ui.screens
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -11,20 +12,21 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.setup.SetupScan
-import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
+import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Composable
-fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: SetupScanViewModel) {
+fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: SetupScanViewModelInterface) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -109,16 +111,21 @@ class PreviewSetupScanViewModel @Inject constructor(
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewSetupScan() {
-    val fakeStorageManager = (
-        object : StorageManagerType {
-            override fun getIsFirstTimeUser(): Boolean = false
-            override fun setIsNotFirstTimeUser() {}
-        }
-        )
-
     UseIDTheme {
-//        PreviewSetupScan(
-//            PreviewSetupScanViewModel(SetupCoordinator(AppCoordinator(fakeStorageManager)), PreviewTrackerManager(), IDCardManager())
-//        )
+        PreviewSetupScan(
+            PreviewSetupScanViewModel(PreviewTrackerManager(), IDCardManager()),
+            object : SetupScanViewModelInterface {
+                override val shouldShowProgress: Boolean = false
+                override val errorState: ScanError.IncorrectPIN? = null
+
+                override fun startSettingPIN(context: Context) {}
+                override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}
+                override fun onHelpButtonTapped() {}
+                override fun onNfcButtonTapped() {}
+                override fun onBackButtonTapped() {}
+                override fun onCancelConfirm() {}
+
+            }
+        )
     }
 }
