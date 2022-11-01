@@ -74,6 +74,7 @@ fun ScanErrorScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 24.dp, top = 12.dp)
+                    .height(50.dp)
             )
         }
     }
