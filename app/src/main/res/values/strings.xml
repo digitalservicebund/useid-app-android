@@ -98,14 +98,14 @@
     <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>
     <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN-Brief noch\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Ja, PIN-Brief vorhanden</string>
-    <string name="firstTimeUser_scan_body">Fast geschafft! Halten Sie Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihrem Ausweis die neue PIN zuzuordnen.</string>
+    <string name="firstTimeUser_scan_body">Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre neue PIN auf den Ausweis zu übertragen.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
     <string name="firstTimeUser_scan_error_title_id_deactivated">Online-Ausweisfunktion deaktiviert</string>
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
-    <string name="firstTimeUser_scan_title">Halten Sie Ihren Ausweis dicht an die obere Rückseite des iPhones.</string>
+    <string name="firstTimeUser_scan_title">Halten Sie Ihren Ausweis dicht an die obere Rückseite des Smartphones.</string>
     <string name="firstTimeUser_transportPIN_body">Geben Sie Ihre 5-stellige Transport-PIN aus dem PIN-Brief ein.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport-PIN ein.</string>
@@ -140,8 +140,8 @@
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
     <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
-    <string name="identification_scan_body">Halten Sie Ihren Ausweis dicht an die Rückseite des Smartphones. Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
-    <string name="identification_scan_title">Rufen Sie die Daten von Ihrem Ausweis ab.</string>
+    <string name="identification_scan_body">Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
+    <string name="identification_scan_title">Halten Sie Ihren Ausweis dicht an die obere Rückseite des Smartphones.</string>
     <string name="imprint_text">## Impressum
 \n### Verantwortlich für die Inhalte
 \n
