@@ -100,14 +100,14 @@
     <string name="firstTimeUser_pinLetter_requestLetter">No, order PIN reset letter</string>
     <string name="firstTimeUser_pinLetter_title">Do you still have your PIN letter?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Yes, the PIN letter is available</string>
-    <string name="firstTimeUser_scan_body">Almost there! Hold your ID card close to the back of the smartphone. The app uses NFC sensors in the smartphone and your ID card to assign the new PIN to your ID card.</string>
+    <string name="firstTimeUser_scan_body">The app uses NFC sensors in the smartphone and ID card to transfer your new PIN to the ID card.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">This function is not supported at present. Please use AusweisApp2.</string>
     <string name="firstTimeUser_scan_error_text_unknown">An unexpected error has occurred. Please have a look at the logs.</string>
     <string name="firstTimeUser_scan_error_title_id_deactivated">Online badge function deactivated</string>
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blocked</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspended</string>
-    <string name="firstTimeUser_scan_title">Transfer your new PIN to the ID card.</string>
+    <string name="firstTimeUser_scan_title">Hold your ID close to the top back side of the smartphone.</string>
     <string name="firstTimeUser_transportPIN_body">Enter your 5-digit transport PIN from the PIN letter.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
@@ -142,7 +142,7 @@
     <string name="identification_personalPIN_error_tryAgain">Try again.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">PIN input field</string>
     <string name="identification_personalPIN_title">Enter your personal ID PIN.</string>
-    <string name="identification_scan_body">Hold your ID card close to the back of the smartphone. The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
+    <string name="identification_scan_body">The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
     <string name="identification_scan_title">Retrieve the data from your ID card.</string>
     <string name="imprint_text">## Imprint
 \n### Responsible for the content
