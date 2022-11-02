@@ -98,7 +98,7 @@
     <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>
     <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN-Brief noch\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Ja, PIN-Brief vorhanden</string>
-    <string name="firstTimeUser_scan_body">Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre neue PIN auf den Ausweis zu übertragen.</string>
+    <string name="firstTimeUser_scan_body">Fast geschafft! Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre neue PIN auf den Ausweis zu übertragen.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
