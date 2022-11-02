@@ -40,4 +40,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: android_test_report-${{ github.sha }}
-          path: app/build/outputs/androidTest-results
+          path: |
+            app/build/outputs/androidTest-results
+            !app/build/outputs/androidTest-results/**/adb.additional*
