@@ -36,9 +36,6 @@ android {
         ]
     }
 
-    lintOptions {
-        textReport true
-    }
     testOptions {
         packagingOptions {
             jniLibs {
@@ -164,6 +161,10 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    lint {
+        textReport true
+    }
+    namespace 'de.digitalService.useID'
     applicationVariants.all { variant ->
         kotlin.sourceSets {
             getByName(variant.name) {
