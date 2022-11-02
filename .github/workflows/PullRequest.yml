@@ -37,7 +37,7 @@ jobs:
       - name: Run test
         run: bundle exec fastlane test
       - name: Upload AndroidTest report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: android_test_report-${{ github.sha }}
           path: app/build/outputs/androidTest-results
