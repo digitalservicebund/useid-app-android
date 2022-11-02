@@ -103,7 +103,6 @@ android {
                     targetDevices.add(devices.pixel2api29)
                     targetDevices.add(devices.pixel2api30)
 
-                    targetDevices.add(devices.pixel6api30)
                     targetDevices.add(devices.pixel6api31)
                     targetDevices.add(devices.pixel6api33)
 
@@ -113,6 +112,7 @@ android {
                     // targetDevices.add(devices.pixel2api33)
                     // targetDevices.add(devices.pixel6api28)
                     // targetDevices.add(devices.pixel6api29)
+                    // targetDevices.add(devices.pixel6api30)
                 }
             }
         }
