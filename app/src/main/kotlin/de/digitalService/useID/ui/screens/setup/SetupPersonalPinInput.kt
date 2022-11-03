@@ -59,6 +59,11 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
 
             Spacer(modifier = Modifier.height(32.dp))
 
+            val pinEntryFieldDescription = stringResource(
+                id = R.string.firstTimeUser_personalPIN_textFieldLabel_first,
+                viewModel.pin.map { "$it " }
+            )
+
             PINEntryField(
                 value = viewModel.pin,
                 digitCount = 6,
@@ -66,7 +71,7 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
                 spacerPosition = 3,
                 onValueChanged = viewModel::userInputPIN,
                 onDone = viewModel::onDonePressed,
-                contentDescription = "",
+                contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequesterPIN,
                 backgroundColor = Gray300,
                 modifier = Modifier
