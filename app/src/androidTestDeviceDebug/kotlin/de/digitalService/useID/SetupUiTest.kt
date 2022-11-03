@@ -91,7 +91,6 @@ class SetupUiTest {
         val choosePersonalPinButton = composeTestRule.activity.getString(R.string.firstTimeUser_personalPINIntro_continue)
         composeTestRule.onNodeWithText(choosePersonalPinButton).performClick()
 
-        composeTestRule.onNodeWithTag(pinEntryFieldTag).assertIsFocused()
         composeTestRule.onNodeWithTag(pinEntryFieldTag).performTextInput("123456")
         composeTestRule.onAllNodesWithTag("Obfuscation").assertCountEquals(6)
         composeTestRule.onNodeWithTag(pinEntryFieldTag).performImeAction()

@@ -41,8 +41,6 @@ class SetupPersonalPinInputTest {
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
 
         val pinEntryTextFieldTag = "PINEntryField"
-        composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
-
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("1")
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12")
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("123")

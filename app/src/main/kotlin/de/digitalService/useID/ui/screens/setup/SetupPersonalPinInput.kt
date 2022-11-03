@@ -23,6 +23,7 @@ import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @Destination
@@ -31,16 +32,17 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
     ScreenWithTopBar(
         navigationButton = NavigationButton(NavigationIcon.Back, viewModel::onNavigationButtonTapped)
     ) {
-        val focusRequesterPIN = remember { FocusRequester() }
-
-        LaunchedEffect(Unit) {
-            focusRequesterPIN.requestFocus()
-        }
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(top = it, start = 16.dp, end = 16.dp)
         ) {
+            val focusRequesterPIN = remember { FocusRequester() }
+
+            LaunchedEffect(Unit) {
+                delay(400)
+                focusRequesterPIN.requestFocus()
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
@@ -103,7 +105,9 @@ class SetupPersonalPinInputViewModel @Inject constructor(
         }
     }
 
-    override fun onNavigationButtonTapped() = setupCoordinator.onBackTapped()
+    override fun onNavigationButtonTapped() {
+        setupCoordinator.onBackTapped()
+    }
 }
 
 private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewModelInterface {
