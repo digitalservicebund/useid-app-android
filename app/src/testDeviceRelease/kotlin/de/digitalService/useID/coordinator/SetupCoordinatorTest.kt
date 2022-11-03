@@ -63,20 +63,58 @@ class SetupCoordinatorTest {
 
         setupCoordinator.onPersonalPINIntroFinished()
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINDestination) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinInputDestination) }
     }
 
     @Test
-    fun onPersonalPINEntered() {
+    fun onPersonalPINInsert() {
         val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         Assertions.assertNull(setupCoordinator.personalPin)
 
-        setupCoordinator.onPersonalPINEntered(testPin)
+        setupCoordinator.onPersonalPinInput(testPin)
+
+        Assertions.assertNull(setupCoordinator.personalPin)
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+    }
+
+    @Test
+    fun onPersonalPINRepeat() {
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+
+        Assertions.assertNull(setupCoordinator.personalPin)
+
+        setupCoordinator.onPersonalPinConfirm(testPin)
+
+        Assertions.assertNull(setupCoordinator.personalPin)
+        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+        verify(exactly = 0) { mockAppCoordinator.startNFCTagHandling() }
+    }
+
+    @Test
+    fun onPersonalPINInputAndConfirm() {
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+
+        Assertions.assertNull(setupCoordinator.personalPin)
+
+        setupCoordinator.onPersonalPinInput(testPin)
+        setupCoordinator.onPersonalPinConfirm(testPin)
 
         Assertions.assertEquals(testPin, setupCoordinator.personalPin)
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupScanDestination) }
         verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+    }
+
+    @Test
+    fun onPersonalPinErrorTryAgain() {
+        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+
+        Assertions.assertNull(setupCoordinator.personalPin)
+
+        setupCoordinator.onPersonalPinErrorTryAgain()
+
+        Assertions.assertNull(setupCoordinator.personalPin)
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinInputDestination) }
     }
 
     @Test
