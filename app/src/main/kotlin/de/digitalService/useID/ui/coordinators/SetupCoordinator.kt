@@ -17,6 +17,8 @@ class SetupCoordinator @Inject constructor(
     var personalPin: String? = null
         private set
 
+    private var insertedPersonalPin: String? = null
+
     fun setTCTokenURL(tcTokenURL: String) {
         this.tcTokenURL = tcTokenURL
     }
@@ -45,10 +47,22 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onPersonalPINIntroFinished() {
-        appCoordinator.navigate(SetupPersonalPINDestination)
+        appCoordinator.navigate(SetupPersonalPinInputDestination(false))
     }
 
-    fun onPersonalPINEntered(newPersonalPin: String) {
+    fun onPersonalPinInput(newPersonalPin: String) {
+        insertedPersonalPin = newPersonalPin
+
+        appCoordinator.navigate(SetupPersonalPinConfirmDestination)
+    }
+
+    fun onPersonalPinConfirm(newPersonalPin: String) {
+        if (insertedPersonalPin != newPersonalPin) {
+            insertedPersonalPin = null
+            appCoordinator.navigate(SetupPersonalPinInputDestination(true))
+            return
+        }
+
         personalPin = newPersonalPin
         appCoordinator.navigate(SetupScanDestination)
         appCoordinator.startNFCTagHandling()

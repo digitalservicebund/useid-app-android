@@ -2,7 +2,9 @@ package de.digitalService.useID.ui
 
 import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
@@ -44,7 +46,8 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
             SetupResetPersonalPINDestination.route -> firstTimeUserRoute("missingPINLetter")
             SetupTransportPINDestination.route -> firstTimeUserRoute("transportPIN")
             SetupPersonalPINIntroDestination.route -> firstTimeUserRoute("personalPINIntro")
-            SetupPersonalPINDestination.route -> firstTimeUserRoute("personalPIN")
+            SetupPersonalPinInputDestination.route -> firstTimeUserRoute("personalPINInput")
+            SetupPersonalPinConfirmDestination.route -> firstTimeUserRoute("personalPINConfirm")
             SetupScanDestination.route -> firstTimeUserRoute("scan")
             SetupFinishDestination.route -> firstTimeUserRoute("done")
 
@@ -111,7 +114,10 @@ private class PreviewAppCoordinator(
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun PreviewNfc() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false), PreviewTrackerManager())
+    UseIDApp(
+        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false),
+        PreviewTrackerManager()
+    )
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
@@ -125,5 +131,8 @@ private fun PreviewNoNfc() {
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun PreviewNfcDeactivated() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false), PreviewTrackerManager())
+    UseIDApp(
+        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false),
+        PreviewTrackerManager()
+    )
 }
