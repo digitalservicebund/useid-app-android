@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.components.pin
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -59,6 +60,7 @@ fun PINEntryField(
                 this.contentDescription = contentDescription
                 stateDescription = value.replace(".".toRegex(), "$0 ") + cursorPositionDescription
             }
+            .focusable(false)
     ) {
         BasicTextField(
             value = textFieldValueState,
@@ -88,10 +90,7 @@ fun PINEntryField(
                 .focusRequester(focusRequester)
                 .clipToBounds()
                 .testTag("PINEntryField")
-                .semantics(mergeDescendants = true) {
-                    this.contentDescription = contentDescription
-                    stateDescription = value.replace(".".toRegex(), "$0 ") + cursorPositionDescription
-                }
+                .focusable(false)
         )
 
         PINDigitRow(
@@ -100,7 +99,9 @@ fun PINEntryField(
             obfuscation = obfuscation,
             placeholder = false,
             spacerPosition = spacerPosition,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier
+                .align(Alignment.Center)
+                .focusable(false)
         )
     }
 }

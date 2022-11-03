@@ -16,6 +16,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -42,7 +44,7 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(10.dp)
-                        .testTag("Obfuscation")
+                        .clearAndSetSemantics { testTag = "Obfuscation" }
                 )
             } else {
                 val textStyle = MaterialTheme.typography.titleLarge
@@ -54,7 +56,7 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                     fontSize = fontSizeDp,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .testTag("PINEntry")
+                        .clearAndSetSemantics { testTag = "PINEntry" }
                 )
             }
         } else if (placeholder) {
@@ -64,7 +66,7 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(10.dp)
-                    .testTag("Placeholder")
+                    .clearAndSetSemantics { testTag = "Placeholder" }
             )
         }
     }
