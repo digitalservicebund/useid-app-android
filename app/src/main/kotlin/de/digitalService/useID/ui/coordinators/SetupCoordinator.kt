@@ -47,7 +47,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onPersonalPINIntroFinished() {
-        appCoordinator.navigate(SetupPersonalPinInputDestination(false))
+        appCoordinator.navigate(SetupPersonalPinInputDestination)
     }
 
     fun onPersonalPinInput(newPersonalPin: String) {
@@ -56,16 +56,20 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.navigate(SetupPersonalPinConfirmDestination)
     }
 
-    fun onPersonalPinConfirm(newPersonalPin: String) {
-        if (insertedPersonalPin != newPersonalPin) {
-            insertedPersonalPin = null
-            appCoordinator.navigate(SetupPersonalPinInputDestination(true))
-            return
+    fun onPersonalPinConfirm(newPersonalPin: String): Boolean {
+        if (insertedPersonalPin == newPersonalPin) {
+            personalPin = newPersonalPin
+            appCoordinator.navigate(SetupScanDestination)
+            appCoordinator.startNFCTagHandling()
+            return true
         }
 
-        personalPin = newPersonalPin
-        appCoordinator.navigate(SetupScanDestination)
-        appCoordinator.startNFCTagHandling()
+        return false
+    }
+
+    fun onPersonalPinErrorTryAgain() {
+        insertedPersonalPin = null
+        appCoordinator.navigate(SetupPersonalPinInputDestination)
     }
 
     fun onSettingPINSucceeded() {
