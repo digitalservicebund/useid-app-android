@@ -94,6 +94,10 @@ class SetupPersonalPinConfirmViewModelTest {
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
         verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
+
+        viewModel.onDonePressed()
+        verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
+        verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
     }
 
     @Test
