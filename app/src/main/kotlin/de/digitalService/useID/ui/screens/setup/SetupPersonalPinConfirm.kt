@@ -40,6 +40,7 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
             val focusRequesterPIN = remember { FocusRequester() }
 
             LaunchedEffect(Unit) {
+                viewModel.onInitialize()
                 focusRequesterPIN.requestFocus()
             }
 
@@ -102,6 +103,7 @@ interface SetupPersonalPinConfirmViewModelInterface {
     val pin: String
     val shouldShowError: Boolean
 
+    fun onInitialize()
     fun userInputPIN(value: String)
     fun onDonePressed()
     fun onErrorDialogButtonPressed()
@@ -114,6 +116,10 @@ class SetupPersonalPinConfirmViewModel @Inject constructor(
 ) : ViewModel(), SetupPersonalPinConfirmViewModelInterface {
     override var pin: String by mutableStateOf("")
     override var shouldShowError: Boolean by mutableStateOf(false)
+
+    override fun onInitialize() {
+        pin = ""
+    }
 
     override fun userInputPIN(value: String) {
         if (!value.isDigitsOnly()) {
@@ -142,6 +148,7 @@ private class PreviewSetupPersonalPinConfirmViewModel : SetupPersonalPinConfirmV
     override val pin: String = ""
     override val shouldShowError: Boolean = false
 
+    override fun onInitialize() {}
     override fun userInputPIN(value: String) {}
     override fun onDonePressed() {}
     override fun onErrorDialogButtonPressed() {}

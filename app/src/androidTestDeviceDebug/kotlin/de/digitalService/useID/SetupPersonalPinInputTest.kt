@@ -37,6 +37,9 @@ class SetupPersonalPinInputTest {
             SetupPersonalPinInput(viewModel = mockViewModel)
         }
 
+        composeTestRule.waitForIdle()
+        verify(exactly = 1) { mockViewModel.onInitialize() }
+
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
 
@@ -70,6 +73,9 @@ class SetupPersonalPinInputTest {
         composeTestRule.activity.setContent {
             SetupPersonalPinInput(viewModel = mockViewModel)
         }
+
+        composeTestRule.waitForIdle()
+        verify(exactly = 1) { mockViewModel.onInitialize() }
 
         val pinTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_title)
         composeTestRule.onNodeWithText(pinTitleText).assertIsDisplayed()

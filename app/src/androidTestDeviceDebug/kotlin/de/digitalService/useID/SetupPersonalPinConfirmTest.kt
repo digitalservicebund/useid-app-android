@@ -37,6 +37,9 @@ class SetupPersonalPinConfirmTest {
             SetupPersonalPinConfirm(viewModel = mockViewModel)
         }
 
+        composeTestRule.waitForIdle()
+        verify(exactly = 1) { mockViewModel.onInitialize() }
+
         val pinTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_title)
         composeTestRule.onNodeWithText(pinTitleText).assertIsDisplayed()
 
@@ -74,6 +77,9 @@ class SetupPersonalPinConfirmTest {
         composeTestRule.activity.setContent {
             SetupPersonalPinConfirm(viewModel = mockViewModel)
         }
+
+        composeTestRule.waitForIdle()
+        verify(exactly = 1) { mockViewModel.onInitialize() }
 
         val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
@@ -124,6 +130,9 @@ class SetupPersonalPinConfirmTest {
         composeTestRule.activity.setContent {
             SetupPersonalPinConfirm(viewModel = mockViewModel)
         }
+
+        composeTestRule.waitForIdle()
+        verify(exactly = 1) { mockViewModel.onInitialize() }
 
         val errorDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_error_mismatch_title)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertIsDisplayed()

@@ -39,6 +39,7 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
             val focusRequesterPIN = remember { FocusRequester() }
 
             LaunchedEffect(Unit) {
+                viewModel.onInitialize()
                 delay(400)
                 focusRequesterPIN.requestFocus()
             }
@@ -85,6 +86,7 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
 interface SetupPersonalPinInputViewModelInterface {
     val pin: String
 
+    fun onInitialize()
     fun onDonePressed()
     fun userInputPIN(value: String)
     fun onNavigationButtonTapped()
@@ -95,6 +97,10 @@ class SetupPersonalPinInputViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), SetupPersonalPinInputViewModelInterface {
     override var pin: String by mutableStateOf("")
+
+    override fun onInitialize() {
+        pin = ""
+    }
 
     override fun userInputPIN(value: String) {
         if (!value.isDigitsOnly()) {
@@ -117,6 +123,7 @@ class SetupPersonalPinInputViewModel @Inject constructor(
 
 private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewModelInterface {
     override val pin: String = ""
+    override fun onInitialize() {}
     override fun onDonePressed() {}
     override fun userInputPIN(value: String) {}
     override fun onNavigationButtonTapped() {}
