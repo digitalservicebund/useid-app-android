@@ -69,7 +69,7 @@ class SetupCoordinator @Inject constructor(
 
     fun onPersonalPinErrorTryAgain() {
         insertedPersonalPin = null
-        appCoordinator.navigate(SetupPersonalPinInputDestination)
+        appCoordinator.pop()
     }
 
     fun onSettingPINSucceeded() {

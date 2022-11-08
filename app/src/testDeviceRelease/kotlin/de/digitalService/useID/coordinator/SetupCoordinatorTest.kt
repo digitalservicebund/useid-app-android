@@ -114,7 +114,7 @@ class SetupCoordinatorTest {
         setupCoordinator.onPersonalPinErrorTryAgain()
 
         Assertions.assertNull(setupCoordinator.personalPin)
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinInputDestination) }
+        verify(exactly = 1) { mockAppCoordinator.pop() }
     }
 
     @Test
