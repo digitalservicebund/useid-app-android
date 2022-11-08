@@ -64,7 +64,7 @@
     <string name="cardAttribute_restrictedIdentification">Provider and card-specific identifier</string>
     <string name="firstTimeUser_confirmEnd_confirm">Exit</string>
     <string name="firstTimeUser_confirmEnd_deny">Cancel</string>
-    <string name="firstTimeUser_confirmEnd_message">Do you want to cancel the setup of the online ID card function\?
+    <string name="firstTimeUser_confirmEnd_message">Do you want to cancel the setup of the online ID card function\? 
 \n
 \nYou can restart the setup later.</string>
     <string name="firstTimeUser_confirmEnd_title">End setup?</string>
