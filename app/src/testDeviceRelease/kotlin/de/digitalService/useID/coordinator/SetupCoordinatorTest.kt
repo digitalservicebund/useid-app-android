@@ -74,7 +74,7 @@ class SetupCoordinatorTest {
 
         setupCoordinator.onPersonalPinInput(testPin)
 
-        Assertions.assertNull(setupCoordinator.personalPin)
+        Assertions.assertEquals(testPin, setupCoordinator.personalPin)
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
     }
 
@@ -101,7 +101,7 @@ class SetupCoordinatorTest {
         setupCoordinator.confirmPersonalPin(testPin)
 
         Assertions.assertEquals(testPin, setupCoordinator.personalPin)
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupScanDestination) }
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
         verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
     }
 

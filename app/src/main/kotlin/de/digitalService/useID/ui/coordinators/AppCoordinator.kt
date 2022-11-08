@@ -32,6 +32,7 @@ interface AppCoordinatorType {
     fun handleDeepLink(uri: Uri)
     fun startNFCTagHandling()
     fun stopNFCTagHandling()
+    fun navigatePopping(route: Direction)
 }
 
 @Singleton
@@ -54,6 +55,12 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun navigate(route: Direction) = navController.navigate(route)
+
+    override fun navigatePopping(route: Direction) {
+        navController.navigate(route) {
+            pop()
+        }
+    }
 
     override fun pop() {
         navController.popBackStack()

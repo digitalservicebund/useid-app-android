@@ -59,7 +59,8 @@ class SetupCoordinator @Inject constructor(
     fun confirmPersonalPin(newPersonalPin: String): Boolean {
         if (insertedPersonalPin == newPersonalPin) {
             personalPin = newPersonalPin
-            appCoordinator.navigate(SetupScanDestination)
+
+            appCoordinator.navigatePopping(SetupScanDestination)
             appCoordinator.startNFCTagHandling()
             return true
         }

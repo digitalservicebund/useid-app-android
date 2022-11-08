@@ -108,6 +108,7 @@ private class PreviewAppCoordinator(
     override fun handleDeepLink(uri: Uri) {}
     override fun startNFCTagHandling() {}
     override fun stopNFCTagHandling() {}
+    override fun navigatePopping(route: Direction) {}
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
