@@ -57,14 +57,6 @@ fun IdentificationScan(
         ScanScreen(
             title = stringResource(id = R.string.identification_scan_title),
             body = stringResource(id = R.string.identification_scan_body),
-            errorState = viewModel.errorState,
-            onIncorrectPIN = { attempts ->
-                PINDialog(
-                    attempts = attempts,
-                    onCancel = { showCancelDialog = true },
-                    onNewPINEntered = viewModel::onNewPersonalPINEntered
-                )
-            },
             onHelpDialogShown = viewModel::onHelpButtonTapped,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)

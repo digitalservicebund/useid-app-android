@@ -1,23 +1,13 @@
 package de.digitalService.useID.ui.screens.setup
 
 import android.content.Context
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -36,11 +26,9 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
-import de.digitalService.useID.ui.theme.Blue600
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.annotation.Nullable
@@ -60,14 +48,6 @@ fun SetupScan(
         ScanScreen(
             title = stringResource(id = R.string.firstTimeUser_scan_title),
             body = stringResource(id = R.string.firstTimeUser_scan_body),
-            errorState = viewModel.errorState,
-            onIncorrectPIN = { attempts ->
-                TransportPINDialog(
-                    attempts = attempts,
-                    onCancel = viewModel::onCancelConfirm,
-                    onNewTransportPIN = { viewModel.onReEnteredTransportPIN(it, context) }
-                )
-            },
             onHelpDialogShown = viewModel::onHelpButtonTapped,
             onNfcDialogShown = viewModel::onNfcButtonTapped,
             showProgress = viewModel.shouldShowProgress,
@@ -80,75 +60,8 @@ fun SetupScan(
     }
 }
 
-@Composable
-private fun TransportPINDialog(
-    attempts: Int,
-    onCancel: () -> Unit,
-    onNewTransportPIN: (String) -> Unit
-) {
-    Dialog(
-        onDismissRequest = { },
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    ) {
-        var showCancelDialog by remember { mutableStateOf(false) }
-
-        ScreenWithTopBar(
-            navigationButton = NavigationButton(NavigationIcon.Cancel) { showCancelDialog = true },
-            modifier = Modifier.height(500.dp)
-        ) { topPadding ->
-            val focusManager = LocalFocusManager.current
-
-            SetupReEnterTransportPIN(
-                viewModel = SetupReEnterTransportPINViewModel(
-                    attempts,
-                    onNewTransportPIN
-                ),
-                modifier = Modifier.padding(top = topPadding)
-            )
-
-            LaunchedEffect(Unit) {
-                delay(100L) // Workaround for https://issuetracker.google.com/issues/204502668
-                focusManager.moveFocus(FocusDirection.Next)
-            }
-        }
-
-        if (showCancelDialog) {
-            AlertDialog(
-                onDismissRequest = { showCancelDialog = false },
-                properties = DialogProperties(),
-                title = {
-                    Text(
-                        text = stringResource(R.string.firstTimeUser_scan_cancelDialog_title),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                },
-                text = {
-                    Text(text = stringResource(R.string.firstTimeUser_scan_cancelDialog_body))
-                },
-                confirmButton = {
-                    TextButton(onClick = onCancel) {
-                        Text(
-                            text = stringResource(R.string.firstTimeUser_scan_cancelDialog_confirm),
-                            color = Blue600
-                        )
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showCancelDialog = false }) {
-                        Text(
-                            text = stringResource(R.string.firstTimeUser_scan_cancelDialog_dismiss),
-                            color = Blue600
-                        )
-                    }
-                }
-            )
-        }
-    }
-}
-
 interface SetupScanViewModelInterface {
     val shouldShowProgress: Boolean
-    val errorState: ScanError.IncorrectPIN?
 
     fun startSettingPIN(context: Context)
     fun onReEnteredTransportPIN(transportPIN: String, context: Context)
@@ -172,9 +85,6 @@ class SetupScanViewModel @Inject constructor(
     private var firstPINCallback: Boolean = true
 
     override var shouldShowProgress: Boolean by mutableStateOf(false)
-        private set
-
-    override var errorState: ScanError.IncorrectPIN? by mutableStateOf(null)
         private set
 
     private var cancelled = false
@@ -226,6 +136,7 @@ class SetupScanViewModel @Inject constructor(
         }
 
         cancelled = false
+        firstPINCallback = true
 
         viewModelCoroutineScope.launch {
             logger.debug("Starting PIN management flow.")
@@ -285,7 +196,10 @@ class SetupScanViewModel @Inject constructor(
                                 cancel()
                                 return@collect
                             }
-                            errorState = ScanError.IncorrectPIN(attempts)
+                            coordinator.onIncorrectTransportPIN(attempts)
+                            shouldShowProgress = false
+                            cancelled = true
+
                             trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
                             cancel()
                         }
@@ -317,7 +231,6 @@ class SetupScanViewModel @Inject constructor(
 
 class PreviewSetupScanViewModel(
     override val shouldShowProgress: Boolean,
-    override val errorState: ScanError.IncorrectPIN?
 ) :
     SetupScanViewModelInterface {
     override fun startSettingPIN(context: Context) {}
@@ -332,28 +245,6 @@ class PreviewSetupScanViewModel(
 @Composable
 fun PreviewSetupScanWithoutError() {
     UseIDTheme {
-        SetupScan(viewModel = PreviewSetupScanViewModel(false, errorState = null))
-    }
-}
-
-@Preview(device = Devices.PIXEL_3A, showSystemUi = true)
-@Preview(device = Devices.PIXEL_4_XL, showSystemUi = true)
-@Composable
-fun PreviewSetupScanInvalidTransportPIN() {
-    UseIDTheme {
-        SetupScan(viewModel = PreviewSetupScanViewModel(false, errorState = ScanError.IncorrectPIN(2)))
-    }
-}
-
-@Preview(device = Devices.PIXEL_3A)
-@Composable
-fun PreviewSetupScanWithError() {
-    UseIDTheme {
-        SetupScan(
-            viewModel = PreviewSetupScanViewModel(
-                false,
-                ScanError.IncorrectPIN(2)
-            )
-        )
+        SetupScan(viewModel = PreviewSetupScanViewModel(false))
     }
 }

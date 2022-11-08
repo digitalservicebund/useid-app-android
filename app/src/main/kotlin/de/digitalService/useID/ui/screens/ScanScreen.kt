@@ -34,8 +34,6 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 fun ScanScreen(
     title: String,
     body: String,
-    errorState: ScanError.IncorrectPIN?,
-    onIncorrectPIN: @Composable (Int) -> Unit,
     showProgress: Boolean,
     modifier: Modifier = Modifier,
     onHelpDialogShown: () -> Unit = { },
@@ -45,10 +43,6 @@ fun ScanScreen(
     var whatIsNfcDialogShown by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-
-    errorState?.let { error ->
-        onIncorrectPIN(error.attempts)
-    }
 
     Column(
         modifier = modifier
@@ -201,8 +195,6 @@ private fun PreviewWithoutProgress() {
         ScanScreen(
             title = "Title",
             body = "Body",
-            errorState = null,
-            onIncorrectPIN = { },
             showProgress = false
         )
     }
@@ -215,8 +207,6 @@ private fun PreviewWithProgress() {
         ScanScreen(
             title = "Title",
             body = "Body",
-            errorState = null,
-            onIncorrectPIN = { },
             showProgress = true
         )
     }
@@ -229,8 +219,6 @@ private fun PreviewWithError() {
         ScanScreen(
             title = "Title",
             body = "Body",
-            errorState = ScanError.IncorrectPIN(2),
-            onIncorrectPIN = { },
             showProgress = false
         )
     }

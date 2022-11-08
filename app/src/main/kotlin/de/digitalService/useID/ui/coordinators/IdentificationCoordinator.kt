@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.runtime.compositionLocalOf
 import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.analytics.IssueTrackerManagerType
@@ -51,6 +52,8 @@ class IdentificationCoordinator @Inject constructor(
     private var reachedScanState = false
     private var listenToEvents = false
 
+    private var incorrectPin: Boolean = false
+
     fun startIdentificationProcess(tcTokenURL: String) {
         logger.debug("Start identification process.")
         idCardManager.cancelTask()
@@ -72,6 +75,10 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     fun onPINEntered(pin: String) {
+        if (incorrectPin) {
+            appCoordinator.pop()
+        }
+
         val pinCallback = pinCallback ?: run {
             logger.error("Cannot process PIN because there isn't any pin callback saved.")
             return
@@ -79,6 +86,12 @@ class IdentificationCoordinator @Inject constructor(
         logger.debug("Executing PIN callback.")
         pinCallback(pin)
         this.pinCallback = null
+        incorrectPin = false
+    }
+
+    private fun onIncorrectPersonalPIN(attempts: Int) {
+        incorrectPin = true
+        navigateOnMain(IdentificationPersonalPINDestination(attempts))
     }
 
     fun cancelIdentification() {
@@ -90,6 +103,7 @@ class IdentificationCoordinator @Inject constructor(
             _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
         }
         reachedScanState = false
+        incorrectPin = false
         idCardManager.cancelTask()
     }
 
@@ -102,6 +116,7 @@ class IdentificationCoordinator @Inject constructor(
             _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
         }
         reachedScanState = false
+        incorrectPin = false
         trackerManager.trackEvent(category = "identification", action = "success", name = "")
     }
 
@@ -199,10 +214,11 @@ class IdentificationCoordinator @Inject constructor(
 
                         if (event.attempts == null) {
                             logger.debug("PIN request without attempts")
-                            navigateOnMain(IdentificationPersonalPINDestination)
+                            navigateOnMain(IdentificationPersonalPINDestination(null))
                         } else {
                             logger.debug("PIN request with ${event.attempts} attempts")
-                            _scanEventFlow.emit(ScanEvent.Error(ScanError.IncorrectPIN(attempts = event.attempts)))
+                            onIncorrectPersonalPIN(event.attempts)
+                            _scanEventFlow.emit(ScanEvent.CardRequested)
                         }
                     }
                     is EIDInteractionEvent.RequestCAN -> {

@@ -10,6 +10,7 @@ class SetupCoordinator @Inject constructor(
     private val appCoordinator: AppCoordinator
 ) {
     private var tcTokenURL: String? = null
+    private var incorrectTransportPin: Boolean = false
 
     var transportPin: String? = null
         private set
@@ -32,7 +33,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun setupWithPINLetter() {
-        appCoordinator.navigate(SetupTransportPINDestination)
+        appCoordinator.navigate(SetupTransportPINDestination(null))
     }
 
     fun setupWithoutPINLetter() {
@@ -41,7 +42,12 @@ class SetupCoordinator @Inject constructor(
 
     fun onTransportPINEntered(newTransportPin: String) {
         transportPin = newTransportPin
-        appCoordinator.navigate(SetupPersonalPINIntroDestination)
+        if (incorrectTransportPin) {
+            appCoordinator.pop()
+        } else {
+            appCoordinator.navigate(SetupPersonalPINIntroDestination)
+        }
+        incorrectTransportPin = false
     }
 
     fun onPersonalPINIntroFinished() {
@@ -68,6 +74,11 @@ class SetupCoordinator @Inject constructor(
     fun onPersonalPinErrorTryAgain() {
         personalPin = null
         appCoordinator.pop()
+    }
+
+    fun onIncorrectTransportPIN(attempts: Int) {
+        incorrectTransportPin = true
+        appCoordinator.navigate(SetupTransportPINDestination(attempts))
     }
 
     fun onSettingPINSucceeded() {
@@ -108,6 +119,7 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.stopNFCTagHandling()
         transportPin = null
         personalPin = null
+        incorrectTransportPin = false
         appCoordinator.popToRoot()
         tcTokenURL = null
     }
@@ -115,6 +127,7 @@ class SetupCoordinator @Inject constructor(
     private fun handleSetupEnded() {
         transportPin = null
         personalPin = null
+        incorrectTransportPin = false
 
         tcTokenURL?.let {
             appCoordinator.startIdentification(it)
