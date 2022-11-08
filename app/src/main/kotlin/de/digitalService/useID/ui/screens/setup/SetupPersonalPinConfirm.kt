@@ -125,7 +125,7 @@ class SetupPersonalPinConfirmViewModel @Inject constructor(
 
     override fun onDonePressed() {
         if (pin.length == 6) {
-            shouldShowError = !setupCoordinator.onPersonalPinConfirm(pin)
+            shouldShowError = !setupCoordinator.confirmPersonalPin(pin)
         }
     }
 

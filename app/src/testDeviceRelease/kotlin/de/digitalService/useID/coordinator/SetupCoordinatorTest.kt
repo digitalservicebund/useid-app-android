@@ -79,12 +79,12 @@ class SetupCoordinatorTest {
     }
 
     @Test
-    fun onPersonalPINRepeat() {
+    fun confirmPersonalPin() {
         val setupCoordinator = SetupCoordinator(mockAppCoordinator)
 
         Assertions.assertNull(setupCoordinator.personalPin)
 
-        setupCoordinator.onPersonalPinConfirm(testPin)
+        setupCoordinator.confirmPersonalPin(testPin)
 
         Assertions.assertNull(setupCoordinator.personalPin)
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
@@ -98,7 +98,7 @@ class SetupCoordinatorTest {
         Assertions.assertNull(setupCoordinator.personalPin)
 
         setupCoordinator.onPersonalPinInput(testPin)
-        setupCoordinator.onPersonalPinConfirm(testPin)
+        setupCoordinator.confirmPersonalPin(testPin)
 
         Assertions.assertEquals(testPin, setupCoordinator.personalPin)
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupScanDestination) }

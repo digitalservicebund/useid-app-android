@@ -31,7 +31,7 @@ class SetupPersonalPinConfirmViewModelTest {
     fun success() {
         val testValue = "123456"
 
-        every { mockCoordinator.onPersonalPinConfirm(testValue) } returns true
+        every { mockCoordinator.confirmPersonalPin(testValue) } returns true
 
         val viewModel = SetupPersonalPinConfirmViewModel(mockCoordinator)
 
@@ -43,7 +43,7 @@ class SetupPersonalPinConfirmViewModelTest {
         assertFalse(viewModel.shouldShowError)
 
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 0) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
 
         viewModel.onDonePressed()
 
@@ -51,14 +51,14 @@ class SetupPersonalPinConfirmViewModelTest {
         assertFalse(viewModel.shouldShowError)
 
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 1) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 1) { mockCoordinator.confirmPersonalPin(testValue) }
     }
 
     @Test
     fun shouldShowError() {
         val testValue = "123456"
 
-        every { mockCoordinator.onPersonalPinConfirm(testValue) } returns false
+        every { mockCoordinator.confirmPersonalPin(testValue) } returns false
 
         val viewModel = SetupPersonalPinConfirmViewModel(mockCoordinator)
 
@@ -70,7 +70,7 @@ class SetupPersonalPinConfirmViewModelTest {
         assertFalse(viewModel.shouldShowError)
 
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 0) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
 
         viewModel.onDonePressed()
 
@@ -78,7 +78,7 @@ class SetupPersonalPinConfirmViewModelTest {
         assertTrue(viewModel.shouldShowError)
 
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 1) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 1) { mockCoordinator.confirmPersonalPin(testValue) }
     }
 
     @Test
@@ -93,7 +93,7 @@ class SetupPersonalPinConfirmViewModelTest {
 
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 0) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
     }
 
     @Test
@@ -108,7 +108,7 @@ class SetupPersonalPinConfirmViewModelTest {
 
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 0) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
     }
 
     @ParameterizedTest
@@ -122,7 +122,7 @@ class SetupPersonalPinConfirmViewModelTest {
 
         assertEquals("", viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 0) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
     }
 
     @Test
@@ -138,7 +138,7 @@ class SetupPersonalPinConfirmViewModelTest {
 
         assertEquals("", viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
-        verify(exactly = 0) { mockCoordinator.onPersonalPinConfirm(testValue) }
+        verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
     }
 
     @Test

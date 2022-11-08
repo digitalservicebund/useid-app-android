@@ -56,7 +56,7 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.navigate(SetupPersonalPinConfirmDestination)
     }
 
-    fun onPersonalPinConfirm(newPersonalPin: String): Boolean {
+    fun confirmPersonalPin(newPersonalPin: String): Boolean {
         if (insertedPersonalPin == newPersonalPin) {
             personalPin = newPersonalPin
             appCoordinator.navigate(SetupScanDestination)
