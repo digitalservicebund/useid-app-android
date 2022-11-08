@@ -462,4 +462,5 @@
     <string name="identification_scan_cancelDialog_confirm">Exit</string>
     <string name="identification_scan_cancelDialog_dismiss">Cancel</string>
     <string name="firstTimeUser_personalPIN_confirmation_title">Confirm your personal PIN.</string>
+    <string name="pinEntryField_accessibility_cursorPosition">Cursor at position %1$d.</string>
 </resources>
