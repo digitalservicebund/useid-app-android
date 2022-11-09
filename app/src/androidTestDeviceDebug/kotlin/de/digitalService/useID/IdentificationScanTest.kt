@@ -32,37 +32,6 @@ class IdentificationScanTest {
     val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Test
-    fun enterPinDialogOpens() {
-        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns ScanError.IncorrectPIN(2)
-
-        composeTestRule.activity.setContent {
-            IdentificationScan(viewModel = mockViewModel)
-        }
-
-        val pinEntryTag = "PINEntryField"
-        composeTestRule.onNodeWithTag(pinEntryTag).assertIsDisplayed()
-
-        val cancelDialogTitle = composeTestRule.activity.getString(R.string.identification_scan_cancelDialog_title)
-        composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
-
-        val cancelButtonTag = "Cancel"
-        composeTestRule.onAllNodesWithTag(cancelButtonTag)[1].performClick()
-
-        composeTestRule.onNodeWithText(cancelDialogTitle).assertIsDisplayed()
-
-        val confirmButton = composeTestRule.activity.getString(R.string.identification_scan_cancelDialog_confirm)
-        composeTestRule.onNodeWithText(confirmButton).performClick()
-
-        verify(exactly = 1) { mockViewModel.onCancelIdentification() }
-
-        val dismissButton = composeTestRule.activity.getString(R.string.identification_scan_cancelDialog_dismiss)
-        composeTestRule.onNodeWithText(dismissButton).performClick()
-
-        composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
-    }
-
-    @Test
     fun noDialogIsOpen() {
         val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
         every { mockViewModel.errorState } returns null
@@ -114,7 +83,6 @@ class IdentificationScanTest {
     @Test
     fun whatIsNfcDialogOpen() {
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns null
 
         composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)

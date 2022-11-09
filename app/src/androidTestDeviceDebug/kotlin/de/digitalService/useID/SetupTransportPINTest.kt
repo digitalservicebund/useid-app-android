@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPIN
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPINViewModel
+import de.digitalService.useID.ui.screens.setup.SetupTransportPIN
+import de.digitalService.useID.ui.screens.setup.SetupTransportPINViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
@@ -18,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class IdentificationPersonalPinTest {
+class SetupTransportPINTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -34,16 +34,16 @@ class IdentificationPersonalPinTest {
         val testAttempts: Int? = null
         val testPinState = mutableStateOf("")
 
-        val testPinInput1 = "12345"
-        val testPinInput2 = "123456"
+        val testPinInput1 = "1234"
+        val testPinInput2 = "12345"
 
-        val mockViewModel: IdentificationPersonalPINViewModel = mockk(relaxed = true)
+        val mockViewModel: SetupTransportPINViewModel = mockk(relaxed = true)
 
-        every { mockViewModel.pin } answers { testPinState.value }
+        every { mockViewModel.transportPIN } answers { testPinState.value }
         every { mockViewModel.attempts } answers { testAttempts }
 
         composeTestRule.activity.setContent {
-            IdentificationPersonalPIN(viewModel = mockViewModel)
+            SetupTransportPIN(viewModel = mockViewModel)
         }
 
         val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(
@@ -54,7 +54,7 @@ class IdentificationPersonalPinTest {
         composeTestRule.onNodeWithText(quantityAttemptsString).assertDoesNotExist()
 
         val pinEntryTestTag = "PINDigitField"
-        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(6)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(5)
 
         composeTestRule.waitForIdle()
 
@@ -62,15 +62,15 @@ class IdentificationPersonalPinTest {
         composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput1)
         composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput2)
 
-        val obfuscationTestTag = "Obfuscation"
+        val obfuscationTestTag = "PINEntry"
         testPinState.value = testPinInput1
-        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(5)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(4)
 
         testPinState.value = testPinInput2
-        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(5)
 
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput1) }
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput2) }
+        verify(exactly = 1) { mockViewModel.onInputChanged(testPinInput1) }
+        verify(exactly = 1) { mockViewModel.onInputChanged(testPinInput2) }
     }
 
     @Test
@@ -78,16 +78,16 @@ class IdentificationPersonalPinTest {
         val testAttempts = 2
         val testPinState = mutableStateOf("")
 
-        val testPinInput1 = "12345"
-        val testPinInput2 = "123456"
+        val testPinInput1 = "1234"
+        val testPinInput2 = "12345"
 
-        val mockViewModel: IdentificationPersonalPINViewModel = mockk(relaxed = true)
+        val mockViewModel: SetupTransportPINViewModel = mockk(relaxed = true)
 
-        every { mockViewModel.pin } answers { testPinState.value }
+        every { mockViewModel.transportPIN } answers { testPinState.value }
         every { mockViewModel.attempts } answers { 2 }
 
         composeTestRule.activity.setContent {
-            IdentificationPersonalPIN(viewModel = mockViewModel)
+            SetupTransportPIN(viewModel = mockViewModel)
         }
 
         val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(
@@ -101,7 +101,7 @@ class IdentificationPersonalPinTest {
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
 
         val pinEntryTestTag = "PINDigitField"
-        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(6)
+        composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(5)
 
         composeTestRule.waitForIdle()
 
@@ -109,14 +109,14 @@ class IdentificationPersonalPinTest {
         composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput1)
         composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput2)
 
-        val obfuscationTestTag = "Obfuscation"
+        val obfuscationTestTag = "PINEntry"
         testPinState.value = testPinInput1
-        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(5)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(4)
 
         testPinState.value = testPinInput2
-        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
+        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(5)
 
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput1) }
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput2) }
+        verify(exactly = 1) { mockViewModel.onInputChanged(testPinInput1) }
+        verify(exactly = 1) { mockViewModel.onInputChanged(testPinInput2) }
     }
 }

@@ -1,13 +1,22 @@
 package de.digitalService.useID.viewModel
 
+import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.destinations.SetupTransportPINDestination
+import de.digitalService.useID.ui.screens.setup.SetupTransportPINNavArgs
 import de.digitalService.useID.ui.screens.setup.SetupTransportPINViewModel
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 @ExtendWith(MockKExtension::class)
 class SetupTransportPINViewModelTest {
@@ -15,14 +24,52 @@ class SetupTransportPINViewModelTest {
     @MockK(relaxUnitFun = true)
     lateinit var coordinatorMock: SetupCoordinator
 
+    @MockK(relaxUnitFun = true)
+    lateinit var mockSaveStateHandle: SavedStateHandle
+
+    private val mockNavArgs: SetupTransportPINNavArgs = mockk()
     private val defaultPin = ""
+
+    @BeforeEach
+    fun beforeEach() {
+        mockkObject(SetupTransportPINDestination)
+        every { SetupTransportPINDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
+
+        every { mockNavArgs.attempts } returns null
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = [0, 1, 2, 3, 5, 8, 13, -123])
+    fun readNavArgsCorrect_Ints(testValue: Int) {
+        every { mockNavArgs.attempts } returns testValue
+
+        val viewModel = SetupTransportPINViewModel(
+            coordinatorMock,
+            mockSaveStateHandle
+        )
+
+        Assertions.assertEquals(testValue, viewModel.attempts)
+    }
+
+    @Test
+    fun readNavArgsCorrect_Null() {
+        every { mockNavArgs.attempts } returns null
+
+        val viewModel = SetupTransportPINViewModel(
+            coordinatorMock,
+            mockSaveStateHandle
+        )
+
+        Assertions.assertNull(viewModel.attempts)
+    }
 
     @Test
     fun onInputChanged() {
         val testValue = "12345"
 
         val viewModel = SetupTransportPINViewModel(
-            coordinatorMock
+            coordinatorMock,
+            mockSaveStateHandle
         )
 
         viewModel.onInputChanged(testValue)
@@ -37,7 +84,8 @@ class SetupTransportPINViewModelTest {
         val testValue = "12345"
 
         val viewModel = SetupTransportPINViewModel(
-            coordinatorMock
+            coordinatorMock,
+            mockSaveStateHandle
         )
 
         viewModel.onInputChanged(testValue)
@@ -51,7 +99,8 @@ class SetupTransportPINViewModelTest {
     @Test
     fun onDoneTapped_NoPreviousInput() {
         val viewModel = SetupTransportPINViewModel(
-            coordinatorMock
+            coordinatorMock,
+            mockSaveStateHandle
         )
 
         viewModel.onDoneTapped()
@@ -66,7 +115,8 @@ class SetupTransportPINViewModelTest {
         val testValue = "1234"
 
         val viewModel = SetupTransportPINViewModel(
-            coordinatorMock
+            coordinatorMock,
+            mockSaveStateHandle
         )
 
         viewModel.onInputChanged(testValue)
@@ -82,7 +132,8 @@ class SetupTransportPINViewModelTest {
         val testValue = "123456"
 
         val viewModel = SetupTransportPINViewModel(
-            coordinatorMock
+            coordinatorMock,
+            mockSaveStateHandle
         )
 
         viewModel.onInputChanged(testValue)

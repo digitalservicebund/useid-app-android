@@ -1,12 +1,16 @@
 package de.digitalService.useID.coordinator
 
+import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.slot
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -16,7 +20,13 @@ class SetupCoordinatorTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockAppCoordinator: AppCoordinator
 
+    private val destinationSlot = slot<Direction>()
     private val testPin = "testPin"
+
+    @BeforeEach
+    fun beforeEach() {
+        every { mockAppCoordinator.navigate(capture(destinationSlot)) } returns Unit
+    }
 
     @Test
     fun startSetupIDCard() {
@@ -33,7 +43,10 @@ class SetupCoordinatorTest {
 
         setupCoordinator.setupWithPINLetter()
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupTransportPINDestination) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(SetupTransportPINDestination(null).route, navigationParameter.route)
     }
 
     @Test

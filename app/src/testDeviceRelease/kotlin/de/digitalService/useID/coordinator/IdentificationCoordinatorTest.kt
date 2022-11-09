@@ -3,14 +3,14 @@ package de.digitalService.useID.coordinator
 import android.content.Context
 import android.net.Uri
 import android.util.Base64
+import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination
+import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProvider
@@ -56,6 +56,8 @@ class IdentificationCoordinatorTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
 
+    private val destinationSlot = slot<Direction>()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
     fun setup() {
@@ -80,6 +82,8 @@ class IdentificationCoordinatorTest {
         every { mockUriBuilder.build() } returns mockedUri
 
         every { mockedUri.toString() } returns testURL
+
+        every { mockAppCoordinator.navigate(capture(destinationSlot)) } returns Unit
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -289,7 +293,11 @@ class IdentificationCoordinatorTest {
         testFlow.value = EIDInteractionEvent.RequestPIN(testValue) {}
         advanceUntilIdle()
 
-        Assertions.assertEquals(ScanEvent.Error(ScanError.IncorrectPIN(attempts = testValue)), results.get(1))
+        Assertions.assertEquals(ScanEvent.CardRequested, results[0])
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationPersonalPINDestination(testValue).route, navigationParameter.route)
 
         job.cancel()
     }
@@ -302,6 +310,7 @@ class IdentificationCoordinatorTest {
         every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
+
 
         val identificationCoordinator = IdentificationCoordinator(
             mockContext,
@@ -319,7 +328,11 @@ class IdentificationCoordinatorTest {
         testFlow.value = EIDInteractionEvent.RequestPIN(null) {}
         advanceUntilIdle()
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationPersonalPINDestination(null).route, navigationParameter.route)
+
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -461,7 +474,6 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationScanDestination) }
-        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
         verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
     }
 
@@ -571,7 +583,7 @@ class IdentificationCoordinatorTest {
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.CardDeactivated), results.get(0))
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationCardDeactivatedDestination) }
 
         job.cancel()
     }
@@ -618,6 +630,9 @@ class IdentificationCoordinatorTest {
 
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
 
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationCardUnreadableDestination(true, null).route, navigationParameter.route)
+
         job.cancel()
     }
 
@@ -660,7 +675,7 @@ class IdentificationCoordinatorTest {
             .onEach(results::add)
             .launchIn(CoroutineScope(dispatcher))
 
-        advanceTimeBy(100L)
+        advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.CardAttached, results.get(0))
 
@@ -670,6 +685,9 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(ScanEvent.Error(ScanError.CardErrorWithRedirect(redirectUrl)), results.last())
 
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationCardUnreadableDestination(true, redirectUrl).route, navigationParameter.route)
 
         job.cancel()
     }
@@ -810,6 +828,9 @@ class IdentificationCoordinatorTest {
 
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
 
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationOtherErrorDestination(testTokenURL).route, navigationParameter.route)
+
         scanJob.cancel()
         fetchJob.cancel()
     }
@@ -847,7 +868,6 @@ class IdentificationCoordinatorTest {
 
         Assertions.assertTrue(didCallCallback)
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
     }
 
@@ -885,7 +905,7 @@ class IdentificationCoordinatorTest {
 
         Assertions.assertEquals(1, callbackCalledCount)
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationPersonalPINDestination) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

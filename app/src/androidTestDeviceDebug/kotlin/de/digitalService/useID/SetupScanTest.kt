@@ -9,12 +9,10 @@ import androidx.compose.ui.test.performClick
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Rule
@@ -33,60 +31,8 @@ class SetupScanTest {
     val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Test
-    fun enterTransportPinDialogOpens() {
-        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns ScanError.IncorrectPIN(2)
-
-        composeTestRule.activity.setContent {
-            SetupScan(viewModel = mockViewModel)
-        }
-
-        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
-        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
-
-        val cancelDialogTitle = composeTestRule.activity.getString(R.string.firstTimeUser_scan_cancelDialog_title)
-        composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
-
-        val cancelButtonTag = "Cancel"
-        composeTestRule.onNodeWithTag(cancelButtonTag).performClick()
-
-        composeTestRule.onNodeWithText(cancelDialogTitle).assertIsDisplayed()
-
-        val confirmButton = composeTestRule.activity.getString(R.string.firstTimeUser_scan_cancelDialog_confirm)
-        composeTestRule.onNodeWithText(confirmButton).performClick()
-
-        verify(exactly = 1) { mockViewModel.onCancelConfirm() }
-
-        val dismissButton = composeTestRule.activity.getString(R.string.firstTimeUser_scan_cancelDialog_dismiss)
-        composeTestRule.onNodeWithText(dismissButton).performClick()
-
-        composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
-
-        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
-    }
-
-    @Test
-    fun noDialogIsOpen() {
-        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns null
-
-        composeTestRule.activity.setContent {
-            SetupScan(viewModel = mockViewModel)
-        }
-
-        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_transportPIN_title)
-        composeTestRule.onNodeWithText(transportPinDialogTitleText).assertDoesNotExist()
-
-        val errorDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_title_pin_suspended)
-        composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()
-
-        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
-    }
-
-    @Test
     fun whatIsNfcDialogOpen() {
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.errorState } returns null
 
         composeTestRule.activity.setContent {
             SetupScan(viewModel = mockViewModel)
