@@ -116,7 +116,6 @@ fun PreviewPreviewSetupScan() {
             PreviewSetupScanViewModel(PreviewTrackerManager(), IDCardManager()),
             object : SetupScanViewModelInterface {
                 override val shouldShowProgress: Boolean = false
-                override val errorState: ScanError.IncorrectPIN? = null
 
                 override fun startSettingPIN(context: Context) {}
                 override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}

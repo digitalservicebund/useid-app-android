@@ -196,9 +196,10 @@ class SetupScanViewModel @Inject constructor(
                                 cancel()
                                 return@collect
                             }
-                            coordinator.onIncorrectTransportPIN(attempts)
                             shouldShowProgress = false
                             cancelled = true
+
+                            coordinator.onIncorrectTransportPIN(attempts)
 
                             trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
                             cancel()
@@ -230,7 +231,7 @@ class SetupScanViewModel @Inject constructor(
 }
 
 class PreviewSetupScanViewModel(
-    override val shouldShowProgress: Boolean,
+    override val shouldShowProgress: Boolean
 ) :
     SetupScanViewModelInterface {
     override fun startSettingPIN(context: Context) {}

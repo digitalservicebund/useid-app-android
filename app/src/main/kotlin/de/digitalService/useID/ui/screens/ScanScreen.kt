@@ -24,7 +24,6 @@ import com.google.android.exoplayer2.Player.REPEAT_MODE_ONE
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import de.digitalService.useID.R
-import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.dialogs.WhatIsNfcDialog
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -139,7 +138,7 @@ fun ScanScreen(
         }
     }
 
-    AnimatedVisibility(visible = showProgress) {
+    if (showProgress) {
         Dialog(onDismissRequest = {}) {
             Box(
                 modifier = Modifier

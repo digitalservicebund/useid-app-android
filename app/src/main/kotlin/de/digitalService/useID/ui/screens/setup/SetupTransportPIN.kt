@@ -34,6 +34,7 @@ import de.digitalService.useID.ui.components.pin.TransportPINEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPINDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @Destination(navArgsDelegate = SetupTransportPINNavArgs::class)
@@ -52,11 +53,15 @@ fun SetupTransportPIN(
     }
 
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = icon, onClick = { if (viewModel.attempts == null) viewModel.onBackButtonTapped() else showCancelDialog = true })
+        navigationButton = NavigationButton(
+            icon = icon,
+            onClick = { if (viewModel.attempts == null) viewModel.onBackButtonTapped() else showCancelDialog = true }
+        )
     ) { topPadding ->
         val focusRequester = remember { FocusRequester() }
 
         LaunchedEffect(Unit) {
+            delay(100)
             focusRequester.requestFocus()
         }
 
@@ -202,7 +207,7 @@ class SetupTransportPINViewModel @Inject constructor(
 //region Preview
 private class PreviewSetupTransportPINViewModel(
     override val transportPIN: String,
-    override val attempts: Int?,
+    override val attempts: Int?
 ) : SetupTransportPINViewModelInterface {
     override fun onInputChanged(value: String) {}
     override fun onDoneTapped() {}

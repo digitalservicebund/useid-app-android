@@ -24,7 +24,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PINEntryField
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.screens.destinations.SetupTransportPINDestination
+import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
 import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
@@ -51,6 +51,7 @@ fun IdentificationPersonalPIN(
     ) { topPadding ->
         val focusRequester = remember { FocusRequester() }
         LaunchedEffect(Unit) {
+            delay(100)
             focusRequester.requestFocus()
         }
 
@@ -90,7 +91,6 @@ fun IdentificationPersonalPIN(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-
                     Text(
                         stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title),
                         color = MaterialTheme.colorScheme.error,
@@ -148,7 +148,7 @@ class IdentificationPersonalPINViewModel @Inject constructor(
     override val attempts: Int?
 
     init {
-        attempts = SetupTransportPINDestination.argsFrom(savedStateHandle).attempts
+        attempts = IdentificationPersonalPINDestination.argsFrom(savedStateHandle).attempts
     }
 
     override fun userInputPIN(value: String) {

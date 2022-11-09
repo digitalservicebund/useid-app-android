@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
 import android.net.Uri
-import androidx.compose.runtime.compositionLocalOf
 import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.analytics.IssueTrackerManagerType
@@ -217,8 +216,8 @@ class IdentificationCoordinator @Inject constructor(
                             navigateOnMain(IdentificationPersonalPINDestination(null))
                         } else {
                             logger.debug("PIN request with ${event.attempts} attempts")
-                            onIncorrectPersonalPIN(event.attempts)
                             _scanEventFlow.emit(ScanEvent.CardRequested)
+                            onIncorrectPersonalPIN(event.attempts)
                         }
                     }
                     is EIDInteractionEvent.RequestCAN -> {
