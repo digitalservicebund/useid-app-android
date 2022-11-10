@@ -20,6 +20,7 @@ fun IdentificationOtherError(viewModel: IdentificationOtherErrorViewModel = hilt
         titleResId = R.string.scanError_unknown_title,
         bodyResId = R.string.scanError_unknown_body,
         buttonTitleResId = R.string.identification_fetchMetadataError_retry,
+        confirmNavigationButtonDialog = true,
         onNavigationButtonTapped = viewModel::onCancelButtonPressed,
         onButtonTapped = viewModel::onRetryButtonPressed
     )
