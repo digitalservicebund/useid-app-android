@@ -1,7 +1,6 @@
 package de.digitalService.useID.ui.screens.setup
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -12,9 +11,7 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.BundButtonConfig
-import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.StandardStaticComposition
+import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
@@ -30,7 +27,10 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 
     val buttonConfig = BundButtonConfig(buttonLabelStringId, viewModel::onButtonTapped)
 
-    ScreenWithTopBar { topPadding ->
+    val navigationButton = NavigationButton(NavigationIcon.Cancel, onClick = viewModel::onButtonTapped)
+        .takeIf { viewModel.identificationPending() }
+
+    ScreenWithTopBar(navigationButton = navigationButton) { topPadding ->
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_done_title),
             body = null,
