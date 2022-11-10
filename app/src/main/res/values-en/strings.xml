@@ -75,9 +75,9 @@
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">You have no more attempts.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Entered incorrect transport PIN.</string>
-    <string name="firstTimeUser_intro_body">In the setup, you set your personal 6-digit ID PIN.</string>
+    <string name="firstTimeUser_intro_body">In the setup, you set your personal 6-digit ID PIN.</string>
     <string name="firstTimeUser_intro_startSetup">Set up online ID card now</string>
-    <string name="firstTimeUser_intro_title">Have you already set up your online ID card?</string>
+    <string name="firstTimeUser_intro_title">Have you already set up your online ID card\?</string>
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
     <string name="firstTimeUser_missingPINLetter_body">We are still working on this feature.
 \n
@@ -85,20 +85,20 @@
 \n
 \n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
     <string name="firstTimeUser_missingPINLetter_title">Order PIN reset letter.</string>
-    <string name="firstTimeUser_personalPIN_body">Do not use your birthday as your personal ID PIN. Assign a PIN that is not easy to guess.</string>
+    <string name="firstTimeUser_personalPIN_body">Do not use your birthday as your PIN. Assign a PIN that is not easy to guess.</string>
     <string name="firstTimeUser_personalPIN_confirmation">Repeat PIN to confirm</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_body">Try again.</string>
     <string name="firstTimeUser_personalPIN_error_mismatch_title">PINs do not match</string>
     <string name="firstTimeUser_personalPIN_textFieldLabel_first">Personal PIN input field, six digits</string>
     <string name="firstTimeUser_personalPIN_textFieldLabel_second">Confirm personal PIN input field, six digits</string>
-    <string name="firstTimeUser_personalPIN_title">Now assign your personal ID PIN.</string>
+    <string name="firstTimeUser_personalPIN_title">Now assign your personal ID PIN.</string>
     <string name="firstTimeUser_personalPINIntro_continue">Assign personal ID PIN</string>
     <string name="firstTimeUser_personalPINIntro_info_body">You will need this every time you use the online ID function in the future.</string>
     <string name="firstTimeUser_personalPINIntro_info_title">Remember your personal ID PIN</string>
     <string name="firstTimeUser_personalPINIntro_title">Now assign your personal ID PIN.</string>
     <string name="firstTimeUser_pinLetter_body">You received the PIN letter by regular mail after applying for the ID card.</string>
     <string name="firstTimeUser_pinLetter_requestLetter">No, order PIN reset letter</string>
-    <string name="firstTimeUser_pinLetter_title">Do you still have your PIN letter?</string>
+    <string name="firstTimeUser_pinLetter_title">Do you still have your PIN letter\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Yes, the PIN letter is available</string>
     <string name="firstTimeUser_scan_body">Almost there! The app uses NFC sensors in the smartphone and ID card to transfer your new PIN to the ID card.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
@@ -108,9 +108,9 @@
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blocked</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspended</string>
     <string name="firstTimeUser_scan_title">Hold your ID close to the top back side of the smartphone.</string>
-    <string name="firstTimeUser_transportPIN_body">Enter your 5-digit transport PIN from the PIN letter.</string>
+    <string name="firstTimeUser_transportPIN_body">You will find the 5-digit transport PIN in your PIN letter.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Transport PIN input field, five digits</string>
-    <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
+    <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
     <string name="helpNFC_title">How the NFC technology works</string>
     <string name="home_header_body">Open the website of the provider on your smartphone and press the button “Mit BundesIdent ausweisen”.</string>
@@ -461,6 +461,6 @@
     <string name="identification_scan_cancelDialog_body">Do you want to stop the identification process?</string>
     <string name="identification_scan_cancelDialog_confirm">Exit</string>
     <string name="identification_scan_cancelDialog_dismiss">Cancel</string>
-    <string name="firstTimeUser_personalPIN_confirmation_title">Confirm your personal PIN.</string>
+    <string name="firstTimeUser_personalPIN_confirmation_title">Confirm your personal ID PIN.</string>
     <string name="pinEntryField_accessibility_cursorPosition">Cursor at position %1$d.</string>
 </resources>
