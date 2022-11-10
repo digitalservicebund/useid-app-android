@@ -39,7 +39,7 @@ class IdentificationOtherErrorViewModel @Inject constructor(
     }
 
     fun onRetryButtonPressed() {
-        appCoordinator.startIdentification(tcTokenURL)
+        appCoordinator.startIdentification(tcTokenURL, identificationCoordinator.didSetup)
     }
 
     fun onCancelButtonPressed() {

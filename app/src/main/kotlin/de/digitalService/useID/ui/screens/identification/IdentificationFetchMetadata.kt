@@ -37,7 +37,8 @@ fun IdentificationFetchMetadata(
 ) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
-            icon = NavigationIcon.Cancel,
+            icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
+            shouldShowConfirmDialog = !viewModel.didSetup,
             onClick = viewModel::onCancelButtonTapped
         )
     ) { topPadding ->
@@ -82,7 +83,8 @@ fun IdentificationFetchMetadata(
 }
 
 data class IdentificationFetchMetadataNavArgs(
-    val tcTokenURL: String
+    val tcTokenURL: String,
+    val didSetup: Boolean
 )
 
 enum class FetchMetadataEvent {
@@ -94,6 +96,7 @@ interface IdentificationFetchMetadataViewModelInterface {
 
     fun fetchMetadata()
     fun onCancelButtonTapped()
+    val didSetup: Boolean
 }
 
 @HiltViewModel
@@ -104,18 +107,22 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     override var shouldShowProgressIndicator: Boolean by mutableStateOf(false)
         private set
 
+    override val didSetup: Boolean
     private val tcTokenURL: String
 
     init {
         tcTokenURL = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).tcTokenURL
+        didSetup = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).didSetup
         collectFetchMetadataEvents()
     }
 
     override fun fetchMetadata() {
-        coordinator.startIdentificationProcess(tcTokenURL)
+        coordinator.startIdentificationProcess(tcTokenURL, didSetup)
     }
 
-    override fun onCancelButtonTapped() = coordinator.cancelIdentification()
+    override fun onCancelButtonTapped() {
+        coordinator.cancelIdentification()
+    }
 
     private fun collectFetchMetadataEvents() {
         viewModelScope.launch {
@@ -135,6 +142,7 @@ class PreviewIdentificationFetchMetadataViewModel(
 ) : IdentificationFetchMetadataViewModelInterface {
     override fun fetchMetadata() {}
     override fun onCancelButtonTapped() {}
+    override val didSetup: Boolean = false
 }
 
 @Preview(device = Devices.PIXEL_3A, showBackground = true)

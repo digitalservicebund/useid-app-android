@@ -11,7 +11,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -45,7 +48,8 @@ fun IdentificationAttributeConsent(
 ) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
-            icon = NavigationIcon.Cancel,
+            icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
+            shouldShowConfirmDialog = !viewModel.didSetup,
             onClick = viewModel::onCancelButtonTapped
         )
     ) { topPadding ->
@@ -107,7 +111,11 @@ private fun AttributeList(attributeIDs: List<Int>) {
             .padding(top = 20.dp)
             .fillMaxWidth()
     ) {
-        Column(modifier = Modifier.padding(horizontal = 24.dp).padding(top = 24.dp)) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .padding(top = 24.dp)
+        ) {
             attributeIDs.forEach { attributeId ->
                 Text(
                     "\u2022 ${stringResource(id = attributeId)}",
@@ -208,6 +216,8 @@ interface IdentificationAttributeConsentViewModelInterface {
     val shouldShowInfoDialog: Boolean
     val infoDialogContent: ProviderInfoDialogContent
 
+    val didSetup: Boolean
+
     fun onInfoButtonTapped()
     fun onInfoDialogDismissalRequest()
     fun onPINButtonTapped()
@@ -225,6 +235,9 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
 
     override var shouldShowInfoDialog: Boolean by mutableStateOf(false)
         private set
+
+    override val didSetup: Boolean
+        get() = coordinator.didSetup
 
     init {
         val request = IdentificationAttributeConsentDestination.argsFrom(savedStateHandle).request
@@ -249,7 +262,9 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         coordinator.confirmAttributesForIdentification()
     }
 
-    override fun onCancelButtonTapped() = coordinator.cancelIdentification()
+    override fun onCancelButtonTapped() {
+        coordinator.cancelIdentification()
+    }
 
     private fun attributeDescriptionID(attribute: IDCardAttribute): Int = when (attribute) {
         IDCardAttribute.DG01 -> R.string.cardAttribute_dg01
@@ -277,6 +292,7 @@ class PreviewIdentificationAttributeConsentViewModel(
     override val infoDialogContent: ProviderInfoDialogContent
 ) :
     IdentificationAttributeConsentViewModelInterface {
+    override val didSetup: Boolean = false
     override fun onInfoButtonTapped() {}
     override fun onInfoDialogDismissalRequest() {}
     override fun onPINButtonTapped() {}

@@ -50,11 +50,15 @@ class IdentificationCoordinator @Inject constructor(
 
     private var reachedScanState = false
     private var listenToEvents = false
-
     private var incorrectPin: Boolean = false
+    var didSetup: Boolean = false
+        private set
 
-    fun startIdentificationProcess(tcTokenURL: String) {
+    fun startIdentificationProcess(tcTokenURL: String, didSetup: Boolean) {
+    fun startIdentificationProcess(tcTokenURL: String, didSetup: Boolean) {
         logger.debug("Start identification process.")
+        this.didSetup = didSetup
+
         idCardManager.cancelTask()
         reachedScanState = false
         CoroutineScope(coroutineContextProvider.IO).launch {
@@ -98,7 +102,11 @@ class IdentificationCoordinator @Inject constructor(
         listenToEvents = false
         appCoordinator.stopNFCTagHandling()
         CoroutineScope(Dispatchers.Main).launch {
-            appCoordinator.popToRoot()
+            if (didSetup) {
+                appCoordinator.popUpTo(SetupIntroDestination)
+            } else {
+                appCoordinator.popToRoot()
+            }
             _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
         }
         reachedScanState = false

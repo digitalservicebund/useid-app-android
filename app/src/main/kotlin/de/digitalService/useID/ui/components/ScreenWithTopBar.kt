@@ -5,12 +5,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.dialogs.StandardDialog
 
 enum class NavigationIcon {
     Cancel {
@@ -36,7 +37,11 @@ enum class NavigationIcon {
     abstract fun Icon()
 }
 
-class NavigationButton(val icon: NavigationIcon, val onClick: () -> Unit)
+data class NavigationButton(
+    val icon: NavigationIcon,
+    val onClick: () -> Unit,
+    val shouldShowConfirmDialog: Boolean = false,
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +50,8 @@ fun ScreenWithTopBar(
     navigationButton: NavigationButton? = null,
     content: @Composable (topPadding: Dp) -> Unit
 ) {
+    var showConfirmDialog by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             SmallTopAppBar(
@@ -53,7 +60,13 @@ fun ScreenWithTopBar(
                     navigationButton?.let {
                         IconButton(
                             modifier = Modifier.testTag(it.icon.name),
-                            onClick = navigationButton.onClick,
+                            onClick = {
+                                if (it.shouldShowConfirmDialog) {
+                                    showConfirmDialog = true
+                                } else {
+                                    navigationButton.onClick()
+                                }
+                            },
                             content = { navigationButton.icon.Icon() }
                         )
                     }
@@ -67,6 +80,14 @@ fun ScreenWithTopBar(
         modifier = modifier
     ) { paddingValues ->
         content(paddingValues.calculateTopPadding())
+
+        if (showConfirmDialog) {
+
+            StandardDialog(title = { Text(text = "You really want to cancel?") }, text = { }, buttonText = "cancel") {
+                showConfirmDialog = false
+                navigationButton?.onClick?.invoke()
+            }
+        }
     }
 
     BackHandler(onBack = { navigationButton?.onClick?.invoke() })

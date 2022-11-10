@@ -101,7 +101,7 @@ private class PreviewAppCoordinator(
     override fun pop() {}
     override fun popToRoot() {}
     override fun startIdSetup(tcTokenURL: String?) {}
-    override fun startIdentification(tcTokenURL: String) {}
+    override fun startIdentification(tcTokenURL: String, didSetup: Boolean) {}
     override fun homeScreenLaunched() {}
     override fun setNfcAvailability(availability: NfcAvailability) {}
     override fun setIsNotFirstTimeUser() {}
@@ -109,6 +109,7 @@ private class PreviewAppCoordinator(
     override fun startNFCTagHandling() {}
     override fun stopNFCTagHandling() {}
     override fun navigatePopping(route: Direction) {}
+    override fun popUpTo(direction: Destination) {}
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)

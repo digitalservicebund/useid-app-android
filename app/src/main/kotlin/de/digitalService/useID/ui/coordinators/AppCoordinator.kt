@@ -10,6 +10,7 @@ import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
+import de.digitalService.useID.ui.screens.destinations.Destination
 import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
@@ -25,7 +26,7 @@ interface AppCoordinatorType {
     fun pop()
     fun popToRoot()
     fun startIdSetup(tcTokenURL: String?)
-    fun startIdentification(tcTokenURL: String)
+    fun startIdentification(tcTokenURL: String, didSetup: Boolean)
     fun homeScreenLaunched()
     fun setNfcAvailability(availability: NfcAvailability)
     fun setIsNotFirstTimeUser()
@@ -33,6 +34,7 @@ interface AppCoordinatorType {
     fun startNFCTagHandling()
     fun stopNFCTagHandling()
     fun navigatePopping(route: Direction)
+    fun popUpTo(direction: Destination)
 }
 
 @Singleton
@@ -66,6 +68,10 @@ class AppCoordinator @Inject constructor(
         navController.popBackStack()
     }
 
+    override fun popUpTo(direction: Destination){
+        navController.popBackStack(route = direction.route, inclusive = false)
+    }
+
     override fun popToRoot() {
         navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)
     }
@@ -75,13 +81,13 @@ class AppCoordinator @Inject constructor(
         navigate(SetupIntroDestination(tcTokenURL))
     }
 
-    override fun startIdentification(tcTokenURL: String) {
+    override fun startIdentification(tcTokenURL: String, didSetup: Boolean) {
         if (nfcAvailability.value != NfcAvailability.Available) {
             logger.warn("Do not start identification because NFC is not available.")
             return
         }
 
-        navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL))
+        navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL, didSetup))
     }
 
     override fun homeScreenLaunched() {
@@ -90,7 +96,7 @@ class AppCoordinator @Inject constructor(
                 startIdSetup(tcTokenURL)
             }
         } else {
-            tcTokenURL?.let { startIdentification(it) }
+            tcTokenURL?.let { startIdentification(it, false) }
         }
 
         coldLaunch = false

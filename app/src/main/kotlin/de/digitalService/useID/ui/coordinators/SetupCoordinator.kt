@@ -100,7 +100,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSetupFinished() {
-        handleSetupEnded()
+        handleSetupEnded(true)
     }
 
     fun onBackToHome() {
@@ -112,7 +112,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSkipSetup() {
-        handleSetupEnded()
+        handleSetupEnded(false)
     }
 
     fun cancelSetup() {
@@ -124,13 +124,13 @@ class SetupCoordinator @Inject constructor(
         tcTokenURL = null
     }
 
-    private fun handleSetupEnded() {
+    private fun handleSetupEnded(didSetup: Boolean) {
         transportPin = null
         personalPin = null
         incorrectTransportPin = false
 
         tcTokenURL?.let {
-            appCoordinator.startIdentification(it)
+            appCoordinator.startIdentification(it, didSetup)
             tcTokenURL = null
         } ?: run {
             appCoordinator.popToRoot()
