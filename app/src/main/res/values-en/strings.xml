@@ -107,7 +107,7 @@
     <string name="firstTimeUser_scan_error_title_id_deactivated">Online badge function deactivated</string>
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blocked</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspended</string>
-    <string name="firstTimeUser_scan_title">Hold your ID close to the top back side of the smartphone.</string>
+    <string name="firstTimeUser_scan_title">Hold your ID card close to the upper back of the smartphone.</string>
     <string name="firstTimeUser_transportPIN_body">You will find the 5-digit transport PIN in your PIN letter.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
