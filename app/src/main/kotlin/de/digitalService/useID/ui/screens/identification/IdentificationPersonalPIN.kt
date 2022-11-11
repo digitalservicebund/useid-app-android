@@ -92,7 +92,7 @@ fun IdentificationPersonalPIN(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title),
+                        stringResource(id = R.string.identification_personalPIN_error_incorrectPIN),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -102,15 +102,11 @@ fun IdentificationPersonalPIN(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(6.dp))
-                    val attemptString = if (attempts > 0) {
-                        resources.getQuantityString(
-                            R.plurals.firstTimeUser_transportPIN_remainingAttempts,
-                            attempts,
-                            attempts
-                        )
-                    } else {
-                        stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_noAttemptLeft)
-                    }
+                    val attemptString = resources.getQuantityString(
+                        R.plurals.identification_personalPIN_remainingAttempts,
+                        attempts,
+                        attempts
+                    )
                     Text(
                         attemptString,
                         style = MaterialTheme.typography.bodySmall,

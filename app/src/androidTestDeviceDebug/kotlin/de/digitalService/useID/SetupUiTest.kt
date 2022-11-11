@@ -63,7 +63,7 @@ class SetupUiTest {
         hiltRule.inject()
     }
 
-// Disable temporarily until eid got replaced
+// Disable temporarily until eid kernel refactoring has been completed
 
 //    @Test
 //    fun test() {

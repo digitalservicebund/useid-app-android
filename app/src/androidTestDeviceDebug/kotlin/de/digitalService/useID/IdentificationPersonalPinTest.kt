@@ -91,13 +91,13 @@ class IdentificationPersonalPinTest {
         }
 
         val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(
-            R.plurals.firstTimeUser_transportPIN_remainingAttempts,
+            R.plurals.identification_personalPIN_remainingAttempts,
             testAttempts,
             testAttempts
         )
         composeTestRule.onNodeWithText(quantityAttemptsString).assertIsDisplayed()
 
-        val errorMessage = composeTestRule.activity.getString(R.string.firstTimeUser_incorrectTransportPIN_title)
+        val errorMessage = composeTestRule.activity.getString(R.string.identification_personalPIN_error_incorrectPIN)
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
 
         val pinEntryTestTag = "PINDigitField"
