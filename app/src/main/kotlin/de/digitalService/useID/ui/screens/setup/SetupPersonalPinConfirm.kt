@@ -47,7 +47,7 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = stringResource(id = R.string.firstTimeUser_personalPIN_title),
+                text = stringResource(id = R.string.firstTimeUser_personalPIN_confirmation_title),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -55,7 +55,7 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = stringResource(id = R.string.firstTimeUser_personalPIN_confirmation_title),
+                text = stringResource(id = R.string.firstTimeUser_personalPIN_body),
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.fillMaxWidth()
             )
