@@ -19,9 +19,7 @@ import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
-@Destination(
-    navArgsDelegate = SetupIntroNavArgs::class
-)
+@Destination(navArgsDelegate = SetupIntroNavArgs::class)
 @Composable
 fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntroViewModel>()) {
     ScreenWithTopBar(

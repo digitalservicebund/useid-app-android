@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -14,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
@@ -24,7 +25,6 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.theme.UseIDTheme
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Destination(
@@ -39,7 +39,8 @@ fun IdentificationFetchMetadata(
         navigationButton = NavigationButton(
             icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
             shouldShowConfirmDialog = !viewModel.didSetup,
-            onClick = viewModel::onCancelButtonTapped
+            onClick = viewModel::onCancelButtonTapped,
+            isIdentification = true
         )
     ) { topPadding ->
         Column(
@@ -57,6 +58,7 @@ fun IdentificationFetchMetadata(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .size(70.dp)
+                        .testTag("ProgressIndicator")
                 )
             }
             Column(
@@ -78,7 +80,7 @@ fun IdentificationFetchMetadata(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.fetchMetadata()
+        viewModel.startIdentificationProcess()
     }
 }
 
@@ -92,9 +94,7 @@ enum class FetchMetadataEvent {
 }
 
 interface IdentificationFetchMetadataViewModelInterface {
-    val shouldShowProgressIndicator: Boolean
-
-    fun fetchMetadata()
+    fun startIdentificationProcess()
     fun onCancelButtonTapped()
     val didSetup: Boolean
 }
@@ -104,43 +104,25 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), IdentificationFetchMetadataViewModelInterface {
-    override var shouldShowProgressIndicator: Boolean by mutableStateOf(false)
-        private set
-
     override val didSetup: Boolean
     private val tcTokenURL: String
 
     init {
         tcTokenURL = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).tcTokenURL
         didSetup = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).didSetup
-        collectFetchMetadataEvents()
     }
 
-    override fun fetchMetadata() {
+    override fun startIdentificationProcess() {
         coordinator.startIdentificationProcess(tcTokenURL, didSetup)
     }
 
     override fun onCancelButtonTapped() {
         coordinator.cancelIdentification()
     }
-
-    private fun collectFetchMetadataEvents() {
-        viewModelScope.launch {
-            coordinator.fetchMetadataEventFlow.collect { event: FetchMetadataEvent ->
-                shouldShowProgressIndicator = when (event) {
-                    FetchMetadataEvent.Started -> true
-                    FetchMetadataEvent.Finished -> false
-                    FetchMetadataEvent.Error -> false
-                }
-            }
-        }
-    }
 }
 
-class PreviewIdentificationFetchMetadataViewModel(
-    override val shouldShowProgressIndicator: Boolean
-) : IdentificationFetchMetadataViewModelInterface {
-    override fun fetchMetadata() {}
+class PreviewIdentificationFetchMetadataViewModel() : IdentificationFetchMetadataViewModelInterface {
+    override fun startIdentificationProcess() {}
     override fun onCancelButtonTapped() {}
     override val didSetup: Boolean = false
 }
@@ -150,9 +132,7 @@ class PreviewIdentificationFetchMetadataViewModel(
 fun PreviewIdentificationFetchMetadata() {
     UseIDTheme {
         IdentificationFetchMetadata(
-            viewModel = PreviewIdentificationFetchMetadataViewModel(
-                shouldShowProgressIndicator = false
-            )
+            viewModel = PreviewIdentificationFetchMetadataViewModel()
         )
     }
 }

@@ -8,18 +8,40 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
-fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, buttonText: String, onButtonTap: () -> Unit) {
+fun StandardDialog(
+    title: @Composable () -> Unit,
+    text: @Composable () -> Unit,
+    confirmButtonText: String,
+    dismissButtonText: String? = null,
+    onDismissButtonTap: (() -> Unit)? = null,
+    onConfirmButtonTap: () -> Unit
+) {
     AlertDialog(
         onDismissRequest = { },
         confirmButton = {
             Button(
-                onClick = onButtonTap,
+                onClick = onConfirmButtonTap,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     contentColor = MaterialTheme.colorScheme.primary
                 )
             ) {
-                Text(buttonText)
+                Text(confirmButtonText)
+            }
+        },
+        dismissButton = {
+            if (dismissButtonText == null || onDismissButtonTap == null) {
+                return@AlertDialog
+            }
+
+            Button(
+                onClick = onDismissButtonTap,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    contentColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text(dismissButtonText)
             }
         },
         shape = RoundedCornerShape(10.dp),
@@ -33,6 +55,6 @@ fun StandardDialog(title: @Composable () -> Unit, text: @Composable () -> Unit, 
 @Preview
 @Composable
 private fun Preview() {
-    StandardDialog(title = { Text(text = "Test Dialog") }, text = { Text(text = "test Dialog text") }, buttonText = "Button text") {
+    StandardDialog(title = { Text(text = "Test Dialog") }, text = { Text(text = "test Dialog text") }, confirmButtonText = "Button text") {
     }
 }

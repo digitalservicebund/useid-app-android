@@ -463,4 +463,8 @@
     <string name="identification_scan_cancelDialog_dismiss">Cancel</string>
     <string name="firstTimeUser_personalPIN_confirmation_title">Confirm your personal ID PIN.</string>
     <string name="pinEntryField_accessibility_cursorPosition">Cursor at position %1$d.</string>
+    <string name="identification_confirmEnd_message">Do you want to stop the identification?</string>
+    <string name="identification_confirmEnd_title">End identification?</string>
+    <string name="identification_confirmEnd_confirm">Finish</string>
+    <string name="identification_confirmEnd_deny">Cancel</string>
 </resources>

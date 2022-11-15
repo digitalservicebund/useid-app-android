@@ -50,7 +50,8 @@ fun IdentificationAttributeConsent(
         navigationButton = NavigationButton(
             icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
             shouldShowConfirmDialog = !viewModel.didSetup,
-            onClick = viewModel::onCancelButtonTapped
+            onClick = viewModel::onCancelButtonTapped,
+            isIdentification = true
         )
     ) { topPadding ->
         Scaffold(bottomBar = {

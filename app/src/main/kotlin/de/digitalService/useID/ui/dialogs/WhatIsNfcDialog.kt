@@ -13,8 +13,8 @@ fun WhatIsNfcDialog(onButtonTap: () -> Unit) {
     StandardDialog(
         title = { Text(stringResource(id = R.string.helpNFC_title), style = MaterialTheme.typography.titleMedium) },
         text = { Text(stringResource(id = R.string.helpNFC_body), style = MaterialTheme.typography.bodySmall) },
-        buttonText = stringResource(id = R.string.scanError_close),
-        onButtonTap = onButtonTap
+        confirmButtonText = stringResource(id = R.string.scanError_close),
+        onConfirmButtonTap = onButtonTap
     )
 }
 

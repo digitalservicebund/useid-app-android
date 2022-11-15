@@ -46,7 +46,8 @@ fun IdentificationPersonalPIN(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
-            onClick = viewModel::onCancelButtonTapped
+            onClick = viewModel::onCancelButtonTapped,
+            isIdentification = true
         )
     ) { topPadding ->
         val focusRequester = remember { FocusRequester() }

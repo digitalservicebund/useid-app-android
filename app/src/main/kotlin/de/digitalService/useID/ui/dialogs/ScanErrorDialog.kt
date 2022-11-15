@@ -79,8 +79,8 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
                 )
             }
         },
-        buttonText = stringResource(id = buttonTextStringId),
-        onButtonTap = onButtonTap
+        confirmButtonText = stringResource(id = buttonTextStringId),
+        onConfirmButtonTap = onButtonTap
     )
 }
 

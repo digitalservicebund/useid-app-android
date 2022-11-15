@@ -40,7 +40,8 @@ enum class NavigationIcon {
 data class NavigationButton(
     val icon: NavigationIcon,
     val onClick: () -> Unit,
-    val shouldShowConfirmDialog: Boolean = false
+    val shouldShowConfirmDialog: Boolean = false,
+    val isIdentification: Boolean = false
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +51,7 @@ fun ScreenWithTopBar(
     navigationButton: NavigationButton? = null,
     content: @Composable (topPadding: Dp) -> Unit
 ) {
-    var showConfirmDialog by remember { mutableStateOf(false) }
+    val showConfirmDialog = remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -62,7 +63,7 @@ fun ScreenWithTopBar(
                             modifier = Modifier.testTag(navigationButton.icon.name),
                             onClick = {
                                 if (navigationButton.shouldShowConfirmDialog) {
-                                    showConfirmDialog = true
+                                    showConfirmDialog.value = true
                                 } else {
                                     navigationButton.onClick()
                                 }
@@ -81,13 +82,13 @@ fun ScreenWithTopBar(
     ) { paddingValues ->
         content(paddingValues.calculateTopPadding())
 
-        if (showConfirmDialog) {
-            StandardDialog(title = {
-                Text(text = "You really want to cancel?")
-                BackHandler(onBack = { showConfirmDialog = false })
-            }, text = {}, buttonText = "cancel") {
-                showConfirmDialog = false
-                navigationButton?.onClick?.invoke()
+        if (showConfirmDialog.value) {
+            navigationButton?.let { navigationButton ->
+                if (navigationButton.isIdentification) {
+                    IdentificationCancelDialog(navigationButton, showConfirmDialog)
+                } else {
+                    SetupCancelDialog(navigationButton, showConfirmDialog)
+                }
             }
         }
     }
@@ -95,11 +96,53 @@ fun ScreenWithTopBar(
     BackHandler(onBack = {
         navigationButton?.let { navigationButton ->
             if (!navigationButton.shouldShowConfirmDialog) {
-                navigationButton.onClick
+                navigationButton.onClick()
                 return@BackHandler
             }
 
-            showConfirmDialog = true
+            showConfirmDialog.value = true
         }
     })
+}
+
+@Composable
+private fun IdentificationCancelDialog(navigationButton: NavigationButton, showConfirmDialog: MutableState<Boolean>) {
+    StandardDialog(
+        title = {
+            val title = stringResource(R.string.identification_confirmEnd_title)
+            Text(text = title)
+
+            BackHandler(onBack = { showConfirmDialog.value = false })
+        },
+        text = {
+            Text(text = stringResource(R.string.identification_confirmEnd_message))
+        },
+        confirmButtonText = stringResource(id = R.string.identification_confirmEnd_confirm),
+        dismissButtonText = stringResource(id = R.string.identification_confirmEnd_deny),
+        onDismissButtonTap = { showConfirmDialog.value = false }
+    ) {
+        showConfirmDialog.value = false
+        navigationButton.onClick()
+    }
+}
+
+@Composable
+private fun SetupCancelDialog(navigationButton: NavigationButton, showConfirmDialog: MutableState<Boolean>) {
+    StandardDialog(
+        title = {
+            val title = stringResource(R.string.firstTimeUser_confirmEnd_title)
+            Text(text = title)
+
+            BackHandler(onBack = { showConfirmDialog.value = false })
+        },
+        text = {
+            Text(text = stringResource(R.string.firstTimeUser_confirmEnd_message))
+        },
+        confirmButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_confirm),
+        dismissButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_deny),
+        onDismissButtonTap = { showConfirmDialog.value = false }
+    ) {
+        showConfirmDialog.value = false
+        navigationButton.onClick()
+    }
 }

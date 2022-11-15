@@ -45,7 +45,8 @@ fun IdentificationScan(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            onClick = { showCancelDialog = true }
+            onClick = { showCancelDialog = true },
+            isIdentification = true
         )
     ) { topPadding ->
         ScanScreen(

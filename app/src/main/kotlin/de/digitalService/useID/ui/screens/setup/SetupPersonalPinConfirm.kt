@@ -93,8 +93,8 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
                 )
             },
             text = {},
-            buttonText = stringResource(id = R.string.identification_fetchMetadataError_retry),
-            onButtonTap = viewModel::onErrorDialogButtonPressed
+            confirmButtonText = stringResource(id = R.string.identification_fetchMetadataError_retry),
+            onConfirmButtonTap = viewModel::onErrorDialogButtonPressed
         )
     }
 }

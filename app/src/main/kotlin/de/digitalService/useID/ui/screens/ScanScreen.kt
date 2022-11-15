@@ -181,8 +181,8 @@ fun ScanScreen(
                     fontResource = R.font.bundes_sans_dtp_regular
                 )
             },
-            buttonText = stringResource(id = R.string.scanError_close),
-            onButtonTap = { helpDialogShown = false }
+            confirmButtonText = stringResource(id = R.string.scanError_close),
+            onConfirmButtonTap = { helpDialogShown = false }
         )
     }
 }
