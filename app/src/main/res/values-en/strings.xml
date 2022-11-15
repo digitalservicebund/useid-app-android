@@ -75,7 +75,7 @@
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">You have no more attempts.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Entered incorrect transport PIN.</string>
-    <string name="firstTimeUser_intro_body">In the setup, you set your personal 6-digit ID PIN.</string>
+    <string name="firstTimeUser_intro_body">In the setup, you set your 6-digit personal ID PIN.</string>
     <string name="firstTimeUser_intro_startSetup">Set up online ID card now</string>
     <string name="firstTimeUser_intro_title">Have you already set up your online ID card\?</string>
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
