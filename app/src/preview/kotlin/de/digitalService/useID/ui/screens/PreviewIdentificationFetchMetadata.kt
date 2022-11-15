@@ -98,6 +98,7 @@ fun PreviewPreviewIdentificationFetchMetadata() {
                 override val shouldShowProgressIndicator: Boolean = false
                 override fun fetchMetadata() {}
                 override fun onCancelButtonTapped() {}
+                override val didSetup: Boolean = false
             }
         )
     }

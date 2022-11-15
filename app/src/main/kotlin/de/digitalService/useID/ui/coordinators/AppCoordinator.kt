@@ -68,7 +68,7 @@ class AppCoordinator @Inject constructor(
         navController.popBackStack()
     }
 
-    override fun popUpTo(direction: Destination){
+    override fun popUpTo(direction: Destination) {
         navController.popBackStack(route = direction.route, inclusive = false)
     }
 

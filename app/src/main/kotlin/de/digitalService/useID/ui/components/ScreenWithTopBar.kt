@@ -40,7 +40,7 @@ enum class NavigationIcon {
 data class NavigationButton(
     val icon: NavigationIcon,
     val onClick: () -> Unit,
-    val shouldShowConfirmDialog: Boolean = false,
+    val shouldShowConfirmDialog: Boolean = false
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
