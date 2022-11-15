@@ -45,7 +45,7 @@ fun IdentificationPersonalPIN(
 
     ScreenWithTopBar(
         navigationButton = NavigationButton(
-            icon = NavigationIcon.Cancel,
+            icon = NavigationIcon.Back,
             onClick = viewModel::onCancelButtonTapped
         )
     ) { topPadding ->
@@ -158,7 +158,9 @@ class IdentificationPersonalPINViewModel @Inject constructor(
         }
     }
 
-    override fun onCancelButtonTapped() = coordinator.cancelIdentification()
+    override fun onCancelButtonTapped() {
+        coordinator.pop()
+    }
 
     private fun checkPINString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
 }

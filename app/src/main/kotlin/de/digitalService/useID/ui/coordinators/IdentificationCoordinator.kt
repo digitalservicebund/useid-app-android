@@ -97,6 +97,10 @@ class IdentificationCoordinator @Inject constructor(
         navigateOnMain(IdentificationPersonalPINDestination(attempts))
     }
 
+    fun pop() {
+        appCoordinator.pop()
+    }
+
     fun cancelIdentification() {
         logger.debug("Cancel identification process.")
         listenToEvents = false
