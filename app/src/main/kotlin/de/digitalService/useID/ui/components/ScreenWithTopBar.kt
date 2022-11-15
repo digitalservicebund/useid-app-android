@@ -57,11 +57,11 @@ fun ScreenWithTopBar(
             SmallTopAppBar(
                 title = { },
                 navigationIcon = {
-                    navigationButton?.let {
+                    navigationButton?.let { navigationButton ->
                         IconButton(
-                            modifier = Modifier.testTag(it.icon.name),
+                            modifier = Modifier.testTag(navigationButton.icon.name),
                             onClick = {
-                                if (it.shouldShowConfirmDialog) {
+                                if (navigationButton.shouldShowConfirmDialog) {
                                     showConfirmDialog = true
                                 } else {
                                     navigationButton.onClick()
@@ -82,13 +82,24 @@ fun ScreenWithTopBar(
         content(paddingValues.calculateTopPadding())
 
         if (showConfirmDialog) {
-
-            StandardDialog(title = { Text(text = "You really want to cancel?") }, text = { }, buttonText = "cancel") {
+            StandardDialog(title = {
+                Text(text = "You really want to cancel?")
+                BackHandler(onBack = { showConfirmDialog = false })
+            }, text = {}, buttonText = "cancel") {
                 showConfirmDialog = false
                 navigationButton?.onClick?.invoke()
             }
         }
     }
 
-    BackHandler(onBack = { navigationButton?.onClick?.invoke() })
+    BackHandler(onBack = {
+        navigationButton?.let { navigationButton ->
+            if (!navigationButton.shouldShowConfirmDialog) {
+                navigationButton.onClick
+                return@BackHandler
+            }
+
+            showConfirmDialog = true
+        }
+    })
 }

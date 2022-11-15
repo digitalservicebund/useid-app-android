@@ -55,7 +55,6 @@ class IdentificationCoordinator @Inject constructor(
         private set
 
     fun startIdentificationProcess(tcTokenURL: String, didSetup: Boolean) {
-    fun startIdentificationProcess(tcTokenURL: String, didSetup: Boolean) {
         logger.debug("Start identification process.")
         this.didSetup = didSetup
 

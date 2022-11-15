@@ -72,7 +72,7 @@ class SetupIntroViewModel @Inject constructor(
 ) : ViewModel(), SetupIntroViewModelInterface {
 
     override val shouldShowConfirmCancelDialog: Boolean
-        get() = setupCoordinator.identificationPending()
+        get() = tcTokenURL != null
 
     private val tcTokenURL: String?
 
