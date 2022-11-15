@@ -73,7 +73,7 @@
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">Sie haben keine Versuche mehr.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Inkorrekte Transport-PIN eingegeben.</string>
-    <string name="firstTimeUser_intro_body">Bei der Einrichtung haben Sie Ihre persönliche 6-stellige Ausweis-PIN festgelegt.</string>
+    <string name="firstTimeUser_intro_body">Bei der Einrichtung haben Sie Ihre 6-stellige persönliche Ausweis-PIN festgelegt.</string>
     <string name="firstTimeUser_intro_startSetup">Jetzt Online-Ausweis einrichten</string>
     <string name="firstTimeUser_intro_title">Haben Sie Ihren Online-Ausweis bereits eingerichtet\?</string>
     <string name="firstTimeUser_intro_skipSetup">Bereits eingerichtet</string>
