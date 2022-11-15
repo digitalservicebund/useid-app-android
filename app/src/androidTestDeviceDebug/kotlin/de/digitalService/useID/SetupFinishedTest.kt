@@ -6,12 +6,13 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.test.espresso.Espresso
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.components.NavigationIcon
-import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
-import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
+import de.digitalService.useID.ui.screens.setup.SetupFinish
+import de.digitalService.useID.ui.screens.setup.SetupFinishViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
@@ -21,7 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class IdentificationFetchMetadataTest {
+class SetupFinishedTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -33,46 +34,54 @@ class IdentificationFetchMetadataTest {
     val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Test
-    fun hasBackNavigation() {
-        val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
+    fun identificationPending() {
+        val viewModel: SetupFinishViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.didSetup } returns true
+        every { viewModel.identificationPending() } returns true
 
         composeTestRule.activity.setContent {
-            IdentificationFetchMetadata(viewModel = viewModel)
+            SetupFinish(viewModel = viewModel)
         }
 
-        composeTestRule.onNodeWithTag("ProgressIndicator").assertIsDisplayed()
+        val wantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
+        composeTestRule.onNodeWithText(wantedButtonLabel).assertIsDisplayed()
 
-        verify(exactly = 1) { viewModel.startIdentificationProcess() }
+        val notWantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
+        composeTestRule.onNodeWithText(notWantedButtonLabel).assertDoesNotExist()
 
-        composeTestRule.onNodeWithTag(NavigationIcon.Back.name).performClick()
+        composeTestRule.onNodeWithTag(NavigationIcon.Back.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).performClick()
 
-        val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
-        composeTestRule.onNodeWithText(cancelButton).assertDoesNotExist()
+        verify(exactly = 1) { viewModel.onButtonTapped() }
 
-        verify(exactly = 1) { viewModel.onCancelButtonTapped() }
+        composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
+        verify(exactly = 2) { viewModel.onButtonTapped() }
     }
 
     @Test
-    fun hasCancelNavigation() {
-        val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
+    fun noIdentificationPending() {
+        val viewModel: SetupFinishViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.didSetup } returns false
+        every { viewModel.identificationPending() } returns false
 
         composeTestRule.activity.setContent {
-            IdentificationFetchMetadata(viewModel = viewModel)
+            SetupFinish(viewModel = viewModel)
         }
 
-        composeTestRule.onNodeWithTag("ProgressIndicator").assertIsDisplayed()
+        val wantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
+        composeTestRule.onNodeWithText(wantedButtonLabel).assertIsDisplayed()
 
-        verify(exactly = 1) { viewModel.startIdentificationProcess() }
+        val notWantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
+        composeTestRule.onNodeWithText(notWantedButtonLabel).assertDoesNotExist()
 
-        composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).performClick()
+        composeTestRule.onNodeWithTag(NavigationIcon.Back.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).assertDoesNotExist()
 
-        val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
-        composeTestRule.onNodeWithText(cancelButton).performClick()
+        composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
+        verify(exactly = 1) { viewModel.onButtonTapped() }
 
-        verify(exactly = 1) { viewModel.onCancelButtonTapped() }
+        Espresso.pressBack()
+
+        verify(exactly = 1) { viewModel.onButtonTapped() }
     }
 }

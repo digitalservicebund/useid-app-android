@@ -1,7 +1,6 @@
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -10,8 +9,8 @@ import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.components.NavigationIcon
-import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
-import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
+import de.digitalService.useID.ui.screens.setup.SetupIntro
+import de.digitalService.useID.ui.screens.setup.SetupIntroViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
@@ -21,7 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class IdentificationFetchMetadataTest {
+class SetupIntroTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -33,50 +32,73 @@ class IdentificationFetchMetadataTest {
     val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
 
     @Test
-    fun hasBackNavigation() {
-        val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
+    fun shouldShowCancelDialog() {
+        val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.didSetup } returns true
+        every { viewModel.shouldShowConfirmCancelDialog } returns true
 
         composeTestRule.activity.setContent {
-            IdentificationFetchMetadata(viewModel = viewModel)
+            SetupIntro(viewModel = viewModel)
         }
 
-        composeTestRule.waitForIdle()
+        composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).performClick()
+        verify(exactly = 0) { viewModel.onCancelSetup() }
 
-        composeTestRule.onNodeWithTag("ProgressIndicator").assertIsDisplayed()
+        val cancelButton = composeTestRule.activity.getString(R.string.firstTimeUser_confirmEnd_confirm)
+        composeTestRule.onNodeWithText(cancelButton).performClick()
 
-        verify(exactly = 1) { viewModel.startIdentificationProcess() }
-
-        composeTestRule.onNodeWithTag(NavigationIcon.Back.name).performClick()
-
-        val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
-        composeTestRule.onNodeWithText(cancelButton).assertDoesNotExist()
-
-        verify(exactly = 1) { viewModel.onCancelButtonTapped() }
+        verify(exactly = 1) { viewModel.onCancelSetup() }
     }
 
     @Test
-    fun hasCancelNavigation() {
-        val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
+    fun doNotShowCancelDialog() {
+        val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.didSetup } returns false
+        every { viewModel.shouldShowConfirmCancelDialog } returns false
 
         composeTestRule.activity.setContent {
-            IdentificationFetchMetadata(viewModel = viewModel)
+            SetupIntro(viewModel = viewModel)
         }
 
-        composeTestRule.waitForIdle()
-
-        composeTestRule.onNodeWithTag("ProgressIndicator").assertIsDisplayed()
-
-        verify(exactly = 1) { viewModel.startIdentificationProcess() }
-
         composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).performClick()
+        verify(exactly = 1) { viewModel.onCancelSetup() }
 
-        val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
-        composeTestRule.onNodeWithText(cancelButton).performClick()
+        val confirmButton1 = composeTestRule.activity.getString(R.string.identification_confirmEnd_confirm)
+        composeTestRule.onNodeWithText(confirmButton1).assertDoesNotExist()
 
-        verify(exactly = 1) { viewModel.onCancelButtonTapped() }
+        val confirmButton2 = composeTestRule.activity.getString(R.string.firstTimeUser_confirmEnd_confirm)
+        composeTestRule.onNodeWithText(confirmButton2).assertDoesNotExist()
+    }
+
+    @Test
+    fun primaryButton() {
+        val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
+
+        every { viewModel.shouldShowConfirmCancelDialog } returns false
+
+        composeTestRule.activity.setContent {
+            SetupIntro(viewModel = viewModel)
+        }
+
+        val primaryButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_startSetup)
+        composeTestRule.onNodeWithText(primaryButton).performClick()
+
+        verify { viewModel.onFirstTimeUsage() }
+    }
+
+    @Test
+    fun secondaryButton() {
+        val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
+
+        every { viewModel.shouldShowConfirmCancelDialog } returns false
+
+        composeTestRule.activity.setContent {
+            SetupIntro(viewModel = viewModel)
+        }
+
+        val secondaryButton = composeTestRule.activity.getString(R.string.firstTimeUser_intro_skipSetup)
+        composeTestRule.onNodeWithText(secondaryButton).performClick()
+
+        verify { viewModel.onNonFirstTimeUsage() }
     }
 }

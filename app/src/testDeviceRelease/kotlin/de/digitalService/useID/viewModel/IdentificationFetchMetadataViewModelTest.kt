@@ -3,11 +3,11 @@ package de.digitalService.useID.viewModel
 import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
+import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataNavArgs
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,16 +27,20 @@ class IdentificationFetchMetadataViewModelTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockIdentificationCoordinator: IdentificationCoordinator
 
-    @MockK
-    lateinit var savedStateHandle: SavedStateHandle
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
+
+    private var mockNavArgs: IdentificationFetchMetadataNavArgs = mockk()
+    private val testURL = "bundesident://127.0.0.1/eID-Client?tokenURL="
+
+    lateinit var savedStateHandle: SavedStateHandle
 
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(dispatcher)
-        every { savedStateHandle.get<String>("tcTokenURL") } returns testURL
+
+        savedStateHandle = SavedStateHandle()
+        savedStateHandle["tcTokenURL"] = testURL
     }
 
     @AfterEach
@@ -44,40 +48,73 @@ class IdentificationFetchMetadataViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private val testURL = "bundesident://127.0.0.1/eID-Client?tokenURL="
-
     @Test
-    fun init_collectMetaDataEvents_started() {
-        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns
-            MutableStateFlow(FetchMetadataEvent.Started)
+    fun init_collectMetaDataEvents_init_didSetupTrue() {
+        val testDidSetup = true
+        savedStateHandle["didSetup"] = testDidSetup
+
+        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns MutableStateFlow(FetchMetadataEvent.Started)
 
         val viewModel = IdentificationFetchMetadataViewModel(
             mockIdentificationCoordinator,
             savedStateHandle
         )
 
-        dispatcher.scheduler.advanceUntilIdle()
-
-        assertTrue(viewModel.shouldShowProgressIndicator)
+        assertTrue(viewModel.didSetup)
     }
 
     @Test
-    fun init_collectMetaDataEvents_error() {
-        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns
-            MutableStateFlow(FetchMetadataEvent.Error)
+    fun init_collectMetaDataEvents_init_didSetupFalse() {
+        val testDidSetup = false
+        savedStateHandle["didSetup"] = testDidSetup
+
+        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns MutableStateFlow(FetchMetadataEvent.Started)
 
         val viewModel = IdentificationFetchMetadataViewModel(
             mockIdentificationCoordinator,
             savedStateHandle
         )
 
-        dispatcher.scheduler.advanceUntilIdle()
-
-        assertFalse(viewModel.shouldShowProgressIndicator)
+        assertFalse(viewModel.didSetup)
     }
 
     @Test
-    fun init_collectMetaDataEvents_finished() {
+    fun init_collectMetaDataEvents_startIdentificationProcess_didSetupTrue() {
+        val testDidSetup = true
+        savedStateHandle["didSetup"] = testDidSetup
+
+        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns MutableStateFlow(FetchMetadataEvent.Started)
+
+        val viewModel = IdentificationFetchMetadataViewModel(
+            mockIdentificationCoordinator,
+            savedStateHandle
+        )
+        viewModel.startIdentificationProcess()
+
+        verify { mockIdentificationCoordinator.startIdentificationProcess(testURL, testDidSetup) }
+    }
+
+    @Test
+    fun init_collectMetaDataEvents_startIdentificationProcess_didSetupFalse() {
+        val testDidSetup = false
+        savedStateHandle["didSetup"] = testDidSetup
+
+        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns MutableStateFlow(FetchMetadataEvent.Started)
+
+        val viewModel = IdentificationFetchMetadataViewModel(
+            mockIdentificationCoordinator,
+            savedStateHandle
+        )
+        viewModel.startIdentificationProcess()
+
+        verify { mockIdentificationCoordinator.startIdentificationProcess(testURL, testDidSetup) }
+    }
+
+    @Test
+    fun onCancelButtonTapped() {
+        val testDidSetup = false
+        savedStateHandle["didSetup"] = testDidSetup
+
         every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns
             MutableStateFlow(FetchMetadataEvent.Finished)
 
@@ -86,23 +123,8 @@ class IdentificationFetchMetadataViewModelTest {
             savedStateHandle
         )
 
-        dispatcher.scheduler.advanceUntilIdle()
+        viewModel.onCancelButtonTapped()
 
-        assertFalse(viewModel.shouldShowProgressIndicator)
-    }
-
-    @Test
-    fun fetchMetaDataEvents() {
-        every { mockIdentificationCoordinator.fetchMetadataEventFlow } returns
-            MutableStateFlow(FetchMetadataEvent.Started)
-
-        val viewModel = IdentificationFetchMetadataViewModel(
-            mockIdentificationCoordinator,
-            savedStateHandle
-        )
-
-        viewModel.fetchMetadata()
-
-        verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testURL) }
+        verify(exactly = 1) { mockIdentificationCoordinator.cancelIdentification() }
     }
 }

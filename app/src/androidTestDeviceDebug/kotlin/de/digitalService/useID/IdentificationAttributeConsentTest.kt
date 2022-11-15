@@ -6,6 +6,7 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsent
 import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentViewModel
 import de.digitalService.useID.ui.screens.identification.ProviderInfoDialogContent
@@ -44,6 +45,7 @@ class IdentificationAttributeConsentTest {
         every { viewModel.identificationProvider } returns testIdentificationProviderString
         every { viewModel.requiredReadAttributes } returns testRequiredReadAttributes
         every { viewModel.shouldShowInfoDialog } returns false
+        every { viewModel.didSetup } returns true
 
         composeTestRule.activity.setContent {
             IdentificationAttributeConsent(viewModel = viewModel)
@@ -89,6 +91,7 @@ class IdentificationAttributeConsentTest {
             testSubjectUrl,
             testTerms
         )
+        every { viewModel.didSetup } returns false
 
         composeTestRule.activity.setContent {
             IdentificationAttributeConsent(viewModel = viewModel)
@@ -109,5 +112,83 @@ class IdentificationAttributeConsentTest {
         composeTestRule.onAllNodesWithTag(cancelButtonTag)[1].performClick()
 
         verify(exactly = 1) { viewModel.onInfoDialogDismissalRequest() }
+    }
+
+    @Test
+    fun hasCancelButton() {
+        val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
+        val testIdentificationProviderString = "testIdentificationProviderString"
+        val testRequiredReadAttributes = listOf(
+            R.string.cardAttribute_dg01,
+            R.string.cardAttribute_dg02,
+            R.string.cardAttribute_dg03,
+            R.string.cardAttribute_dg04,
+            R.string.cardAttribute_dg05
+        )
+
+        val testIssue = "ISSUE"
+        val testIssueUrl = "ISSUE_URL"
+        val testSubject = "SUBJECT"
+        val testSubjectUrl = "SUBJECT_URL"
+        val testTerms = "TERMS"
+
+        every { viewModel.identificationProvider } returns testIdentificationProviderString
+        every { viewModel.requiredReadAttributes } returns testRequiredReadAttributes
+
+        every { viewModel.shouldShowInfoDialog } returns false
+        every { viewModel.infoDialogContent } returns ProviderInfoDialogContent(
+            testIssue,
+            testIssueUrl,
+            testSubject,
+            testSubjectUrl,
+            testTerms
+        )
+        every { viewModel.didSetup } returns false
+
+        composeTestRule.activity.setContent {
+            IdentificationAttributeConsent(viewModel = viewModel)
+        }
+
+        val navigationButtonTag = NavigationIcon.Cancel.name
+        composeTestRule.onNodeWithTag(navigationButtonTag).assertIsDisplayed()
+    }
+
+    @Test
+    fun hasBacksButton() {
+        val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
+        val testIdentificationProviderString = "testIdentificationProviderString"
+        val testRequiredReadAttributes = listOf(
+            R.string.cardAttribute_dg01,
+            R.string.cardAttribute_dg02,
+            R.string.cardAttribute_dg03,
+            R.string.cardAttribute_dg04,
+            R.string.cardAttribute_dg05
+        )
+
+        val testIssue = "ISSUE"
+        val testIssueUrl = "ISSUE_URL"
+        val testSubject = "SUBJECT"
+        val testSubjectUrl = "SUBJECT_URL"
+        val testTerms = "TERMS"
+
+        every { viewModel.identificationProvider } returns testIdentificationProviderString
+        every { viewModel.requiredReadAttributes } returns testRequiredReadAttributes
+
+        every { viewModel.shouldShowInfoDialog } returns false
+        every { viewModel.infoDialogContent } returns ProviderInfoDialogContent(
+            testIssue,
+            testIssueUrl,
+            testSubject,
+            testSubjectUrl,
+            testTerms
+        )
+        every { viewModel.didSetup } returns false
+
+        composeTestRule.activity.setContent {
+            IdentificationAttributeConsent(viewModel = viewModel)
+        }
+
+        val navigationButtonTag = NavigationIcon.Cancel.name
+        composeTestRule.onNodeWithTag(navigationButtonTag).assertIsDisplayed()
     }
 }

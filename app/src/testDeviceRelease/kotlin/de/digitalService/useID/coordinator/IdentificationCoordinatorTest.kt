@@ -132,7 +132,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -147,6 +147,8 @@ class IdentificationCoordinatorTest {
             .launchIn(CoroutineScope(dispatcher))
 
         advanceUntilIdle()
+
+        Assertions.assertTrue(identificationCoordinator.didSetup)
 
         Assertions.assertEquals(ScanEvent.CardRequested, scanResults.get(0))
         Assertions.assertEquals(FetchMetadataEvent.Started, fetchResults.get(0))
@@ -168,6 +170,7 @@ class IdentificationCoordinatorTest {
         fetchJob.cancel()
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -195,7 +198,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, false)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -213,6 +216,8 @@ class IdentificationCoordinatorTest {
 
         job.cancel()
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+
+        Assertions.assertFalse(identificationCoordinator.didSetup)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -240,7 +245,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -258,6 +263,8 @@ class IdentificationCoordinatorTest {
 
         job.cancel()
         verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+
+        Assertions.assertTrue(identificationCoordinator.didSetup)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -279,7 +286,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -300,6 +307,8 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(IdentificationPersonalPINDestination(testValue).route, navigationParameter.route)
 
         job.cancel()
+
+        Assertions.assertTrue(identificationCoordinator.didSetup)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -321,7 +330,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -353,7 +362,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -390,7 +399,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -427,7 +436,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -464,7 +473,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -495,7 +504,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -538,7 +547,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -570,7 +579,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -610,7 +619,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -666,7 +675,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -714,7 +723,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -755,7 +764,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -807,7 +816,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -853,7 +862,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -889,7 +898,7 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL)
+        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
 
         verify { mockIDCardManager.cancelTask() }
 
@@ -925,5 +934,21 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
 
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+    }
+
+    @Test
+    fun pop() {
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockTrackerManager,
+            mockIssueTrackerManager,
+            mockCoroutineContextProvider
+        )
+
+        identificationCoordinator.pop()
+
+        verify(exactly = 1) { mockAppCoordinator.pop() }
     }
 }
