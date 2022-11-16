@@ -52,7 +52,7 @@ fun ScreenWithTopBar(
     navigationButton: NavigationButton? = null,
     content: @Composable (topPadding: Dp) -> Unit
 ) {
-    val showConfirmDialog = remember { mutableStateOf(false) }
+    var showConfirmDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -64,7 +64,7 @@ fun ScreenWithTopBar(
                             modifier = Modifier.testTag(navigationButton.icon.name),
                             onClick = {
                                 if (navigationButton.shouldShowConfirmDialog) {
-                                    showConfirmDialog.value = true
+                                    showConfirmDialog = true
                                 } else {
                                     navigationButton.onClick()
                                 }
@@ -83,12 +83,32 @@ fun ScreenWithTopBar(
     ) { paddingValues ->
         content(paddingValues.calculateTopPadding())
 
-        if (showConfirmDialog.value) {
+        if (showConfirmDialog) {
             navigationButton?.let { navigationButton ->
                 if (navigationButton.isIdentification) {
-                    IdentificationCancelDialog(navigationButton, showConfirmDialog)
+                    CancelDialog(
+                        title = stringResource(R.string.identification_confirmEnd_title),
+                        message = stringResource(R.string.identification_confirmEnd_message),
+                        confirmButtonText = stringResource(id = R.string.identification_confirmEnd_confirm),
+                        onConfirm = {
+                            showConfirmDialog = false
+                            navigationButton.onClick()
+                        },
+                        dismissButtonText = stringResource(id = R.string.identification_confirmEnd_deny),
+                        onDismiss = { showConfirmDialog = false }
+                    )
                 } else {
-                    SetupCancelDialog(navigationButton, showConfirmDialog)
+                    CancelDialog(
+                        title = stringResource(R.string.firstTimeUser_confirmEnd_title),
+                        message = stringResource(R.string.firstTimeUser_confirmEnd_message),
+                        confirmButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_confirm),
+                        onConfirm = {
+                            showConfirmDialog = false
+                            navigationButton.onClick()
+                        },
+                        dismissButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_deny),
+                        onDismiss = { showConfirmDialog = false }
+                    )
                 }
             }
         }
@@ -101,61 +121,32 @@ fun ScreenWithTopBar(
                 return@BackHandler
             }
 
-            showConfirmDialog.value = true
+            showConfirmDialog = true
         }
     })
 }
 
 @Composable
-private fun IdentificationCancelDialog(navigationButton: NavigationButton, showConfirmDialog: MutableState<Boolean>) {
+private fun CancelDialog(
+    title: String,
+    message: String,
+    confirmButtonText: String,
+    onConfirm: () -> Unit,
+    dismissButtonText: String,
+    onDismiss: () -> Unit
+) {
     StandardDialog(
         title = {
-            Text(
-                text = stringResource(R.string.identification_confirmEnd_title),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
 
-            BackHandler(onBack = { showConfirmDialog.value = false })
+            BackHandler(onBack = onDismiss)
         },
         text = {
-            Text(
-                text = stringResource(R.string.identification_confirmEnd_message),
-                style = MaterialTheme.typography.bodySmall
-            )
+            Text(text = message, style = MaterialTheme.typography.bodySmall)
         },
-        confirmButtonText = stringResource(id = R.string.identification_confirmEnd_confirm),
-        dismissButtonText = stringResource(id = R.string.identification_confirmEnd_deny),
-        onDismissButtonTap = { showConfirmDialog.value = false }
-    ) {
-        showConfirmDialog.value = false
-        navigationButton.onClick()
-    }
-}
-
-@Composable
-private fun SetupCancelDialog(navigationButton: NavigationButton, showConfirmDialog: MutableState<Boolean>) {
-    StandardDialog(
-        title = {
-            Text(
-                text = stringResource(R.string.firstTimeUser_confirmEnd_title),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-
-            BackHandler(onBack = { showConfirmDialog.value = false })
-        },
-        text = {
-            Text(
-                text = stringResource(R.string.firstTimeUser_confirmEnd_message),
-                style = MaterialTheme.typography.bodySmall
-            )
-        },
-        confirmButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_confirm),
-        dismissButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_deny),
-        onDismissButtonTap = { showConfirmDialog.value = false }
-    ) {
-        showConfirmDialog.value = false
-        navigationButton.onClick()
-    }
+        confirmButtonText = confirmButtonText,
+        dismissButtonText = dismissButtonText,
+        onDismissButtonTap = onDismiss,
+        onConfirmButtonTap = onConfirm
+    )
 }
