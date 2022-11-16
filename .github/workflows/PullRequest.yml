@@ -29,6 +29,7 @@ jobs:
 
   test:
     runs-on: self-hosted
+    needs: lint
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
