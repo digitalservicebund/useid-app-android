@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   lint:
-    runs-on: self-hosted
+    runs-on: [self-hosted, ARM64]
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -28,7 +28,7 @@ jobs:
           path: app/build/reports
 
   test:
-    runs-on: self-hosted
+    runs-on: [self-hosted, ARM64]
     needs: lint
     steps:
       - name: Check out repository code
