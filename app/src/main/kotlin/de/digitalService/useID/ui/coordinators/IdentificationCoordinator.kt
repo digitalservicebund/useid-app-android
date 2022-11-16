@@ -12,7 +12,6 @@ import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.destinations.*
-import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -36,10 +34,6 @@ class IdentificationCoordinator @Inject constructor(
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
-
-    private val _fetchMetadataEventFlow: MutableStateFlow<FetchMetadataEvent> = MutableStateFlow(FetchMetadataEvent.Started)
-    val fetchMetadataEventFlow: StateFlow<FetchMetadataEvent>
-        get() = _fetchMetadataEventFlow
 
     private val _scanEventFlow: MutableStateFlow<ScanEvent> = MutableStateFlow(ScanEvent.CardRequested)
     val scanEventFlow: Flow<ScanEvent>
@@ -110,7 +104,6 @@ class IdentificationCoordinator @Inject constructor(
             } else {
                 appCoordinator.popToRoot()
             }
-            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
         }
         reachedScanState = false
         incorrectPin = false
@@ -123,7 +116,6 @@ class IdentificationCoordinator @Inject constructor(
         appCoordinator.setIsNotFirstTimeUser()
         CoroutineScope(Dispatchers.Main).launch {
             appCoordinator.popToRoot()
-            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
         }
         reachedScanState = false
         incorrectPin = false
@@ -143,8 +135,6 @@ class IdentificationCoordinator @Inject constructor(
             .toString()
 
         CoroutineScope(coroutineContextProvider.IO).launch {
-            _fetchMetadataEventFlow.emit(FetchMetadataEvent.Started)
-
             idCardManager.identify(context, fullURL).catch { error ->
                 logger.error("Identification error: $error")
 
@@ -167,8 +157,6 @@ class IdentificationCoordinator @Inject constructor(
                         navigateOnMain(IdentificationCardBlockedDestination)
                     }
                     is IDCardInteractionException.ProcessFailed -> {
-                        _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
-
                         if (reachedScanState) {
                             val scanEvent = if (error.redirectUrl != null) {
                                 navigateOnMain(IdentificationCardUnreadableDestination(true, error.redirectUrl))
@@ -183,8 +171,6 @@ class IdentificationCoordinator @Inject constructor(
                         }
                     }
                     else -> {
-                        _fetchMetadataEventFlow.emit(FetchMetadataEvent.Error)
-
                         navigateOnMain(IdentificationOtherErrorDestination(tcTokenURL))
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
 
@@ -214,7 +200,6 @@ class IdentificationCoordinator @Inject constructor(
 
                         requestAuthenticationEvent = event
 
-                        _fetchMetadataEventFlow.emit(FetchMetadataEvent.Finished)
                         navigateOnMain(IdentificationAttributeConsentDestination(event.request))
                     }
                     is EIDInteractionEvent.RequestPIN -> {

@@ -87,10 +87,6 @@ data class IdentificationFetchMetadataNavArgs(
     val didSetup: Boolean
 )
 
-enum class FetchMetadataEvent {
-    Started, Finished, Error
-}
-
 interface IdentificationFetchMetadataViewModelInterface {
     fun startIdentificationProcess()
     fun onCancelButtonTapped()
