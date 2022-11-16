@@ -449,14 +449,6 @@
 \n### § 7 Deutsches Recht
 \n
 \nAuf diese Nutzungsbedingungen ist ausschließlich deutsches Recht unter Ausschluss des Übereinkommens der Vereinten Nationen über Verträge über den internationalen Warenkauf (CISG) anwendbar."</string>
-    <string name="firstTimeUser_scan_cancelDialog_title">Einrichtung Beenden?</string>
-    <string name="firstTimeUser_scan_cancelDialog_body">Möchten Sie die Einrichtung der Online-Ausweisfunktion beenden?\n\nSie können die Einrichtung später erneut starten.</string>
-    <string name="firstTimeUser_scan_cancelDialog_confirm">Beenden</string>
-    <string name="firstTimeUser_scan_cancelDialog_dismiss">Abbrechen</string>
-    <string name="identification_scan_cancelDialog_title">Ausweisen Beenden?</string>
-    <string name="identification_scan_cancelDialog_body">Möchten Sie das Ausweisen beenden?</string>
-    <string name="identification_scan_cancelDialog_confirm">Beenden</string>
-    <string name="identification_scan_cancelDialog_dismiss">Abbrechen</string>
     <string name="pinEntryField_accessibility_cursorPosition">Cursor an der Position %1$d.</string>
     <string name="identification_confirmEnd_message">Möchten Sie das Ausweisen beenden?</string>
     <string name="identification_confirmEnd_title">Ausweisen beenden?</string>

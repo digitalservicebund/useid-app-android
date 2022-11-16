@@ -64,7 +64,7 @@
     <string name="cardAttribute_restrictedIdentification">Provider and card-specific identifier</string>
     <string name="firstTimeUser_confirmEnd_confirm">Exit</string>
     <string name="firstTimeUser_confirmEnd_deny">Cancel</string>
-    <string name="firstTimeUser_confirmEnd_message">Do you want to cancel the setup of the online ID card function\? 
+    <string name="firstTimeUser_confirmEnd_message">Do you want to cancel the setup of the online ID card function\?
 \n
 \nYou can restart the setup later.</string>
     <string name="firstTimeUser_confirmEnd_title">End setup?</string>
@@ -453,18 +453,10 @@
 \n### § 7 German law
 \n
 \nThese Terms and Conditions of Use are governed exclusively by German law. The United Nations Convention on Contracts for the International Sale of Goods (CISG) is excluded.</string>
-    <string name="firstTimeUser_scan_cancelDialog_title">Exit setup?</string>
-    <string name="firstTimeUser_scan_cancelDialog_body">Do you want to finish setting up the online ID card function?\n\nYou can restart the setup later.</string>
-    <string name="firstTimeUser_scan_cancelDialog_confirm">Exit</string>
-    <string name="firstTimeUser_scan_cancelDialog_dismiss">Cancel</string>
-    <string name="identification_scan_cancelDialog_title">Exit identify?</string>
-    <string name="identification_scan_cancelDialog_body">Do you want to stop the identification process?</string>
-    <string name="identification_scan_cancelDialog_confirm">Exit</string>
-    <string name="identification_scan_cancelDialog_dismiss">Cancel</string>
     <string name="firstTimeUser_personalPIN_confirmation_title">Confirm your personal ID PIN.</string>
     <string name="pinEntryField_accessibility_cursorPosition">Cursor at position %1$d.</string>
-    <string name="identification_confirmEnd_message">Do you want to stop the identification?</string>
-    <string name="identification_confirmEnd_title">End identification?</string>
-    <string name="identification_confirmEnd_confirm">Finish</string>
+    <string name="identification_confirmEnd_message">Do you want to stop the identification process?</string>
+    <string name="identification_confirmEnd_title">End identification process?</string>
+    <string name="identification_confirmEnd_confirm">Exit</string>
     <string name="identification_confirmEnd_deny">Cancel</string>
 </resources>

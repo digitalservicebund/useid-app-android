@@ -46,7 +46,7 @@ class IdentificationScanTest {
         val errorDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_scan_error_title_pin_suspended)
         composeTestRule.onNodeWithText(errorDialogTitleText).assertDoesNotExist()
 
-        val cancelDialogTitle = composeTestRule.activity.getString(R.string.identification_scan_cancelDialog_title)
+        val cancelDialogTitle = composeTestRule.activity.getString(R.string.identification_confirmEnd_title)
         composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
 
         val cancelButtonTag = "Cancel"
@@ -54,12 +54,14 @@ class IdentificationScanTest {
 
         composeTestRule.onNodeWithText(cancelDialogTitle).assertIsDisplayed()
 
-        val confirmButton = composeTestRule.activity.getString(R.string.identification_scan_cancelDialog_confirm)
+        val confirmButton = composeTestRule.activity.getString(R.string.identification_confirmEnd_confirm)
         composeTestRule.onNodeWithText(confirmButton).performClick()
 
         verify(exactly = 1) { mockViewModel.onCancelIdentification() }
 
-        val dismissButton = composeTestRule.activity.getString(R.string.identification_scan_cancelDialog_dismiss)
+        composeTestRule.onNodeWithTag(cancelButtonTag).performClick()
+
+        val dismissButton = composeTestRule.activity.getString(R.string.identification_confirmEnd_deny)
         composeTestRule.onNodeWithText(dismissButton).performClick()
 
         composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()

@@ -5,12 +5,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -19,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -44,7 +40,6 @@ fun SetupTransportPIN(
     viewModel: SetupTransportPINViewModelInterface = hiltViewModel<SetupTransportPINViewModel>()
 ) {
     val resources = LocalContext.current.resources
-    var showCancelDialog by remember { mutableStateOf(false) }
 
     val icon = if (viewModel.attempts == null) {
         NavigationIcon.Back
@@ -55,7 +50,8 @@ fun SetupTransportPIN(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = icon,
-            onClick = { if (viewModel.attempts == null) viewModel.onBackButtonTapped() else showCancelDialog = true }
+            onClick = if (viewModel.attempts == null) viewModel::onBackButtonTapped else viewModel::onCancelTapped,
+            shouldShowConfirmDialog = viewModel.attempts != null
         )
     ) { topPadding ->
         val focusRequester = remember { FocusRequester() }
@@ -113,40 +109,6 @@ fun SetupTransportPIN(
                     modifier = Modifier.align(androidx.compose.ui.Alignment.CenterHorizontally)
                 )
             }
-        }
-
-        if (showCancelDialog) {
-            AlertDialog(
-                onDismissRequest = { showCancelDialog = false },
-                properties = DialogProperties(),
-                title = {
-                    Text(
-                        text = stringResource(R.string.firstTimeUser_scan_cancelDialog_title),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                },
-                text = {
-                    Text(text = stringResource(R.string.firstTimeUser_scan_cancelDialog_body), style = MaterialTheme.typography.bodySmall)
-                },
-                confirmButton = {
-                    TextButton(onClick = viewModel::onCancelTapped) {
-                        Text(
-                            text = stringResource(R.string.firstTimeUser_scan_cancelDialog_confirm),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showCancelDialog = false }) {
-                        Text(
-                            text = stringResource(R.string.firstTimeUser_scan_cancelDialog_dismiss),
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                },
-                containerColor = MaterialTheme.colorScheme.background,
-                shape = RoundedCornerShape(10.dp)
-            )
         }
     }
 }
