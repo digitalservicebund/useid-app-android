@@ -100,7 +100,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSetupFinished() {
-        handleSetupEnded(true)
+        handleSetupEnded(didSetup = true)
     }
 
     fun onBackToHome() {
@@ -112,7 +112,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSkipSetup() {
-        handleSetupEnded(false)
+        handleSetupEnded(didSetup = false)
     }
 
     fun cancelSetup() {
