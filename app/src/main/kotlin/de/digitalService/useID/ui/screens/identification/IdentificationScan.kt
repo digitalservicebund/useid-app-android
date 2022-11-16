@@ -4,15 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -28,7 +23,6 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
-import de.digitalService.useID.ui.theme.Blue600
 import de.digitalService.useID.ui.theme.UseIDTheme
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.launch
@@ -40,12 +34,11 @@ fun IdentificationScan(
     modifier: Modifier = Modifier,
     viewModel: IdentificationScanViewModelInterface = hiltViewModel<IdentificationScanViewModel>()
 ) {
-    var showCancelDialog by remember { mutableStateOf(false) }
-
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            onClick = { showCancelDialog = true },
+            onClick = viewModel::onCancelIdentification,
+            shouldShowConfirmDialog = true,
             isIdentification = true
         )
     ) { topPadding ->
@@ -55,40 +48,6 @@ fun IdentificationScan(
             onHelpDialogShown = viewModel::onHelpButtonTapped,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
-        )
-    }
-
-    if (showCancelDialog) {
-        AlertDialog(
-            onDismissRequest = { showCancelDialog = false },
-            properties = DialogProperties(),
-            title = {
-                Text(
-                    text = stringResource(R.string.identification_scan_cancelDialog_title),
-                    style = MaterialTheme.typography.titleMedium
-                )
-            },
-            text = {
-                Text(
-                    text = stringResource(R.string.identification_scan_cancelDialog_body)
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = viewModel::onCancelIdentification) {
-                    Text(
-                        text = stringResource(R.string.identification_scan_cancelDialog_confirm),
-                        color = Blue600
-                    )
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showCancelDialog = false }) {
-                    Text(
-                        text = stringResource(R.string.identification_scan_cancelDialog_dismiss),
-                        color = Blue600
-                    )
-                }
-            }
         )
     }
 }

@@ -1,11 +1,19 @@
 package de.digitalService.useID.ui.dialogs
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.Dialog
+import de.digitalService.useID.ui.theme.Blue800
 
 @Composable
 fun StandardDialog(
@@ -16,40 +24,44 @@ fun StandardDialog(
     onDismissButtonTap: (() -> Unit)? = null,
     onConfirmButtonTap: () -> Unit
 ) {
-    AlertDialog(
-        onDismissRequest = { },
-        confirmButton = {
-            Button(
-                onClick = onConfirmButtonTap,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text(confirmButtonText)
-            }
-        },
-        dismissButton = {
-            if (dismissButtonText == null || onDismissButtonTap == null) {
-                return@AlertDialog
-            }
+    Dialog(onDismissRequest = { }) {
+        Column(
+            modifier = Modifier
+                .background(Color.White, shape = RoundedCornerShape(10.dp))
+                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp)
+        ) {
+            title()
 
-            Button(
-                onClick = onDismissButtonTap,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    contentColor = MaterialTheme.colorScheme.primary
-                )
-            ) {
-                Text(dismissButtonText)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            text()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                if (dismissButtonText != null && onDismissButtonTap != null) {
+                    TextButton(onClick = onDismissButtonTap) {
+                        Text(
+                            text = dismissButtonText,
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Blue800
+                        )
+                    }
+                }
+
+                TextButton(onClick = onConfirmButtonTap) {
+                    Text(
+                        text = confirmButtonText,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Blue800
+                    )
+                }
             }
-        },
-        shape = RoundedCornerShape(10.dp),
-        title = title,
-        text = text,
-        containerColor = MaterialTheme.colorScheme.background,
-        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
-    )
+        }
+    }
 }
 
 @Preview

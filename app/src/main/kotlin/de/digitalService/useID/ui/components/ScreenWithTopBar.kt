@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.dialogs.StandardDialog
@@ -109,13 +110,19 @@ fun ScreenWithTopBar(
 private fun IdentificationCancelDialog(navigationButton: NavigationButton, showConfirmDialog: MutableState<Boolean>) {
     StandardDialog(
         title = {
-            val title = stringResource(R.string.identification_confirmEnd_title)
-            Text(text = title)
+            Text(
+                text = stringResource(R.string.identification_confirmEnd_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
 
             BackHandler(onBack = { showConfirmDialog.value = false })
         },
         text = {
-            Text(text = stringResource(R.string.identification_confirmEnd_message))
+            Text(
+                text = stringResource(R.string.identification_confirmEnd_message),
+                style = MaterialTheme.typography.bodySmall
+            )
         },
         confirmButtonText = stringResource(id = R.string.identification_confirmEnd_confirm),
         dismissButtonText = stringResource(id = R.string.identification_confirmEnd_deny),
@@ -130,13 +137,19 @@ private fun IdentificationCancelDialog(navigationButton: NavigationButton, showC
 private fun SetupCancelDialog(navigationButton: NavigationButton, showConfirmDialog: MutableState<Boolean>) {
     StandardDialog(
         title = {
-            val title = stringResource(R.string.firstTimeUser_confirmEnd_title)
-            Text(text = title)
+            Text(
+                text = stringResource(R.string.firstTimeUser_confirmEnd_title),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
 
             BackHandler(onBack = { showConfirmDialog.value = false })
         },
         text = {
-            Text(text = stringResource(R.string.firstTimeUser_confirmEnd_message))
+            Text(
+                text = stringResource(R.string.firstTimeUser_confirmEnd_message),
+                style = MaterialTheme.typography.bodySmall
+            )
         },
         confirmButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_confirm),
         dismissButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_deny),

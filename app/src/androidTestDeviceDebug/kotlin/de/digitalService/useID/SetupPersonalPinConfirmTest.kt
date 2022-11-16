@@ -40,7 +40,7 @@ class SetupPersonalPinConfirmTest {
         composeTestRule.waitForIdle()
         verify(exactly = 1) { mockViewModel.onInitialize() }
 
-        val pinTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_confirmation_title)
+        val pinTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_title)
         composeTestRule.onNodeWithText(pinTitleText).assertIsDisplayed()
 
         val pinEntryTextFieldTag = "PINEntryField"
@@ -81,7 +81,7 @@ class SetupPersonalPinConfirmTest {
         composeTestRule.waitForIdle()
         verify(exactly = 1) { mockViewModel.onInitialize() }
 
-        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_confirmation_title)
+        val transportPinDialogTitleText = composeTestRule.activity.getString(R.string.firstTimeUser_personalPIN_title)
         composeTestRule.onNodeWithText(transportPinDialogTitleText).assertIsDisplayed()
 
         val pinEntryTestTag = "Obfuscation"
