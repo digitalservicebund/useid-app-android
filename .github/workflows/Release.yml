@@ -14,7 +14,7 @@ on:
 
 jobs:
   bumpVersion:
-    runs-on: self-hosted
+    runs-on: [self-hosted, ARM64]
     outputs:
       gitTag: ${{ steps.gitTag.outputs.gitTag }}
     steps:
@@ -41,7 +41,7 @@ jobs:
         run: echo "::set-output name=gitTag::${{ env.GIT_TAG }}"
 
   production:
-    runs-on: self-hosted
+    runs-on: [self-hosted, ARM64]
     needs: bumpVersion
     steps:
       - name: Build
@@ -61,7 +61,7 @@ jobs:
           SENTRY_PROJECT: useid-android
 
   preview:
-    runs-on: self-hosted
+    runs-on: [self-hosted, ARM64]
     needs: bumpVersion
     steps:
       - name: Build
@@ -81,7 +81,7 @@ jobs:
           SENTRY_PROJECT: useid-preview-android
 
   github:
-    runs-on: self-hosted
+    runs-on: [self-hosted, ARM64]
     needs: bumpVersion
     steps:
       - name: Build
