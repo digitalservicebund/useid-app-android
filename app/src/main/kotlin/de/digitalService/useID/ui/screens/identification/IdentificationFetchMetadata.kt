@@ -27,9 +27,7 @@ import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetada
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
-@Destination(
-    navArgsDelegate = IdentificationFetchMetadataNavArgs::class
-)
+@Destination(navArgsDelegate = IdentificationFetchMetadataNavArgs::class)
 @Composable
 fun IdentificationFetchMetadata(
     modifier: Modifier = Modifier,

@@ -112,7 +112,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onSkipSetup() {
-        handleSetupEnded(didSetup = false)
+        handleSetupEnded(didSetup = true)
     }
 
     fun cancelSetup() {
