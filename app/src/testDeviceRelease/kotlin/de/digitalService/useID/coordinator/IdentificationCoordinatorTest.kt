@@ -11,7 +11,6 @@ import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
-import de.digitalService.useID.ui.screens.identification.FetchMetadataEvent
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProvider
 import io.mockk.*
@@ -141,24 +140,16 @@ class IdentificationCoordinatorTest {
             .onEach(scanResults::add)
             .launchIn(CoroutineScope(dispatcher))
 
-        val fetchResults = mutableListOf<FetchMetadataEvent>()
-        val fetchJob = identificationCoordinator.fetchMetadataEventFlow
-            .onEach(fetchResults::add)
-            .launchIn(CoroutineScope(dispatcher))
-
         advanceUntilIdle()
 
         Assertions.assertTrue(identificationCoordinator.didSetup)
 
         Assertions.assertEquals(ScanEvent.CardRequested, scanResults.get(0))
-        Assertions.assertEquals(FetchMetadataEvent.Started, fetchResults.get(0))
 
         testFlow.value = testRequestAuthenticationRequestConfirmation
         advanceUntilIdle()
 
         Assertions.assertEquals(1, scanResults.size)
-        Assertions.assertEquals(2, fetchResults.size)
-        Assertions.assertEquals(FetchMetadataEvent.Finished, fetchResults.get(1))
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
 
         testFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
@@ -167,7 +158,6 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(ScanEvent.Finished(testRedirectUrl), scanResults.get(1))
 
         scanJob.cancel()
-        fetchJob.cancel()
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
@@ -825,15 +815,9 @@ class IdentificationCoordinatorTest {
             .onEach(scanResults::add)
             .launchIn(CoroutineScope(dispatcher))
 
-        val fetchResults = mutableListOf<FetchMetadataEvent>()
-        val fetchJob = identificationCoordinator.fetchMetadataEventFlow
-            .onEach(fetchResults::add)
-            .launchIn(CoroutineScope(dispatcher))
-
         advanceUntilIdle()
 
         Assertions.assertEquals(ScanEvent.Error(ScanError.Other(null)), scanResults.get(0))
-        Assertions.assertEquals(FetchMetadataEvent.Error, fetchResults.get(0))
 
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
 
@@ -841,7 +825,6 @@ class IdentificationCoordinatorTest {
         Assertions.assertEquals(IdentificationOtherErrorDestination(testTokenURL).route, navigationParameter.route)
 
         scanJob.cancel()
-        fetchJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

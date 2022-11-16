@@ -202,7 +202,7 @@ class SetupCoordinatorTest {
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 0) { mockAppCoordinator.popToRoot() }
 
-        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, false) }
+        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, true) }
     }
 
     @Test
@@ -217,7 +217,7 @@ class SetupCoordinatorTest {
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
-        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, false) }
+        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, true) }
     }
 
     @Test
