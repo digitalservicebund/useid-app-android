@@ -94,6 +94,7 @@
     <string name="firstTimeUser_personalPINIntro_info_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
     <string name="firstTimeUser_personalPINIntro_info_title">Persönliche Ausweis–PIN gut merken</string>
     <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis-PIN.</string>
+    <string name="firstTimeUser_personalPIN_confirmation_body">Nutzen Sie nicht Ihr Geburtsdatum als Ihre PIN. Vergeben Sie eine PIN, die nicht leicht zu erraten ist.</string>
     <string name="firstTimeUser_personalPIN_confirmation_title">Bestätigen Sie Ihre persönliche Ausweis-PIN.</string>
     <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
     <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>

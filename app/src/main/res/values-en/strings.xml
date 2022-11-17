@@ -453,6 +453,7 @@
 \n### § 7 German law
 \n
 \nThese Terms and Conditions of Use are governed exclusively by German law. The United Nations Convention on Contracts for the International Sale of Goods (CISG) is excluded.</string>
+    <string name="firstTimeUser_personalPIN_confirmation_body">Do not use your birthday as your PIN. Assign a PIN that is not easy to guess.</string>
     <string name="firstTimeUser_personalPIN_confirmation_title">Confirm your personal ID PIN.</string>
     <string name="pinEntryField_accessibility_cursorPosition">Cursor at position %1$d.</string>
     <string name="identification_confirmEnd_message">Do you want to stop the identification process?</string>
