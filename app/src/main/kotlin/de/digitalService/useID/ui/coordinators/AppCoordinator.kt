@@ -14,6 +14,9 @@ import de.digitalService.useID.ui.screens.destinations.Destination
 import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -56,11 +59,15 @@ class AppCoordinator @Inject constructor(
         this.navController = navController
     }
 
-    override fun navigate(route: Direction) = navController.navigate(route)
+    override fun navigate(route: Direction) {
+        CoroutineScope(Dispatchers.Main).launch { navController.navigate(route) }
+    }
 
     override fun navigatePopping(route: Direction) {
-        navController.navigate(route) {
-            pop()
+        CoroutineScope(Dispatchers.Main).launch {
+            navController.navigate(route) {
+                pop()
+            }
         }
     }
 

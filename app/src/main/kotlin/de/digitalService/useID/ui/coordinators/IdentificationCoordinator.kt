@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
 import android.net.Uri
-import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
@@ -87,7 +86,7 @@ class IdentificationCoordinator @Inject constructor(
 
     private fun onIncorrectPersonalPIN(attempts: Int) {
         incorrectPin = true
-        navigateOnMain(IdentificationPersonalPINDestination(attempts))
+        appCoordinator.navigate(IdentificationPersonalPINDestination(attempts))
     }
 
     fun pop() {
@@ -148,30 +147,30 @@ class IdentificationCoordinator @Inject constructor(
                         trackerManager.trackScreen("identification/cardDeactivated")
 
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.CardDeactivated))
-                        navigateOnMain(IdentificationCardDeactivatedDestination)
+                        appCoordinator.navigate(IdentificationCardDeactivatedDestination)
                     }
                     IDCardInteractionException.CardBlocked -> {
                         trackerManager.trackScreen("identification/cardUnreadable")
 
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINBlocked))
-                        navigateOnMain(IdentificationCardBlockedDestination)
+                        appCoordinator.navigate(IdentificationCardBlockedDestination)
                     }
                     is IDCardInteractionException.ProcessFailed -> {
                         if (reachedScanState) {
                             val scanEvent = if (error.redirectUrl != null) {
-                                navigateOnMain(IdentificationCardUnreadableDestination(true, error.redirectUrl))
+                                appCoordinator.navigate(IdentificationCardUnreadableDestination(true, error.redirectUrl))
                                 ScanEvent.Error(ScanError.CardErrorWithRedirect(error.redirectUrl))
                             } else {
-                                navigateOnMain(IdentificationCardUnreadableDestination(true, null))
+                                appCoordinator.navigate(IdentificationCardUnreadableDestination(true, null))
                                 ScanEvent.Error(ScanError.CardErrorWithoutRedirect)
                             }
                             _scanEventFlow.emit(scanEvent)
                         } else {
-                            navigateOnMain(IdentificationOtherErrorDestination(tcTokenURL))
+                            appCoordinator.navigate(IdentificationOtherErrorDestination(tcTokenURL))
                         }
                     }
                     else -> {
-                        navigateOnMain(IdentificationOtherErrorDestination(tcTokenURL))
+                        appCoordinator.navigate(IdentificationOtherErrorDestination(tcTokenURL))
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
 
                         if (pinCallback == null && !reachedScanState) {
@@ -200,7 +199,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         requestAuthenticationEvent = event
 
-                        navigateOnMain(IdentificationAttributeConsentDestination(event.request))
+                        appCoordinator.navigate(IdentificationAttributeConsentDestination(event.request))
                     }
                     is EIDInteractionEvent.RequestPIN -> {
                         logger.debug("Requesting PIN")
@@ -209,7 +208,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         if (event.attempts == null) {
                             logger.debug("PIN request without attempts")
-                            navigateOnMain(IdentificationPersonalPINDestination(null))
+                            appCoordinator.navigate(IdentificationPersonalPINDestination(null))
                         } else {
                             logger.debug("PIN request with ${event.attempts} attempts")
                             _scanEventFlow.emit(ScanEvent.CardRequested)
@@ -219,7 +218,7 @@ class IdentificationCoordinator @Inject constructor(
                     is EIDInteractionEvent.RequestCAN -> {
                         logger.debug("Requesting CAN")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
-                        navigateOnMain(IdentificationCardSuspendedDestination)
+                        appCoordinator.navigate(IdentificationCardSuspendedDestination)
 
                         trackerManager.trackScreen("identification/cardSuspended")
                         cancel()
@@ -227,7 +226,7 @@ class IdentificationCoordinator @Inject constructor(
                     is EIDInteractionEvent.RequestPINAndCAN -> {
                         logger.debug("Requesting PIN and CAN")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINSuspended))
-                        navigateOnMain(IdentificationCardSuspendedDestination)
+                        appCoordinator.navigate(IdentificationCardSuspendedDestination)
 
                         trackerManager.trackScreen("identification/cardSuspended")
                         cancel()
@@ -235,7 +234,7 @@ class IdentificationCoordinator @Inject constructor(
                     is EIDInteractionEvent.RequestPUK -> {
                         logger.debug("Requesting PUK")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINBlocked))
-                        navigateOnMain(IdentificationCardBlockedDestination)
+                        appCoordinator.navigate(IdentificationCardBlockedDestination)
 
                         trackerManager.trackScreen("identification/cardBlocked")
                         cancel()
@@ -243,7 +242,7 @@ class IdentificationCoordinator @Inject constructor(
                     EIDInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Requesting ID card")
                         if (!reachedScanState) {
-                            navigateOnMain(IdentificationScanDestination)
+                            appCoordinator.navigate(IdentificationScanDestination)
                         }
                         appCoordinator.startNFCTagHandling()
                     }
@@ -269,9 +268,5 @@ class IdentificationCoordinator @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun navigateOnMain(direction: Direction) {
-        CoroutineScope(Dispatchers.Main).launch { appCoordinator.navigate(direction) }
     }
 }

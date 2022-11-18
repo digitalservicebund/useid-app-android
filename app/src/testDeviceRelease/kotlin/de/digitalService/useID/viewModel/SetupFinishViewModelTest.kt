@@ -29,6 +29,6 @@ class SetupFinishViewModelTest {
 
         viewModel.onButtonTapped()
 
-        verify(exactly = 1) { mockCoordinator.onSetupFinished() }
+        verify(exactly = 1) { mockCoordinator.finishSetup() }
     }
 }

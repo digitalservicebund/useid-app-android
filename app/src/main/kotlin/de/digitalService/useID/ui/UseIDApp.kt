@@ -51,6 +51,11 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
             SetupScanDestination.route -> firstTimeUserRoute("scan")
             SetupFinishDestination.route -> firstTimeUserRoute("done")
 
+            SetupCardDeactivatedDestination.route -> firstTimeUserRoute("cardDeactivated")
+            SetupCardSuspendedDestination.route -> firstTimeUserRoute("cardSuspended")
+            SetupCardBlockedDestination.route -> firstTimeUserRoute("cardBlocked")
+            SetupCardUnreadableDestination.route -> firstTimeUserRoute("cardUnreadable")
+
             IdentificationFetchMetadataDestination.route -> identificationRoute("fetchMetadata")
             IdentificationAttributeConsentDestination.route -> identificationRoute("attributes")
             IdentificationPersonalPINDestination.route -> identificationRoute("personalPIN")

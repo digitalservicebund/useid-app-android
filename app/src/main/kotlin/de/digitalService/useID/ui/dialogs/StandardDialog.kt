@@ -24,7 +24,7 @@ fun StandardDialog(
     onDismissButtonTap: (() -> Unit)? = null,
     onConfirmButtonTap: () -> Unit
 ) {
-    Dialog(onDismissRequest = { }) {
+    Dialog(onDismissRequest = onDismissButtonTap ?: { }) {
         Column(
             modifier = Modifier
                 .background(Color.White, shape = RoundedCornerShape(10.dp))

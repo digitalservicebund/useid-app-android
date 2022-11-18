@@ -13,10 +13,14 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
@@ -26,350 +30,28 @@ class SetupScanViewModelTest {
     lateinit var coordinatorMock: SetupCoordinator
 
     @MockK(relaxUnitFun = true)
-    lateinit var idCardManagerMock: IDCardManager
-
-    @MockK(relaxUnitFun = true)
     lateinit var mockTrackerManager: TrackerManagerType
 
-    @MockK(relaxUnitFun = true)
-    lateinit var mockIssueTrackerManager: IssueTrackerManagerType
-
-    @MockK(relaxUnitFun = true)
-    lateinit var contextMock: Context
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_Success() = runTest {
+    fun collectProgressEvents() = runTest {
         val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
 
-        val transportPIN = "12345"
-        val personalPIN = "123456"
+        val progressFlow = MutableStateFlow(false)
 
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        val pinCallback = mockk<(String, String) -> Unit>()
-        every { pinCallback(transportPIN, personalPIN) } just Runs
-
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            emit(EIDInteractionEvent.PINManagementStarted)
-            emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
-        }
+        every { coordinatorMock.scanInProgress } returns progressFlow
 
         val viewModel = SetupScanViewModel(
             coordinatorMock,
-            idCardManagerMock,
             mockTrackerManager,
-            mockIssueTrackerManager,
             testScope
         )
 
-        viewModel.startSettingPIN(contextMock)
+        Assertions.assertFalse(viewModel.shouldShowProgress)
 
+        progressFlow.value = true
         advanceUntilIdle()
 
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 1) { pinCallback(transportPIN, personalPIN) }
-        verify(exactly = 1) { coordinatorMock.onSettingPINSucceeded() }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_NoTransportPin() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-        val transportPIN = null
-
-        every { coordinatorMock.transportPin } returns transportPIN
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_NoPersonalPin() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-        val transportPIN = "12345"
-        val personalPIN = null
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_CardDeactivated() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val transportPIN = "12345"
-        val personalPIN = "123456"
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            throw IDCardInteractionException.CardDeactivated
-        }
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_CardBlocked() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val transportPIN = "12345"
-        val personalPIN = "123456"
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            throw IDCardInteractionException.CardBlocked
-        }
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-
-
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_OtherException() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val transportPIN = "12345"
-        val personalPIN = "123456"
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        val exception_message = "exception_message"
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            throw Exception(exception_message)
-        }
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-
-
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_RequestChangePinTwice() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val transportPIN = "12345"
-        val personalPIN = "123456"
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        val pinCallback = mockk<(String, String) -> Unit>()
-        every { pinCallback(transportPIN, personalPIN) } just Runs
-
-        val attempts = 2
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            emit(EIDInteractionEvent.PINManagementStarted)
-            emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
-            emit(EIDInteractionEvent.RequestChangedPIN(attempts = attempts, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
-        }
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 1) { pinCallback(transportPIN, personalPIN) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_RequestCANAndChangedPIN() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val transportPIN = "12345"
-        val personalPIN = "123456"
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        val pinCallback = mockk<(String, String, String) -> Unit>()
-
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            emit(EIDInteractionEvent.RequestCANAndChangedPIN(pinCallback))
-        }
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { pinCallback(any(), any(), any()) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-
-
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startSettingPIN_RequestPUK() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val transportPIN = "12345"
-        val personalPIN = "123456"
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        val pinCallback = mockk<(String) -> Unit>()
-
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            emit(EIDInteractionEvent.RequestPUK(pinCallback))
-        }
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.startSettingPIN(contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 0) { pinCallback(any()) }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-
-
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun onReEnteredTransportPIN() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
-
-        val transportPIN = "12345"
-        val personalPIN = "123456"
-
-        every { coordinatorMock.transportPin } returns transportPIN
-        every { coordinatorMock.personalPin } returns personalPIN
-
-        val pinCallback = mockk<(String, String) -> Unit>()
-        every { pinCallback(transportPIN, personalPIN) } just Runs
-
-        every { idCardManagerMock.changePin(contextMock) } returns flow {
-            emit(EIDInteractionEvent.PINManagementStarted)
-            emit(EIDInteractionEvent.RequestChangedPIN(attempts = null, pinCallback))
-            emit(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
-        }
-
-        val viewModel = SetupScanViewModel(
-            coordinatorMock,
-            idCardManagerMock,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            testScope
-        )
-
-        viewModel.onReEnteredTransportPIN(transportPIN, contextMock)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { idCardManagerMock.changePin(contextMock) }
-        verify(exactly = 1) { pinCallback(transportPIN, personalPIN) }
-        verify(exactly = 1) { coordinatorMock.onSettingPINSucceeded() }
-
-
+        Assertions.assertTrue(viewModel.shouldShowProgress)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -379,20 +61,13 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             coordinatorMock,
-            idCardManagerMock,
             mockTrackerManager,
-            mockIssueTrackerManager,
             testScope
         )
 
         viewModel.onCancelConfirm()
 
         verify(exactly = 1) { coordinatorMock.cancelSetup() }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        verify(exactly = 1) { idCardManagerMock.cancelTask() }
-        verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
-
-
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -402,20 +77,29 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             coordinatorMock,
-            idCardManagerMock,
             mockTrackerManager,
-            mockIssueTrackerManager,
             testScope
         )
 
         viewModel.onCancelConfirm()
 
         verify(exactly = 1) { coordinatorMock.cancelSetup() }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        verify(exactly = 1) { idCardManagerMock.cancelTask() }
-        verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
+    }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun onNfcButtonTapped() = runTest {
+        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
 
+        val viewModel = SetupScanViewModel(
+            coordinatorMock,
+            mockTrackerManager,
+            testScope
+        )
+
+        viewModel.onNfcButtonTapped()
+
+        verify(exactly = 1) { mockTrackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo") }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -425,18 +109,12 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             coordinatorMock,
-            idCardManagerMock,
             mockTrackerManager,
-            mockIssueTrackerManager,
             testScope
         )
 
         viewModel.onHelpButtonTapped()
 
-        verify(exactly = 0) { coordinatorMock.cancelSetup() }
-        verify(exactly = 0) { coordinatorMock.onSettingPINSucceeded() }
-        verify(exactly = 0) { idCardManagerMock.changePin(contextMock) }
-
-
+        verify(exactly = 1) { mockTrackerManager.trackScreen("firstTimeUser/scanHelp") }
     }
 }

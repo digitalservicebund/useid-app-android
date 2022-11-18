@@ -117,8 +117,6 @@ fun PreviewPreviewSetupScan() {
             object : SetupScanViewModelInterface {
                 override val shouldShowProgress: Boolean = false
 
-                override fun startSettingPIN(context: Context) {}
-                override fun onReEnteredTransportPIN(transportPIN: String, context: Context) {}
                 override fun onHelpButtonTapped() {}
                 override fun onNfcButtonTapped() {}
                 override fun onBackButtonTapped() {}

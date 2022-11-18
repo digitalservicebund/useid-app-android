@@ -1,22 +1,43 @@
 package de.digitalService.useID.ui.coordinators
 
-import de.digitalService.useID.models.ScanError
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import de.digitalService.useID.analytics.IssueTrackerManagerType
+import de.digitalService.useID.getLogger
+import de.digitalService.useID.idCardInterface.EIDInteractionEvent
+import de.digitalService.useID.idCardInterface.IDCardInteractionException
+import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.screens.destinations.*
+import de.digitalService.useID.util.CoroutineContextProviderType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SetupCoordinator @Inject constructor(
-    private val appCoordinator: AppCoordinator
+    @ApplicationContext private val context: Context,
+    private val appCoordinator: AppCoordinator,
+    private val idCardManager: IDCardManager,
+    private val issueTrackerManager: IssueTrackerManagerType,
+    private val coroutineContextProvider: CoroutineContextProviderType
 ) {
+    private val logger by getLogger()
+
     private var tcTokenURL: String? = null
     private var incorrectTransportPin: Boolean = false
 
-    var transportPin: String? = null
-        private set
+    private val _scanInProgress: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val scanInProgress: Flow<Boolean>
+        get() = _scanInProgress
 
-    var personalPin: String? = null
-        private set
+    private var transportPin: String? = null
+    private var personalPin: String? = null
 
     fun setTCTokenURL(tcTokenURL: String) {
         this.tcTokenURL = tcTokenURL
@@ -43,7 +64,11 @@ class SetupCoordinator @Inject constructor(
     fun onTransportPINEntered(newTransportPin: String) {
         transportPin = newTransportPin
         if (incorrectTransportPin) {
-            appCoordinator.pop()
+            val personalPin = personalPin ?: run {
+                logger.error("Personal PIN not set.")
+                throw IllegalStateException()
+            }
+            setPin(newTransportPin, personalPin)
         } else {
             appCoordinator.navigate(SetupPersonalPINIntroDestination)
         }
@@ -61,9 +86,14 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun confirmPersonalPin(newPersonalPin: String): Boolean {
+        val transportPin = transportPin ?: run {
+            logger.error("Transport PIN not set.")
+            throw IllegalStateException()
+        }
+
         if (personalPin == newPersonalPin) {
-            appCoordinator.navigatePopping(SetupScanDestination)
             appCoordinator.startNFCTagHandling()
+            setPin(transportPin, newPersonalPin)
             return true
         }
 
@@ -71,52 +101,117 @@ class SetupCoordinator @Inject constructor(
         return false
     }
 
+    private fun setPin(transportPin: String, pin: String) {
+        var firstTransportPinRequest = true
+
+        CoroutineScope(coroutineContextProvider.IO).launch {
+            idCardManager.changePin(context).catch { exception ->
+                _scanInProgress.value = false
+
+                when (exception) {
+                    is IDCardInteractionException.CardDeactivated -> {
+                        appCoordinator.navigate(SetupCardDeactivatedDestination)
+                    }
+                    is IDCardInteractionException.CardBlocked -> {
+                        appCoordinator.navigate(SetupCardBlockedDestination)
+                    }
+                    else -> {
+                        (exception as? IDCardInteractionException)?.redacted?.let {
+                            issueTrackerManager.capture(it)
+                        }
+
+                        appCoordinator.navigate(SetupOtherErrorDestination)
+                    }
+                }
+            }.collect { event ->
+                when (event) {
+                    EIDInteractionEvent.RequestCardInsertion -> {
+                        logger.debug("Card insertion requested.")
+                        appCoordinator.navigatePopping(SetupScanDestination)
+                    }
+
+                    EIDInteractionEvent.CardInteractionComplete -> logger.debug("Card interaction complete.")
+                    EIDInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started.")
+                    EIDInteractionEvent.PINManagementStarted -> logger.debug("PIN management started.")
+                    EIDInteractionEvent.CardRecognized -> {
+                        logger.debug("Card recognized.")
+                        _scanInProgress.value = true
+                    }
+                    EIDInteractionEvent.CardRemoved -> {
+                        logger.debug("Card removed.")
+                        _scanInProgress.value = false
+                    }
+                    is EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
+                        logger.debug("Process completed successfully.")
+                        _scanInProgress.value = false
+                        onSettingPINSucceeded()
+                    }
+                    is EIDInteractionEvent.RequestChangedPIN -> {
+                        if (firstTransportPinRequest) {
+                            logger.debug("Changed PIN requested for the first time. Entering transport PIN and personal PIN")
+                            firstTransportPinRequest = false
+                            event.pinCallback(transportPin, pin)
+                        } else {
+                            val attempts = event.attempts ?: run {
+                                logger.error("Number of attempts not provided by framework.")
+                                appCoordinator.navigate(SetupOtherErrorDestination)
+                                return@collect
+                            }
+
+                            logger.debug("Old and new PIN requested for a second time. The Transport-PIN seems to be incorrect.")
+                            _scanInProgress.value = false
+                            onIncorrectTransportPIN(attempts)
+                            cancel()
+                        }
+                    }
+                    is EIDInteractionEvent.RequestCANAndChangedPIN -> {
+                        _scanInProgress.value = false
+                        appCoordinator.navigate(SetupCardSuspendedDestination)
+                        cancel()
+                    }
+                    is EIDInteractionEvent.RequestPUK -> {
+                        _scanInProgress.value = false
+                        appCoordinator.navigate(SetupCardBlockedDestination)
+                        cancel()
+                    }
+                    else -> {
+                        logger.debug("Collected unexpected event: $event")
+                        _scanInProgress.value = false
+                        appCoordinator.navigate(SetupOtherErrorDestination)
+
+                        issueTrackerManager.capture(event.redacted)
+                        cancel()
+                    }
+                }
+            }
+        }
+    }
+
     fun onPersonalPinErrorTryAgain() {
         personalPin = null
         appCoordinator.pop()
     }
 
-    fun onIncorrectTransportPIN(attempts: Int) {
+    private fun onIncorrectTransportPIN(attempts: Int) {
         incorrectTransportPin = true
         appCoordinator.navigate(SetupTransportPINDestination(attempts))
+        appCoordinator.stopNFCTagHandling()
     }
 
-    fun onSettingPINSucceeded() {
+    private fun onSettingPINSucceeded() {
         appCoordinator.setIsNotFirstTimeUser()
         appCoordinator.navigate(SetupFinishDestination)
         appCoordinator.stopNFCTagHandling()
     }
 
-    fun onScanError(scanError: ScanError) {
-        when (scanError) {
-            ScanError.PINSuspended -> appCoordinator.navigate(SetupCardSuspendedDestination)
-            ScanError.PINBlocked -> appCoordinator.navigate(SetupCardBlockedDestination)
-            ScanError.CardDeactivated -> appCoordinator.navigate(SetupCardDeactivatedDestination)
-            is ScanError.CardErrorWithRedirect -> appCoordinator.navigate(SetupCardUnreadableDestination(true))
-            ScanError.CardErrorWithoutRedirect -> appCoordinator.navigate(SetupCardUnreadableDestination(true))
-            is ScanError.Other -> appCoordinator.navigate(SetupOtherErrorDestination)
-            else -> {}
-        }
-    }
-
-    fun onSetupFinished() {
-        handleSetupEnded(didSetup = true)
-    }
-
-    fun onBackToHome() {
-        appCoordinator.popToRoot()
-    }
-
     fun onBackTapped() {
+        idCardManager.cancelTask()
         appCoordinator.pop()
-    }
-
-    fun onSkipSetup() {
-        handleSetupEnded(didSetup = true)
     }
 
     fun cancelSetup() {
         appCoordinator.stopNFCTagHandling()
+        idCardManager.cancelTask()
         transportPin = null
         personalPin = null
         incorrectTransportPin = false
@@ -124,13 +219,13 @@ class SetupCoordinator @Inject constructor(
         tcTokenURL = null
     }
 
-    private fun handleSetupEnded(didSetup: Boolean) {
+    fun finishSetup() {
         transportPin = null
         personalPin = null
         incorrectTransportPin = false
 
         tcTokenURL?.let {
-            appCoordinator.startIdentification(it, didSetup)
+            appCoordinator.startIdentification(it, true)
             tcTokenURL = null
         } ?: run {
             appCoordinator.popToRoot()

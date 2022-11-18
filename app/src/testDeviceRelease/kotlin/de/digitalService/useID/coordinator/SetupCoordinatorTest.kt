@@ -1,18 +1,35 @@
 package de.digitalService.useID.coordinator
 
+import android.content.Context
 import com.ramcosta.composedestinations.spec.Direction
+import de.digitalService.useID.analytics.IssueTrackerManagerType
+import de.digitalService.useID.idCardInterface.EIDInteractionEvent
+import de.digitalService.useID.idCardInterface.IDCardInteractionException
+import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
-import io.mockk.every
+import de.digitalService.useID.ui.screens.identification.ScanEvent
+import de.digitalService.useID.ui.screens.setup.SetupScan
+import de.digitalService.useID.util.CoroutineContextProvider
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.slot
-import io.mockk.verify
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.openecard.mobile.activation.ActivationResultCode
 
 @ExtendWith(MockKExtension::class)
 class SetupCoordinatorTest {
@@ -20,17 +37,34 @@ class SetupCoordinatorTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockAppCoordinator: AppCoordinator
 
-    private val destinationSlot = slot<Direction>()
-    private val testPin = "testPin"
+    @MockK(relaxUnitFun = true)
+    lateinit var mockIdCardManager: IDCardManager
 
+    @MockK(relaxUnitFun = true)
+    lateinit var mockIssueTrackerManager: IssueTrackerManagerType
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockCoroutineContextProvider: CoroutineContextProvider
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockContext: Context
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val dispatcher = StandardTestDispatcher()
+
+    private val destinationSlot = slot<Direction>()
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
     fun beforeEach() {
+        Dispatchers.setMain(dispatcher)
+
         every { mockAppCoordinator.navigate(capture(destinationSlot)) } returns Unit
     }
 
     @Test
     fun startSetupIDCard() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
         setupCoordinator.startSetupIDCard()
 
@@ -39,7 +73,7 @@ class SetupCoordinatorTest {
 
     @Test
     fun setupWithPINLetter() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
         setupCoordinator.setupWithPINLetter()
 
@@ -51,101 +85,495 @@ class SetupCoordinatorTest {
 
     @Test
     fun setupWithoutPINLetter() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
         setupCoordinator.setupWithoutPINLetter()
 
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupResetPersonalPINDestination) }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onTransportPINEntered() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+    fun pinChange() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
-        Assertions.assertNull(setupCoordinator.transportPin)
+        every { mockCoroutineContextProvider.IO } returns dispatcher
 
-        setupCoordinator.onTransportPINEntered(testPin)
+        val transportPin = "12345"
 
-        Assertions.assertEquals(testPin, setupCoordinator.transportPin)
+        setupCoordinator.onTransportPINEntered(transportPin)
+
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
-    }
 
-    @Test
-    fun onPersonalPINIntroFinished() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
 
-        setupCoordinator.onPersonalPINIntroFinished()
-
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinInputDestination) }
-    }
-
-    @Test
-    fun onPersonalPINInsert() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
-
-        Assertions.assertNull(setupCoordinator.personalPin)
-
-        setupCoordinator.onPersonalPinInput(testPin)
-
-        Assertions.assertEquals(testPin, setupCoordinator.personalPin)
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.PINManagementStarted)
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerFlow
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        Assertions.assertTrue(progress)
+
+        val pinCallback = mockk<(String, String) -> Unit>()
+        every { pinCallback(transportPin, personalPin) } just Runs
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestChangedPIN(null, pinCallback)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { pinCallback(transportPin, personalPin) }
+
+        idCardManagerFlow.value = EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupFinishDestination) }
+        verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
+
+        scanJob.cancel()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun confirmPersonalPin() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+    fun pinChangeIncorrectPinConfirmation() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
-        Assertions.assertNull(setupCoordinator.personalPin)
+        every { mockCoroutineContextProvider.IO } returns dispatcher
 
-        setupCoordinator.confirmPersonalPin(testPin)
+        val transportPin = "12345"
 
-        Assertions.assertNull(setupCoordinator.personalPin)
-        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
+        setupCoordinator.onTransportPINEntered(transportPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin("111111")
+        Assertions.assertFalse(confirmationResult)
         verify(exactly = 0) { mockAppCoordinator.startNFCTagHandling() }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onPersonalPINInputAndConfirm() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+    fun pinChangeIncorrectTransportPin() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
-        Assertions.assertNull(setupCoordinator.personalPin)
+        every { mockCoroutineContextProvider.IO } returns dispatcher
 
-        setupCoordinator.onPersonalPinInput(testPin)
-        setupCoordinator.confirmPersonalPin(testPin)
+        val transportPin = "12345"
+        val personalPin = "000000"
 
-        Assertions.assertEquals(testPin, setupCoordinator.personalPin)
-        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        setupCoordinator.onTransportPINEntered(transportPin)
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.PINManagementStarted)
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerFlow
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
         verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        Assertions.assertTrue(progress)
+
+        val pinCallback = mockk<(String, String) -> Unit>()
+        every { pinCallback(transportPin, personalPin) } just Runs
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestChangedPIN(null, pinCallback)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { pinCallback(transportPin, personalPin) }
+
+        val attempts = 2
+        idCardManagerFlow.value = EIDInteractionEvent.RequestChangedPIN(attempts, pinCallback)
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
+
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(SetupTransportPINDestination(attempts).route, navigationParameter.route)
+
+        idCardManagerFlow.value = EIDInteractionEvent.PINManagementStarted
+
+        val newTransportPin = "54321"
+        setupCoordinator.onTransportPINEntered(newTransportPin)
+
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+        verify(exactly = 2) { mockIdCardManager.changePin(mockContext) }
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCardInsertion
+        idCardManagerFlow.value = EIDInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        Assertions.assertTrue(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestChangedPIN(null, pinCallback)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { pinCallback(newTransportPin, personalPin) }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun cardSuspended() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val transportPin = "12345"
+
+        setupCoordinator.onTransportPINEntered(transportPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.PINManagementStarted)
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerFlow
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        Assertions.assertTrue(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCANAndChangedPIN { _, _, _ -> }
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardSuspendedDestination) }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun cardBlocked() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val transportPin = "12345"
+
+        setupCoordinator.onTransportPINEntered(transportPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.PINManagementStarted)
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerFlow
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        Assertions.assertTrue(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestPUK { }
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardBlockedDestination) }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun unexpectedEvent() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val transportPin = "12345"
+
+        setupCoordinator.onTransportPINEntered(transportPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.PINManagementStarted)
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerFlow
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        Assertions.assertTrue(progress)
+
+        idCardManagerFlow.value = EIDInteractionEvent.RequestCAN { }
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupOtherErrorDestination) }
+        verify(exactly = 1) { mockIssueTrackerManager.capture(idCardManagerFlow.value.redacted) }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+    @Test
+    fun errorCardDeactivated() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val transportPin = "12345"
+
+        setupCoordinator.onTransportPINEntered(transportPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerChannel: BroadcastChannel<EIDInteractionEvent> = BroadcastChannel(1)
+
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerChannel.asFlow()
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerChannel.send(EIDInteractionEvent.RequestCardInsertion)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerChannel.cancel(IDCardInteractionException.CardDeactivated)
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardDeactivatedDestination) }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+    @Test
+    fun errorCardBlocked() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val transportPin = "12345"
+
+        setupCoordinator.onTransportPINEntered(transportPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerChannel: BroadcastChannel<EIDInteractionEvent> = BroadcastChannel(1)
+
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerChannel.asFlow()
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerChannel.send(EIDInteractionEvent.RequestCardInsertion)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerChannel.cancel(IDCardInteractionException.CardBlocked)
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardBlockedDestination) }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+    @Test
+    fun errorProcessFailed() = runTest {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val transportPin = "12345"
+
+        setupCoordinator.onTransportPINEntered(transportPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPINIntroDestination) }
+
+        val personalPin = "000000"
+        setupCoordinator.onPersonalPinInput(personalPin)
+
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPersonalPinConfirmDestination) }
+
+        var progress = false
+        val scanJob = setupCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val idCardManagerChannel: BroadcastChannel<EIDInteractionEvent> = BroadcastChannel(1)
+
+        every { mockIdCardManager.changePin(mockContext) } returns idCardManagerChannel.asFlow()
+
+        val confirmationResult = setupCoordinator.confirmPersonalPin(personalPin)
+        verify(exactly = 1) { mockAppCoordinator.startNFCTagHandling() }
+        Assertions.assertTrue(confirmationResult)
+
+        advanceUntilIdle()
+
+        idCardManagerChannel.send(EIDInteractionEvent.RequestCardInsertion)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        val exception = IDCardInteractionException.ProcessFailed(ActivationResultCode.INTERNAL_ERROR, null, null)
+        idCardManagerChannel.cancel(exception)
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        verify(exactly = 1) { mockIssueTrackerManager.capture(any()) }
+        verify(exactly = 1) { mockAppCoordinator.navigate(SetupOtherErrorDestination) }
+
+        scanJob.cancel()
     }
 
     @Test
     fun onPersonalPinErrorTryAgain() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
-
-        Assertions.assertNull(setupCoordinator.personalPin)
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
         setupCoordinator.onPersonalPinErrorTryAgain()
 
-        Assertions.assertNull(setupCoordinator.personalPin)
         verify(exactly = 1) { mockAppCoordinator.pop() }
     }
 
     @Test
-    fun onSettingPINSucceeded() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+    fun finishSetup_noTcTokenUrl() {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
-        setupCoordinator.onSettingPINSucceeded()
-
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupFinishDestination) }
-        verify(exactly = 1) { mockAppCoordinator.setIsNotFirstTimeUser() }
-        verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
-    }
-
-    @Test
-    fun onSetupFinished_noTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
-
-        setupCoordinator.onSetupFinished()
+        setupCoordinator.finishSetup()
 
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
@@ -153,12 +581,12 @@ class SetupCoordinatorTest {
     }
 
     @Test
-    fun onSetupFinished_withTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+    fun finishSetup_withTcTokenUrl() {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
-        setupCoordinator.onSetupFinished()
+        setupCoordinator.finishSetup()
 
         verify(exactly = 0) { mockAppCoordinator.popToRoot() }
 
@@ -166,13 +594,13 @@ class SetupCoordinatorTest {
     }
 
     @Test
-    fun onSetupFinished_withTcTokenUrlTwice() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+    fun finishSetup_withTcTokenUrlTwice() {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
-        setupCoordinator.onSetupFinished()
-        setupCoordinator.onSetupFinished()
+        setupCoordinator.finishSetup()
+        setupCoordinator.finishSetup()
 
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
@@ -180,49 +608,18 @@ class SetupCoordinatorTest {
     }
 
     @Test
-    fun onSkipSetup_noTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+    fun onBack() {
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
-        setupCoordinator.onSkipSetup()
+        setupCoordinator.onBackTapped()
 
-        verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
-
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
-    }
-
-    @Test
-    fun onSkipSetup_withTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
-        val testUrl = "tokenUrl"
-
-        setupCoordinator.setTCTokenURL(testUrl)
-        setupCoordinator.onSkipSetup()
-
-        verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
-        verify(exactly = 0) { mockAppCoordinator.popToRoot() }
-
-        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, true) }
-    }
-
-    @Test
-    fun onSkipSetup_withTcTokenUrlTwice() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
-        val testUrl = "tokenUrl"
-
-        setupCoordinator.setTCTokenURL(testUrl)
-        setupCoordinator.onSkipSetup()
-        setupCoordinator.onSkipSetup()
-
-        verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
-
-        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, true) }
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockAppCoordinator.pop() }
     }
 
     @Test
     fun cancelSetup() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
         val testUrl = "tokenUrl"
 
         setupCoordinator.setTCTokenURL(testUrl)
@@ -231,6 +628,8 @@ class SetupCoordinatorTest {
         verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
         verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
+
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
 
         verify(exactly = 0) { mockAppCoordinator.startIdentification(testUrl, true) }
 
@@ -242,7 +641,7 @@ class SetupCoordinatorTest {
 
     @Test
     fun hasToken() {
-        val setupCoordinator = SetupCoordinator(mockAppCoordinator)
+        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
         val testUrl = "tokenUrl"
 
         Assertions.assertFalse(setupCoordinator.identificationPending())

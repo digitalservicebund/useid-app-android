@@ -56,7 +56,7 @@ class SetupFinishViewModel @Inject constructor(
     }
 
     override fun onButtonTapped() {
-        setupCoordinator.onSetupFinished()
+        setupCoordinator.finishSetup()
     }
 }
 

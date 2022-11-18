@@ -173,15 +173,21 @@ fun ScanScreen(
                 )
             },
             text = {
-                val packageName = LocalContext.current.packageName
-                val imagePath = "android.resource://$packageName/${R.drawable.nfc_positions}"
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    val packageName = LocalContext.current.packageName
+                    val imagePath = "android.resource://$packageName/${R.drawable.nfc_positions}"
 
-                MarkdownText(
-                    markdown = stringResource(id = R.string.scanError_cardUnreadable_body, imagePath),
-                    fontResource = R.font.bundes_sans_dtp_regular
-                )
+                    MarkdownText(
+                        markdown = stringResource(
+                            id = R.string.scanError_cardUnreadable_body,
+                            imagePath
+                        ),
+                        fontResource = R.font.bundes_sans_dtp_regular
+                    )
+                }
             },
             confirmButtonText = stringResource(id = R.string.scanError_close),
+            onDismissButtonTap = { helpDialogShown = false },
             onConfirmButtonTap = { helpDialogShown = false }
         )
     }

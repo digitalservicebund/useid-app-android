@@ -89,7 +89,7 @@ class SetupIntroViewModel @Inject constructor(
     }
 
     override fun onNonFirstTimeUsage() {
-        setupCoordinator.onSkipSetup()
+        setupCoordinator.finishSetup()
     }
 
     override fun onCancelSetup() {

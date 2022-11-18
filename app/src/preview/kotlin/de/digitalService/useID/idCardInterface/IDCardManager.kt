@@ -3,9 +3,13 @@ package de.digitalService.useID.idCardInterface
 import android.content.Context
 import android.nfc.Tag
 import de.digitalService.useID.getLogger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.launch
 
 class IDCardManager {
     private val logger by getLogger()
@@ -22,6 +26,10 @@ class IDCardManager {
 
     fun changePin(context: Context): Flow<EIDInteractionEvent> {
         changePinChannel = BroadcastChannel(1)
+        CoroutineScope(Dispatchers.Default).launch {
+            delay(100L)
+            changePinChannel.send(EIDInteractionEvent.RequestCardInsertion)
+        }
         return changePinChannel.asFlow()
     }
 

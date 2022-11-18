@@ -100,7 +100,5 @@ class IdentificationScanTest {
         composeTestRule.onNodeWithText(dialogCloseButton).performClick()
 
         composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertDoesNotExist()
-
-        verify(exactly = 1) { mockViewModel.startSettingPIN(any()) }
     }
 }
