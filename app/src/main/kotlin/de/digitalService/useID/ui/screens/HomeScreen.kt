@@ -111,10 +111,6 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
     }
 }
 
-data class HomeScreenNavArgs(
-    val tcTokenURL: String?
-)
-
 @Composable
 private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
     Card(
