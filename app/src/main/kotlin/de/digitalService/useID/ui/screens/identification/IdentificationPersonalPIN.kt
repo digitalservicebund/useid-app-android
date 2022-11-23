@@ -1,6 +1,8 @@
 package de.digitalService.useID.ui.screens.identification
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -61,6 +63,7 @@ fun IdentificationPersonalPIN(
             modifier = modifier
                 .padding(horizontal = 20.dp)
                 .padding(top = topPadding)
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 stringResource(id = R.string.identification_personalPIN_title),

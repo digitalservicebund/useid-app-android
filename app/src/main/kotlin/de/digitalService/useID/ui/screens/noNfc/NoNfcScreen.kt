@@ -2,7 +2,9 @@ package de.digitalService.useID.ui.screens.noNfc
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +25,9 @@ import de.digitalService.useID.ui.theme.UseIDTheme
 @Composable
 fun NoNfcScreen() {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
         Surface(
             modifier = Modifier

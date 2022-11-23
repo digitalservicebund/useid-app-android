@@ -6,7 +6,9 @@ import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -33,6 +35,7 @@ fun NfcDeactivatedScreen() {
                 .fillMaxWidth()
                 .background(Color.White)
                 .padding(all = 16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Column(
                 modifier = Modifier

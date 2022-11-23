@@ -1,6 +1,8 @@
 package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -34,7 +36,10 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(top = it, start = 16.dp, end = 16.dp)
+            modifier = Modifier
+                .padding(top = it, start = 16.dp, end = 16.dp)
+                .verticalScroll(rememberScrollState())
+
         ) {
             val focusRequesterPIN = remember { FocusRequester() }
 
