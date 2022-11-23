@@ -9,12 +9,13 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun WhatIsNfcDialog(onButtonTap: () -> Unit) {
+fun WhatIsNfcDialog(onClose: () -> Unit) {
     StandardDialog(
         title = { Text(stringResource(id = R.string.helpNFC_title), style = MaterialTheme.typography.titleMedium) },
         text = { Text(stringResource(id = R.string.helpNFC_body), style = MaterialTheme.typography.bodySmall) },
         confirmButtonText = stringResource(id = R.string.scanError_close),
-        onConfirmButtonTap = onButtonTap
+        onConfirmButtonTap = onClose,
+        onDismissButtonTap = onClose
     )
 }
 
@@ -22,6 +23,6 @@ fun WhatIsNfcDialog(onButtonTap: () -> Unit) {
 @Composable
 private fun Preview() {
     UseIDTheme {
-        WhatIsNfcDialog(onButtonTap = { })
+        WhatIsNfcDialog(onClose = {})
     }
 }
