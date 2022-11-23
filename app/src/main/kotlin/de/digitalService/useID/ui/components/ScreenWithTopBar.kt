@@ -9,6 +9,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import de.digitalService.useID.R
@@ -42,7 +45,8 @@ data class NavigationButton(
     val icon: NavigationIcon,
     val onClick: () -> Unit,
     val shouldShowConfirmDialog: Boolean = false,
-    val isIdentification: Boolean = false
+    val isIdentification: Boolean = false,
+    val contentDescription: String? = null
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +65,13 @@ fun ScreenWithTopBar(
                 navigationIcon = {
                     navigationButton?.let { navigationButton ->
                         IconButton(
-                            modifier = Modifier.testTag(navigationButton.icon.name),
+                            modifier = Modifier
+                                .semantics {
+                                    testTag = navigationButton.icon.name
+                                    navigationButton.contentDescription?.let {
+                                        this.contentDescription = it
+                                    }
+                                },
                             onClick = {
                                 if (navigationButton.shouldShowConfirmDialog) {
                                     showConfirmDialog = true

@@ -47,11 +47,26 @@ fun SetupTransportPIN(
         NavigationIcon.Cancel
     }
 
+    val titleString = if (viewModel.attempts == null) {
+        stringResource(id = R.string.firstTimeUser_transportPIN_title)
+    } else {
+        stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title)
+    }
+
+    val attemptString = viewModel.attempts?.let { attempts ->
+        resources.getQuantityString(
+            R.plurals.firstTimeUser_transportPIN_remainingAttempts,
+            attempts,
+            attempts
+        )
+    }
+
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = icon,
             onClick = if (viewModel.attempts == null) viewModel::onBackButtonTapped else viewModel::onCancelTapped,
-            shouldShowConfirmDialog = viewModel.attempts != null
+            shouldShowConfirmDialog = viewModel.attempts != null,
+            contentDescription = "$titleString $attemptString"
         )
     ) { topPadding ->
         val focusRequester = remember { FocusRequester() }
@@ -67,12 +82,6 @@ fun SetupTransportPIN(
                 .padding(top = topPadding)
                 .verticalScroll(rememberScrollState())
         ) {
-            val titleString = if (viewModel.attempts == null) {
-                stringResource(id = R.string.firstTimeUser_transportPIN_title)
-            } else {
-                stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title)
-            }
-
             Text(
                 text = titleString,
                 style = MaterialTheme.typography.titleLarge
@@ -96,14 +105,9 @@ fun SetupTransportPIN(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            viewModel.attempts?.let { attempts ->
-                val attemptString = resources.getQuantityString(
-                    R.plurals.firstTimeUser_transportPIN_remainingAttempts,
-                    attempts,
-                    attempts
-                )
+            attemptString?.let {
                 Text(
-                    attemptString,
+                    it,
                     style = MaterialTheme.typography.bodySmall,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(androidx.compose.ui.Alignment.CenterHorizontally)

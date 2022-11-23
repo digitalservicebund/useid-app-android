@@ -24,7 +24,7 @@ import javax.inject.Inject
 fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntroViewModel>()) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
-            NavigationIcon.Cancel,
+            icon = NavigationIcon.Cancel,
             shouldShowConfirmDialog = viewModel.shouldShowConfirmCancelDialog,
             onClick = viewModel::onCancelSetup,
             isIdentification = true
