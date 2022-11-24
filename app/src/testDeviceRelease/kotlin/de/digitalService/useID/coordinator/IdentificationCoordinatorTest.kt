@@ -921,7 +921,7 @@ class IdentificationCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun cancelIdentification_scanR() = runTest {
+    fun cancelIdentification_scan() = runTest {
         val identificationCoordinator = IdentificationCoordinator(
             mockContext,
             mockAppCoordinator,
