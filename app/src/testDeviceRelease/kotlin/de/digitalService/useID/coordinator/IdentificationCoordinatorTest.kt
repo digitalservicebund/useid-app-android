@@ -919,6 +919,25 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun cancelIdentification_scanR() = runTest {
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockTrackerManager,
+            mockIssueTrackerManager,
+            mockCoroutineContextProvider
+        )
+
+        identificationCoordinator.cancelIdentification()
+
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+    }
+
     @Test
     fun pop() {
         val identificationCoordinator = IdentificationCoordinator(

@@ -13,13 +13,10 @@ import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProviderType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,8 +39,10 @@ class IdentificationCoordinator @Inject constructor(
     private var pinCallback: ((String) -> Unit)? = null
 
     private var reachedScanState = false
-    private var listenToEvents = false
     private var incorrectPin: Boolean = false
+
+    private var changePinFlowCoroutineScope: Job? = null
+
     var didSetup: Boolean = false
         private set
 
@@ -95,7 +94,6 @@ class IdentificationCoordinator @Inject constructor(
 
     fun cancelIdentification() {
         logger.debug("Cancel identification process.")
-        listenToEvents = false
         appCoordinator.stopNFCTagHandling()
         CoroutineScope(Dispatchers.Main).launch {
             if (didSetup && !reachedScanState) {
@@ -111,7 +109,8 @@ class IdentificationCoordinator @Inject constructor(
 
     private fun finishIdentification() {
         logger.debug("Finish identification process.")
-        listenToEvents = false
+        changePinFlowCoroutineScope?.cancel()
+
         appCoordinator.setIsNotFirstTimeUser()
         CoroutineScope(Dispatchers.Main).launch {
             appCoordinator.popToRoot()
@@ -122,7 +121,7 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     private fun startIdentification(tcTokenURL: String) {
-        listenToEvents = true
+        changePinFlowCoroutineScope?.cancel()
 
         val fullURL = Uri
             .Builder()
@@ -133,14 +132,9 @@ class IdentificationCoordinator @Inject constructor(
             .build()
             .toString()
 
-        CoroutineScope(coroutineContextProvider.IO).launch {
+        changePinFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             idCardManager.identify(context, fullURL).catch { error ->
                 logger.error("Identification error: $error")
-
-                if (!listenToEvents) {
-                    logger.debug("Emit: Ignoring error because the coordinator is not listening anymore.")
-                    return@catch
-                }
 
                 when (error) {
                     IDCardInteractionException.CardDeactivated -> {
@@ -183,11 +177,6 @@ class IdentificationCoordinator @Inject constructor(
                     }
                 }
             }.collect { event ->
-                if (!listenToEvents) {
-                    logger.debug("Emit: Ignoring event because the coordinator is not listening anymore.")
-                    return@collect
-                }
-
                 when (event) {
                     EIDInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started")
                     is EIDInteractionEvent.RequestAuthenticationRequestConfirmation -> {

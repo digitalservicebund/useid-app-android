@@ -1,7 +1,10 @@
 package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -31,7 +34,7 @@ fun SetupScan(
     viewModel: SetupScanViewModelInterface = hiltViewModel<SetupScanViewModel>()
 ) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onCancelConfirm)
     ) { topPadding ->
         ScanScreen(
             title = stringResource(id = R.string.firstTimeUser_scan_title),
@@ -48,7 +51,6 @@ interface SetupScanViewModelInterface {
     val shouldShowProgress: Boolean
     fun onHelpButtonTapped()
     fun onNfcButtonTapped()
-    fun onBackButtonTapped()
     fun onCancelConfirm()
 }
 
@@ -78,12 +80,8 @@ class SetupScanViewModel @Inject constructor(
         trackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo")
     }
 
-    override fun onBackButtonTapped() {
-        coordinator.onBackTapped()
-    }
-
     override fun onCancelConfirm() {
-        coordinator.cancelSetup()
+        coordinator.onBackTapped()
     }
 }
 
@@ -93,7 +91,6 @@ class PreviewSetupScanViewModel(
     SetupScanViewModelInterface {
     override fun onHelpButtonTapped() {}
     override fun onNfcButtonTapped() {}
-    override fun onBackButtonTapped() {}
     override fun onCancelConfirm() {}
 }
 

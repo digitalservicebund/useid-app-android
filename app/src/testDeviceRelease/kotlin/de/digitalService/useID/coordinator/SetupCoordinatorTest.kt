@@ -555,7 +555,9 @@ class SetupCoordinatorTest {
 
         Assertions.assertFalse(progress)
         verify(exactly = 1) { mockIssueTrackerManager.capture(any()) }
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupOtherErrorDestination) }
+
+        val navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(SetupCardUnreadableDestination(false).route, navigationParameter.route)
 
         scanJob.cancel()
     }

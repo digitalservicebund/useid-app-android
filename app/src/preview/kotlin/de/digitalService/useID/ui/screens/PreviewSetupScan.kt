@@ -1,6 +1,5 @@
 package de.digitalService.useID.ui.screens
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -16,7 +15,6 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.EIDInteractionEvent
 import de.digitalService.useID.idCardInterface.IDCardInteractionException
 import de.digitalService.useID.idCardInterface.IDCardManager
-import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
@@ -33,7 +31,7 @@ fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: Setup
             .fillMaxWidth()
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            SetupScan(modifier = Modifier, viewModelInner)
+            SetupScan(modifier = Modifier, viewModel = viewModelInner)
         }
 
         Row(
@@ -119,9 +117,7 @@ fun PreviewPreviewSetupScan() {
 
                 override fun onHelpButtonTapped() {}
                 override fun onNfcButtonTapped() {}
-                override fun onBackButtonTapped() {}
                 override fun onCancelConfirm() {}
-
             }
         )
     }

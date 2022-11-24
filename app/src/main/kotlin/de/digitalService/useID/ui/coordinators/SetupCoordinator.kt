@@ -10,11 +10,11 @@ import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,6 +38,8 @@ class SetupCoordinator @Inject constructor(
 
     private var transportPin: String? = null
     private var personalPin: String? = null
+
+    private var changePinFlowCoroutineScope: Job? = null
 
     fun setTCTokenURL(tcTokenURL: String) {
         this.tcTokenURL = tcTokenURL
@@ -104,7 +106,7 @@ class SetupCoordinator @Inject constructor(
     private fun setPin(transportPin: String, pin: String) {
         var firstTransportPinRequest = true
 
-        CoroutineScope(coroutineContextProvider.IO).launch {
+        changePinFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             idCardManager.changePin(context).catch { exception ->
                 _scanInProgress.value = false
 
@@ -205,11 +207,15 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun onBackTapped() {
+        changePinFlowCoroutineScope?.cancel()
+
         idCardManager.cancelTask()
         appCoordinator.pop()
     }
 
     fun cancelSetup() {
+        changePinFlowCoroutineScope?.cancel()
+
         appCoordinator.stopNFCTagHandling()
         idCardManager.cancelTask()
         transportPin = null
