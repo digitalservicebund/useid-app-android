@@ -98,7 +98,7 @@ class IdentificationCoordinator @Inject constructor(
         listenToEvents = false
         appCoordinator.stopNFCTagHandling()
         CoroutineScope(Dispatchers.Main).launch {
-            if (didSetup) {
+            if (didSetup && !reachedScanState) {
                 appCoordinator.popUpTo(SetupIntroDestination)
             } else {
                 appCoordinator.popToRoot()
