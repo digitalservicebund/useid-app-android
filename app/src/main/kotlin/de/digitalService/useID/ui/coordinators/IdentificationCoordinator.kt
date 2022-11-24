@@ -150,7 +150,7 @@ class IdentificationCoordinator @Inject constructor(
                         appCoordinator.navigate(IdentificationCardDeactivatedDestination)
                     }
                     IDCardInteractionException.CardBlocked -> {
-                        trackerManager.trackScreen("identification/cardUnreadable")
+                        trackerManager.trackScreen("identification/cardBlocked")
 
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PINBlocked))
                         appCoordinator.navigate(IdentificationCardBlockedDestination)

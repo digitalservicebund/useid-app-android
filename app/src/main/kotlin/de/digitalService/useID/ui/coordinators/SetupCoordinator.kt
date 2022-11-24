@@ -120,7 +120,7 @@ class SetupCoordinator @Inject constructor(
                             issueTrackerManager.capture(it)
                         }
 
-                        appCoordinator.navigate(SetupOtherErrorDestination)
+                        appCoordinator.navigate(SetupCardUnreadableDestination(false))
                     }
                 }
             }.collect { event ->
