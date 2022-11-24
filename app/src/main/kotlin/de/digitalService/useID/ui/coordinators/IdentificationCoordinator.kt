@@ -60,12 +60,14 @@ class IdentificationCoordinator @Inject constructor(
 
     fun confirmAttributesForIdentification() {
         val requestAuthenticationEvent = requestAuthenticationEvent ?: run {
-            logger.error("Cannot confirm attributes because there isn't any authentication confirmation request event saved.")
+            logger.debug("No confirmation event saved. Attributes might have been confirmed before.")
+            appCoordinator.navigate(IdentificationPersonalPINDestination(null))
             return
         }
 
         val requiredAttributes = requestAuthenticationEvent.request.readAttributes.filterValues { it }
         requestAuthenticationEvent.confirmationCallback(requiredAttributes)
+        this.requestAuthenticationEvent = null
     }
 
     fun onPINEntered(pin: String) {

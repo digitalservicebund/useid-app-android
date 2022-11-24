@@ -212,6 +212,81 @@ class IdentificationCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
+    fun startIdentificationProcess_VisitingPinEntryTwice() = runTest {
+        val testRedirectUrl = "testRedirectUrl"
+        val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
+
+        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
+
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockAppCoordinator,
+            mockIDCardManager,
+            mockTrackerManager,
+            mockIssueTrackerManager,
+            mockCoroutineContextProvider
+        )
+
+        identificationCoordinator.startIdentificationProcess(testTokenURL, false)
+
+        verify { mockIDCardManager.cancelTask() }
+
+        val results = mutableListOf<ScanEvent>()
+        val job = identificationCoordinator.scanEventFlow
+            .onEach(results::add)
+            .launchIn(CoroutineScope(dispatcher))
+
+        advanceUntilIdle()
+
+        val confirmationRequest = EIDAuthenticationRequest(
+                "",
+                "",
+                "subject",
+                "",
+                "",
+                AuthenticationTerms.Text(""),
+                "",
+                mapOf()
+            )
+        val confirmationRequestCallback = mockk<(Map<IDCardAttribute, Boolean>) -> Unit>()
+        every { confirmationRequestCallback(any()) } just Runs
+
+        testFlow.value = EIDInteractionEvent.RequestAuthenticationRequestConfirmation(confirmationRequest, confirmationRequestCallback)
+        advanceUntilIdle()
+
+        identificationCoordinator.confirmAttributesForIdentification()
+        verify(exactly = 1) { confirmationRequestCallback(any()) }
+
+        testFlow.value = EIDInteractionEvent.RequestPIN(null, { })
+        advanceUntilIdle()
+
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationPersonalPINDestination(null).route, navigationParameter.route)
+
+        identificationCoordinator.pop()
+        verify(exactly = 1) { mockAppCoordinator.pop() }
+
+        identificationCoordinator.confirmAttributesForIdentification()
+        verify(exactly = 1) { confirmationRequestCallback(any()) }
+
+        advanceUntilIdle()
+
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationPersonalPINDestination(null).route, navigationParameter.route)
+
+        job.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
     fun startIdentificationProcess_SendEventBeforeListening_SkipFirstCardRequestedEvent() = runTest {
         val testRedirectUrl = "testRedirectUrl"
         val testFlow = MutableStateFlow<EIDInteractionEvent>(EIDInteractionEvent.AuthenticationStarted)
