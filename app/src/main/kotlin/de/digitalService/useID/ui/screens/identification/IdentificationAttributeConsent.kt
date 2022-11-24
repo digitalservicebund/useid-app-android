@@ -133,7 +133,10 @@ private fun AttributeList(attributeIDs: List<Int>) {
 private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: () -> Unit) {
     Dialog(onDismissRequest = onDismissalRequest) {
         ScreenWithTopBar(
-            navigationButton = NavigationButton(NavigationIcon.Cancel, onDismissalRequest),
+            navigationButton = NavigationButton(
+                icon = NavigationIcon.Cancel,
+                onClick = onDismissalRequest
+            ),
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
             Column(

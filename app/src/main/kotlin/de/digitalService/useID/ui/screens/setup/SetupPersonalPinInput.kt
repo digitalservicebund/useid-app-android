@@ -32,7 +32,10 @@ import javax.inject.Inject
 @Composable
 fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = hiltViewModel<SetupPersonalPinInputViewModel>()) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(NavigationIcon.Back, viewModel::onNavigationButtonTapped)
+        navigationButton = NavigationButton(
+            icon = NavigationIcon.Back,
+            onClick = viewModel::onNavigationButtonTapped
+        )
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,

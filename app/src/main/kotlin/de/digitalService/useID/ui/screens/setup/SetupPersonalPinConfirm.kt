@@ -33,7 +33,7 @@ import javax.inject.Inject
 @Composable
 fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface = hiltViewModel<SetupPersonalPinConfirmViewModel>()) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(NavigationIcon.Back, viewModel::onNavigationButtonPressed)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onNavigationButtonPressed)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
