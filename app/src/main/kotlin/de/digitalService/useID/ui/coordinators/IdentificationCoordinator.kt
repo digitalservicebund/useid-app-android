@@ -41,7 +41,7 @@ class IdentificationCoordinator @Inject constructor(
     private var reachedScanState = false
     private var incorrectPin: Boolean = false
 
-    private var changePinFlowCoroutineScope: Job? = null
+    private var identificationFlowCoroutineScope: Job? = null
 
     var didSetup: Boolean = false
         private set
@@ -109,7 +109,7 @@ class IdentificationCoordinator @Inject constructor(
 
     private fun finishIdentification() {
         logger.debug("Finish identification process.")
-        changePinFlowCoroutineScope?.cancel()
+        identificationFlowCoroutineScope?.cancel()
 
         appCoordinator.setIsNotFirstTimeUser()
         CoroutineScope(Dispatchers.Main).launch {
@@ -121,7 +121,7 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     private fun startIdentification(tcTokenURL: String) {
-        changePinFlowCoroutineScope?.cancel()
+        identificationFlowCoroutineScope?.cancel()
 
         val fullURL = Uri
             .Builder()
@@ -132,7 +132,7 @@ class IdentificationCoordinator @Inject constructor(
             .build()
             .toString()
 
-        changePinFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
+        identificationFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             idCardManager.identify(context, fullURL).catch { error ->
                 logger.error("Identification error: $error")
 
