@@ -97,6 +97,7 @@ class IdentificationCoordinator @Inject constructor(
     fun cancelIdentification() {
         logger.debug("Cancel identification process.")
         appCoordinator.stopNFCTagHandling()
+        identificationFlowCoroutineScope?.cancel()
         CoroutineScope(Dispatchers.Main).launch {
             if (didSetup && !reachedScanState) {
                 appCoordinator.popUpTo(SetupIntroDestination)
