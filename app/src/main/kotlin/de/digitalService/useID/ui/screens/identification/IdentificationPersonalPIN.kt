@@ -47,7 +47,7 @@ fun IdentificationPersonalPIN(
 
     ScreenWithTopBar(
         navigationButton = NavigationButton(
-            icon = if (viewModel.attempts != null) NavigationIcon.Back else NavigationIcon.Cancel,
+            icon = if (viewModel.attempts == null) NavigationIcon.Back else NavigationIcon.Cancel,
             onClick = viewModel::onNavigationButtonTapped,
             isIdentification = true
         )
