@@ -49,6 +49,7 @@ fun IdentificationPersonalPIN(
         navigationButton = NavigationButton(
             icon = if (viewModel.attempts == null) NavigationIcon.Back else NavigationIcon.Cancel,
             onClick = viewModel::onNavigationButtonTapped,
+            shouldShowConfirmDialog = viewModel.attempts != null,
             isIdentification = true
         )
     ) { topPadding ->
