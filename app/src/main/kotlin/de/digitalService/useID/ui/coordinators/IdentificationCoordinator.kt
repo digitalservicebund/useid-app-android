@@ -98,8 +98,9 @@ class IdentificationCoordinator @Inject constructor(
         logger.debug("Cancel identification process.")
         appCoordinator.stopNFCTagHandling()
         identificationFlowCoroutineScope?.cancel()
+        val popToRoot = reachedScanState
         CoroutineScope(Dispatchers.Main).launch {
-            if (didSetup && !reachedScanState) {
+            if (didSetup && !popToRoot) {
                 appCoordinator.popUpTo(SetupIntroDestination)
             } else {
                 appCoordinator.popToRoot()
@@ -235,13 +236,13 @@ class IdentificationCoordinator @Inject constructor(
                         logger.debug("Requesting ID card")
                         if (!reachedScanState) {
                             appCoordinator.navigate(IdentificationScanDestination)
+                            reachedScanState = true
                         }
                         appCoordinator.startNFCTagHandling()
                     }
                     EIDInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized")
                         _scanEventFlow.emit(ScanEvent.CardAttached)
-                        reachedScanState = true
                     }
                     is EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
                         logger.debug("Process completed successfully")
