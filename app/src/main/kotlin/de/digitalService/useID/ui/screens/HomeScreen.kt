@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -119,6 +120,7 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
         border = BorderStroke(1.dp, Gray300),
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(3.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.LightGray)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
@@ -152,6 +154,7 @@ private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
         border = BorderStroke(1.dp, Gray300),
         modifier = Modifier
             .fillMaxWidth()
+            .shadow(3.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.LightGray)
     ) {
         CardButton(text = stringResource(R.string.home_more_privacy), onClick = viewModel::onPrivacyButtonClicked)
         StyledDivider()
