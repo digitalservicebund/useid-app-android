@@ -14,9 +14,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.analytics.TrackerManagerType
-import de.digitalService.useID.idCardInterface.EIDInteractionEvent
-import de.digitalService.useID.idCardInterface.IDCardInteractionException
-import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionEvent
+import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
@@ -45,10 +45,10 @@ fun PreviewIdentificationScan(
                 .padding(horizontal = 10.dp)
         ) {
             item { Button(onClick = { viewModel.simulateSuccess() }) { Text("✅") } }
-            item { Button(onClick = { viewModel.simulateIncorrectPIN() }) { Text("PIN") } }
+            item { Button(onClick = { viewModel.simulateIncorrectPin() }) { Text("PIN") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithRedirect() }) { Text("❌➰") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithoutRedirect() }) { Text("❌") } }
-            item { Button(onClick = { viewModel.simulateCANRequired() }) { Text("CAN") } }
+            item { Button(onClick = { viewModel.simulateCanRequired() }) { Text("Can") } }
             item { Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") } }
             item { Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("📵") } }
         }
@@ -58,21 +58,21 @@ fun PreviewIdentificationScan(
 @HiltViewModel
 class PreviewIdentificationScanViewModel @Inject constructor(
     private val trackerManager: TrackerManagerType,
-    private val idCardManager: IDCardManager
+    private val idCardManager: IdCardManager
 ) : ViewModel() {
     fun simulateSuccess() {
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect("https://digitalservice.bund.de"))
+            idCardManager.injectIdentifyEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect("https://digitalservice.bund.de"))
         }
     }
 
-    fun simulateIncorrectPIN() {
+    fun simulateIncorrectPin() {
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EIDInteractionEvent.RequestPIN(2) {})
+            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestPin(2) {})
         }
     }
 
@@ -80,7 +80,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyException(IDCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
+            idCardManager.injectIdentifyException(IdCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
         }
     }
 
@@ -89,7 +89,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
             simulateWaiting()
 
             idCardManager.injectIdentifyException(
-                IDCardInteractionException.ProcessFailed(
+                IdCardInteractionException.ProcessFailed(
                     ActivationResultCode.BAD_REQUEST,
                     "https://digitalservice.bund.de",
                     null
@@ -98,11 +98,11 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         }
     }
 
-    fun simulateCANRequired() {
+    fun simulateCanRequired() {
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EIDInteractionEvent.RequestCAN({}))
+            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestCan({}))
         }
         trackerManager.trackScreen("identification/cardSuspended")
     }
@@ -111,7 +111,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EIDInteractionEvent.RequestPUK({}))
+            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestPUK({}))
         }
         trackerManager.trackScreen("identification/cardBlocked")
     }
@@ -120,15 +120,15 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyException(IDCardInteractionException.CardDeactivated)
+            idCardManager.injectIdentifyException(IdCardInteractionException.CardDeactivated)
         }
         trackerManager.trackScreen("identification/cardDeactivated")
     }
 
     private suspend fun simulateWaiting() {
-        idCardManager.injectIdentifyEvent(EIDInteractionEvent.CardRecognized)
+        idCardManager.injectIdentifyEvent(EidInteractionEvent.CardRecognized)
         delay(3000L)
-        idCardManager.injectIdentifyEvent(EIDInteractionEvent.CardRemoved)
+        idCardManager.injectIdentifyEvent(EidInteractionEvent.CardRemoved)
     }
 }
 
@@ -139,17 +139,17 @@ fun PreviewPreviewIdentificationScan() {
         PreviewIdentificationScan(
             PreviewIdentificationScanViewModel(
                 PreviewTrackerManager(),
-                IDCardManager()
+                IdCardManager()
             ),
             object : IdentificationScanViewModelInterface {
                 override val shouldShowProgress: Boolean = false
-                override val errorState: ScanError.IncorrectPIN? = null
+                override val errorState: ScanError.IncorrectPin? = null
 
                 override fun onHelpButtonTapped() {}
                 override fun onNfcButtonTapped() {}
                 override fun onErrorDialogButtonTapped(context: Context) {}
                 override fun onCancelIdentification() {}
-                override fun onNewPersonalPINEntered(pin: String) {}
+                override fun onNewPersonalPinEntered(pin: String) {}
             }
         )
     }

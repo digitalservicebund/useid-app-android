@@ -42,10 +42,10 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
         val trackerRoute = when (destination.route) {
             HomeScreenDestination.route -> "/"
             SetupIntroDestination.route -> firstTimeUserRoute("intro")
-            SetupPINLetterDestination.route -> firstTimeUserRoute("PINLetter")
-            SetupResetPersonalPINDestination.route -> firstTimeUserRoute("missingPINLetter")
-            SetupTransportPINDestination.route -> firstTimeUserRoute("transportPIN")
-            SetupPersonalPINIntroDestination.route -> firstTimeUserRoute("personalPINIntro")
+            SetupPinLetterDestination.route -> firstTimeUserRoute("PINLetter")
+            SetupResetPersonalPinDestination.route -> firstTimeUserRoute("missingPINLetter")
+            SetupTransportPinDestination.route -> firstTimeUserRoute("transportPIN")
+            SetupPersonalPinIntroDestination.route -> firstTimeUserRoute("personalPINIntro")
             SetupPersonalPinInputDestination.route -> firstTimeUserRoute("personalPINInput")
             SetupPersonalPinConfirmDestination.route -> firstTimeUserRoute("personalPINConfirm")
             SetupScanDestination.route -> firstTimeUserRoute("scan")
@@ -58,7 +58,7 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
 
             IdentificationFetchMetadataDestination.route -> identificationRoute("fetchMetadata")
             IdentificationAttributeConsentDestination.route -> identificationRoute("attributes")
-            IdentificationPersonalPINDestination.route -> identificationRoute("personalPIN")
+            IdentificationPersonalPinDestination.route -> identificationRoute("personalPIN")
             IdentificationScanDestination.route -> identificationRoute("scan")
 
             ImprintScreenDestination.route -> "imprint"
@@ -99,7 +99,7 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
 
 private class PreviewAppCoordinator(
     override val nfcAvailability: State<NfcAvailability>,
-    override val currentlyHandlingNFCTags: Boolean
+    override val currentlyHandlingNfcTags: Boolean
 ) : AppCoordinatorType {
     override fun setNavController(navController: NavController) {}
     override fun navigate(route: Direction) {}
@@ -111,8 +111,8 @@ private class PreviewAppCoordinator(
     override fun setNfcAvailability(availability: NfcAvailability) {}
     override fun setIsNotFirstTimeUser() {}
     override fun handleDeepLink(uri: Uri) {}
-    override fun startNFCTagHandling() {}
-    override fun stopNFCTagHandling() {}
+    override fun startNfcTagHandling() {}
+    override fun stopNfcTagHandling() {}
     override fun navigatePopping(route: Direction) {}
     override fun popUpTo(direction: Destination) {}
 }

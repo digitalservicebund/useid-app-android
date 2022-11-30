@@ -47,21 +47,21 @@ class SetupPersonalPinConfirmTest {
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).assertIsFocused()
 
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("1")
-        verify(exactly = 1) { mockViewModel.userInputPIN("1") }
+        verify(exactly = 1) { mockViewModel.userInputPin("1") }
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12")
-        verify(exactly = 1) { mockViewModel.userInputPIN("12") }
+        verify(exactly = 1) { mockViewModel.userInputPin("12") }
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("123")
-        verify(exactly = 1) { mockViewModel.userInputPIN("123") }
+        verify(exactly = 1) { mockViewModel.userInputPin("123") }
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("1234")
-        verify(exactly = 1) { mockViewModel.userInputPIN("1234") }
+        verify(exactly = 1) { mockViewModel.userInputPin("1234") }
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("12345")
-        verify(exactly = 1) { mockViewModel.userInputPIN("12345") }
+        verify(exactly = 1) { mockViewModel.userInputPin("12345") }
 
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("123456")
-        verify(exactly = 1) { mockViewModel.userInputPIN("123456") }
+        verify(exactly = 1) { mockViewModel.userInputPin("123456") }
 
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("1234567")
-        verify(exactly = 1) { mockViewModel.userInputPIN("123456") }
+        verify(exactly = 1) { mockViewModel.userInputPin("123456") }
 
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
         verify(exactly = 1) { mockViewModel.onDonePressed() }

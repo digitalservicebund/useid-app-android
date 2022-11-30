@@ -13,9 +13,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.analytics.TrackerManagerType
-import de.digitalService.useID.idCardInterface.EIDInteractionEvent
-import de.digitalService.useID.idCardInterface.IDCardInteractionException
-import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionEvent
+import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
@@ -43,9 +43,9 @@ fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: Setup
                 .padding(horizontal = 10.dp)
         ) {
             item { Button(onClick = { viewModel.simulateSuccess() }) { Text("📌👍") } }
-            item { Button(onClick = { viewModel.simulateIncorrectTransportPIN() }) { Text("📌👎") } }
+            item { Button(onClick = { viewModel.simulateIncorrectTransportPin() }) { Text("📌👎") } }
             item { Button(onClick = { viewModel.simulateCardUnreadable() }) { Text("🪪⚡️") } }
-            item { Button(onClick = { viewModel.simulateCANRequired() }) { Text("CAN") } }
+            item { Button(onClick = { viewModel.simulateCanRequired() }) { Text("CAN") } }
             item { Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") } }
             item { Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("🪪📵") } }
         }
@@ -55,22 +55,22 @@ fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: Setup
 @HiltViewModel
 class PreviewSetupScanViewModel @Inject constructor(
     private val trackerManager: TrackerManagerType,
-    private val idCardManager: IDCardManager
+    private val idCardManager: IdCardManager
 ) : ViewModel() {
     fun simulateSuccess() {
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
+            idCardManager.injectChangePinEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
         }
     }
 
-    fun simulateIncorrectTransportPIN() {
+    fun simulateIncorrectTransportPin() {
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EIDInteractionEvent.RequestChangedPIN(2, { _, _ -> }))
-            idCardManager.injectChangePinEvent(EIDInteractionEvent.RequestChangedPIN(2, { _, _ -> }))
+            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
+            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
         }
         trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
     }
@@ -79,16 +79,16 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinException(IDCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
+            idCardManager.injectChangePinException(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
         }
         trackerManager.trackScreen("firstTimeUser/cardUnreadable")
     }
 
-    fun simulateCANRequired() {
+    fun simulateCanRequired() {
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EIDInteractionEvent.RequestCANAndChangedPIN(pinCallback = { _, _, _ -> }))
+            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestCanAndChangedPin(pinCallback = { _, _, _ -> }))
         }
         trackerManager.trackScreen("firstTimeUser/cardSuspended")
     }
@@ -97,7 +97,7 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EIDInteractionEvent.RequestPUK { _ -> })
+            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestPUK { _ -> })
         }
         trackerManager.trackScreen("firstTimeUser/cardBlocked")
     }
@@ -106,15 +106,15 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinException(IDCardInteractionException.CardDeactivated)
+            idCardManager.injectChangePinException(IdCardInteractionException.CardDeactivated)
         }
         trackerManager.trackScreen("firstTimeUser/cardDeactivated")
     }
 
     private suspend fun simulateWaiting() {
-        idCardManager.injectChangePinEvent(EIDInteractionEvent.CardRecognized)
+        idCardManager.injectChangePinEvent(EidInteractionEvent.CardRecognized)
         delay(3000L)
-        idCardManager.injectChangePinEvent(EIDInteractionEvent.CardRemoved)
+        idCardManager.injectChangePinEvent(EidInteractionEvent.CardRemoved)
     }
 }
 
@@ -123,7 +123,7 @@ class PreviewSetupScanViewModel @Inject constructor(
 fun PreviewPreviewSetupScan() {
     UseIDTheme {
         PreviewSetupScan(
-            PreviewSetupScanViewModel(PreviewTrackerManager(), IDCardManager()),
+            PreviewSetupScanViewModel(PreviewTrackerManager(), IdCardManager()),
             object : SetupScanViewModelInterface {
                 override val shouldShowProgress: Boolean = false
 

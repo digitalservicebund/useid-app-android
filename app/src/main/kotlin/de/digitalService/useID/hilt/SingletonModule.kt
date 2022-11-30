@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.digitalService.useID.idCardInterface.IDCardManager
+import de.digitalService.useID.idCardInterface.IdCardManager
 import javax.inject.Singleton
 
 @Module
@@ -12,5 +12,5 @@ import javax.inject.Singleton
 class SingletonModule {
     @Provides
     @Singleton
-    fun provideIDCardManager() = IDCardManager()
+    fun provideIDCardManager() = IdCardManager()
 }

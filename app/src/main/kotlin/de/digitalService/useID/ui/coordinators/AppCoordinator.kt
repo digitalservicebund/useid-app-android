@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 interface AppCoordinatorType {
     val nfcAvailability: State<NfcAvailability>
-    val currentlyHandlingNFCTags: Boolean
+    val currentlyHandlingNfcTags: Boolean
 
     fun setNavController(navController: NavController)
     fun navigate(route: Direction)
@@ -34,8 +34,8 @@ interface AppCoordinatorType {
     fun setNfcAvailability(availability: NfcAvailability)
     fun setIsNotFirstTimeUser()
     fun handleDeepLink(uri: Uri)
-    fun startNFCTagHandling()
-    fun stopNFCTagHandling()
+    fun startNfcTagHandling()
+    fun stopNfcTagHandling()
     fun navigatePopping(route: Direction)
     fun popUpTo(direction: Destination)
 }
@@ -52,7 +52,7 @@ class AppCoordinator @Inject constructor(
     private var coldLaunch: Boolean = true
 
     override val nfcAvailability: MutableState<NfcAvailability> = mutableStateOf(NfcAvailability.Available)
-    override var currentlyHandlingNFCTags: Boolean = false
+    override var currentlyHandlingNfcTags: Boolean = false
         private set
 
     override fun setNavController(navController: NavController) {
@@ -134,11 +134,11 @@ class AppCoordinator @Inject constructor(
         }
     }
 
-    override fun startNFCTagHandling() {
-        currentlyHandlingNFCTags = true
+    override fun startNfcTagHandling() {
+        currentlyHandlingNfcTags = true
     }
 
-    override fun stopNFCTagHandling() {
-        currentlyHandlingNFCTags = false
+    override fun stopNfcTagHandling() {
+        currentlyHandlingNfcTags = false
     }
 }

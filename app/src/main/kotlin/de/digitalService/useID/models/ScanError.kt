@@ -3,9 +3,9 @@ package de.digitalService.useID.models
 import de.digitalService.useID.R
 
 sealed class ScanError {
-    data class IncorrectPIN(val attempts: Int) : ScanError()
-    object PINSuspended : ScanError()
-    object PINBlocked : ScanError()
+    data class IncorrectPin(val attempts: Int) : ScanError()
+    object PinSuspended : ScanError()
+    object PinBlocked : ScanError()
     object CardDeactivated : ScanError()
     data class CardErrorWithRedirect(val redirectUrl: String) : ScanError()
     object CardErrorWithoutRedirect : ScanError()
@@ -14,8 +14,8 @@ sealed class ScanError {
     val titleResID: Int
         get() {
             return when (this) {
-                PINSuspended -> R.string.scanError_cardSuspended_title
-                PINBlocked -> R.string.scanError_cardBlocked_title
+                PinSuspended -> R.string.scanError_cardSuspended_title
+                PinBlocked -> R.string.scanError_cardBlocked_title
                 CardDeactivated -> R.string.scanError_cardDeactivated_title
                 CardErrorWithoutRedirect, is CardErrorWithRedirect -> R.string.scanError_cardUnreadable_title
                 is Other -> R.string.scanError_unknown_title
@@ -26,8 +26,8 @@ sealed class ScanError {
     val textResID: Int
         get() {
             return when (this) {
-                PINSuspended -> R.string.scanError_cardSuspended_body
-                PINBlocked -> R.string.scanError_cardBlocked_body
+                PinSuspended -> R.string.scanError_cardSuspended_body
+                PinBlocked -> R.string.scanError_cardBlocked_body
                 CardDeactivated -> R.string.scanError_cardDeactivated_body
                 CardErrorWithoutRedirect, is CardErrorWithRedirect -> R.string.scanError_cardUnreadable_body
                 is Other -> R.string.scanError_unknown_body

@@ -5,15 +5,15 @@ import org.openecard.mobile.activation.ServiceErrorResponse
 
 fun ServiceErrorResponse.errorDescription(): String = "${statusCode.ordinal} - ${statusCode.name}: $errorMessage"
 
-fun List<SelectableItem>.reduceToMap(): Map<IDCardAttribute, Boolean> = map { it ->
+fun List<SelectableItem>.reduceToMap(): Map<IdCardAttribute, Boolean> = map { it ->
     try {
-        Pair(IDCardAttribute.valueOf(it.name), it.isRequired)
+        Pair(IdCardAttribute.valueOf(it.name), it.isRequired)
     } catch (e: IllegalArgumentException) {
-        throw IDCardInteractionException.UnexpectedReadAttribute(e.message)
+        throw IdCardInteractionException.UnexpectedReadAttribute(e.message)
     }
 }.toMap()
 
-fun Map<IDCardAttribute, Boolean>.toSelectableItems(): List<SelectableItem> = map {
+fun Map<IdCardAttribute, Boolean>.toSelectableItems(): List<SelectableItem> = map {
     object :
         SelectableItem {
         override fun getName(): String = it.key.name

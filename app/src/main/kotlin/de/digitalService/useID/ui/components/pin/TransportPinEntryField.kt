@@ -14,7 +14,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun TransportPINEntryField(
+fun TransportPinEntryField(
     value: String,
     onValueChanged: (String) -> Unit,
     onDone: () -> Unit,
@@ -38,7 +38,7 @@ fun TransportPINEntryField(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        PINEntryField(
+        PinEntryField(
             value = value,
             onValueChanged = onValueChanged,
             digitCount = 5,
@@ -58,9 +58,9 @@ fun TransportPINEntryField(
 
 @Preview
 @Composable
-fun PreviewTransportPINEntryField() {
+fun PreviewTransportPinEntryField() {
     UseIDTheme {
-        TransportPINEntryField(
+        TransportPinEntryField(
             value = "12",
             onValueChanged = { },
             onDone = { },

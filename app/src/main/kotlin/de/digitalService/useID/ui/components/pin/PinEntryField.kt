@@ -34,7 +34,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
-fun PINEntryField(
+fun PinEntryField(
     value: String,
     onValueChanged: (String) -> Unit,
     digitCount: Int,
@@ -93,7 +93,7 @@ fun PINEntryField(
                 .focusable(false)
         )
 
-        PINDigitRow(
+        PinDigitRow(
             input = value,
             digitCount = digitCount,
             obfuscation = obfuscation,
@@ -108,7 +108,7 @@ fun PINEntryField(
 
 @Preview
 @Composable
-fun PreviewPINEntryField() {
+fun PreviewPinEntryField() {
     UseIDTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             var text by remember { mutableStateOf("") }
@@ -116,7 +116,7 @@ fun PreviewPINEntryField() {
                 FocusRequester()
             }
 
-            PINEntryField(
+            PinEntryField(
                 text,
                 onValueChanged = { text = it },
                 digitCount = 6,

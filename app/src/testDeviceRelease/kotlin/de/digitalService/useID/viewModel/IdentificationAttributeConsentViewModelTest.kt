@@ -3,8 +3,8 @@ package de.digitalService.useID.viewModel
 import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
-import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
-import de.digitalService.useID.idCardInterface.IDCardAttribute
+import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
+import de.digitalService.useID.idCardInterface.IdCardAttribute
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
 import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentNavArgs
@@ -32,15 +32,15 @@ class IdentificationAttributeConsentViewModelTest {
     fun success() {
         val testIdentificationProvider = "identificationProvider"
         val testIdAttributes = mapOf(
-            IDCardAttribute.DG01 to true,
-            IDCardAttribute.DG02 to true,
-            IDCardAttribute.DG03 to false,
-            IDCardAttribute.DG04 to true,
-            IDCardAttribute.DG05 to false
+            IdCardAttribute.DG01 to true,
+            IdCardAttribute.DG02 to true,
+            IdCardAttribute.DG03 to false,
+            IdCardAttribute.DG04 to true,
+            IdCardAttribute.DG05 to false
         )
 
         val mockNavArgs: IdentificationAttributeConsentNavArgs = mockk()
-        val mockRequest: EIDAuthenticationRequest = mockk(relaxed = true)
+        val mockRequest: EidAuthenticationRequest = mockk(relaxed = true)
 
         every { mockNavArgs.request } returns mockRequest
 
@@ -64,7 +64,7 @@ class IdentificationAttributeConsentViewModelTest {
         Assertions.assertEquals(expectedRequiredReadAttributes, viewModel.requiredReadAttributes)
         Assertions.assertEquals(testIdentificationProvider, viewModel.identificationProvider)
 
-        viewModel.onPINButtonTapped()
+        viewModel.onPinButtonTapped()
 
         verify(exactly = 1) { mockIdentificationCoordinator.confirmAttributesForIdentification() }
         verify(exactly = 1) { IdentificationAttributeConsentDestination.argsFrom(mockSaveStateHandle) }

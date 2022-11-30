@@ -11,24 +11,24 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 
-class IDCardManager {
+class IdCardManager {
     private val logger by getLogger()
 
-    private lateinit var identifyChannel: BroadcastChannel<EIDInteractionEvent>
-    private lateinit var changePinChannel: BroadcastChannel<EIDInteractionEvent>
+    private lateinit var identifyChannel: BroadcastChannel<EidInteractionEvent>
+    private lateinit var changePinChannel: BroadcastChannel<EidInteractionEvent>
 
-    fun handleNFCTag(tag: Tag) = logger.debug("Ignoring NFC tag in preview.")
+    fun handleNfcTag(tag: Tag) = logger.debug("Ignoring NFC tag in preview.")
 
-    fun identify(context: Context, url: String): Flow<EIDInteractionEvent> {
+    fun identify(context: Context, url: String): Flow<EidInteractionEvent> {
         identifyChannel = BroadcastChannel(1)
         return identifyChannel.asFlow()
     }
 
-    fun changePin(context: Context): Flow<EIDInteractionEvent> {
+    fun changePin(context: Context): Flow<EidInteractionEvent> {
         changePinChannel = BroadcastChannel(1)
         CoroutineScope(Dispatchers.Default).launch {
             delay(100L)
-            changePinChannel.send(EIDInteractionEvent.RequestCardInsertion)
+            changePinChannel.send(EidInteractionEvent.RequestCardInsertion)
         }
         return changePinChannel.asFlow()
     }
@@ -37,7 +37,7 @@ class IDCardManager {
         logger.debug("Cancel task")
     }
 
-    suspend fun injectIdentifyEvent(event: EIDInteractionEvent) {
+    suspend fun injectIdentifyEvent(event: EidInteractionEvent) {
         identifyChannel.send(event)
     }
 
@@ -45,7 +45,7 @@ class IDCardManager {
         identifyChannel.close(exception)
     }
 
-    suspend fun injectChangePinEvent(event: EIDInteractionEvent) {
+    suspend fun injectChangePinEvent(event: EidInteractionEvent) {
         changePinChannel.send(event)
     }
 

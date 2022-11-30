@@ -22,7 +22,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.pin.PINEntryField
+import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.theme.Gray300
@@ -42,11 +42,11 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
                 .verticalScroll(rememberScrollState())
 
         ) {
-            val focusRequesterPIN = remember { FocusRequester() }
+            val focusRequesterPin = remember { FocusRequester() }
 
             LaunchedEffect(Unit) {
                 viewModel.onInitialize()
-                focusRequesterPIN.requestFocus()
+                focusRequesterPin.requestFocus()
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -72,15 +72,15 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
                 viewModel.pin.map { "$it " }
             )
 
-            PINEntryField(
+            PinEntryField(
                 value = viewModel.pin,
                 digitCount = 6,
                 obfuscation = true,
                 spacerPosition = 3,
-                onValueChanged = viewModel::userInputPIN,
+                onValueChanged = viewModel::userInputPin,
                 onDone = viewModel::onDonePressed,
                 contentDescription = pinEntryFieldDescription,
-                focusRequester = focusRequesterPIN,
+                focusRequester = focusRequesterPin,
                 backgroundColor = Gray300,
                 modifier = Modifier
                     .width(240.dp)
@@ -109,7 +109,7 @@ interface SetupPersonalPinConfirmViewModelInterface {
     val shouldShowError: Boolean
 
     fun onInitialize()
-    fun userInputPIN(value: String)
+    fun userInputPin(value: String)
     fun onDonePressed()
     fun onErrorDialogButtonPressed()
     fun onNavigationButtonPressed()
@@ -126,7 +126,7 @@ class SetupPersonalPinConfirmViewModel @Inject constructor(
         pin = ""
     }
 
-    override fun userInputPIN(value: String) {
+    override fun userInputPin(value: String) {
         if (!value.isDigitsOnly()) {
             return
         }
@@ -154,7 +154,7 @@ private class PreviewSetupPersonalPinConfirmViewModel : SetupPersonalPinConfirmV
     override val shouldShowError: Boolean = false
 
     override fun onInitialize() {}
-    override fun userInputPIN(value: String) {}
+    override fun userInputPin(value: String) {}
     override fun onDonePressed() {}
     override fun onErrorDialogButtonPressed() {}
     override fun onNavigationButtonPressed() {}

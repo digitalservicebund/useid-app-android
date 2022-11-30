@@ -64,13 +64,13 @@ sealed class ScanEvent {
 
 interface IdentificationScanViewModelInterface {
     val shouldShowProgress: Boolean
-    val errorState: ScanError.IncorrectPIN?
+    val errorState: ScanError.IncorrectPin?
 
     fun onHelpButtonTapped()
     fun onNfcButtonTapped()
     fun onErrorDialogButtonTapped(context: Context)
     fun onCancelIdentification()
-    fun onNewPersonalPINEntered(pin: String)
+    fun onNewPersonalPinEntered(pin: String)
 }
 
 @HiltViewModel
@@ -83,7 +83,7 @@ class IdentificationScanViewModel @Inject constructor(
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
 
-    override var errorState: ScanError.IncorrectPIN? by mutableStateOf(null)
+    override var errorState: ScanError.IncorrectPin? by mutableStateOf(null)
         private set
 
     init {
@@ -106,9 +106,9 @@ class IdentificationScanViewModel @Inject constructor(
         coordinator.cancelIdentification()
     }
 
-    override fun onNewPersonalPINEntered(pin: String) {
+    override fun onNewPersonalPinEntered(pin: String) {
         errorState = null
-        coordinator.onPINEntered(pin)
+        coordinator.onPinEntered(pin)
     }
 
     private fun collectScanEvents() {
@@ -128,7 +128,7 @@ class IdentificationScanViewModel @Inject constructor(
                         is ScanEvent.Error -> {
                             shouldShowProgress = false
 
-                            if (event.error is ScanError.IncorrectPIN) {
+                            if (event.error is ScanError.IncorrectPin) {
                                 errorState = event.error
                             }
                         }
@@ -141,13 +141,13 @@ class IdentificationScanViewModel @Inject constructor(
 
 private class PreviewIdentificationScanViewModel(
     override val shouldShowProgress: Boolean,
-    override val errorState: ScanError.IncorrectPIN?
+    override val errorState: ScanError.IncorrectPin?
 ) : IdentificationScanViewModelInterface {
     override fun onHelpButtonTapped() {}
     override fun onNfcButtonTapped() {}
     override fun onErrorDialogButtonTapped(context: Context) {}
     override fun onCancelIdentification() {}
-    override fun onNewPersonalPINEntered(pin: String) {}
+    override fun onNewPersonalPinEntered(pin: String) {}
 }
 
 @Preview(showBackground = true)
@@ -170,7 +170,7 @@ fun PreviewIdentificationScanWithProgress() {
 @Composable
 fun PreviewIdentificationScanWithError() {
     UseIDTheme {
-        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, ScanError.IncorrectPIN(2)))
+        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, ScanError.IncorrectPin(2)))
     }
 }
 

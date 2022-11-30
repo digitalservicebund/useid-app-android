@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
+fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
     Box(
         modifier = Modifier
             .size(30.dp)
@@ -74,24 +74,24 @@ fun PINDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
 
 @Preview(showBackground = true, fontScale = 2f)
 @Composable
-fun PreviewPINDigitFieldWithInputNotObfuscated() {
-    PINDigitField(input = '2', obfuscation = false, placeholder = false)
+fun PreviewPinDigitFieldWithInputNotObfuscated() {
+    PinDigitField(input = '2', obfuscation = false, placeholder = false)
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewPINDigitFieldWithInputObfuscated() {
-    PINDigitField(input = '2', obfuscation = true, placeholder = false)
+fun PreviewPinDigitFieldWithInputObfuscated() {
+    PinDigitField(input = '2', obfuscation = true, placeholder = false)
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewPINDigitFieldWithoutInput() {
-    PINDigitField(input = null, obfuscation = false, placeholder = false)
+fun PreviewPinDigitFieldWithoutInput() {
+    PinDigitField(input = null, obfuscation = false, placeholder = false)
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewPINDigitFieldWithouInputAndPlaceholder() {
-    PINDigitField(input = null, obfuscation = false, placeholder = true)
+fun PreviewPinDigitFieldWithouInputAndPlaceholder() {
+    PinDigitField(input = null, obfuscation = false, placeholder = true)
 }

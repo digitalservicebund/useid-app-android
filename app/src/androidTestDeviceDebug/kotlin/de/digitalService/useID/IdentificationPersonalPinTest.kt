@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPIN
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPINViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPin
+import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPinViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
@@ -37,13 +37,13 @@ class IdentificationPersonalPinTest {
         val testPinInput1 = "12345"
         val testPinInput2 = "123456"
 
-        val mockViewModel: IdentificationPersonalPINViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
 
         every { mockViewModel.pin } answers { testPinState.value }
         every { mockViewModel.attempts } answers { testAttempts }
 
         composeTestRule.activity.setContent {
-            IdentificationPersonalPIN(viewModel = mockViewModel)
+            IdentificationPersonalPin(viewModel = mockViewModel)
         }
 
         val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(
@@ -69,8 +69,8 @@ class IdentificationPersonalPinTest {
         testPinState.value = testPinInput2
         composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
 
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput1) }
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput2) }
+        verify(exactly = 1) { mockViewModel.userInputPin(testPinInput1) }
+        verify(exactly = 1) { mockViewModel.userInputPin(testPinInput2) }
     }
 
     @Test
@@ -81,13 +81,13 @@ class IdentificationPersonalPinTest {
         val testPinInput1 = "12345"
         val testPinInput2 = "123456"
 
-        val mockViewModel: IdentificationPersonalPINViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
 
         every { mockViewModel.pin } answers { testPinState.value }
         every { mockViewModel.attempts } answers { 2 }
 
         composeTestRule.activity.setContent {
-            IdentificationPersonalPIN(viewModel = mockViewModel)
+            IdentificationPersonalPin(viewModel = mockViewModel)
         }
 
         val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(
@@ -116,7 +116,7 @@ class IdentificationPersonalPinTest {
         testPinState.value = testPinInput2
         composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
 
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput1) }
-        verify(exactly = 1) { mockViewModel.userInputPIN(testPinInput2) }
+        verify(exactly = 1) { mockViewModel.userInputPin(testPinInput1) }
+        verify(exactly = 1) { mockViewModel.userInputPin(testPinInput2) }
     }
 }

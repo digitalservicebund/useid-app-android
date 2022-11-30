@@ -21,7 +21,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.pin.PINEntryField
+import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
@@ -44,12 +44,12 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
                 .verticalScroll(rememberScrollState())
 
         ) {
-            val focusRequesterPIN = remember { FocusRequester() }
+            val focusRequesterPin = remember { FocusRequester() }
 
             LaunchedEffect(Unit) {
                 viewModel.onInitialize()
                 delay(400)
-                focusRequesterPIN.requestFocus()
+                focusRequesterPin.requestFocus()
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -73,15 +73,15 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
                 viewModel.pin.map { "$it " }
             )
 
-            PINEntryField(
+            PinEntryField(
                 value = viewModel.pin,
                 digitCount = 6,
                 obfuscation = true,
                 spacerPosition = 3,
-                onValueChanged = viewModel::userInputPIN,
+                onValueChanged = viewModel::userInputPin,
                 onDone = viewModel::onDonePressed,
                 contentDescription = pinEntryFieldDescription,
-                focusRequester = focusRequesterPIN,
+                focusRequester = focusRequesterPin,
                 backgroundColor = Gray300,
                 modifier = Modifier
                     .width(240.dp)
@@ -96,7 +96,7 @@ interface SetupPersonalPinInputViewModelInterface {
 
     fun onInitialize()
     fun onDonePressed()
-    fun userInputPIN(value: String)
+    fun userInputPin(value: String)
     fun onNavigationButtonTapped()
 }
 
@@ -110,7 +110,7 @@ class SetupPersonalPinInputViewModel @Inject constructor(
         pin = ""
     }
 
-    override fun userInputPIN(value: String) {
+    override fun userInputPin(value: String) {
         if (!value.isDigitsOnly()) {
             return
         }
@@ -133,7 +133,7 @@ private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewM
     override val pin: String = ""
     override fun onInitialize() {}
     override fun onDonePressed() {}
-    override fun userInputPIN(value: String) {}
+    override fun userInputPin(value: String) {}
     override fun onNavigationButtonTapped() {}
 }
 

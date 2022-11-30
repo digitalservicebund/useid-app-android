@@ -13,7 +13,7 @@ import org.openecard.android.activation.AndroidContextManager
 import org.openecard.android.activation.OpeneCard
 import org.openecard.mobile.activation.*
 
-class IDCardManager {
+class IdCardManager {
     private val logTag = javaClass.canonicalName!!
 
     private val openECard = OpeneCard.createInstance()
@@ -23,43 +23,43 @@ class IDCardManager {
 
     private sealed class Task {
         data class EAC(val tokenURL: String) : Task()
-        object PINManagement : Task()
+        object PinManagement : Task()
     }
 
-    fun handleNFCTag(tag: Tag) = androidContextManager?.onNewIntent(tag) ?: Log.d(logTag, "Ignoring NFC tag because no ID card related process is running.")
+    fun handleNfcTag(tag: Tag) = androidContextManager?.onNewIntent(tag) ?: Log.d(logTag, "Ignoring NFC tag because no ID card related process is running.")
 
-    fun identify(context: Context, url: String): Flow<EIDInteractionEvent> = executeTask(context, Task.EAC(url))
-    fun changePin(context: Context): Flow<EIDInteractionEvent> = executeTask(context, Task.PINManagement)
+    fun identify(context: Context, url: String): Flow<EidInteractionEvent> = executeTask(context, Task.EAC(url))
+    fun changePin(context: Context): Flow<EidInteractionEvent> = executeTask(context, Task.PinManagement)
 
-    private class ControllerCallbackHandler(private val channel: SendChannel<EIDInteractionEvent>) : ControllerCallback {
+    private class ControllerCallbackHandler(private val channel: SendChannel<EidInteractionEvent>) : ControllerCallback {
         private val logTag = javaClass.canonicalName!!
 
         override fun onStarted() {
             Log.d(logTag, "Started process.")
-            channel.trySendClosingOnError(EIDInteractionEvent.AuthenticationStarted)
+            channel.trySendClosingOnError(EidInteractionEvent.AuthenticationStarted)
         }
 
         override fun onAuthenticationCompletion(p0: ActivationResult?) {
             Log.d(logTag, "Process completed.")
             if (p0 == null) {
-                channel.close(IDCardInteractionException.FrameworkError())
+                channel.close(IdCardInteractionException.FrameworkError())
                 return
             }
 
             when (p0.resultCode) {
                 ActivationResultCode.OK -> {
-                    channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
+                    channel.trySendClosingOnError(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
                     channel.close()
                 }
                 ActivationResultCode.REDIRECT -> {
                     if (p0.processResultMinor != null) {
-                        channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
+                        channel.close(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
                     } else {
-                        channel.trySendClosingOnError(EIDInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
+                        channel.trySendClosingOnError(EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
                         channel.close()
                     }
                 }
-                else -> channel.close(IDCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
+                else -> channel.close(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
             }
         }
     }
@@ -78,21 +78,21 @@ class IDCardManager {
         }
     }
 
-    private fun executeTask(context: Context, task: Task): Flow<EIDInteractionEvent> = callbackFlow {
+    private fun executeTask(context: Context, task: Task): Flow<EidInteractionEvent> = callbackFlow {
         androidContextManager = openECard.context(context)
 
         androidContextManager?.initializeContext(object : StartServiceHandler {
             override fun onSuccess(p0: ActivationSource?) {
                 if (p0 == null) {
                     Log.e(logTag, "onSuccess called without parameter.")
-                    cancel(IDCardInteractionException.FrameworkError())
+                    cancel(IdCardInteractionException.FrameworkError())
                     return
                 }
 
                 val controllerCallback = ControllerCallbackHandler(channel)
                 activationController = when (task) {
-                    is Task.EAC -> p0.eacFactory().create(task.tokenURL, controllerCallback, EACInteractionHandler(channel))
-                    is Task.PINManagement -> p0.pinManagementFactory().create(controllerCallback, PINManagementInteractionHandler(channel))
+                    is Task.EAC -> p0.eacFactory().create(task.tokenURL, controllerCallback, EacInteractionHandler(channel))
+                    is Task.PinManagement -> p0.pinManagementFactory().create(controllerCallback, PinManagementInteractionHandler(channel))
                 }
             }
 
@@ -101,7 +101,7 @@ class IDCardManager {
                     logTag,
                     "Failure. ${p0?.errorDescription() ?: "n/a"}"
                 )
-                cancel(IDCardInteractionException.FrameworkError(p0?.errorDescription()))
+                cancel(IdCardInteractionException.FrameworkError(p0?.errorDescription()))
             }
         })
 

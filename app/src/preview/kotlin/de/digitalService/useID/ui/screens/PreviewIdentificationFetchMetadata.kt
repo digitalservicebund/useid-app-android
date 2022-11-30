@@ -49,14 +49,14 @@ fun PreviewIdentificationFetchMetadata(
 
 @HiltViewModel
 class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
-    private val idCardManager: IDCardManager,
+    private val idCardManager: IdCardManager,
     private val trackerManager: TrackerManagerType
 ) : ViewModel() {
     fun simulateSuccess() {
         viewModelScope.launch(Dispatchers.Main) {
             idCardManager.injectIdentifyEvent(
-                EIDInteractionEvent.RequestAuthenticationRequestConfirmation(
-                    EIDAuthenticationRequest(
+                EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                    EidAuthenticationRequest(
                         "issuer",
                         "issueURL",
                         "subject",
@@ -64,14 +64,14 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
                         "validity",
                         AuthenticationTerms.Text(""),
                         "transactionInfo",
-                        readAttributes = IDCardAttribute.values().associateWith { true }
+                        readAttributes = IdCardAttribute.values().associateWith { true }
                     )
                 ) {
                     viewModelScope.launch {
                         getLogger().value.debug("request pin")
-                        idCardManager.injectIdentifyEvent(EIDInteractionEvent.RequestPIN(null) {
+                        idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestPin(null) {
                             viewModelScope.launch {
-                                idCardManager.injectIdentifyEvent(EIDInteractionEvent.RequestCardInsertion)
+                                idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestCardInsertion)
                             }
                         })
                     }
@@ -82,7 +82,7 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
 
     fun simulateConnectionError() {
         viewModelScope.launch(Dispatchers.Main) {
-            idCardManager.injectIdentifyException(IDCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
+            idCardManager.injectIdentifyException(IdCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
         }
         trackerManager.trackEvent("identification", "loadingFailed", "attributes")
     }
@@ -93,7 +93,7 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
 fun PreviewPreviewIdentificationFetchMetadata() {
     UseIDTheme {
         PreviewIdentificationFetchMetadata(
-            PreviewIdentificationFetchMetadataViewModel(IDCardManager(), PreviewTrackerManager()),
+            PreviewIdentificationFetchMetadataViewModel(IdCardManager(), PreviewTrackerManager()),
             object : IdentificationFetchMetadataViewModelInterface {
                 override fun startIdentificationProcess() {}
                 override fun onCancelButtonTapped() {}

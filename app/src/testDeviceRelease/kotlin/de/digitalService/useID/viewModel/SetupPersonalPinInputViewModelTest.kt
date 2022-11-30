@@ -35,7 +35,7 @@ class SetupPersonalPinInputViewModelTest {
 
         assertEquals(defaultValue, viewModel.pin)
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
 
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
@@ -54,7 +54,7 @@ class SetupPersonalPinInputViewModelTest {
 
         assertEquals(defaultValue, viewModel.pin)
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
 
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
@@ -73,7 +73,7 @@ class SetupPersonalPinInputViewModelTest {
 
         assertEquals(defaultValue, viewModel.pin)
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
 
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
@@ -86,7 +86,7 @@ class SetupPersonalPinInputViewModelTest {
 
         assertEquals(defaultValue, viewModel.pin)
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
 
         assertEquals("", viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
@@ -101,7 +101,7 @@ class SetupPersonalPinInputViewModelTest {
 
         assertEquals(defaultValue, viewModel.pin)
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
 
         assertEquals("", viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }

@@ -24,19 +24,19 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.pin.PINEntryField
+import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
+import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
 import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
-@Destination(navArgsDelegate = IdentificationPersonalPINNavArgs::class)
+@Destination(navArgsDelegate = IdentificationPersonalPinNavArgs::class)
 @Composable
-fun IdentificationPersonalPIN(
+fun IdentificationPersonalPin(
     modifier: Modifier = Modifier,
-    viewModel: IdentificationPersonalPINViewModelInterface = hiltViewModel<IdentificationPersonalPINViewModel>()
+    viewModel: IdentificationPersonalPinViewModelInterface = hiltViewModel<IdentificationPersonalPinViewModel>()
 ) {
     val resources = LocalContext.current.resources
 
@@ -73,12 +73,12 @@ fun IdentificationPersonalPIN(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            PINEntryField(
+            PinEntryField(
                 value = viewModel.pin,
                 digitCount = 6,
                 obfuscation = true,
                 spacerPosition = 3,
-                onValueChanged = viewModel::userInputPIN,
+                onValueChanged = viewModel::userInputPin,
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequester,
                 onDone = viewModel::onDone,
@@ -125,41 +125,41 @@ fun IdentificationPersonalPIN(
     }
 }
 
-data class IdentificationPersonalPINNavArgs(
+data class IdentificationPersonalPinNavArgs(
     val attempts: Int?
 )
 
-interface IdentificationPersonalPINViewModelInterface {
+interface IdentificationPersonalPinViewModelInterface {
     val pin: String
     val attempts: Int?
 
-    fun userInputPIN(value: String)
+    fun userInputPin(value: String)
     fun onDone()
     fun onNavigationButtonTapped()
 }
 
 @HiltViewModel
-class IdentificationPersonalPINViewModel @Inject constructor(
+class IdentificationPersonalPinViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator,
     savedStateHandle: SavedStateHandle
-) : ViewModel(), IdentificationPersonalPINViewModelInterface {
+) : ViewModel(), IdentificationPersonalPinViewModelInterface {
     override var pin by mutableStateOf("")
         private set
 
     override val attempts: Int?
 
     init {
-        attempts = IdentificationPersonalPINDestination.argsFrom(savedStateHandle).attempts
+        attempts = IdentificationPersonalPinDestination.argsFrom(savedStateHandle).attempts
     }
 
-    override fun userInputPIN(value: String) {
-        if (!checkPINString(value)) return
+    override fun userInputPin(value: String) {
+        if (!checkPinString(value)) return
         pin = value
     }
 
     override fun onDone() {
         if (pin.length == 6) {
-            coordinator.onPINEntered(pin)
+            coordinator.onPinEntered(pin)
         }
     }
 
@@ -171,30 +171,30 @@ class IdentificationPersonalPINViewModel @Inject constructor(
         }
     }
 
-    private fun checkPINString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
+    private fun checkPinString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
 }
 
-class PreviewIdentificationPersonalPINViewModel(
+class PreviewIdentificationPersonalPinViewModel(
     override val pin: String,
     override val attempts: Int?
-) : IdentificationPersonalPINViewModelInterface {
-    override fun userInputPIN(value: String) {}
+) : IdentificationPersonalPinViewModelInterface {
+    override fun userInputPin(value: String) {}
     override fun onDone() {}
     override fun onNavigationButtonTapped() {}
 }
 
 @Preview
 @Composable
-fun PreviewIdentificationPersonalPIN() {
+fun PreviewIdentificationPersonalPin() {
     UseIDTheme {
-        IdentificationPersonalPIN(viewModel = PreviewIdentificationPersonalPINViewModel("123", null))
+        IdentificationPersonalPin(viewModel = PreviewIdentificationPersonalPinViewModel("123", null))
     }
 }
 
 @Preview
 @Composable
-fun PreviewIdentificationPersonalPINTwoAttempts() {
+fun PreviewIdentificationPersonalPinTwoAttempts() {
     UseIDTheme {
-        IdentificationPersonalPIN(viewModel = PreviewIdentificationPersonalPINViewModel("123", 2))
+        IdentificationPersonalPin(viewModel = PreviewIdentificationPersonalPinViewModel("123", 2))
     }
 }

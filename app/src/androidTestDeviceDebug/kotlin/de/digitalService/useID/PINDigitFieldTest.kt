@@ -7,13 +7,13 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.ui.components.pin.PINEntryField
+import de.digitalService.useID.ui.components.pin.PinEntryField
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class PINDigitFieldTest {
+class PinDigitFieldTest {
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
@@ -35,7 +35,7 @@ class PINDigitFieldTest {
         val testPinState = mutableStateOf("")
         val focusRequester = FocusRequester()
         composeTestRule.activity.setContent {
-            PINEntryField(
+            PinEntryField(
                 value = testPinState.value,
                 onValueChanged = mockCallback,
                 digitCount = 6,
@@ -71,7 +71,7 @@ class PINDigitFieldTest {
         val focusRequester = FocusRequester()
 
         composeTestRule.activity.setContent {
-            PINEntryField(
+            PinEntryField(
                 value = testPinState.value,
                 onValueChanged = mockCallback,
                 digitCount = 6,
@@ -107,7 +107,7 @@ class PINDigitFieldTest {
         val focusRequester = FocusRequester()
 
         composeTestRule.activity.setContent {
-            PINEntryField(
+            PinEntryField(
                 value = testPinState.value,
                 onValueChanged = mockCallback,
                 digitCount = 6,

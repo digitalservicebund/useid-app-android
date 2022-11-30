@@ -3,9 +3,9 @@ package de.digitalService.useID.viewModel
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPINDestination
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPINNavArgs
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPINViewModel
+import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
+import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPinNavArgs
+import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPinViewModel
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
@@ -26,12 +26,12 @@ class IdentificationPersonalPinViewModelTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockSaveStateHandle: SavedStateHandle
 
-    private val mockNavArgs: IdentificationPersonalPINNavArgs = mockk()
+    private val mockNavArgs: IdentificationPersonalPinNavArgs = mockk()
 
     @BeforeEach
     fun beforeEach() {
-        mockkObject(IdentificationPersonalPINDestination)
-        every { IdentificationPersonalPINDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
+        mockkObject(IdentificationPersonalPinDestination)
+        every { IdentificationPersonalPinDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
 
         every { mockNavArgs.attempts } returns null
     }
@@ -41,7 +41,7 @@ class IdentificationPersonalPinViewModelTest {
     fun readNavArgsCorrect_Ints(testValue: Int) {
         every { mockNavArgs.attempts } returns testValue
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
@@ -53,7 +53,7 @@ class IdentificationPersonalPinViewModelTest {
     fun readNavArgsCorrect_Null() {
         every { mockNavArgs.attempts } returns null
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
@@ -62,66 +62,66 @@ class IdentificationPersonalPinViewModelTest {
     }
 
     @Test
-    fun userInputPIN_DisplayCorrect_5Digits() {
+    fun userInputPin_DisplayCorrect_5Digits() {
         val testValue = "12345"
 
         mockkStatic("android.text.TextUtils")
         every { testValue.isDigitsOnly() } returns true
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
         assertEquals(testValue, viewModel.pin)
     }
 
     @Test
-    fun userInputPIN_DisplayCorrect_SingleDigits() {
+    fun userInputPin_DisplayCorrect_SingleDigits() {
         val testValue = "1"
 
         mockkStatic("android.text.TextUtils")
         every { testValue.isDigitsOnly() } returns true
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
         assertEquals(testValue, viewModel.pin)
     }
 
     @Test
-    fun userInputPIN_DisplayNothing_TooLong() {
+    fun userInputPin_DisplayNothing_TooLong() {
         val testValue = "1234567"
 
         mockkStatic("android.text.TextUtils")
         every { testValue.isDigitsOnly() } returns true
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
         assertEquals("", viewModel.pin)
     }
 
     @Test
-    fun userInputPIN_DisplayNothing_NotAllDigits() {
+    fun userInputPin_DisplayNothing_NotAllDigits() {
         val testValue = "123A5"
 
         mockkStatic("android.text.TextUtils")
         every { testValue.isDigitsOnly() } returns false
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
         assertEquals("", viewModel.pin)
     }
 
@@ -132,17 +132,17 @@ class IdentificationPersonalPinViewModelTest {
         mockkStatic("android.text.TextUtils")
         every { testValue.isDigitsOnly() } returns true
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
         viewModel.onDone()
 
         assertEquals(testValue, viewModel.pin)
 
-        verify(exactly = 1) { mockIdentificationCoordinator.onPINEntered(testValue) }
+        verify(exactly = 1) { mockIdentificationCoordinator.onPinEntered(testValue) }
     }
 
     @Test
@@ -152,17 +152,17 @@ class IdentificationPersonalPinViewModelTest {
         mockkStatic("android.text.TextUtils")
         every { testValue.isDigitsOnly() } returns true
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
         viewModel.onDone()
 
         assertEquals(testValue, viewModel.pin)
 
-        verify(exactly = 0) { mockIdentificationCoordinator.onPINEntered(testValue) }
+        verify(exactly = 0) { mockIdentificationCoordinator.onPinEntered(testValue) }
     }
 
     @Test
@@ -172,16 +172,16 @@ class IdentificationPersonalPinViewModelTest {
         mockkStatic("android.text.TextUtils")
         every { testValue.isDigitsOnly() } returns true
 
-        val viewModel = IdentificationPersonalPINViewModel(
+        val viewModel = IdentificationPersonalPinViewModel(
             mockIdentificationCoordinator,
             mockSaveStateHandle
         )
 
-        viewModel.userInputPIN(testValue)
+        viewModel.userInputPin(testValue)
         viewModel.onDone()
 
         assertEquals("", viewModel.pin)
 
-        verify(exactly = 0) { mockIdentificationCoordinator.onPINEntered(testValue) }
+        verify(exactly = 0) { mockIdentificationCoordinator.onPinEntered(testValue) }
     }
 }

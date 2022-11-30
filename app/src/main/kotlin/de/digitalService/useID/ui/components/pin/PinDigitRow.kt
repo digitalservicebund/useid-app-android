@@ -11,7 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun PINDigitRow(
+fun PinDigitRow(
     input: String,
     digitCount: Int,
     obfuscation: Boolean,
@@ -36,19 +36,19 @@ fun PINDigitRow(
                 }
             }
 
-            PINDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
+            PinDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
         }
     }
 }
 
 @Preview
 @Composable
-fun PreviewPINDigitRowTransportPIN() {
-    PINDigitRow(input = "12", digitCount = 5, obfuscation = false, placeholder = false, spacerPosition = null, modifier = Modifier.width(300.dp))
+fun PreviewPinDigitRowTransportPin() {
+    PinDigitRow(input = "12", digitCount = 5, obfuscation = false, placeholder = false, spacerPosition = null, modifier = Modifier.width(300.dp))
 }
 
 @Preview
 @Composable
-fun PreviewPINDigitRowPersonalPIN() {
-    PINDigitRow(input = "12", digitCount = 6, obfuscation = true, placeholder = false, spacerPosition = 3, modifier = Modifier.width(300.dp))
+fun PreviewPinDigitRowPersonalPin() {
+    PinDigitRow(input = "12", digitCount = 6, obfuscation = true, placeholder = false, spacerPosition = 3, modifier = Modifier.width(300.dp))
 }

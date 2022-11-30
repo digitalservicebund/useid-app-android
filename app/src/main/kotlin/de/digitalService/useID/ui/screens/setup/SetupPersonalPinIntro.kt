@@ -31,7 +31,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = hiltViewModel<SetupPersonalPINIntroViewModel>()) {
+fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = hiltViewModel<SetupPersonalPinIntroViewModel>()) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
@@ -41,7 +41,7 @@ fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = h
         StandardButtonScreen(
             primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.firstTimeUser_personalPINIntro_continue),
-                action = viewModel::onSetPIN
+                action = viewModel::onSetPin
             ),
             modifier = Modifier.padding(top = topPadding)
         ) {
@@ -102,33 +102,33 @@ fun SetupPersonalPINIntro(viewModel: SetupPersonalPINIntroViewModelInterface = h
     }
 }
 
-interface SetupPersonalPINIntroViewModelInterface {
-    fun onSetPIN()
+interface SetupPersonalPinIntroViewModelInterface {
+    fun onSetPin()
     fun onBackButtonTapped()
 }
 
 @HiltViewModel
-class SetupPersonalPINIntroViewModel @Inject constructor(private val coordinator: SetupCoordinator) :
+class SetupPersonalPinIntroViewModel @Inject constructor(private val coordinator: SetupCoordinator) :
     ViewModel(),
-    SetupPersonalPINIntroViewModelInterface {
-    override fun onSetPIN() {
-        coordinator.onPersonalPINIntroFinished()
+    SetupPersonalPinIntroViewModelInterface {
+    override fun onSetPin() {
+        coordinator.onPersonalPinIntroFinished()
     }
 
     override fun onBackButtonTapped() = coordinator.onBackTapped()
 }
 
 //region Preview
-private class PreviewSetupPersonalPINIntroViewModel : SetupPersonalPINIntroViewModelInterface {
-    override fun onSetPIN() { }
+private class PreviewSetupPersonalPinIntroViewModel : SetupPersonalPinIntroViewModelInterface {
+    override fun onSetPin() { }
     override fun onBackButtonTapped() {}
 }
 
 @Preview
 @Composable
-fun PreviewSetupPersonalPINIntro() {
+fun PreviewSetupPersonalPinIntro() {
     UseIDTheme {
-        SetupPersonalPINIntro(PreviewSetupPersonalPINIntroViewModel())
+        SetupPersonalPinIntro(PreviewSetupPersonalPinIntroViewModel())
     }
 }
 //endregion

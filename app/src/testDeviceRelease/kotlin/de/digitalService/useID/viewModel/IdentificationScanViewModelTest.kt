@@ -147,7 +147,7 @@ class IdentificationScanViewModelTest {
     }
 
     @Test
-    fun onNewPersonalPINEntered() = runTest {
+    fun onNewPersonalPinEntered() = runTest {
         val testError = ScanError.Other(null)
         val testPin = "123456"
 
@@ -166,10 +166,10 @@ class IdentificationScanViewModelTest {
 
         Assertions.assertNull(viewModel.errorState)
 
-        viewModel.onNewPersonalPINEntered(testPin)
+        viewModel.onNewPersonalPinEntered(testPin)
 
         Assertions.assertEquals(null, viewModel.errorState)
 
-        verify(exactly = 1) { mockCoordinator.onPINEntered(testPin) }
+        verify(exactly = 1) { mockCoordinator.onPinEntered(testPin) }
     }
 }

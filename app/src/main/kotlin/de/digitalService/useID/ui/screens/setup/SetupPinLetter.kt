@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @Destination
 @Composable
-fun SetupPINLetter(viewModel: SetupPINLetterScreenViewModelInterface = hiltViewModel<SetupPINLetterViewModel>()) {
+fun SetupPinLetter(viewModel: SetupPinLetterScreenViewModelInterface = hiltViewModel<SetupPinLetterViewModel>()) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
     ) { topPadding ->
@@ -29,44 +29,44 @@ fun SetupPINLetter(viewModel: SetupPINLetterScreenViewModelInterface = hiltViewM
             imageScaling = ContentScale.FillWidth,
             primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.firstTimeUser_pinLetter_letterPresent),
-                action = viewModel::onTransportPINAvailable
+                action = viewModel::onTransportPinAvailable
             ),
             secondaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.firstTimeUser_pinLetter_requestLetter),
-                action = viewModel::onNoPINAvailable
+                action = viewModel::onNoPinAvailable
             ),
             modifier = Modifier.padding(top = topPadding)
         )
     }
 }
 
-interface SetupPINLetterScreenViewModelInterface {
-    fun onTransportPINAvailable()
-    fun onNoPINAvailable()
+interface SetupPinLetterScreenViewModelInterface {
+    fun onTransportPinAvailable()
+    fun onNoPinAvailable()
     fun onBackButtonTapped()
 }
 
 @HiltViewModel
-class SetupPINLetterViewModel @Inject constructor(private val coordinator: SetupCoordinator) :
+class SetupPinLetterViewModel @Inject constructor(private val coordinator: SetupCoordinator) :
     ViewModel(),
-    SetupPINLetterScreenViewModelInterface {
-    override fun onTransportPINAvailable() = coordinator.setupWithPINLetter()
-    override fun onNoPINAvailable() = coordinator.setupWithoutPINLetter()
+    SetupPinLetterScreenViewModelInterface {
+    override fun onTransportPinAvailable() = coordinator.setupWithPinLetter()
+    override fun onNoPinAvailable() = coordinator.setupWithoutPinLetter()
     override fun onBackButtonTapped() = coordinator.onBackTapped()
 }
 
 //region Preview
-private class PreviewSetupPINLetterScreenViewModel : SetupPINLetterScreenViewModelInterface {
-    override fun onTransportPINAvailable() { }
-    override fun onNoPINAvailable() { }
+private class PreviewSetupPinLetterScreenViewModel : SetupPinLetterScreenViewModelInterface {
+    override fun onTransportPinAvailable() { }
+    override fun onNoPinAvailable() { }
     override fun onBackButtonTapped() { }
 }
 
 @Composable
 @Preview
-fun PreviewSetupPINLetterScreen() {
+fun PreviewSetupPinLetterScreen() {
     UseIDTheme {
-        SetupPINLetter(PreviewSetupPINLetterScreenViewModel())
+        SetupPinLetter(PreviewSetupPinLetterScreenViewModel())
     }
 }
 //endregion

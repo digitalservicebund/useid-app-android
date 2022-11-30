@@ -29,8 +29,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.AuthenticationTerms
-import de.digitalService.useID.idCardInterface.EIDAuthenticationRequest
-import de.digitalService.useID.idCardInterface.IDCardAttribute
+import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
+import de.digitalService.useID.idCardInterface.IdCardAttribute
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
@@ -57,7 +57,7 @@ fun IdentificationAttributeConsent(
         Scaffold(bottomBar = {
             RegularBundButton(
                 type = ButtonType.PRIMARY,
-                onClick = viewModel::onPINButtonTapped,
+                onClick = viewModel::onPinButtonTapped,
                 label = stringResource(id = R.string.identification_attributeConsent_continue),
                 modifier = Modifier
                     .padding(20.dp)
@@ -194,7 +194,7 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
 }
 
 data class IdentificationAttributeConsentNavArgs(
-    val request: EIDAuthenticationRequest
+    val request: EidAuthenticationRequest
 )
 
 data class ProviderInfoDialogContent(
@@ -204,7 +204,7 @@ data class ProviderInfoDialogContent(
     val subjectURL: String,
     val terms: String
 ) {
-    constructor(request: EIDAuthenticationRequest) : this(
+    constructor(request: EidAuthenticationRequest) : this(
         request.issuer,
         request.issuerURL,
         request.subject,
@@ -224,7 +224,7 @@ interface IdentificationAttributeConsentViewModelInterface {
 
     fun onInfoButtonTapped()
     fun onInfoDialogDismissalRequest()
-    fun onPINButtonTapped()
+    fun onPinButtonTapped()
     fun onCancelButtonTapped()
 }
 
@@ -262,7 +262,7 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         shouldShowInfoDialog = false
     }
 
-    override fun onPINButtonTapped() {
+    override fun onPinButtonTapped() {
         coordinator.confirmAttributesForIdentification()
     }
 
@@ -270,22 +270,22 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         coordinator.cancelIdentification()
     }
 
-    private fun attributeDescriptionID(attribute: IDCardAttribute): Int = when (attribute) {
-        IDCardAttribute.DG01 -> R.string.cardAttribute_dg01
-        IDCardAttribute.DG02 -> R.string.cardAttribute_dg02
-        IDCardAttribute.DG03 -> R.string.cardAttribute_dg03
-        IDCardAttribute.DG04 -> R.string.cardAttribute_dg04
-        IDCardAttribute.DG05 -> R.string.cardAttribute_dg05
-        IDCardAttribute.DG06 -> R.string.cardAttribute_dg06
-        IDCardAttribute.DG07 -> R.string.cardAttribute_dg07
-        IDCardAttribute.DG08 -> R.string.cardAttribute_dg08
-        IDCardAttribute.DG09 -> R.string.cardAttribute_dg09
-        IDCardAttribute.DG10 -> R.string.cardAttribute_dg10
-        IDCardAttribute.DG13 -> R.string.cardAttribute_dg13
-        IDCardAttribute.DG17 -> R.string.cardAttribute_dg17
-        IDCardAttribute.DG19 -> R.string.cardAttribute_dg19
-        IDCardAttribute.RESTRICTED_IDENTIFICATION -> R.string.cardAttribute_restrictedIdentification
-        IDCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
+    private fun attributeDescriptionID(attribute: IdCardAttribute): Int = when (attribute) {
+        IdCardAttribute.DG01 -> R.string.cardAttribute_dg01
+        IdCardAttribute.DG02 -> R.string.cardAttribute_dg02
+        IdCardAttribute.DG03 -> R.string.cardAttribute_dg03
+        IdCardAttribute.DG04 -> R.string.cardAttribute_dg04
+        IdCardAttribute.DG05 -> R.string.cardAttribute_dg05
+        IdCardAttribute.DG06 -> R.string.cardAttribute_dg06
+        IdCardAttribute.DG07 -> R.string.cardAttribute_dg07
+        IdCardAttribute.DG08 -> R.string.cardAttribute_dg08
+        IdCardAttribute.DG09 -> R.string.cardAttribute_dg09
+        IdCardAttribute.DG10 -> R.string.cardAttribute_dg10
+        IdCardAttribute.DG13 -> R.string.cardAttribute_dg13
+        IdCardAttribute.DG17 -> R.string.cardAttribute_dg17
+        IdCardAttribute.DG19 -> R.string.cardAttribute_dg19
+        IdCardAttribute.RESTRICTED_IDENTIFICATION -> R.string.cardAttribute_restrictedIdentification
+        IdCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
     }
 }
 
@@ -299,7 +299,7 @@ class PreviewIdentificationAttributeConsentViewModel(
     override val didSetup: Boolean = false
     override fun onInfoButtonTapped() {}
     override fun onInfoDialogDismissalRequest() {}
-    override fun onPINButtonTapped() {}
+    override fun onPinButtonTapped() {}
     override fun onCancelButtonTapped() {}
 }
 

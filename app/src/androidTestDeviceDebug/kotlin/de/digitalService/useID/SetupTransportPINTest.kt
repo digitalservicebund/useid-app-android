@@ -7,8 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.ui.screens.setup.SetupTransportPIN
-import de.digitalService.useID.ui.screens.setup.SetupTransportPINViewModel
+import de.digitalService.useID.ui.screens.setup.SetupTransportPin
+import de.digitalService.useID.ui.screens.setup.SetupTransportPinViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.mockk.every
@@ -18,7 +18,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @HiltAndroidTest
-class SetupTransportPINTest {
+class SetupTransportPinTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -37,13 +37,13 @@ class SetupTransportPINTest {
         val testPinInput1 = "1234"
         val testPinInput2 = "12345"
 
-        val mockViewModel: SetupTransportPINViewModel = mockk(relaxed = true)
+        val mockViewModel: SetupTransportPinViewModel = mockk(relaxed = true)
 
-        every { mockViewModel.transportPIN } answers { testPinState.value }
+        every { mockViewModel.transportPin } answers { testPinState.value }
         every { mockViewModel.attempts } answers { testAttempts }
 
         composeTestRule.activity.setContent {
-            SetupTransportPIN(viewModel = mockViewModel)
+            SetupTransportPin(viewModel = mockViewModel)
         }
 
         val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(
@@ -81,13 +81,13 @@ class SetupTransportPINTest {
         val testPinInput1 = "1234"
         val testPinInput2 = "12345"
 
-        val mockViewModel: SetupTransportPINViewModel = mockk(relaxed = true)
+        val mockViewModel: SetupTransportPinViewModel = mockk(relaxed = true)
 
-        every { mockViewModel.transportPIN } answers { testPinState.value }
+        every { mockViewModel.transportPin } answers { testPinState.value }
         every { mockViewModel.attempts } answers { 2 }
 
         composeTestRule.activity.setContent {
-            SetupTransportPIN(viewModel = mockViewModel)
+            SetupTransportPin(viewModel = mockViewModel)
         }
 
         val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(

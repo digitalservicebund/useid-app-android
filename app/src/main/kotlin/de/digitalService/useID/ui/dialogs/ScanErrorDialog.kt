@@ -86,9 +86,9 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
 
 @Preview
 @Composable
-private fun PreviewPINBlocked() {
+private fun PreviewPinBlocked() {
     UseIDTheme {
-        ScanErrorAlertDialog(error = ScanError.PINBlocked, onButtonTap = { })
+        ScanErrorAlertDialog(error = ScanError.PinBlocked, onButtonTap = { })
     }
 }
 

@@ -3,7 +3,7 @@ package de.digitalService.useID.idCardInterface
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EIDAuthenticationRequest(
+data class EidAuthenticationRequest(
     val issuer: String,
     val issuerURL: String,
     val subject: String,
@@ -11,5 +11,5 @@ data class EIDAuthenticationRequest(
     val validity: String,
     val terms: AuthenticationTerms,
     val transactionInfo: String?,
-    val readAttributes: Map<IDCardAttribute, Boolean>
+    val readAttributes: Map<IdCardAttribute, Boolean>
 )
