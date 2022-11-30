@@ -50,6 +50,6 @@ class IDCardManager {
     }
 
     suspend fun injectChangePinException(exception: Exception) {
-        changePinChannel.close(IDCardInteractionException.CardDeactivated)
+        changePinChannel.close(exception)
     }
 }

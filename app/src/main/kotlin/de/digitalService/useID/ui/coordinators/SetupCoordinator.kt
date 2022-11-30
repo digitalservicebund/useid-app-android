@@ -94,13 +94,30 @@ class SetupCoordinator @Inject constructor(
         }
 
         if (personalPin == newPersonalPin) {
-            appCoordinator.startNFCTagHandling()
-            setPin(transportPin, newPersonalPin)
+            startSettingPin(transportPin, newPersonalPin)
             return true
         }
 
-        personalPin = null
         return false
+    }
+
+    private fun startSettingPin(transportPin: String, personalPin: String) {
+        appCoordinator.startNFCTagHandling()
+        setPin(transportPin, personalPin)
+    }
+
+    fun retrySettingPin() {
+        val transportPin = transportPin ?: run {
+            logger.error("Transport PIN not set.")
+            throw IllegalStateException()
+        }
+
+        val personalPin = personalPin ?: run {
+            logger.error("Personal PIN not set.")
+            throw IllegalStateException()
+        }
+
+        startSettingPin(transportPin, personalPin)
     }
 
     private fun setPin(transportPin: String, pin: String) {

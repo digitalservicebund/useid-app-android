@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 @Composable
@@ -34,17 +36,18 @@ fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: Setup
             SetupScan(modifier = Modifier, viewModel = viewModelInner)
         }
 
-        Row(
+        LazyRow(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         ) {
-            Button(onClick = { viewModel.simulateSuccess() }) { Text("✅") }
-            Button(onClick = { viewModel.simulateIncorrectTransportPIN() }) { Text("❌") }
-            Button(onClick = { viewModel.simulateCANRequired() }) { Text("CAN") }
-            Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") }
-            Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("📵") }
+            item { Button(onClick = { viewModel.simulateSuccess() }) { Text("📌👍") } }
+            item { Button(onClick = { viewModel.simulateIncorrectTransportPIN() }) { Text("📌👎") } }
+            item { Button(onClick = { viewModel.simulateCardUnreadable() }) { Text("🪪⚡️") } }
+            item { Button(onClick = { viewModel.simulateCANRequired() }) { Text("CAN") } }
+            item { Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") } }
+            item { Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("🪪📵") } }
         }
     }
 }
@@ -70,6 +73,15 @@ class PreviewSetupScanViewModel @Inject constructor(
             idCardManager.injectChangePinEvent(EIDInteractionEvent.RequestChangedPIN(2, { _, _ -> }))
         }
         trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
+    }
+
+    fun simulateCardUnreadable() {
+        viewModelScope.launch {
+            simulateWaiting()
+
+            idCardManager.injectChangePinException(IDCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
+        }
+        trackerManager.trackScreen("firstTimeUser/cardUnreadable")
     }
 
     fun simulateCANRequired() {
