@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -58,22 +60,27 @@ fun ScanScreen(
             }
         }
 
-        DisposableEffect(
-            AndroidView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable(enabled = false, onClick = { })
-                    .aspectRatio(1.47f),
-                factory = {
-                    PlayerView(context).apply {
-                        player = exoPlayer
-                        useController = false
-                    }
-                }
-            )
+        val animationDescription = stringResource(id = R.string.scan_animationAccessibilityLabel)
+        Box(
+            modifier = Modifier
+                .semantics { contentDescription = animationDescription }
+                .fillMaxWidth()
+                .aspectRatio(1.47f)
         ) {
-            onDispose {
-                exoPlayer.release()
+            DisposableEffect(
+                AndroidView(
+                    modifier = Modifier.fillMaxSize(),
+                    factory = {
+                        PlayerView(context).apply {
+                            player = exoPlayer
+                            useController = false
+                        }
+                    }
+                )
+            ) {
+                onDispose {
+                    exoPlayer.release()
+                }
             }
         }
 
