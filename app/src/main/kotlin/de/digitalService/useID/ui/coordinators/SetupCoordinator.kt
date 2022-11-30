@@ -139,7 +139,7 @@ class SetupCoordinator @Inject constructor(
                             issueTrackerManager.capture(it)
                         }
 
-                        appCoordinator.navigate(SetupCardUnreadableDestination(false))
+                        appCoordinator.navigatePopping(SetupCardUnreadableDestination(false))
                     }
                 }
             }.collect { event ->

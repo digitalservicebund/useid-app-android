@@ -9,8 +9,6 @@ import de.digitalService.useID.idCardInterface.IDCardManager
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
-import de.digitalService.useID.ui.screens.identification.ScanEvent
-import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.util.CoroutineContextProvider
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -52,14 +50,16 @@ class SetupCoordinatorTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
 
-    private val destinationSlot = slot<Direction>()
+    private val navigationDestinationSlot = slot<Direction>()
+    private val navigationPoppingDestinationSlot = slot<Direction>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
     fun beforeEach() {
         Dispatchers.setMain(dispatcher)
 
-        every { mockAppCoordinator.navigate(capture(destinationSlot)) } returns Unit
+        every { mockAppCoordinator.navigate(capture(navigationDestinationSlot)) } returns Unit
+        every { mockAppCoordinator.navigatePopping(capture(navigationPoppingDestinationSlot)) } returns Unit
     }
 
     @Test
@@ -79,7 +79,7 @@ class SetupCoordinatorTest {
 
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
 
-        val navigationParameter = destinationSlot.captured
+        val navigationParameter = navigationDestinationSlot.captured
         Assertions.assertEquals(SetupTransportPINDestination(null).route, navigationParameter.route)
     }
 
@@ -230,7 +230,7 @@ class SetupCoordinatorTest {
         Assertions.assertFalse(progress)
         verify(exactly = 1) { mockAppCoordinator.stopNFCTagHandling() }
 
-        val navigationParameter = destinationSlot.captured
+        val navigationParameter = navigationDestinationSlot.captured
         Assertions.assertEquals(SetupTransportPINDestination(attempts).route, navigationParameter.route)
 
         idCardManagerFlow.value = EIDInteractionEvent.PINManagementStarted
@@ -556,7 +556,7 @@ class SetupCoordinatorTest {
         Assertions.assertFalse(progress)
         verify(exactly = 1) { mockIssueTrackerManager.capture(any()) }
 
-        val navigationParameter = destinationSlot.captured
+        val navigationParameter = navigationPoppingDestinationSlot.captured
         Assertions.assertEquals(SetupCardUnreadableDestination(false).route, navigationParameter.route)
 
         scanJob.cancel()
