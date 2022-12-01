@@ -35,7 +35,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
-            onClick = viewModel::onBackButtonTapped
+            onClick = viewModel::onBackButtonClicked
         )
     ) { topPadding ->
         StandardButtonScreen(
@@ -104,7 +104,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
 
 interface SetupPersonalPinIntroViewModelInterface {
     fun onSetPin()
-    fun onBackButtonTapped()
+    fun onBackButtonClicked()
 }
 
 @HiltViewModel
@@ -115,13 +115,13 @@ class SetupPersonalPinIntroViewModel @Inject constructor(private val coordinator
         coordinator.onPersonalPinIntroFinished()
     }
 
-    override fun onBackButtonTapped() = coordinator.onBackTapped()
+    override fun onBackButtonClicked() = coordinator.onBackClicked()
 }
 
 //region Preview
 private class PreviewSetupPersonalPinIntroViewModel : SetupPersonalPinIntroViewModelInterface {
     override fun onSetPin() { }
-    override fun onBackButtonTapped() {}
+    override fun onBackButtonClicked() {}
 }
 
 @Preview

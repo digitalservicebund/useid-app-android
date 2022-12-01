@@ -34,7 +34,7 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
-            onClick = viewModel::onNavigationButtonTapped
+            onClick = viewModel::onNavigationButtonClicked
         )
     ) {
         Column(
@@ -79,7 +79,7 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
                 obfuscation = true,
                 spacerPosition = 3,
                 onValueChanged = viewModel::userInputPin,
-                onDone = viewModel::onDonePressed,
+                onDone = viewModel::onDoneClicked,
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequesterPin,
                 backgroundColor = Gray300,
@@ -95,9 +95,9 @@ interface SetupPersonalPinInputViewModelInterface {
     val pin: String
 
     fun onInitialize()
-    fun onDonePressed()
+    fun onDoneClicked()
     fun userInputPin(value: String)
-    fun onNavigationButtonTapped()
+    fun onNavigationButtonClicked()
 }
 
 @HiltViewModel
@@ -118,23 +118,23 @@ class SetupPersonalPinInputViewModel @Inject constructor(
         pin = value
     }
 
-    override fun onDonePressed() {
+    override fun onDoneClicked() {
         if (pin.length == 6) {
             setupCoordinator.onPersonalPinInput(pin)
         }
     }
 
-    override fun onNavigationButtonTapped() {
-        setupCoordinator.onBackTapped()
+    override fun onNavigationButtonClicked() {
+        setupCoordinator.onBackClicked()
     }
 }
 
 private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewModelInterface {
     override val pin: String = ""
     override fun onInitialize() {}
-    override fun onDonePressed() {}
+    override fun onDoneClicked() {}
     override fun userInputPin(value: String) {}
-    override fun onNavigationButtonTapped() {}
+    override fun onNavigationButtonClicked() {}
 }
 
 @Preview(showBackground = true)

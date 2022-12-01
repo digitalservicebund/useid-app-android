@@ -59,7 +59,7 @@ class IdentificationAttributeConsentTest {
         val buttonText = composeTestRule.activity.getString(R.string.identification_attributeConsent_continue)
         composeTestRule.onNodeWithText(buttonText).performClick()
 
-        verify(exactly = 1) { viewModel.onPinButtonTapped() }
+        verify(exactly = 1) { viewModel.onPinButtonClicked() }
     }
 
     @Test

@@ -156,7 +156,7 @@ private fun CancelDialog(
         },
         confirmButtonText = confirmButtonText,
         dismissButtonText = dismissButtonText,
-        onDismissButtonTap = onDismiss,
-        onConfirmButtonTap = onConfirm
+        onDismissButtonClick = onDismiss,
+        onConfirmButtonClick = onConfirm
     )
 }

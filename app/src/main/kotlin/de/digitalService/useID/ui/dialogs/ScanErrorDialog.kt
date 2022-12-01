@@ -22,7 +22,7 @@ import de.digitalService.useID.util.markDownResource
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
-fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
+fun ScanErrorAlertDialog(error: ScanError, onButtonClick: () -> Unit) {
     val buttonTextStringId = if (error is ScanError.CardErrorWithRedirect) {
         R.string.scanError_redirect
     } else {
@@ -80,7 +80,7 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
             }
         },
         confirmButtonText = stringResource(id = buttonTextStringId),
-        onConfirmButtonTap = onButtonTap
+        onConfirmButtonClick = onButtonClick
     )
 }
 
@@ -88,7 +88,7 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonTap: () -> Unit) {
 @Composable
 private fun PreviewPinBlocked() {
     UseIDTheme {
-        ScanErrorAlertDialog(error = ScanError.PinBlocked, onButtonTap = { })
+        ScanErrorAlertDialog(error = ScanError.PinBlocked, onButtonClick = { })
     }
 }
 
@@ -96,7 +96,7 @@ private fun PreviewPinBlocked() {
 @Composable
 private fun PreviewCardErrorWithoutRedirect() {
     UseIDTheme {
-        ScanErrorAlertDialog(error = ScanError.CardErrorWithoutRedirect, onButtonTap = { })
+        ScanErrorAlertDialog(error = ScanError.CardErrorWithoutRedirect, onButtonClick = { })
     }
 }
 
@@ -104,6 +104,6 @@ private fun PreviewCardErrorWithoutRedirect() {
 @Composable
 private fun PreviewCardErrorWithRedirect() {
     UseIDTheme {
-        ScanErrorAlertDialog(error = ScanError.CardErrorWithRedirect(""), onButtonTap = { })
+        ScanErrorAlertDialog(error = ScanError.CardErrorWithRedirect(""), onButtonClick = { })
     }
 }

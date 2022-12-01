@@ -31,8 +31,8 @@ fun IdentificationCardUnreadable(
         bodyResId = R.string.scanError_cardUnreadable_body,
         buttonTitleResId = buttonTextStringId,
         showErrorCard = viewModel.errorCard,
-        onNavigationButtonTapped = { viewModel.onCancelButtonPressed(context) },
-        onButtonTapped = { viewModel.onCancelButtonPressed(context) }
+        onNavigationButtonClicked = { viewModel.onCancelButtonClicked(context) },
+        onButtonClicked = { viewModel.onCancelButtonClicked(context) }
     )
 }
 
@@ -50,7 +50,7 @@ class IdentificationCardUnreadableViewModel @Inject constructor(
         redirectUrl = args.redirectUrl
     }
 
-    fun onCancelButtonPressed(context: Context) {
+    fun onCancelButtonClicked(context: Context) {
         redirectUrl?.let {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(it))
             ContextCompat.startActivity(context, intent, null)

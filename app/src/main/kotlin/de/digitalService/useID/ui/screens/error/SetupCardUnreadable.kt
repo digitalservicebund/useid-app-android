@@ -18,8 +18,8 @@ fun SetupCardUnreadable(viewModel: SetupCardUnreadableViewModel = hiltViewModel(
         bodyResId = R.string.scanError_cardUnreadable_body,
         buttonTitleResId = R.string.scanError_close,
         showErrorCard = false,
-        onNavigationButtonTapped = viewModel::onRetryPressed,
-        onButtonTapped = viewModel::onRetryPressed
+        onNavigationButtonClicked = viewModel::onRetryClicked,
+        onButtonClicked = viewModel::onRetryClicked
     )
 }
 
@@ -28,7 +28,7 @@ class SetupCardUnreadableViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel() {
 
-    fun onRetryPressed() {
+    fun onRetryClicked() {
         setupCoordinator.retrySettingPin()
     }
 }

@@ -194,8 +194,8 @@ fun ScanScreen(
                 }
             },
             confirmButtonText = stringResource(id = R.string.scanError_close),
-            onDismissButtonTap = { helpDialogShown = false },
-            onConfirmButtonTap = { helpDialogShown = false }
+            onDismissButtonClick = { helpDialogShown = false },
+            onConfirmButtonClick = { helpDialogShown = false }
         )
     }
 }

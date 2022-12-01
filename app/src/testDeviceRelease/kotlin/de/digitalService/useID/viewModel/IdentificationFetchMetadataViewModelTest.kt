@@ -100,7 +100,7 @@ class IdentificationFetchMetadataViewModelTest {
     }
 
     @Test
-    fun onCancelButtonTapped() {
+    fun onCancelButtonClicked() {
         val testDidSetup = false
         savedStateHandle["didSetup"] = testDidSetup
 
@@ -109,7 +109,7 @@ class IdentificationFetchMetadataViewModelTest {
             savedStateHandle
         )
 
-        viewModel.onCancelButtonTapped()
+        viewModel.onCancelButtonClicked()
 
         verify(exactly = 1) { mockIdentificationCoordinator.cancelIdentification() }
     }

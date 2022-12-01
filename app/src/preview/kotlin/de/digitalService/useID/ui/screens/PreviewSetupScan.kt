@@ -127,8 +127,8 @@ fun PreviewPreviewSetupScan() {
             object : SetupScanViewModelInterface {
                 override val shouldShowProgress: Boolean = false
 
-                override fun onHelpButtonTapped() {}
-                override fun onNfcButtonTapped() {}
+                override fun onHelpButtonClicked() {}
+                override fun onNfcButtonClicked() {}
                 override fun onCancelConfirm() {}
             }
         )

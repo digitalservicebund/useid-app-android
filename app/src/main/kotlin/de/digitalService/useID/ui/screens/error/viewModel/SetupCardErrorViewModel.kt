@@ -12,12 +12,12 @@ class SetupCardErrorViewModel @Inject constructor(
     private val idCardManager: IdCardManager
 ) : ViewModel() {
 
-    fun onNavigationButtonTapped() {
+    fun onNavigationButtonClicked() {
         idCardManager.cancelTask()
         setupCoordinator.cancelSetup()
     }
 
-    fun onButtonTapped() {
+    fun onButtonClicked() {
         idCardManager.cancelTask()
         setupCoordinator.cancelSetup()
     }

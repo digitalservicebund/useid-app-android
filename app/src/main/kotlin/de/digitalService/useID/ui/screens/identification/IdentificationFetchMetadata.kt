@@ -37,7 +37,7 @@ fun IdentificationFetchMetadata(
         navigationButton = NavigationButton(
             icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
             shouldShowConfirmDialog = !viewModel.didSetup,
-            onClick = viewModel::onCancelButtonTapped,
+            onClick = viewModel::onCancelButtonClicked,
             isIdentification = true
         )
     ) { topPadding ->
@@ -89,7 +89,7 @@ data class IdentificationFetchMetadataNavArgs(
 
 interface IdentificationFetchMetadataViewModelInterface {
     fun startIdentificationProcess()
-    fun onCancelButtonTapped()
+    fun onCancelButtonClicked()
     val didSetup: Boolean
 }
 
@@ -110,14 +110,14 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
         coordinator.startIdentificationProcess(tcTokenURL, didSetup)
     }
 
-    override fun onCancelButtonTapped() {
+    override fun onCancelButtonClicked() {
         coordinator.cancelIdentification()
     }
 }
 
 class PreviewIdentificationFetchMetadataViewModel() : IdentificationFetchMetadataViewModelInterface {
     override fun startIdentificationProcess() {}
-    override fun onCancelButtonTapped() {}
+    override fun onCancelButtonClicked() {}
     override val didSetup: Boolean = false
 }
 

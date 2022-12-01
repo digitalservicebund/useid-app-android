@@ -39,8 +39,8 @@ fun SetupScan(
         ScanScreen(
             title = stringResource(id = R.string.firstTimeUser_scan_title),
             body = stringResource(id = R.string.firstTimeUser_scan_body),
-            onHelpDialogShown = viewModel::onHelpButtonTapped,
-            onNfcDialogShown = viewModel::onNfcButtonTapped,
+            onHelpDialogShown = viewModel::onHelpButtonClicked,
+            onNfcDialogShown = viewModel::onNfcButtonClicked,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
         )
@@ -49,8 +49,8 @@ fun SetupScan(
 
 interface SetupScanViewModelInterface {
     val shouldShowProgress: Boolean
-    fun onHelpButtonTapped()
-    fun onNfcButtonTapped()
+    fun onHelpButtonClicked()
+    fun onNfcButtonClicked()
     fun onCancelConfirm()
 }
 
@@ -72,16 +72,16 @@ class SetupScanViewModel @Inject constructor(
         }
     }
 
-    override fun onHelpButtonTapped() {
+    override fun onHelpButtonClicked() {
         trackerManager.trackScreen("firstTimeUser/scanHelp")
     }
 
-    override fun onNfcButtonTapped() {
+    override fun onNfcButtonClicked() {
         trackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo")
     }
 
     override fun onCancelConfirm() {
-        coordinator.onBackTapped()
+        coordinator.onBackClicked()
     }
 }
 
@@ -89,8 +89,8 @@ class PreviewSetupScanViewModel(
     override val shouldShowProgress: Boolean
 ) :
     SetupScanViewModelInterface {
-    override fun onHelpButtonTapped() {}
-    override fun onNfcButtonTapped() {}
+    override fun onHelpButtonClicked() {}
+    override fun onNfcButtonClicked() {}
     override fun onCancelConfirm() {}
 }
 

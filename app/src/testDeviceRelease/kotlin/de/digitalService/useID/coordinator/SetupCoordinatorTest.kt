@@ -613,7 +613,7 @@ class SetupCoordinatorTest {
     fun onBack() {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
-        setupCoordinator.onBackTapped()
+        setupCoordinator.onBackClicked()
 
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockAppCoordinator.pop() }

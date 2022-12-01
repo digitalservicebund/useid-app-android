@@ -48,7 +48,7 @@ fun IdentificationPersonalPin(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = if (viewModel.attempts == null) NavigationIcon.Back else NavigationIcon.Cancel,
-            onClick = viewModel::onNavigationButtonTapped,
+            onClick = viewModel::onNavigationButtonClicked,
             shouldShowConfirmDialog = viewModel.attempts != null,
             isIdentification = true
         )
@@ -135,7 +135,7 @@ interface IdentificationPersonalPinViewModelInterface {
 
     fun userInputPin(value: String)
     fun onDone()
-    fun onNavigationButtonTapped()
+    fun onNavigationButtonClicked()
 }
 
 @HiltViewModel
@@ -163,7 +163,7 @@ class IdentificationPersonalPinViewModel @Inject constructor(
         }
     }
 
-    override fun onNavigationButtonTapped() {
+    override fun onNavigationButtonClicked() {
         if (attempts != null) {
             coordinator.cancelIdentification()
         } else {
@@ -180,7 +180,7 @@ class PreviewIdentificationPersonalPinViewModel(
 ) : IdentificationPersonalPinViewModelInterface {
     override fun userInputPin(value: String) {}
     override fun onDone() {}
-    override fun onNavigationButtonTapped() {}
+    override fun onNavigationButtonClicked() {}
 }
 
 @Preview

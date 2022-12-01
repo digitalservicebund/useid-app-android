@@ -53,7 +53,7 @@ class SetupFinishedTest {
         composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).assertDoesNotExist()
 
         composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
-        verify(exactly = 1) { viewModel.onButtonTapped() }
+        verify(exactly = 1) { viewModel.onButtonClicked() }
     }
 
     @Test
@@ -74,16 +74,16 @@ class SetupFinishedTest {
 
         composeTestRule.onNodeWithTag(NavigationIcon.Back.name).assertDoesNotExist()
         composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).performClick()
-        verify(exactly = 1) { viewModel.onButtonTapped() }
+        verify(exactly = 1) { viewModel.onButtonClicked() }
 
         composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
-        verify(exactly = 2) { viewModel.onButtonTapped() }
+        verify(exactly = 2) { viewModel.onButtonClicked() }
 
         composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
-        verify(exactly = 3) { viewModel.onButtonTapped() }
+        verify(exactly = 3) { viewModel.onButtonClicked() }
 
         Espresso.pressBack()
 
-        verify(exactly = 4) { viewModel.onButtonTapped() }
+        verify(exactly = 4) { viewModel.onButtonClicked() }
     }
 }

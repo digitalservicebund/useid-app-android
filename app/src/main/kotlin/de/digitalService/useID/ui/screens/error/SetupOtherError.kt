@@ -15,7 +15,7 @@ fun SetupOtherError(viewModel: SetupCardErrorViewModel = hiltViewModel()) {
         bodyResId = R.string.scanError_unknown_body,
         buttonTitleResId = R.string.scanError_close,
         confirmNavigationButtonDialog = false,
-        onNavigationButtonTapped = viewModel::onNavigationButtonTapped,
-        onButtonTapped = viewModel::onButtonTapped
+        onNavigationButtonClicked = viewModel::onNavigationButtonClicked,
+        onButtonClicked = viewModel::onButtonClicked
     )
 }

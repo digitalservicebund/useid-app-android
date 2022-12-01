@@ -27,7 +27,7 @@ class SetupFinishViewModelTest {
     fun onIdentifyButtonClicked() {
         val viewModel = SetupFinishViewModel(mockCoordinator)
 
-        viewModel.onButtonTapped()
+        viewModel.onButtonClicked()
 
         verify(exactly = 1) { mockCoordinator.finishSetup() }
     }

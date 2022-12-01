@@ -41,7 +41,7 @@ class SetupFinishTest {
         val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
         composeTestRule.onNodeWithText(finishButtonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onButtonTapped() }
+        verify(exactly = 1) { mockViewModel.onButtonClicked() }
     }
 
     @Test
@@ -56,6 +56,6 @@ class SetupFinishTest {
         val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
         composeTestRule.onNodeWithText(finishButtonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onButtonTapped() }
+        verify(exactly = 1) { mockViewModel.onButtonClicked() }
     }
 }

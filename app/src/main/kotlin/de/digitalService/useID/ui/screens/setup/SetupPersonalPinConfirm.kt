@@ -33,7 +33,7 @@ import javax.inject.Inject
 @Composable
 fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface = hiltViewModel<SetupPersonalPinConfirmViewModel>()) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onNavigationButtonPressed)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onNavigationButtonClicked)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -78,7 +78,7 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
                 obfuscation = true,
                 spacerPosition = 3,
                 onValueChanged = viewModel::userInputPin,
-                onDone = viewModel::onDonePressed,
+                onDone = viewModel::onDoneClicked,
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequesterPin,
                 backgroundColor = Gray300,
@@ -99,7 +99,7 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
             },
             text = {},
             confirmButtonText = stringResource(id = R.string.identification_fetchMetadataError_retry),
-            onConfirmButtonTap = viewModel::onErrorDialogButtonPressed
+            onConfirmButtonClick = viewModel::onErrorDialogButtonClicked
         )
     }
 }
@@ -110,9 +110,9 @@ interface SetupPersonalPinConfirmViewModelInterface {
 
     fun onInitialize()
     fun userInputPin(value: String)
-    fun onDonePressed()
-    fun onErrorDialogButtonPressed()
-    fun onNavigationButtonPressed()
+    fun onDoneClicked()
+    fun onErrorDialogButtonClicked()
+    fun onNavigationButtonClicked()
 }
 
 @HiltViewModel
@@ -134,18 +134,18 @@ class SetupPersonalPinConfirmViewModel @Inject constructor(
         pin = value
     }
 
-    override fun onDonePressed() {
+    override fun onDoneClicked() {
         if (pin.length == 6) {
             shouldShowError = !setupCoordinator.confirmPersonalPin(pin)
         }
     }
 
-    override fun onErrorDialogButtonPressed() {
+    override fun onErrorDialogButtonClicked() {
         setupCoordinator.onPersonalPinErrorTryAgain()
     }
 
-    override fun onNavigationButtonPressed() {
-        setupCoordinator.onBackTapped()
+    override fun onNavigationButtonClicked() {
+        setupCoordinator.onBackClicked()
     }
 }
 
@@ -155,9 +155,9 @@ private class PreviewSetupPersonalPinConfirmViewModel : SetupPersonalPinConfirmV
 
     override fun onInitialize() {}
     override fun userInputPin(value: String) {}
-    override fun onDonePressed() {}
-    override fun onErrorDialogButtonPressed() {}
-    override fun onNavigationButtonPressed() {}
+    override fun onDoneClicked() {}
+    override fun onErrorDialogButtonClicked() {}
+    override fun onNavigationButtonClicked() {}
 }
 
 @Preview(showBackground = true)

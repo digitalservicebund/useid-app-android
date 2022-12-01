@@ -96,7 +96,7 @@ fun PreviewPreviewIdentificationFetchMetadata() {
             PreviewIdentificationFetchMetadataViewModel(IdCardManager(), PreviewTrackerManager()),
             object : IdentificationFetchMetadataViewModelInterface {
                 override fun startIdentificationProcess() {}
-                override fun onCancelButtonTapped() {}
+                override fun onCancelButtonClicked() {}
                 override val didSetup: Boolean = false
             }
         )

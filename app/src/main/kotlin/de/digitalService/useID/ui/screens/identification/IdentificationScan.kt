@@ -48,7 +48,7 @@ fun IdentificationScan(
         ScanScreen(
             title = stringResource(id = R.string.identification_scan_title),
             body = stringResource(id = R.string.identification_scan_body),
-            onHelpDialogShown = viewModel::onHelpButtonTapped,
+            onHelpDialogShown = viewModel::onHelpButtonClicked,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
         )
@@ -66,9 +66,9 @@ interface IdentificationScanViewModelInterface {
     val shouldShowProgress: Boolean
     val errorState: ScanError.IncorrectPin?
 
-    fun onHelpButtonTapped()
-    fun onNfcButtonTapped()
-    fun onErrorDialogButtonTapped(context: Context)
+    fun onHelpButtonClicked()
+    fun onNfcButtonClicked()
+    fun onErrorDialogButtonClicked(context: Context)
     fun onCancelIdentification()
     fun onNewPersonalPinEntered(pin: String)
 }
@@ -90,15 +90,15 @@ class IdentificationScanViewModel @Inject constructor(
         collectScanEvents()
     }
 
-    override fun onHelpButtonTapped() {
+    override fun onHelpButtonClicked() {
         trackerManager.trackScreen("identification/scanHelp")
     }
 
-    override fun onNfcButtonTapped() {
+    override fun onNfcButtonClicked() {
         trackerManager.trackEvent("identification", "alertShown", "NFCInfo")
     }
 
-    override fun onErrorDialogButtonTapped(context: Context) {
+    override fun onErrorDialogButtonClicked(context: Context) {
         coordinator.cancelIdentification()
     }
 
@@ -143,9 +143,9 @@ private class PreviewIdentificationScanViewModel(
     override val shouldShowProgress: Boolean,
     override val errorState: ScanError.IncorrectPin?
 ) : IdentificationScanViewModelInterface {
-    override fun onHelpButtonTapped() {}
-    override fun onNfcButtonTapped() {}
-    override fun onErrorDialogButtonTapped(context: Context) {}
+    override fun onHelpButtonClicked() {}
+    override fun onNfcButtonClicked() {}
+    override fun onErrorDialogButtonClicked(context: Context) {}
     override fun onCancelIdentification() {}
     override fun onNewPersonalPinEntered(pin: String) {}
 }

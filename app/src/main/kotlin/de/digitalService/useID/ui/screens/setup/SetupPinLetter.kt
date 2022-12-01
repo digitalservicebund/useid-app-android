@@ -20,7 +20,7 @@ import javax.inject.Inject
 @Composable
 fun SetupPinLetter(viewModel: SetupPinLetterScreenViewModelInterface = hiltViewModel<SetupPinLetterViewModel>()) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonTapped)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonClicked)
     ) { topPadding ->
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_pinLetter_title),
@@ -43,7 +43,7 @@ fun SetupPinLetter(viewModel: SetupPinLetterScreenViewModelInterface = hiltViewM
 interface SetupPinLetterScreenViewModelInterface {
     fun onTransportPinAvailable()
     fun onNoPinAvailable()
-    fun onBackButtonTapped()
+    fun onBackButtonClicked()
 }
 
 @HiltViewModel
@@ -52,14 +52,14 @@ class SetupPinLetterViewModel @Inject constructor(private val coordinator: Setup
     SetupPinLetterScreenViewModelInterface {
     override fun onTransportPinAvailable() = coordinator.setupWithPinLetter()
     override fun onNoPinAvailable() = coordinator.setupWithoutPinLetter()
-    override fun onBackButtonTapped() = coordinator.onBackTapped()
+    override fun onBackButtonClicked() = coordinator.onBackClicked()
 }
 
 //region Preview
 private class PreviewSetupPinLetterScreenViewModel : SetupPinLetterScreenViewModelInterface {
     override fun onTransportPinAvailable() { }
     override fun onNoPinAvailable() { }
-    override fun onBackButtonTapped() { }
+    override fun onBackButtonClicked() { }
 }
 
 @Composable

@@ -62,12 +62,12 @@ class SetupScanViewModelTest {
 
         viewModel.onCancelConfirm()
 
-        verify(exactly = 1) { mockSetupCoordinator.onBackTapped() }
+        verify(exactly = 1) { mockSetupCoordinator.onBackClicked() }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onNfcButtonTapped() = runTest {
+    fun onNfcButtonClicked() = runTest {
         val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
 
         val viewModel = SetupScanViewModel(
@@ -76,14 +76,14 @@ class SetupScanViewModelTest {
             testScope
         )
 
-        viewModel.onNfcButtonTapped()
+        viewModel.onNfcButtonClicked()
 
         verify(exactly = 1) { mockTrackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo") }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onHelpButtonTapped() = runTest {
+    fun onHelpButtonClicked() = runTest {
         val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
 
         val viewModel = SetupScanViewModel(
@@ -92,7 +92,7 @@ class SetupScanViewModelTest {
             testScope
         )
 
-        viewModel.onHelpButtonTapped()
+        viewModel.onHelpButtonClicked()
 
         verify(exactly = 1) { mockTrackerManager.trackScreen("firstTimeUser/scanHelp") }
     }

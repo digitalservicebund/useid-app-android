@@ -21,10 +21,10 @@ fun StandardDialog(
     text: @Composable () -> Unit,
     confirmButtonText: String,
     dismissButtonText: String? = null,
-    onDismissButtonTap: (() -> Unit)? = null,
-    onConfirmButtonTap: () -> Unit
+    onDismissButtonClick: (() -> Unit)? = null,
+    onConfirmButtonClick: () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismissButtonTap ?: { }) {
+    Dialog(onDismissRequest = onDismissButtonClick ?: { }) {
         Column(
             modifier = Modifier
                 .background(Color.White, shape = RoundedCornerShape(10.dp))
@@ -40,8 +40,8 @@ fun StandardDialog(
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-                if (dismissButtonText != null && onDismissButtonTap != null) {
-                    TextButton(onClick = onDismissButtonTap) {
+                if (dismissButtonText != null && onDismissButtonClick != null) {
+                    TextButton(onClick = onDismissButtonClick) {
                         Text(
                             text = dismissButtonText,
                             style = MaterialTheme.typography.bodySmall,
@@ -51,7 +51,7 @@ fun StandardDialog(
                     }
                 }
 
-                TextButton(onClick = onConfirmButtonTap) {
+                TextButton(onClick = onConfirmButtonClick) {
                     Text(
                         text = confirmButtonText,
                         style = MaterialTheme.typography.bodySmall,

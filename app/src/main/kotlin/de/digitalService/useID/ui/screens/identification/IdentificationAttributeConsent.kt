@@ -50,14 +50,14 @@ fun IdentificationAttributeConsent(
         navigationButton = NavigationButton(
             icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
             shouldShowConfirmDialog = !viewModel.didSetup,
-            onClick = viewModel::onCancelButtonTapped,
+            onClick = viewModel::onCancelButtonClicked,
             isIdentification = true
         )
     ) { topPadding ->
         Scaffold(bottomBar = {
             RegularBundButton(
                 type = ButtonType.PRIMARY,
-                onClick = viewModel::onPinButtonTapped,
+                onClick = viewModel::onPinButtonClicked,
                 label = stringResource(id = R.string.identification_attributeConsent_continue),
                 modifier = Modifier
                     .padding(20.dp)
@@ -85,7 +85,7 @@ fun IdentificationAttributeConsent(
                 Spacer(Modifier.height(20.dp))
                 BundButton(
                     type = ButtonType.SECONDARY,
-                    onClick = viewModel::onInfoButtonTapped,
+                    onClick = viewModel::onInfoButtonClicked,
                     label = stringResource(id = R.string.identification_attributeConsent_button_additionalInformation)
                 )
             }
@@ -222,10 +222,10 @@ interface IdentificationAttributeConsentViewModelInterface {
 
     val didSetup: Boolean
 
-    fun onInfoButtonTapped()
+    fun onInfoButtonClicked()
     fun onInfoDialogDismissalRequest()
-    fun onPinButtonTapped()
-    fun onCancelButtonTapped()
+    fun onPinButtonClicked()
+    fun onCancelButtonClicked()
 }
 
 @HiltViewModel
@@ -254,7 +254,7 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         infoDialogContent = ProviderInfoDialogContent(request)
     }
 
-    override fun onInfoButtonTapped() {
+    override fun onInfoButtonClicked() {
         shouldShowInfoDialog = true
     }
 
@@ -262,11 +262,11 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         shouldShowInfoDialog = false
     }
 
-    override fun onPinButtonTapped() {
+    override fun onPinButtonClicked() {
         coordinator.confirmAttributesForIdentification()
     }
 
-    override fun onCancelButtonTapped() {
+    override fun onCancelButtonClicked() {
         coordinator.cancelIdentification()
     }
 
@@ -297,10 +297,10 @@ class PreviewIdentificationAttributeConsentViewModel(
 ) :
     IdentificationAttributeConsentViewModelInterface {
     override val didSetup: Boolean = false
-    override fun onInfoButtonTapped() {}
+    override fun onInfoButtonClicked() {}
     override fun onInfoDialogDismissalRequest() {}
-    override fun onPinButtonTapped() {}
-    override fun onCancelButtonTapped() {}
+    override fun onPinButtonClicked() {}
+    override fun onCancelButtonClicked() {}
 }
 
 private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean): IdentificationAttributeConsentViewModelInterface =

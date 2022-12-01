@@ -40,7 +40,7 @@ class SetupPersonalPinInputViewModelTest {
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
 
-        viewModel.onDonePressed()
+        viewModel.onDoneClicked()
 
         assertEquals(testValue, viewModel.pin)
         verify(exactly = 1) { mockCoordinator.onPersonalPinInput(testValue) }
@@ -60,7 +60,7 @@ class SetupPersonalPinInputViewModelTest {
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
         verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
 
-        viewModel.onDonePressed()
+        viewModel.onDoneClicked()
         verify(exactly = 0) { mockCoordinator.onPersonalPinInput(testValue) }
         verify(exactly = 0) { mockCoordinator.confirmPersonalPin(testValue) }
     }
@@ -108,11 +108,11 @@ class SetupPersonalPinInputViewModelTest {
     }
 
     @Test
-    fun onNavigationButtonTapped() {
+    fun onNavigationButtonClicked() {
         val viewModel = SetupPersonalPinInputViewModel(mockCoordinator)
 
-        viewModel.onNavigationButtonTapped()
+        viewModel.onNavigationButtonClicked()
 
-        verify(exactly = 1) { mockCoordinator.onBackTapped() }
+        verify(exactly = 1) { mockCoordinator.onBackClicked() }
     }
 }

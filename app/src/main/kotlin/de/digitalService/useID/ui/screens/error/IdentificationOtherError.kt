@@ -21,8 +21,8 @@ fun IdentificationOtherError(viewModel: IdentificationOtherErrorViewModel = hilt
         bodyResId = R.string.scanError_unknown_body,
         buttonTitleResId = R.string.identification_fetchMetadataError_retry,
         confirmNavigationButtonDialog = true,
-        onNavigationButtonTapped = viewModel::onCancelButtonPressed,
-        onButtonTapped = viewModel::onRetryButtonPressed
+        onNavigationButtonClicked = viewModel::onCancelButtonClicked,
+        onButtonClicked = viewModel::onRetryButtonClicked
     )
 }
 
@@ -39,11 +39,11 @@ class IdentificationOtherErrorViewModel @Inject constructor(
         tcTokenURL = args.tcTokenURL
     }
 
-    fun onRetryButtonPressed() {
+    fun onRetryButtonClicked() {
         appCoordinator.startIdentification(tcTokenURL, identificationCoordinator.didSetup)
     }
 
-    fun onCancelButtonPressed() {
+    fun onCancelButtonClicked() {
         identificationCoordinator.cancelIdentification()
     }
 }

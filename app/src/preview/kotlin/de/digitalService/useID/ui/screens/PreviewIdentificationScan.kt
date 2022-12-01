@@ -145,9 +145,9 @@ fun PreviewPreviewIdentificationScan() {
                 override val shouldShowProgress: Boolean = false
                 override val errorState: ScanError.IncorrectPin? = null
 
-                override fun onHelpButtonTapped() {}
-                override fun onNfcButtonTapped() {}
-                override fun onErrorDialogButtonTapped(context: Context) {}
+                override fun onHelpButtonClicked() {}
+                override fun onNfcButtonClicked() {}
+                override fun onErrorDialogButtonClicked(context: Context) {}
                 override fun onCancelIdentification() {}
                 override fun onNewPersonalPinEntered(pin: String) {}
             }

@@ -64,7 +64,7 @@ fun SetupTransportPin(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = icon,
-            onClick = if (viewModel.attempts == null) viewModel::onBackButtonTapped else viewModel::onCancelTapped,
+            onClick = if (viewModel.attempts == null) viewModel::onBackButtonClicked else viewModel::onCancelClicked,
             shouldShowConfirmDialog = viewModel.attempts != null,
             contentDescription = "$titleString $attemptString"
         )
@@ -99,7 +99,7 @@ fun SetupTransportPin(
             TransportPinEntryField(
                 value = viewModel.transportPin,
                 onValueChanged = viewModel::onInputChanged,
-                onDone = viewModel::onDoneTapped,
+                onDone = viewModel::onDoneClicked,
                 focusRequester = focusRequester
             )
 
@@ -126,9 +126,9 @@ interface SetupTransportPinViewModelInterface {
     val attempts: Int?
 
     fun onInputChanged(value: String)
-    fun onDoneTapped()
-    fun onCancelTapped()
-    fun onBackButtonTapped()
+    fun onDoneClicked()
+    fun onCancelClicked()
+    fun onBackButtonClicked()
 }
 
 @HiltViewModel
@@ -152,7 +152,7 @@ class SetupTransportPinViewModel @Inject constructor(
         transportPin = value
     }
 
-    override fun onDoneTapped() {
+    override fun onDoneClicked() {
         if (transportPin.length == 5) {
             coordinator.onTransportPinEntered(transportPin)
             transportPin = ""
@@ -161,12 +161,12 @@ class SetupTransportPinViewModel @Inject constructor(
         }
     }
 
-    override fun onCancelTapped() {
+    override fun onCancelClicked() {
         coordinator.cancelSetup()
     }
 
-    override fun onBackButtonTapped() {
-        coordinator.onBackTapped()
+    override fun onBackButtonClicked() {
+        coordinator.onBackClicked()
     }
 }
 
@@ -176,9 +176,9 @@ private class PreviewSetupTransportPinViewModel(
     override val attempts: Int?
 ) : SetupTransportPinViewModelInterface {
     override fun onInputChanged(value: String) {}
-    override fun onDoneTapped() {}
-    override fun onCancelTapped() {}
-    override fun onBackButtonTapped() {}
+    override fun onDoneClicked() {}
+    override fun onCancelClicked() {}
+    override fun onBackButtonClicked() {}
 }
 
 @Preview(widthDp = 300, showBackground = true)

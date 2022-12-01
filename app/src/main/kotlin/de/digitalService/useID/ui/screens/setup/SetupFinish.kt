@@ -25,9 +25,9 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
         stringResource(id = R.string.firstTimeUser_done_close)
     }
 
-    val buttonConfig = BundButtonConfig(buttonLabelStringId, viewModel::onButtonTapped)
+    val buttonConfig = BundButtonConfig(buttonLabelStringId, viewModel::onButtonClicked)
 
-    val navigationButton = NavigationButton(icon = NavigationIcon.Cancel, onClick = viewModel::onButtonTapped)
+    val navigationButton = NavigationButton(icon = NavigationIcon.Cancel, onClick = viewModel::onButtonClicked)
         .takeIf { !viewModel.identificationPending() }
 
     ScreenWithTopBar(navigationButton = navigationButton) { topPadding ->
@@ -44,7 +44,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 
 interface SetupFinishViewModelInterface {
     fun identificationPending(): Boolean
-    fun onButtonTapped()
+    fun onButtonClicked()
 }
 
 @HiltViewModel
@@ -55,14 +55,14 @@ class SetupFinishViewModel @Inject constructor(
         return setupCoordinator.identificationPending()
     }
 
-    override fun onButtonTapped() {
+    override fun onButtonClicked() {
         setupCoordinator.finishSetup()
     }
 }
 
 class PreviewSetupFinishViewModel(private val hasTcTokenUrl: Boolean) : SetupFinishViewModelInterface {
     override fun identificationPending(): Boolean = hasTcTokenUrl
-    override fun onButtonTapped() {}
+    override fun onButtonClicked() {}
 }
 
 @Preview(showBackground = true)

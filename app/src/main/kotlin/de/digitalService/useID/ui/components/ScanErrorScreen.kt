@@ -29,14 +29,14 @@ fun ScanErrorScreen(
     @StringRes buttonTitleResId: Int,
     showErrorCard: Boolean = false,
     confirmNavigationButtonDialog: Boolean = false,
-    onNavigationButtonTapped: () -> Unit,
-    onButtonTapped: () -> Unit
+    onNavigationButtonClicked: () -> Unit,
+    onButtonClicked: () -> Unit
 ) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
             shouldShowConfirmDialog = confirmNavigationButtonDialog,
-            onClick = onNavigationButtonTapped
+            onClick = onNavigationButtonClicked
         )
     ) { topPadding ->
         Column(
@@ -74,7 +74,7 @@ fun ScanErrorScreen(
 
             BundButton(
                 type = ButtonType.PRIMARY,
-                onClick = onButtonTapped,
+                onClick = onButtonClicked,
                 label = stringResource(id = buttonTitleResId),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,8 +129,8 @@ private fun PreviewCardDeactivated() {
             bodyResId = R.string.scanError_cardUnreadable_body,
             buttonTitleResId = R.string.scanError_close,
             showErrorCard = true,
-            onNavigationButtonTapped = {},
-            onButtonTapped = {}
+            onNavigationButtonClicked = {},
+            onButtonClicked = {}
         )
     }
 }

@@ -64,7 +64,7 @@ class IdentificationAttributeConsentViewModelTest {
         Assertions.assertEquals(expectedRequiredReadAttributes, viewModel.requiredReadAttributes)
         Assertions.assertEquals(testIdentificationProvider, viewModel.identificationProvider)
 
-        viewModel.onPinButtonTapped()
+        viewModel.onPinButtonClicked()
 
         verify(exactly = 1) { mockIdentificationCoordinator.confirmAttributesForIdentification() }
         verify(exactly = 1) { IdentificationAttributeConsentDestination.argsFrom(mockSaveStateHandle) }

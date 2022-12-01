@@ -80,7 +80,7 @@ class SetupTransportPinViewModelTest {
     }
 
     @Test
-    fun onDoneTapped_Success() {
+    fun onDoneClicked_Success() {
         val testValue = "12345"
 
         val viewModel = SetupTransportPinViewModel(
@@ -89,7 +89,7 @@ class SetupTransportPinViewModelTest {
         )
 
         viewModel.onInputChanged(testValue)
-        viewModel.onDoneTapped()
+        viewModel.onDoneClicked()
 
         Assertions.assertEquals(defaultPin, viewModel.transportPin)
 
@@ -97,13 +97,13 @@ class SetupTransportPinViewModelTest {
     }
 
     @Test
-    fun onDoneTapped_NoPreviousInput() {
+    fun onDoneClicked_NoPreviousInput() {
         val viewModel = SetupTransportPinViewModel(
             coordinatorMock,
             mockSaveStateHandle
         )
 
-        viewModel.onDoneTapped()
+        viewModel.onDoneClicked()
 
         Assertions.assertEquals(defaultPin, viewModel.transportPin)
 
@@ -111,7 +111,7 @@ class SetupTransportPinViewModelTest {
     }
 
     @Test
-    fun onDoneTapped_TooShort() {
+    fun onDoneClicked_TooShort() {
         val testValue = "1234"
 
         val viewModel = SetupTransportPinViewModel(
@@ -120,7 +120,7 @@ class SetupTransportPinViewModelTest {
         )
 
         viewModel.onInputChanged(testValue)
-        viewModel.onDoneTapped()
+        viewModel.onDoneClicked()
 
         Assertions.assertEquals(testValue, viewModel.transportPin)
 
@@ -128,7 +128,7 @@ class SetupTransportPinViewModelTest {
     }
 
     @Test
-    fun onDoneTapped_TooLong() {
+    fun onDoneClicked_TooLong() {
         val testValue = "123456"
 
         val viewModel = SetupTransportPinViewModel(
@@ -137,7 +137,7 @@ class SetupTransportPinViewModelTest {
         )
 
         viewModel.onInputChanged(testValue)
-        viewModel.onDoneTapped()
+        viewModel.onDoneClicked()
 
         Assertions.assertEquals(testValue, viewModel.transportPin)
 

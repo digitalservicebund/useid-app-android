@@ -10,11 +10,11 @@ class IdentificationCardErrorViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator
 ) : ViewModel() {
 
-    fun onNavigationButtonTapped() {
+    fun onNavigationButtonClicked() {
         coordinator.cancelIdentification()
     }
 
-    fun onButtonTapped() {
+    fun onButtonClicked() {
         coordinator.cancelIdentification()
     }
 }

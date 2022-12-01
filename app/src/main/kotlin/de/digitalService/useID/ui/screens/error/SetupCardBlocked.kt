@@ -14,7 +14,7 @@ fun SetupCardBlocked(viewModel: SetupCardErrorViewModel = hiltViewModel()) {
         titleResId = R.string.scanError_cardBlocked_title,
         bodyResId = R.string.scanError_cardBlocked_body,
         buttonTitleResId = R.string.scanError_close,
-        onNavigationButtonTapped = viewModel::onNavigationButtonTapped,
-        onButtonTapped = viewModel::onButtonTapped
+        onNavigationButtonClicked = viewModel::onNavigationButtonClicked,
+        onButtonClicked = viewModel::onButtonClicked
     )
 }

@@ -51,7 +51,7 @@ class IdentificationFetchMetadataTest {
         val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
         composeTestRule.onNodeWithText(cancelButton).assertDoesNotExist()
 
-        verify(exactly = 1) { viewModel.onCancelButtonTapped() }
+        verify(exactly = 1) { viewModel.onCancelButtonClicked() }
     }
 
     @Test
@@ -73,6 +73,6 @@ class IdentificationFetchMetadataTest {
         val cancelButton = composeTestRule.activity.getString(R.string.identification_confirmEnd_confirm)
         composeTestRule.onNodeWithText(cancelButton).performClick()
 
-        verify(exactly = 1) { viewModel.onCancelButtonTapped() }
+        verify(exactly = 1) { viewModel.onCancelButtonClicked() }
     }
 }

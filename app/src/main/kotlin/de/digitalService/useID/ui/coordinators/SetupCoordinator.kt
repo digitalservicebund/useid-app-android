@@ -223,7 +223,7 @@ class SetupCoordinator @Inject constructor(
         appCoordinator.stopNfcTagHandling()
     }
 
-    fun onBackTapped() {
+    fun onBackClicked() {
         changePinFlowCoroutineScope?.cancel()
 
         idCardManager.cancelTask()

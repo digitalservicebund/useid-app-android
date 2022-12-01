@@ -64,7 +64,7 @@ class SetupPersonalPinConfirmTest {
         verify(exactly = 1) { mockViewModel.userInputPin("123456") }
 
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
-        verify(exactly = 1) { mockViewModel.onDonePressed() }
+        verify(exactly = 1) { mockViewModel.onDoneClicked() }
     }
 
     @Test
@@ -140,6 +140,6 @@ class SetupPersonalPinConfirmTest {
         val errorDialogButtonText = composeTestRule.activity.getString(R.string.identification_fetchMetadataError_retry)
         composeTestRule.onNodeWithText(errorDialogButtonText).performClick()
 
-        verify(exactly = 1) { mockViewModel.onErrorDialogButtonPressed() }
+        verify(exactly = 1) { mockViewModel.onErrorDialogButtonClicked() }
     }
 }

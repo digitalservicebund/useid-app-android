@@ -60,7 +60,7 @@ class SetupPersonalPinInputTest {
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performTextInput("1234567")
         verify(exactly = 1) { mockViewModel.userInputPin("123456") }
         composeTestRule.onNodeWithTag(pinEntryTextFieldTag).performImeAction()
-        verify(exactly = 1) { mockViewModel.onDonePressed() }
+        verify(exactly = 1) { mockViewModel.onDoneClicked() }
     }
 
     @Test
