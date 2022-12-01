@@ -113,15 +113,21 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
 }
 
 @Composable
-private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
+private fun CardBox(content: @Composable ColumnScope.() -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         border = BorderStroke(1.dp, Gray300),
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(3.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.LightGray)
-    ) {
+            .shadow(3.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.LightGray),
+        content = content
+    )
+}
+
+@Composable
+private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
+    CardBox {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.eid_3),
@@ -148,14 +154,7 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
 
 @Composable
 private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
-    Card(
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Gray300),
-        modifier = Modifier
-            .fillMaxWidth()
-            .shadow(3.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.LightGray)
-    ) {
+    CardBox {
         CardButton(text = stringResource(R.string.home_more_privacy), onClick = viewModel::onPrivacyButtonClicked)
         StyledDivider()
 
