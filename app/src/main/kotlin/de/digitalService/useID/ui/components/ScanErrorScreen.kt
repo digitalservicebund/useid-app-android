@@ -16,8 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.theme.Red200
-import de.digitalService.useID.ui.theme.Red900
 import de.digitalService.useID.ui.theme.UseIDTheme
 import de.digitalService.useID.util.markDownResource
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -88,7 +86,7 @@ fun ScanErrorScreen(
 @Composable
 private fun ErrorCard() {
     Card(
-        colors = CardDefaults.cardColors(containerColor = Red200),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -99,14 +97,15 @@ private fun ErrorCard() {
                 Icon(
                     imageVector = Icons.Outlined.ErrorOutline,
                     contentDescription = "",
-                    tint = Red900,
+                    tint = MaterialTheme.colorScheme.error,
                     modifier = Modifier.padding(end = 6.dp)
                 )
 
                 Text(
                     text = stringResource(R.string.scanError_box_title),
                     style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onErrorContainer
                 )
             }
 

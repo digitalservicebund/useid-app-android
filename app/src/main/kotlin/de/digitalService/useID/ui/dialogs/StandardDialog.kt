@@ -13,7 +13,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import de.digitalService.useID.ui.theme.Blue800
 
 @Composable
 fun StandardDialog(
@@ -46,7 +45,7 @@ fun StandardDialog(
                             text = dismissButtonText,
                             style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Bold,
-                            color = Blue800
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -56,7 +55,7 @@ fun StandardDialog(
                         text = confirmButtonText,
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Bold,
-                        color = Blue800
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
             }

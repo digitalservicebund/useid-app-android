@@ -25,7 +25,6 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.dialogs.StandardDialog
-import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 import javax.inject.Inject
 
@@ -81,7 +80,7 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
                 onDone = viewModel::onDoneClicked,
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequesterPin,
-                backgroundColor = Gray300,
+                backgroundColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .width(240.dp)
                     .height(56.dp)

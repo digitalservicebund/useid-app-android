@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -24,8 +25,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.theme.Blue700
 import de.digitalService.useID.ui.theme.UseIDTheme
-import de.digitalService.useID.ui.theme.Yellow300
 import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +59,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = Yellow300),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
                         shape = RoundedCornerShape(16.dp)
                     ) {
                         Column(
@@ -67,15 +68,17 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                         ) {
                             Row {
                                 Icon(
-                                    imageVector = Icons.Outlined.Info,
+                                    imageVector = Icons.Filled.Info,
                                     contentDescription = "",
-                                    modifier = Modifier.padding(end = 6.dp)
+                                    modifier = Modifier.padding(end = 6.dp),
+                                    tint = Blue700
                                 )
 
                                 Text(
                                     text = stringResource(R.string.firstTimeUser_personalPINIntro_info_title),
                                     style = MaterialTheme.typography.bodyMedium,
-                                    fontSize = 18.sp
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colorScheme.onBackground
                                 )
                             }
 
@@ -83,7 +86,8 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
 
                             Text(
                                 stringResource(id = R.string.firstTimeUser_personalPINIntro_info_body),
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onBackground
                             )
                         }
                     }

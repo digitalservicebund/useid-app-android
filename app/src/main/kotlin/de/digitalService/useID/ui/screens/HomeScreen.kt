@@ -25,8 +25,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.BuildConfig
 import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.ui.components.BundButton
 import de.digitalService.useID.ui.components.ButtonType
-import de.digitalService.useID.ui.components.RegularBundButton
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.theme.*
@@ -45,7 +45,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Blue300)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             Spacer(modifier = Modifier.height(60.dp))
 
@@ -103,7 +103,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-                color = Gray900,
+                color = MaterialTheme.colorScheme.tertiary,
                 fontSize = 12.sp,
                 textAlign = TextAlign.Center
             )
@@ -117,7 +117,7 @@ private fun CardBox(content: @Composable ColumnScope.() -> Unit) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Gray300),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
         modifier = Modifier
             .fillMaxWidth()
             .shadow(3.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.LightGray),
@@ -138,12 +138,11 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
                     .padding(horizontal = 8.dp)
             )
 
-            RegularBundButton(
+            BundButton(
                 type = ButtonType.PRIMARY,
                 onClick = viewModel::setupOnlineID,
                 label = stringResource(R.string.home_startSetup),
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 16.dp)
                     .align(Alignment.BottomCenter)
@@ -177,7 +176,7 @@ private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
 @Composable
 private fun StyledDivider() {
     Divider(
-        color = Gray300,
+        color = MaterialTheme.colorScheme.tertiary,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
@@ -197,7 +196,7 @@ private fun CardButton(
     ) {
         Text(
             text = text,
-            color = Black,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp)

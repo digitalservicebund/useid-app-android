@@ -27,7 +27,6 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
-import de.digitalService.useID.ui.theme.Gray300
 import de.digitalService.useID.ui.theme.UseIDTheme
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -82,7 +81,7 @@ fun IdentificationPersonalPin(
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequester,
                 onDone = viewModel::onDone,
-                backgroundColor = Gray300,
+                backgroundColor = MaterialTheme.colorScheme.tertiary,
                 modifier = Modifier
                     .padding(top = 50.dp)
                     .width(240.dp)

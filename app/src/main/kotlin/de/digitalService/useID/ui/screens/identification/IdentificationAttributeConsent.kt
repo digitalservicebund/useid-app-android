@@ -55,7 +55,7 @@ fun IdentificationAttributeConsent(
         )
     ) { topPadding ->
         Scaffold(bottomBar = {
-            RegularBundButton(
+            BundButton(
                 type = ButtonType.PRIMARY,
                 onClick = viewModel::onPinButtonClicked,
                 label = stringResource(id = R.string.identification_attributeConsent_continue),

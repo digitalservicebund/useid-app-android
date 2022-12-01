@@ -46,7 +46,7 @@ fun StandardButtonScreen(
                     .padding(20.dp)
             ) {
                 primaryButton?.let {
-                    RegularBundButton(
+                    BundButton(
                         type = ButtonType.PRIMARY,
                         onClick = it.action,
                         label = it.title
@@ -54,7 +54,7 @@ fun StandardButtonScreen(
                     Spacer(modifier = Modifier.height(15.dp))
                 }
                 secondaryButton?.let {
-                    RegularBundButton(
+                    BundButton(
                         type = ButtonType.SECONDARY,
                         onClick = it.action,
                         label = it.title

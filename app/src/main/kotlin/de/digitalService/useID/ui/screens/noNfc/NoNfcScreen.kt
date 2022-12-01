@@ -18,8 +18,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.theme.Blue200
-import de.digitalService.useID.ui.theme.Blue900
 import de.digitalService.useID.ui.theme.UseIDTheme
 
 @Composable
@@ -32,7 +30,7 @@ fun NoNfcScreen() {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
-            color = Blue200
+            color = MaterialTheme.colorScheme.secondary
         ) {
             Image(
                 painter = painterResource(id = R.drawable.illustration_no_nfc),
@@ -66,7 +64,7 @@ fun NoNfcScreen() {
                 val str = stringResource(R.string.noNfc_moreInformation_link)
                 append(str)
                 addStyle(
-                    style = SpanStyle(Blue900, fontWeight = FontWeight.Bold),
+                    style = SpanStyle(MaterialTheme.colorScheme.inversePrimary, fontWeight = FontWeight.Bold),
                     0,
                     str.length
                 )

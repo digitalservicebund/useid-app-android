@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.digitalService.useID.ui.theme.UseIDTheme
 
 enum class ButtonType {
     PRIMARY, SECONDARY
@@ -38,13 +40,24 @@ fun BundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: M
             contentColor = contentColor
         ),
         shape = MaterialTheme.shapes.small,
-        modifier = modifier
+        modifier = modifier.fillMaxWidth().height(50.dp)
     ) {
         Text(label)
     }
 }
 
+@Preview
 @Composable
-fun RegularBundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: Modifier = Modifier) {
-    BundButton(type = type, onClick = onClick, label = label, modifier = modifier.fillMaxWidth().height(50.dp))
+private fun PreviewPrimacy() {
+    UseIDTheme {
+        BundButton(type = ButtonType.PRIMARY, onClick = { }, label = "PRIMARY")
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewSecondary() {
+    UseIDTheme {
+        BundButton(type = ButtonType.SECONDARY, onClick = { }, label = "SECONDARY")
+    }
 }
