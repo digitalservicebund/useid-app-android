@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.markDownResource
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -122,7 +122,7 @@ private fun ErrorCard() {
 @Preview(showBackground = true)
 @Composable
 private fun PreviewCardDeactivated() {
-    UseIDTheme {
+    UseIdTheme {
         ScanErrorScreen(
             titleResId = R.string.scanError_cardUnreadable_title,
             bodyResId = R.string.scanError_cardUnreadable_body,

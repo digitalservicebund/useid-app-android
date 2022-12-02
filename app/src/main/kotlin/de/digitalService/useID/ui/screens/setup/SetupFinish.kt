@@ -13,7 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
 @Destination
@@ -68,7 +68,7 @@ class PreviewSetupFinishViewModel(private val hasTcTokenUrl: Boolean) : SetupFin
 @Preview(showBackground = true)
 @Composable
 private fun PreviewHasToken() {
-    UseIDTheme {
+    UseIdTheme {
         SetupFinish(PreviewSetupFinishViewModel(true))
     }
 }
@@ -76,7 +76,7 @@ private fun PreviewHasToken() {
 @Preview(showBackground = true)
 @Composable
 private fun PreviewHasNoToken() {
-    UseIDTheme {
+    UseIdTheme {
         SetupFinish(PreviewSetupFinishViewModel(false))
     }
 }

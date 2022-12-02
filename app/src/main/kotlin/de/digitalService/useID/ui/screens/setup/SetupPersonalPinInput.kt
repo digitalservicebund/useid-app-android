@@ -23,7 +23,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -139,7 +139,7 @@ private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewM
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSetupPersonalPinInput() {
-    UseIDTheme {
+    UseIdTheme {
         SetupPersonalPinInput(PreviewSetupPersonalPinInputViewModel())
     }
 }

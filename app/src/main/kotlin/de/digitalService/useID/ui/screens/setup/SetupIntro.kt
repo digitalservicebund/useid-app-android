@@ -16,7 +16,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
 @Destination(navArgsDelegate = SetupIntroNavArgs::class)
@@ -110,7 +110,7 @@ private class PreviewSetupIntroViewModel : SetupIntroViewModelInterface {
 @Composable
 @Preview
 fun PreviewSetupIntro() {
-    UseIDTheme {
+    UseIdTheme {
         SetupIntro(PreviewSetupIntroViewModel())
     }
 }

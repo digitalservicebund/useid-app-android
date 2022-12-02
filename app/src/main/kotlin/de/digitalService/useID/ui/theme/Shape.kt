@@ -1,11 +1,24 @@
 package de.digitalService.useID.ui.theme
 
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
-val UseIDShapes = Shapes(
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(20.dp),
-    large = RoundedCornerShape(30.dp)
+@Immutable
+data class UseIdShapes(
+    val roundedSmall: CornerBasedShape,
+    val roundedMedium: CornerBasedShape,
+    val roundedLarge: CornerBasedShape,
 )
+
+val LocalUseIdShapes = staticCompositionLocalOf {
+    UseIdShapes(
+        roundedSmall = ShapeDefaults.Small,
+        roundedMedium = ShapeDefaults.Medium,
+        roundedLarge = ShapeDefaults.Large
+    )
+}

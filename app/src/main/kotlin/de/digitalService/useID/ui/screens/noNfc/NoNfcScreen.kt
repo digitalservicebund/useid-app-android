@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun NoNfcScreen() {
@@ -84,7 +84,7 @@ fun NoNfcScreen() {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    UseIDTheme {
+    UseIdTheme {
         NoNfcScreen()
     }
 }

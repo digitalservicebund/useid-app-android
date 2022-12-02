@@ -31,7 +31,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun PinEntryField(
@@ -109,7 +109,7 @@ fun PinEntryField(
 @Preview
 @Composable
 fun PreviewPinEntryField() {
-    UseIDTheme {
+    UseIdTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             var text by remember { mutableStateOf("") }
             val focusRequester = remember {

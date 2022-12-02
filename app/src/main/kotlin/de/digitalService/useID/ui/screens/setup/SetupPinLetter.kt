@@ -13,7 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
 @Destination
@@ -65,7 +65,7 @@ private class PreviewSetupPinLetterScreenViewModel : SetupPinLetterScreenViewMod
 @Composable
 @Preview
 fun PreviewSetupPinLetterScreen() {
-    UseIDTheme {
+    UseIdTheme {
         SetupPinLetter(PreviewSetupPinLetterScreenViewModel())
     }
 }

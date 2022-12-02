@@ -14,7 +14,7 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.StandardStaticComposition
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Destination
 @Composable
@@ -37,7 +37,7 @@ fun SetupResetPersonalPin(
 @Composable
 @Preview
 fun PinReSetupPersonalPin() {
-    UseIDTheme {
+    UseIdTheme {
         SetupResetPersonalPin(EmptyDestinationsNavigator)
     }
 }

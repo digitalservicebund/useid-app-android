@@ -21,7 +21,7 @@ import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
 import de.digitalService.useID.ui.screens.noNfc.NoNfcScreen
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
@@ -71,10 +71,10 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerT
         trackerManager.trackScreen(trackerRoute)
     }
 
-    UseIDTheme {
+    UseIdTheme {
         if (appCoordinator.nfcAvailability.value == NfcAvailability.NoNfc) {
             NoNfcScreen()
-            return@UseIDTheme
+            return@UseIdTheme
         }
 
         AppNavHost(

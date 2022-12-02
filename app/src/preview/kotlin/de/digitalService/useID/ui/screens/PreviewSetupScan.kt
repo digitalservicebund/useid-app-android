@@ -19,7 +19,7 @@ import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.openecard.mobile.activation.ActivationResultCode
@@ -121,7 +121,7 @@ class PreviewSetupScanViewModel @Inject constructor(
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewSetupScan() {
-    UseIDTheme {
+    UseIdTheme {
         PreviewSetupScan(
             PreviewSetupScanViewModel(PreviewTrackerManager(), IdCardManager()),
             object : SetupScanViewModelInterface {

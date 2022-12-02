@@ -29,7 +29,7 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.TransportPinEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -184,7 +184,7 @@ private class PreviewSetupTransportPinViewModel(
 @Preview(widthDp = 300, showBackground = true)
 @Composable
 fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
-    UseIDTheme {
+    UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", null))
     }
 }
@@ -192,7 +192,7 @@ fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPinWithoutAttempts() {
-    UseIDTheme {
+    UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", null))
     }
 }
@@ -200,7 +200,7 @@ fun PreviewSetupTransportPinWithoutAttempts() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPinOneAttempt() {
-    UseIDTheme {
+    UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", attempts = 1))
     }
 }
@@ -208,7 +208,7 @@ fun PreviewSetupTransportPinOneAttempt() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPinTwoAttempts() {
-    UseIDTheme {
+    UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", attempts = 2))
     }
 }
@@ -216,7 +216,7 @@ fun PreviewSetupTransportPinTwoAttempts() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewSetupTransportPinCancelDialog() {
-    UseIDTheme {
+    UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", attempts = 2))
     }
 }

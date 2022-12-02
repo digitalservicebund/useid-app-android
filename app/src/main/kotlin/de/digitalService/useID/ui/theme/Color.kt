@@ -1,51 +1,74 @@
 package de.digitalService.useID.ui.theme
 
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-private val Blue100 = Color(0xFFF2F6F8)
-private val Blue200 = Color(0xFFE0F1FB)
-private val Blue300 = Color(0xFFDCE8EF)
-private val Blue400 = Color(0xFFCCDBE4)
-private val Blue500 = Color(0xFFB3C9D6)
-private val Blue600 = Color(0xFF6693AD)
-val Blue700 = Color(0xFF336F91)
-private val Blue800 = Color(0xFF004B76)
-private val Blue900 = Color(0xFF003350)
+@Immutable
+data class UseIdColors(
+    val blue100: Color,
+    val blue200: Color,
+    val blue300: Color,
+    val blue400: Color,
+    val blue500: Color,
+    val blue600: Color,
+    val blue700: Color,
+    val blue800: Color,
+    val blue900: Color,
 
-private val NeutralsWhite = Color(0xFFFFFFFF)
-private val Neutrals100 = Color(0xFFF6F7F8)
-private val Neutrals300 = Color(0xFFEDEEF0)
-private val Neutrals400 = Color(0xFFDFE1E5)
-private val Neutrals600 = Color(0xFFB8BDC3)
-private val Neutrals900 = Color(0xFF4E596A)
-private val NeutralsBlack = Color(0xFF0B0C0C)
+    val green100: Color,
+    val green800: Color,
 
-private val Green100 = Color(0xFFE8F7F0)
-private val Green800 = Color(0xFF006538)
+    val yellow200: Color,
+    val yellow600: Color,
+    val yellow900: Color,
 
-private val Yellow200 = Color(0xFFDDD9D2)
-private val Yellow600 = Color(0xFFF2DC5D)
-private val Yellow900 = Color(0xFFA28C0D)
+    val orange400: Color,
 
-private val Orange = Color(0xFFCD7610)
+    val red200: Color,
+    val red900: Color,
 
-private val Red200 = Color(0xFFF9E5EC)
-private val Red900 = Color(0xFF8E001B)
-
-val UseIDLightColorPalette = lightColorScheme(
-    primary = Blue800,
-    onPrimary = NeutralsWhite,
-    inversePrimary = Blue900,
-    secondary = Blue200,
-    onSecondary = Blue800,
-    tertiary = Neutrals300,
-    onTertiary = Neutrals900,
-    background = NeutralsWhite,
-    onBackground = NeutralsBlack,
-    surface = Blue300,
-    onSurface = NeutralsBlack,
-    error = Red900,
-    errorContainer = Red200,
-    onErrorContainer = NeutralsBlack,
+    val white: Color,
+    val neutrals100: Color,
+    val neutrals300: Color,
+    val neutrals400: Color,
+    val neutrals600: Color,
+    val neutrals900: Color,
+    val black: Color
 )
+
+val LocalUseIdColors = staticCompositionLocalOf {
+    UseIdColors(
+        blue100 = Color.Unspecified,
+        blue200 = Color.Unspecified,
+        blue300 = Color.Unspecified,
+        blue400 = Color.Unspecified,
+        blue500 = Color.Unspecified,
+        blue600 = Color.Unspecified,
+        blue700 = Color.Unspecified,
+        blue800 = Color.Unspecified,
+        blue900 = Color.Unspecified,
+
+        green100 = Color.Unspecified,
+        green800 = Color.Unspecified,
+
+        yellow200 = Color.Unspecified,
+        yellow600 = Color.Unspecified,
+        yellow900 = Color.Unspecified,
+
+        orange400 = Color.Unspecified,
+
+        red200 = Color.Unspecified,
+        red900 = Color.Unspecified,
+
+        white = Color.Unspecified,
+        neutrals100 = Color.Unspecified,
+        neutrals300 = Color.Unspecified,
+        neutrals400 = Color.Unspecified,
+        neutrals600 = Color.Unspecified,
+        neutrals900 = Color.Unspecified,
+        black = Color.Unspecified
+    )
+}

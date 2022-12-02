@@ -25,7 +25,7 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.dialogs.StandardDialog
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
 @Destination
@@ -162,7 +162,7 @@ private class PreviewSetupPersonalPinConfirmViewModel : SetupPersonalPinConfirmV
 @Preview(showBackground = true)
 @Composable
 private fun PreviewSetupPersonalPinConfirm() {
-    UseIDTheme {
+    UseIdTheme {
         SetupPersonalPinConfirm(PreviewSetupPersonalPinConfirmViewModel())
     }
 }

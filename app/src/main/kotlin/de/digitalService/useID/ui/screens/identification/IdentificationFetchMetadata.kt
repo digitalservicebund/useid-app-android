@@ -24,7 +24,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
 @Destination(navArgsDelegate = IdentificationFetchMetadataNavArgs::class)
@@ -124,7 +124,7 @@ class PreviewIdentificationFetchMetadataViewModel() : IdentificationFetchMetadat
 @Preview(device = Devices.PIXEL_3A, showBackground = true)
 @Composable
 fun PreviewIdentificationFetchMetadata() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationFetchMetadata(
             viewModel = PreviewIdentificationFetchMetadataViewModel()
         )

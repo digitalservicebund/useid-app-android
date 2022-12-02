@@ -25,7 +25,7 @@ import androidx.core.app.ActivityCompat.startActivity
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.BundButton
 import de.digitalService.useID.ui.components.ButtonType
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun NfcDeactivatedScreen() {
@@ -87,7 +87,7 @@ fun NfcDeactivatedScreen() {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    UseIDTheme {
+    UseIdTheme {
         NfcDeactivatedScreen()
     }
 }

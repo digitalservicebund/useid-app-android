@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,8 +24,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
-import de.digitalService.useID.ui.theme.Blue700
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +69,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                                     imageVector = Icons.Filled.Info,
                                     contentDescription = "",
                                     modifier = Modifier.padding(end = 6.dp),
-                                    tint = Blue700
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
 
                                 Text(
@@ -131,7 +129,7 @@ private class PreviewSetupPersonalPinIntroViewModel : SetupPersonalPinIntroViewM
 @Preview
 @Composable
 fun PreviewSetupPersonalPinIntro() {
-    UseIDTheme {
+    UseIdTheme {
         SetupPersonalPinIntro(PreviewSetupPersonalPinIntroViewModel())
     }
 }

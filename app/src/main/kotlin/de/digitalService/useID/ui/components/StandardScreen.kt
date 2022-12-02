@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 class BundButtonConfig(
@@ -117,7 +117,7 @@ fun StandardStaticComposition(
 @Composable
 @Preview
 fun PreviewOnboardingScreenTwoButtons() {
-    UseIDTheme {
+    UseIdTheme {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
@@ -132,7 +132,7 @@ fun PreviewOnboardingScreenTwoButtons() {
 @Composable
 @Preview
 fun PreviewOnboardingScreenOneButton() {
-    UseIDTheme {
+    UseIdTheme {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
@@ -147,7 +147,7 @@ fun PreviewOnboardingScreenOneButton() {
 @Composable
 @Preview
 fun PreviewOnboardingScreenNoButton() {
-    UseIDTheme {
+    UseIdTheme {
         StandardStaticComposition(
             title = "Title",
             body = "Body",

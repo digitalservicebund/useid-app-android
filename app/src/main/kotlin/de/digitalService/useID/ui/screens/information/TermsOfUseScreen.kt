@@ -14,7 +14,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.markDownResource
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -45,7 +45,7 @@ fun TermsOfUseScreen(
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    UseIDTheme {
+    UseIdTheme {
         TermsOfUseScreen(EmptyDestinationsNavigator)
     }
 }

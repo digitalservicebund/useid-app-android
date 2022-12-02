@@ -19,7 +19,7 @@ import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.openecard.mobile.activation.ActivationResultCode
@@ -91,7 +91,7 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewIdentificationFetchMetadata() {
-    UseIDTheme {
+    UseIdTheme {
         PreviewIdentificationFetchMetadata(
             PreviewIdentificationFetchMetadataViewModel(IdCardManager(), PreviewTrackerManager()),
             object : IdentificationFetchMetadataViewModelInterface {

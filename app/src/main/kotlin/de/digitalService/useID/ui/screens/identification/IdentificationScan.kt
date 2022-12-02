@@ -26,7 +26,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -153,7 +153,7 @@ private class PreviewIdentificationScanViewModel(
 @Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScan() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationScan(viewModel = PreviewIdentificationScanViewModel(false, null))
     }
 }
@@ -161,7 +161,7 @@ fun PreviewIdentificationScan() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScanWithProgress() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, null))
     }
 }
@@ -169,7 +169,7 @@ fun PreviewIdentificationScanWithProgress() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScanWithError() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, ScanError.IncorrectPin(2)))
     }
 }
@@ -177,7 +177,7 @@ fun PreviewIdentificationScanWithError() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScanWithCancelDialog() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationScan(viewModel = PreviewIdentificationScanViewModel(false, null))
     }
 }

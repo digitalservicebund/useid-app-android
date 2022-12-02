@@ -34,7 +34,7 @@ import de.digitalService.useID.idCardInterface.IdCardAttribute
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
@@ -335,7 +335,7 @@ private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean):
 @Preview(device = Devices.PIXEL_3A, locale = "de")
 @Composable
 fun PreviewIdentificationAttributeConsent() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationAttributeConsent(
             viewModel = previewIdentificationAttributeConsentViewModel(
                 false
@@ -347,7 +347,7 @@ fun PreviewIdentificationAttributeConsent() {
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewIdentificationAttributeConsentInfoDialog() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationAttributeConsent(
             viewModel = previewIdentificationAttributeConsentViewModel(
                 true

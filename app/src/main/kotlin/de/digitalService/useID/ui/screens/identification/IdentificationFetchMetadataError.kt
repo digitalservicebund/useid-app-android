@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.BundButtonConfig
 import de.digitalService.useID.ui.components.StandardButtonScreen
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun IdentificationFetchMetadataError(
@@ -37,7 +37,7 @@ fun IdentificationFetchMetadataError(
 @Preview
 @Composable
 fun PreviewIdentificationFetchMetadataError() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationFetchMetadataError({ })
     }
 }

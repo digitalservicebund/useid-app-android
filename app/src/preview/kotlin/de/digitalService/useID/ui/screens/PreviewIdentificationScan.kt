@@ -21,7 +21,7 @@ import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModelInterface
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -135,7 +135,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewPreviewIdentificationScan() {
-    UseIDTheme {
+    UseIdTheme {
         PreviewIdentificationScan(
             PreviewIdentificationScanViewModel(
                 PreviewTrackerManager(),

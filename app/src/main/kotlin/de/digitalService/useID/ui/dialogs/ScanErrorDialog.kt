@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
 import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.markDownResource
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -86,7 +86,7 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonClick: () -> Unit) {
 @Preview
 @Composable
 private fun PreviewPinBlocked() {
-    UseIDTheme {
+    UseIdTheme {
         ScanErrorAlertDialog(error = ScanError.PinBlocked, onButtonClick = { })
     }
 }
@@ -94,7 +94,7 @@ private fun PreviewPinBlocked() {
 @Preview
 @Composable
 private fun PreviewCardErrorWithoutRedirect() {
-    UseIDTheme {
+    UseIdTheme {
         ScanErrorAlertDialog(error = ScanError.CardErrorWithoutRedirect, onButtonClick = { })
     }
 }
@@ -102,7 +102,7 @@ private fun PreviewCardErrorWithoutRedirect() {
 @Preview
 @Composable
 private fun PreviewCardErrorWithRedirect() {
-    UseIDTheme {
+    UseIdTheme {
         ScanErrorAlertDialog(error = ScanError.CardErrorWithRedirect(""), onButtonClick = { })
     }
 }

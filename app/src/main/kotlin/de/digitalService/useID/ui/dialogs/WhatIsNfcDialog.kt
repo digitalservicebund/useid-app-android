@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun WhatIsNfcDialog(onClose: () -> Unit) {
@@ -22,7 +22,7 @@ fun WhatIsNfcDialog(onClose: () -> Unit) {
 @Preview
 @Composable
 private fun Preview() {
-    UseIDTheme {
+    UseIdTheme {
         WhatIsNfcDialog(onClose = {})
     }
 }

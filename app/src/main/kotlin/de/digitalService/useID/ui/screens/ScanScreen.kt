@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.text
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -28,7 +27,7 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.dialogs.WhatIsNfcDialog
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
 @Composable
@@ -203,7 +202,7 @@ fun ScanScreen(
 @Preview(showBackground = true)
 @Composable
 private fun PreviewWithoutProgress() {
-    UseIDTheme {
+    UseIdTheme {
         ScanScreen(
             title = "Title",
             body = "Body",
@@ -215,7 +214,7 @@ private fun PreviewWithoutProgress() {
 @Preview(showBackground = true)
 @Composable
 private fun PreviewWithProgress() {
-    UseIDTheme {
+    UseIdTheme {
         ScanScreen(
             title = "Title",
             body = "Body",
@@ -227,7 +226,7 @@ private fun PreviewWithProgress() {
 @Preview(showBackground = true)
 @Composable
 private fun PreviewWithError() {
-    UseIDTheme {
+    UseIdTheme {
         ScanScreen(
             title = "Title",
             body = "Body",

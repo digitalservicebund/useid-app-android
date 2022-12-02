@@ -27,7 +27,7 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.PinEntryField
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 import javax.inject.Inject
 
@@ -185,7 +185,7 @@ class PreviewIdentificationPersonalPinViewModel(
 @Preview
 @Composable
 fun PreviewIdentificationPersonalPin() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationPersonalPin(viewModel = PreviewIdentificationPersonalPinViewModel("123", null))
     }
 }
@@ -193,7 +193,7 @@ fun PreviewIdentificationPersonalPin() {
 @Preview
 @Composable
 fun PreviewIdentificationPersonalPinTwoAttempts() {
-    UseIDTheme {
+    UseIdTheme {
         IdentificationPersonalPin(viewModel = PreviewIdentificationPersonalPinViewModel("123", 2))
     }
 }

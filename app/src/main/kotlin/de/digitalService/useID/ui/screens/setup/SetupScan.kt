@@ -21,7 +21,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.annotation.Nullable
@@ -97,7 +97,7 @@ class PreviewSetupScanViewModel(
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewSetupScanWithoutError() {
-    UseIDTheme {
+    UseIdTheme {
         SetupScan(viewModel = PreviewSetupScanViewModel(false))
     }
 }
