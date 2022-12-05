@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
@@ -29,41 +30,9 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun NfcDeactivatedScreen() {
-    Surface(shape = RoundedCornerShape(15.dp)) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White)
-                .padding(all = 16.dp)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.illustration_no_nfc),
-                    contentDescription = "",
-                    modifier = Modifier.padding(vertical = 16.dp).align(CenterHorizontally)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = stringResource(R.string.nfcDeactivated_info_title),
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = stringResource(R.string.nfcDeactivated_info_body),
-                    style = MaterialTheme.typography.bodySmall
-                )
-
-                Spacer(modifier = Modifier.height(64.dp))
-
+    Surface(shape = UseIdTheme.shapes.roundedLarge) {
+        Scaffold(
+            bottomBar = {
                 val context = LocalContext.current
                 BundButton(
                     type = ButtonType.PRIMARY,
@@ -77,7 +46,39 @@ fun NfcDeactivatedScreen() {
                         startActivity(context, intent, null)
                     },
                     label = stringResource(R.string.ndcDeactivated_openSettings_button),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().padding(UseIdTheme.spaces.m)
+                )
+            },
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(bottom = it.calculateBottomPadding())
+                    .padding(horizontal = UseIdTheme.spaces.m)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.illustration_no_nfc),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .padding(vertical = 40.dp)
+                        .align(CenterHorizontally)
+                )
+
+                Text(
+                    text = stringResource(R.string.nfcDeactivated_info_title),
+                    style = UseIdTheme.typography.headingL,
+                    color = UseIdTheme.colors.black
+                )
+
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
+
+                Text(
+                    text = stringResource(R.string.nfcDeactivated_info_body),
+                    style = UseIdTheme.typography.bodyLRegular,
+                    color = UseIdTheme.colors.black
                 )
             }
         }

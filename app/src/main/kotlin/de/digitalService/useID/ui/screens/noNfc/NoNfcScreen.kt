@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -30,53 +31,46 @@ fun NoNfcScreen() {
         Surface(
             modifier = Modifier
                 .fillMaxWidth(),
-            color = MaterialTheme.colorScheme.secondary
+            color = UseIdTheme.colors.blue200
         ) {
             Image(
                 painter = painterResource(id = R.drawable.illustration_no_nfc),
                 contentDescription = "",
-                modifier = Modifier.padding(vertical = 32.dp)
+                modifier = Modifier.padding(vertical = 79.dp)
             )
         }
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(38.dp)
+                .padding(horizontal = UseIdTheme.spaces.xl)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
-
             Text(
                 text = stringResource(R.string.noNfc_info_title),
-                style = MaterialTheme.typography.titleMedium
+                style = UseIdTheme.typography.headingL,
+                color = UseIdTheme.colors.black,
+                modifier = Modifier.padding(top = UseIdTheme.spaces.m)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             Text(
                 text = stringResource(R.string.noNfc_info_body),
-                style = MaterialTheme.typography.bodySmall
+                style = UseIdTheme.typography.bodyLRegular,
+                color = UseIdTheme.colors.black,
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
-            val annotatedString = buildAnnotatedString {
-                val str = stringResource(R.string.noNfc_moreInformation_link)
-                append(str)
-                addStyle(
-                    style = SpanStyle(MaterialTheme.colorScheme.inversePrimary, fontWeight = FontWeight.Bold),
-                    0,
-                    str.length
+            TextButton(onClick = {}, contentPadding = PaddingValues(0.dp)) {
+                Text(
+                    text = stringResource(R.string.noNfc_moreInformation_link),
+                    style = UseIdTheme.typography.bodyMBold,
+                    color = UseIdTheme.colors.blue800
                 )
             }
 
-            ClickableText(
-                text = annotatedString,
-                onClick = {},
-                style = MaterialTheme.typography.bodySmall
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
         }
     }
 }
