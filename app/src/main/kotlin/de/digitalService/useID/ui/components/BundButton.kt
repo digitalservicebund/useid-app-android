@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import de.digitalService.useID.ui.theme.UseIDTheme
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 enum class ButtonType {
     PRIMARY, SECONDARY
@@ -24,12 +24,12 @@ fun BundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: M
 
     when (type) {
         ButtonType.PRIMARY -> {
-            containerColor = MaterialTheme.colorScheme.primary
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = UseIdTheme.colors.blue800
+            contentColor = UseIdTheme.colors.white
         }
         ButtonType.SECONDARY -> {
-            containerColor = MaterialTheme.colorScheme.secondary
-            contentColor = MaterialTheme.colorScheme.onSecondary
+            containerColor = UseIdTheme.colors.blue200
+            contentColor = UseIdTheme.colors.blue800
         }
     }
 
@@ -39,17 +39,20 @@ fun BundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: M
             containerColor = containerColor,
             contentColor = contentColor
         ),
-        shape = MaterialTheme.shapes.small,
-        modifier = modifier.fillMaxWidth().height(50.dp)
+        shape = UseIdTheme.shapes.roundedMedium,
+        modifier = modifier.fillMaxWidth().height(56.dp)
     ) {
-        Text(label)
+        Text(
+            text = label,
+            style = UseIdTheme.typography.bodyMBold
+        )
     }
 }
 
 @Preview
 @Composable
 private fun PreviewPrimacy() {
-    UseIDTheme {
+    UseIdTheme {
         BundButton(type = ButtonType.PRIMARY, onClick = { }, label = "PRIMARY")
     }
 }
@@ -57,7 +60,7 @@ private fun PreviewPrimacy() {
 @Preview
 @Composable
 private fun PreviewSecondary() {
-    UseIDTheme {
+    UseIdTheme {
         BundButton(type = ButtonType.SECONDARY, onClick = { }, label = "SECONDARY")
     }
 }
