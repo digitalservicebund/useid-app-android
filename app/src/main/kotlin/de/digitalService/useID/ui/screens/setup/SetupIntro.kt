@@ -30,7 +30,7 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
             isIdentification = true
         )
     ) { topPadding ->
-        LaunchedEffect(key1 = Unit) {
+        LaunchedEffect(Unit) {
             viewModel.onInitScreen()
         }
 

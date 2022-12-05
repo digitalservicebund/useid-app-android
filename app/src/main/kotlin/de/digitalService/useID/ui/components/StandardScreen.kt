@@ -41,9 +41,9 @@ fun StandardButtonScreen(
     Scaffold(
         bottomBar = {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = CenterHorizontally,
                 modifier = Modifier
-                    .padding(20.dp)
+                    .padding(UseIdTheme.spaces.m)
             ) {
                 primaryButton?.let {
                     BundButton(
@@ -51,7 +51,7 @@ fun StandardButtonScreen(
                         onClick = it.action,
                         label = it.title
                     )
-                    Spacer(modifier = Modifier.height(15.dp))
+                    Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
                 }
                 secondaryButton?.let {
                     BundButton(
@@ -85,24 +85,25 @@ fun StandardStaticComposition(
     ) { bottomPadding ->
         Column(
             modifier = Modifier
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = UseIdTheme.spaces.m)
                 .padding(bottom = bottomPadding)
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
                 title,
-                style = MaterialTheme.typography.titleLarge
+                style = UseIdTheme.typography.headingXl,
+                color = UseIdTheme.colors.black
             )
             body?.let {
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 MarkdownText(
                     body,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = UseIdTheme.typography.bodyLRegular,
                     fontResource = R.font.bundes_sans_dtp_regular
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.l))
 
             Image(
                 painter = painterResource(id = imageID),
