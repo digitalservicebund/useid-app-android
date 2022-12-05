@@ -45,69 +45,73 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(UseIdTheme.colors.blue200)
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
-
             Image(
                 painter = painterResource(id = R.drawable.abstract_widget_phone),
                 contentDescription = "",
-                contentScale = ContentScale.FillWidth
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier.padding(start = 50.dp, end = 50.dp, top = 60.dp, bottom = 16.dp)
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             Text(
                 text = stringResource(R.string.home_header_title),
-                style = MaterialTheme.typography.titleLarge,
+                style = UseIdTheme.typography.headingXl,
+                color = UseIdTheme.colors.black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
-            )
-            Text(
-                text = stringResource(R.string.home_header_body),
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 64.dp)
+                    .padding(horizontal = UseIdTheme.spaces.m)
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
+
+            Text(
+                text = stringResource(R.string.home_header_body),
+                style = UseIdTheme.typography.bodyLRegular,
+                color = UseIdTheme.colors.black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = UseIdTheme.spaces.m)
+            )
+
+            Spacer(modifier = Modifier.height(50.dp))
         }
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = UseIdTheme.spaces.m)
         ) {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = stringResource(R.string.home_more_title),
-                style = MaterialTheme.typography.titleLarge
+                color = UseIdTheme.colors.black,
+                style = UseIdTheme.typography.headingXl
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             SetupUseIdCardBox(viewModel)
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             MoreSettingsCardBox(viewModel)
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
-                color = MaterialTheme.colorScheme.tertiary,
-                fontSize = 12.sp,
+                color = UseIdTheme.colors.neutrals900,
+                style = UseIdTheme.typography.captionL,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xl))
         }
     }
 }
@@ -115,12 +119,16 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
 @Composable
 private fun CardBox(content: @Composable ColumnScope.() -> Unit) {
     Card(
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
+        shape = UseIdTheme.shapes.roundedSmall,
+        colors = CardDefaults.cardColors(containerColor = UseIdTheme.colors.white),
+        border = BorderStroke(1.dp, UseIdTheme.colors.neutrals300),
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(3.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.LightGray),
+            .shadow(
+                elevation = 3.dp,
+                shape = UseIdTheme.shapes.roundedSmall,
+                spotColor = UseIdTheme.colors.neutrals300
+            ),
         content = content
     )
 }
@@ -135,7 +143,8 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
                 contentDescription = "",
                 modifier = Modifier
                     .padding(bottom = 40.dp)
-                    .padding(horizontal = 8.dp)
+                    .padding(top = UseIdTheme.spaces.xs)
+                    .padding(horizontal = UseIdTheme.spaces.xs)
             )
 
             BundButton(
@@ -143,8 +152,8 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
                 onClick = viewModel::setupOnlineID,
                 label = stringResource(R.string.home_startSetup),
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp)
+                    .padding(horizontal = 20.dp)
+                    .padding(bottom = UseIdTheme.spaces.s)
                     .align(Alignment.BottomCenter)
             )
         }
@@ -176,10 +185,10 @@ private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
 @Composable
 private fun StyledDivider() {
     Divider(
-        color = MaterialTheme.colorScheme.tertiary,
+        color = UseIdTheme.colors.neutrals300,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
+            .padding(horizontal = UseIdTheme.spaces.m)
     )
 }
 
@@ -191,15 +200,17 @@ private fun CardButton(
     TextButton(
         onClick = onClick,
         shape = RoundedCornerShape(0.dp),
+        contentPadding = PaddingValues(start = 0.dp),
         modifier = Modifier
             .fillMaxWidth()
+            .padding(horizontal = UseIdTheme.spaces.m)
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = UseIdTheme.colors.black,
+            style = UseIdTheme.typography.bodyMRegular,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp)
         )
     }
 }
@@ -263,7 +274,7 @@ private class PreviewViewModel : HomeScreenViewModelInterface {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    UseIDTheme {
+    UseIdTheme {
         HomeScreen(PreviewViewModel())
     }
 }
