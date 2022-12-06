@@ -103,7 +103,7 @@ fun StandardStaticComposition(
                 )
             }
 
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.l))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             Image(
                 painter = painterResource(id = imageID),
