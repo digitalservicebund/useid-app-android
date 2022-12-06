@@ -44,7 +44,7 @@ fun BundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: M
     ) {
         Text(
             text = label,
-            style = UseIdTheme.typography.bodyMBold
+            style = UseIdTheme.typography.bodyLBold
         )
     }
 }
