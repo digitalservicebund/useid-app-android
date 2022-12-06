@@ -39,7 +39,8 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(top = it, start = 16.dp, end = 16.dp)
+                .padding(top = it)
+                .padding(horizontal = UseIdTheme.spaces.s)
                 .verticalScroll(rememberScrollState())
 
         ) {
@@ -51,21 +52,21 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
                 focusRequesterPin.requestFocus()
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             Text(
                 text = stringResource(id = R.string.firstTimeUser_personalPIN_title),
-                style = MaterialTheme.typography.titleLarge
+                style = UseIdTheme.typography.headingXl,
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             Text(
                 text = stringResource(id = R.string.firstTimeUser_personalPIN_body),
-                style = MaterialTheme.typography.bodySmall
+                style = UseIdTheme.typography.bodyLRegular
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             val pinEntryFieldDescription = stringResource(
                 id = R.string.firstTimeUser_personalPIN_textFieldLabel_first,
@@ -81,10 +82,10 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
                 onDone = viewModel::onDoneClicked,
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequesterPin,
-                backgroundColor = MaterialTheme.colorScheme.tertiary,
+                backgroundColor = UseIdTheme.colors.neutrals100,
                 modifier = Modifier
-                    .width(240.dp)
                     .height(56.dp)
+                    .fillMaxWidth()
             )
         }
     }
