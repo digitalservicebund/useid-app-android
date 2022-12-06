@@ -46,59 +46,56 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
         ) {
             Column(
                 modifier = Modifier
+                    .padding(horizontal = UseIdTheme.spaces.m)
                     .verticalScroll(rememberScrollState())
             ) {
-                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    Text(
-                        stringResource(id = R.string.firstTimeUser_personalPINIntro_title),
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                Text(
+                    stringResource(id = R.string.firstTimeUser_personalPINIntro_title),
+                    style = UseIdTheme.typography.headingXl
+                )
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
-                    Card(
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondary),
-                        shape = RoundedCornerShape(16.dp)
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = UseIdTheme.colors.blue200),
+                    shape = UseIdTheme.shapes.roundedLarge
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(UseIdTheme.spaces.s)
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .padding(20.dp)
-                        ) {
-                            Row {
-                                Icon(
-                                    imageVector = Icons.Filled.Info,
-                                    contentDescription = "",
-                                    modifier = Modifier.padding(end = 6.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-
-                                Text(
-                                    text = stringResource(R.string.firstTimeUser_personalPINIntro_info_title),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontSize = 18.sp,
-                                    color = MaterialTheme.colorScheme.onBackground
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(6.dp))
-
+                        Row {
+                            Icon(
+                                imageVector = Icons.Filled.Info,
+                                contentDescription = "",
+                                modifier = Modifier.padding(end = 6.dp),
+                                tint = UseIdTheme.colors.blue700
+                            )
                             Text(
-                                stringResource(id = R.string.firstTimeUser_personalPINIntro_info_body),
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onBackground
+                                text = stringResource(R.string.firstTimeUser_personalPINIntro_info_title),
+                                style = UseIdTheme.typography.bodyMBold,
+                                color = UseIdTheme.colors.black
                             )
                         }
+
+                        Spacer(modifier = Modifier.height(UseIdTheme.spaces.xxs))
+
+                        Text(
+                            stringResource(id = R.string.firstTimeUser_personalPINIntro_info_body),
+                            style = UseIdTheme.typography.bodyMRegular,
+                            color = UseIdTheme.colors.black
+                        )
                     }
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Image(
-                        painter = painterResource(id = R.drawable.eid_3_pin),
-                        contentScale = ContentScale.Inside,
-                        contentDescription = "",
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
                 }
+
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
+
+                Image(
+                    painter = painterResource(id = R.drawable.eid_3_pin),
+                    contentScale = ContentScale.Inside,
+                    contentDescription = "",
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
             }
         }
     }
