@@ -29,6 +29,7 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.TransportPinEntryField
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
+import de.digitalService.useID.ui.theme.UseIdSpaces
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -78,23 +79,23 @@ fun SetupTransportPin(
 
         Column(
             modifier = modifier
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = UseIdTheme.spaces.m)
                 .padding(top = topPadding)
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = titleString,
-                style = MaterialTheme.typography.titleLarge
+                style = UseIdTheme.typography.headingXl
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             Text(
                 text = stringResource(id = R.string.firstTimeUser_transportPIN_body),
-                style = MaterialTheme.typography.bodyLarge
+                style = UseIdTheme.typography.bodyLRegular
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             TransportPinEntryField(
                 value = viewModel.transportPin,
@@ -103,12 +104,12 @@ fun SetupTransportPin(
                 focusRequester = focusRequester
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             attemptString?.let {
                 Text(
                     it,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = UseIdTheme.typography.bodyLRegular,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.align(androidx.compose.ui.Alignment.CenterHorizontally)
                 )
