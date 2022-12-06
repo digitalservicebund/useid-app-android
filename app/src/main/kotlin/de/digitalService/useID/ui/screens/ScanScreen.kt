@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.dialogs.WhatIsNfcDialog
+import de.digitalService.useID.ui.theme.UseIdColors
 import de.digitalService.useID.ui.theme.UseIdTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 
@@ -83,64 +84,62 @@ fun ScanScreen(
             }
         }
 
-        Spacer(modifier = Modifier.padding(20.dp))
+        Spacer(modifier = Modifier.padding(UseIdTheme.spaces.m))
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = UseIdTheme.spaces.m)
         ) {
             Text(
                 title,
-                style = MaterialTheme.typography.titleLarge
+                style = UseIdTheme.typography.headingXl
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             Text(
                 body,
-                style = MaterialTheme.typography.bodySmall
+                style = UseIdTheme.typography.bodyLRegular
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
-            Column {
-                Button(
-                    onClick = {
-                        onNfcDialogShown()
-                        whatIsNfcDialogShown = true
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    ),
-                    shape = MaterialTheme.shapes.small,
-                    modifier = Modifier
-                        .height(40.dp)
-                ) {
-                    Text(stringResource(id = R.string.scan_helpNFC))
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        onHelpDialogShown()
-                        helpDialogShown = true
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        contentColor = MaterialTheme.colorScheme.onSecondary
-                    ),
-                    shape = MaterialTheme.shapes.small,
-                    modifier = Modifier
-                        .height(40.dp)
-                ) {
-                    Text(stringResource(id = R.string.scan_helpScanning))
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = {
+                    onNfcDialogShown()
+                    whatIsNfcDialogShown = true
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = UseIdTheme.colors.blue200,
+                    contentColor = UseIdTheme.colors.blue800
+                ),
+                shape = UseIdTheme.shapes.roundedSmall,
+                modifier = Modifier
+                    .height(40.dp)
+            ) {
+                Text(stringResource(id = R.string.scan_helpNFC))
             }
+
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
+
+            Button(
+                onClick = {
+                    onHelpDialogShown()
+                    helpDialogShown = true
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = UseIdTheme.colors.blue200,
+                    contentColor = UseIdTheme.colors.blue800
+                ),
+                shape = UseIdTheme.shapes.roundedSmall,
+                modifier = Modifier
+                    .height(40.dp)
+            ) {
+                Text(stringResource(id = R.string.scan_helpScanning))
+            }
+
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
         }
     }
 
@@ -150,12 +149,12 @@ fun ScanScreen(
                 modifier = Modifier
                     .size(150.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.background,
-                        shape = RoundedCornerShape(10.dp)
+                        color = UseIdTheme.colors.white,
+                        shape = UseIdTheme.shapes.roundedMedium
                     )
             ) {
                 CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = UseIdTheme.colors.blue800,
                     strokeWidth = 10.dp,
                     modifier = Modifier
                         .size(70.dp)
@@ -175,7 +174,7 @@ fun ScanScreen(
             title = {
                 Text(
                     stringResource(id = R.string.scanError_cardUnreadable_title),
-                    style = MaterialTheme.typography.titleMedium
+                    style = UseIdTheme.typography.headingL
                 )
             },
             text = {

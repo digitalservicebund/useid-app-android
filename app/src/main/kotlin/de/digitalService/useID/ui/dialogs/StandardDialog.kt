@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun StandardDialog(
@@ -26,26 +27,25 @@ fun StandardDialog(
     Dialog(onDismissRequest = onDismissButtonClick ?: { }) {
         Column(
             modifier = Modifier
-                .background(Color.White, shape = RoundedCornerShape(10.dp))
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp)
+                .background(Color.White, shape = UseIdTheme.shapes.roundedMedium)
+                .padding(horizontal = UseIdTheme.spaces.s)
+                .padding(top = UseIdTheme.spaces.s)
         ) {
             title()
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             text()
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                 if (dismissButtonText != null && onDismissButtonClick != null) {
                     TextButton(onClick = onDismissButtonClick) {
                         Text(
                             text = dismissButtonText,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            style = UseIdTheme.typography.bodyLBold,
+                            color = UseIdTheme.colors.blue800
                         )
                     }
                 }
@@ -53,9 +53,8 @@ fun StandardDialog(
                 TextButton(onClick = onConfirmButtonClick) {
                     Text(
                         text = confirmButtonText,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.primary
+                        style = UseIdTheme.typography.bodyLBold,
+                        color = UseIdTheme.colors.blue800
                     )
                 }
             }
@@ -66,6 +65,23 @@ fun StandardDialog(
 @Preview
 @Composable
 private fun Preview() {
-    StandardDialog(title = { Text(text = "Test Dialog") }, text = { Text(text = "test Dialog text") }, confirmButtonText = "Button text") {
+    StandardDialog(
+        title = { Text(text = "Test Dialog") },
+        text = { Text(text = "test Dialog text") },
+        confirmButtonText = "Button text"
+    ) {
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewWithDismissButton() {
+    StandardDialog(
+        title = { Text(text = "Test Dialog") },
+        text = { Text(text = "test Dialog text") },
+        confirmButtonText = "Button text",
+        dismissButtonText = "Dismiss",
+        onDismissButtonClick = {}
+    ) {
     }
 }
