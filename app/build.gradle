@@ -65,11 +65,6 @@ android {
                     apiLevel = 31
                     systemImageSource = "aosp"
                 }
-                pixel2api33(ManagedVirtualDevice) {
-                    device = "Pixel 2"
-                    apiLevel = 31
-                    systemImageSource = "aosp"
-                }
                 pixel6api28(ManagedVirtualDevice) {
                     device = "Pixel 6 Pro"
                     apiLevel = 28
@@ -90,11 +85,6 @@ android {
                     apiLevel = 31
                     systemImageSource = "aosp"
                 }
-                pixel6api33(ManagedVirtualDevice) {
-                    device = "Pixel 6 Pro"
-                    apiLevel = 31
-                    systemImageSource = "aosp"
-                }
             }
 
             groups {
@@ -103,13 +93,11 @@ android {
                     targetDevices.add(devices.pixel2api29)
                     targetDevices.add(devices.pixel2api30)
                     targetDevices.add(devices.pixel2api31)
-                    targetDevices.add(devices.pixel2api33)
 
                     targetDevices.add(devices.pixel6api28)
                     targetDevices.add(devices.pixel6api29)
                     targetDevices.add(devices.pixel6api30)
                     targetDevices.add(devices.pixel6api31)
-                    targetDevices.add(devices.pixel6api33)
                 }
             }
         }
