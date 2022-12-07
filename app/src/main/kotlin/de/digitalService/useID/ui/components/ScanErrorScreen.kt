@@ -40,7 +40,7 @@ fun ScanErrorScreen(
         Column(
             modifier = Modifier
                 .padding(top = topPadding)
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = UseIdTheme.spaces.m)
         ) {
             Column(
                 modifier = Modifier
@@ -49,14 +49,14 @@ fun ScanErrorScreen(
             ) {
                 Text(
                     text = stringResource(id = titleResId),
-                    style = MaterialTheme.typography.titleMedium
+                    style = UseIdTheme.typography.headingXl
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
                 if (showErrorCard) {
                     ErrorCard()
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 }
 
                 val packageName = LocalContext.current.packageName
@@ -67,7 +67,7 @@ fun ScanErrorScreen(
                     fontResource = R.font.bundes_sans_dtp_regular
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
             }
 
             BundButton(
@@ -76,7 +76,7 @@ fun ScanErrorScreen(
                 label = stringResource(id = buttonTitleResId),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 24.dp, top = 12.dp)
+                    .padding(bottom = UseIdTheme.spaces.m, top = 12.dp)
                     .height(50.dp)
             )
         }
@@ -87,33 +87,31 @@ fun ScanErrorScreen(
 private fun ErrorCard() {
     Card(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-        shape = RoundedCornerShape(16.dp)
+        shape = UseIdTheme.shapes.roundedLarge
     ) {
         Column(
             modifier = Modifier
-                .padding(20.dp)
+                .padding(UseIdTheme.spaces.m)
         ) {
             Row {
                 Icon(
                     imageVector = Icons.Outlined.ErrorOutline,
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.error,
+                    tint = UseIdTheme.colors.red900,
                     modifier = Modifier.padding(end = 6.dp)
                 )
 
                 Text(
                     text = stringResource(R.string.scanError_box_title),
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onErrorContainer
+                    style = UseIdTheme.typography.bodyMBold
                 )
             }
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xxs))
 
             Text(
                 stringResource(id = R.string.scanError_box_body),
-                style = MaterialTheme.typography.bodySmall
+                style = UseIdTheme.typography.bodyMRegular
             )
         }
     }
