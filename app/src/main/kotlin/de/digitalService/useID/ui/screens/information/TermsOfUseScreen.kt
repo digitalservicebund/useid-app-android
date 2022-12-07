@@ -14,6 +14,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
+import de.digitalService.useID.ui.components.StandardInformationScreen
 import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.markDownResource
 import dev.jeziellago.compose.markdowntext.MarkdownText
@@ -23,23 +24,10 @@ import dev.jeziellago.compose.markdowntext.MarkdownText
 fun TermsOfUseScreen(
     navigator: DestinationsNavigator
 ) {
-    ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() })
-    ) { topPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
-                .padding(top = topPadding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            MarkdownText(
-                markdown = markDownResource(id = R.string.termsOfUse_text),
-                fontResource = R.font.bundes_sans_dtp_regular,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-        }
-    }
+    StandardInformationScreen(
+        navigator = navigator,
+        markdown = markDownResource(id = R.string.termsOfUse_text)
+    )
 }
 
 @Preview(showBackground = true)
