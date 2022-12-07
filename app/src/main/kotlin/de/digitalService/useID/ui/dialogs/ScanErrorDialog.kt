@@ -28,13 +28,13 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonClick: () -> Unit) {
     }
 
     StandardDialog(
-        title = { Text(stringResource(id = error.titleResID), style = MaterialTheme.typography.titleMedium) },
+        title = { Text(stringResource(id = error.titleResID), style = UseIdTheme.typography.headingXl) },
         text = {
             Column {
                 if (error is ScanError.CardErrorWithRedirect || error is ScanError.CardErrorWithoutRedirect) {
                     Card(
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-                        shape = RoundedCornerShape(16.dp)
+                        colors = CardDefaults.cardColors(containerColor = UseIdTheme.colors.red200),
+                        shape = UseIdTheme.shapes.roundedLarge
                     ) {
                         Column(
                             modifier = Modifier
@@ -44,28 +44,26 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonClick: () -> Unit) {
                                 Icon(
                                     imageVector = Icons.Outlined.ErrorOutline,
                                     contentDescription = "",
-                                    tint = MaterialTheme.colorScheme.error,
+                                    tint = UseIdTheme.colors.red900,
                                     modifier = Modifier.padding(end = 6.dp)
                                 )
 
                                 Text(
                                     text = stringResource(R.string.scanError_box_title),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                    style = UseIdTheme.typography.bodyMBold,
                                 )
                             }
 
-                            Spacer(modifier = Modifier.height(6.dp))
+                            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
 
                             Text(
                                 stringResource(id = R.string.scanError_box_body),
-                                style = MaterialTheme.typography.bodySmall
+                                style = UseIdTheme.typography.bodyMRegular
                             )
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 }
 
                 val packageName = LocalContext.current.packageName
