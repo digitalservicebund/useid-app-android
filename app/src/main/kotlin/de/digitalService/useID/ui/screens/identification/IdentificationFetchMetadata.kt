@@ -44,14 +44,14 @@ fun IdentificationFetchMetadata(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
-                .padding(20.dp)
+                .padding(UseIdTheme.spaces.m)
                 .padding(top = topPadding)
                 .fillMaxSize()
         ) {
             Spacer(modifier = Modifier.weight(.5f))
             Box {
                 CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = UseIdTheme.colors.blue800,
                     strokeWidth = 10.dp,
                     modifier = Modifier
                         .align(Alignment.Center)
@@ -66,12 +66,12 @@ fun IdentificationFetchMetadata(
             ) {
                 Text(
                     stringResource(id = R.string.identification_fetchMetadata_pleaseWait),
-                    style = MaterialTheme.typography.bodySmall
+                    style = UseIdTheme.typography.bodyLRegular
                 )
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 Text(
                     stringResource(id = R.string.identification_fetchMetadata_loadingData),
-                    style = MaterialTheme.typography.bodySmall
+                    style = UseIdTheme.typography.bodyMRegular
                 )
             }
         }

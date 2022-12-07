@@ -3,6 +3,7 @@ package de.digitalService.useID.ui.screens.identification
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,10 +27,13 @@ fun IdentificationFetchMetadataError(
             onRetry
         )
     ) {
-        Column(modifier = modifier) {
-            Text(stringResource(id = R.string.identification_fetchMetadataError_title), style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(stringResource(id = R.string.identification_fetchMetadataError_body), style = MaterialTheme.typography.bodySmall)
+        Column(modifier = modifier
+            .padding(horizontal = UseIdTheme.spaces.m)
+            .padding(top = UseIdTheme.spaces.m)
+        ) {
+            Text(stringResource(id = R.string.identification_fetchMetadataError_title), style = UseIdTheme.typography.headingXl)
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
+            Text(stringResource(id = R.string.identification_fetchMetadataError_body), style = UseIdTheme.typography.bodyLRegular)
         }
     }
 }
