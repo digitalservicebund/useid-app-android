@@ -60,29 +60,30 @@ fun IdentificationAttributeConsent(
                 onClick = viewModel::onPinButtonClicked,
                 label = stringResource(id = R.string.identification_attributeConsent_continue),
                 modifier = Modifier
-                    .padding(20.dp)
+                    .padding(UseIdTheme.spaces.m)
             )
         }, modifier = modifier.padding(top = topPadding)) { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(bottom = paddingValues.calculateBottomPadding())
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = UseIdTheme.spaces.m)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
                     viewModel.identificationProvider,
-                    style = MaterialTheme.typography.titleLarge
+                    style = UseIdTheme.typography.headingXl
                 )
-                Spacer(modifier = Modifier.padding(5.dp))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 Text(
                     stringResource(
                         id = R.string.identification_attributeConsent_body,
                         viewModel.identificationProvider
                     ),
-                    style = MaterialTheme.typography.bodySmall
+                    style = UseIdTheme.typography.bodyLRegular
                 )
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 AttributeList(attributeIDs = viewModel.requiredReadAttributes)
-                Spacer(Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 BundButton(
                     type = ButtonType.SECONDARY,
                     onClick = viewModel::onInfoButtonClicked,
@@ -104,25 +105,24 @@ fun IdentificationAttributeConsent(
 @Composable
 private fun AttributeList(attributeIDs: List<Int>) {
     Surface(
-        shape = RoundedCornerShape(10.dp),
+        shape = UseIdTheme.shapes.roundedMedium,
         shadowElevation = 10.dp,
-        color = MaterialTheme.colorScheme.secondary,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.tertiary),
+        color = UseIdTheme.colors.blue100,
+        border = BorderStroke(1.dp, UseIdTheme.colors.blue400),
         modifier = Modifier
-            .padding(top = 20.dp)
             .fillMaxWidth()
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .padding(top = 24.dp)
+                .padding(horizontal =UseIdTheme.spaces.m)
+                .padding(top = UseIdTheme.spaces.m)
         ) {
             attributeIDs.forEach { attributeId ->
                 Text(
                     "\u2022 ${stringResource(id = attributeId)}",
-                    color = Color.Black,
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.padding(bottom = 20.dp)
+                    color = UseIdTheme.colors.black,
+                    style = UseIdTheme.typography.bodyLRegular,
+                    modifier = Modifier.padding(bottom = UseIdTheme.spaces.s)
                 )
             }
         }
@@ -142,51 +142,52 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 modifier = Modifier
-                    .padding(top = topPadding, start = 20.dp, end = 20.dp)
+                    .padding(top = topPadding)
+                    .padding(horizontal = UseIdTheme.spaces.m)
                     .verticalScroll(
                         rememberScrollState()
                     )
             ) {
-                Text(content.subject, style = MaterialTheme.typography.titleLarge)
+                Text(content.subject, style = UseIdTheme.typography.headingXl)
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
-                    style = MaterialTheme.typography.titleSmall
+                    style = UseIdTheme.typography.headingMBold
                 )
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_provider),
-                    style = MaterialTheme.typography.titleSmall
+                    style = UseIdTheme.typography.bodyLBold
                 )
                 Column {
                     Text(
                         content.subject,
-                        style = MaterialTheme.typography.labelMedium
+                        style = UseIdTheme.typography.bodyLRegular
                     )
                     Text(
                         content.subjectURL,
-                        style = MaterialTheme.typography.labelMedium
+                        style = UseIdTheme.typography.bodyLRegular
                     )
                 }
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_issuer),
-                    style = MaterialTheme.typography.titleSmall
+                    style = UseIdTheme.typography.bodyLBold
                 )
                 Column {
                     Text(
                         content.issuer,
-                        style = MaterialTheme.typography.labelMedium
+                        style = UseIdTheme.typography.bodyLRegular
                     )
                     Text(
                         content.issuerURL,
-                        style = MaterialTheme.typography.labelMedium
+                        style = UseIdTheme.typography.bodyLRegular
                     )
                 }
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
-                    style = MaterialTheme.typography.titleSmall
+                    style = UseIdTheme.typography.bodyLBold
                 )
                 Text(
                     content.terms,
-                    style = MaterialTheme.typography.labelMedium
+                    style = UseIdTheme.typography.bodyLRegular
                 )
             }
         }
