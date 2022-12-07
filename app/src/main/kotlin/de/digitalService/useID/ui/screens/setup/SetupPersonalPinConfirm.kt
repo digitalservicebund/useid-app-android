@@ -46,7 +46,7 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
             title = {
                 Text(
                     text = stringResource(id = R.string.firstTimeUser_personalPIN_error_mismatch_title),
-                    style = MaterialTheme.typography.titleMedium
+                    style = UseIdTheme.typography.headingL
                 )
             },
             text = {},

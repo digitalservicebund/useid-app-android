@@ -86,7 +86,7 @@ fun ScanErrorScreen(
 @Composable
 private fun ErrorCard() {
     Card(
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+        colors = CardDefaults.cardColors(containerColor = UseIdTheme.colors.red200),
         shape = UseIdTheme.shapes.roundedLarge
     ) {
         Column(
