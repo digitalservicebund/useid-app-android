@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.dialogs.StandardDialog
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 enum class NavigationIcon {
     Cancel {
@@ -84,8 +85,8 @@ fun ScreenWithTopBar(
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                    containerColor = UseIdTheme.colors.white,
+                    navigationIconContentColor = UseIdTheme.colors.black
                 )
             )
         },
@@ -147,12 +148,12 @@ private fun CancelDialog(
 ) {
     StandardDialog(
         title = {
-            Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(text = title, style = UseIdTheme.typography.headingL)
 
             BackHandler(onBack = onDismiss)
         },
         text = {
-            Text(text = message, style = MaterialTheme.typography.bodySmall)
+            Text(text = message, style = UseIdTheme.typography.bodyLRegular)
         },
         confirmButtonText = confirmButtonText,
         dismissButtonText = dismissButtonText,
