@@ -61,13 +61,13 @@ fun IdentificationPersonalPin(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = modifier
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = UseIdTheme.spaces.m)
                 .padding(top = topPadding)
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
                 stringResource(id = R.string.identification_personalPIN_title),
-                style = MaterialTheme.typography.titleLarge
+                style = UseIdTheme.typography.headingXl
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -81,10 +81,10 @@ fun IdentificationPersonalPin(
                 contentDescription = pinEntryFieldDescription,
                 focusRequester = focusRequester,
                 onDone = viewModel::onDone,
-                backgroundColor = MaterialTheme.colorScheme.tertiary,
+                backgroundColor = UseIdTheme.colors.neutrals100,
                 modifier = Modifier
                     .padding(top = 50.dp)
-                    .width(240.dp)
+                    .fillMaxWidth()
                     .height(56.dp)
             )
 
@@ -97,15 +97,15 @@ fun IdentificationPersonalPin(
                 ) {
                     Text(
                         stringResource(id = R.string.identification_personalPIN_error_incorrectPIN),
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium
+                        color = UseIdTheme.colors.red900,
+                        style = UseIdTheme.typography.bodyLBold
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
                     Text(
                         stringResource(id = R.string.identification_personalPIN_error_tryAgain),
-                        style = MaterialTheme.typography.bodySmall
+                        style = UseIdTheme.typography.bodyLRegular
                     )
-                    Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
                     val attemptString = resources.getQuantityString(
                         R.plurals.identification_personalPIN_remainingAttempts,
                         attempts,
@@ -113,7 +113,7 @@ fun IdentificationPersonalPin(
                     )
                     Text(
                         attemptString,
-                        style = MaterialTheme.typography.bodySmall,
+                        style = UseIdTheme.typography.bodyLRegular,
                         textAlign = TextAlign.Center
                     )
                 }
