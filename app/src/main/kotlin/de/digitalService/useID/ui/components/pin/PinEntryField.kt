@@ -43,7 +43,7 @@ fun PinEntryField(
     contentDescription: String,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
-    backgroundColor: Color = MaterialTheme.colorScheme.background,
+    backgroundColor: Color = UseIdTheme.colors.neutrals100,
     onDone: () -> Unit = { }
 ) {
     var textFieldValueState by remember(value) { mutableStateOf(TextFieldValue(value, TextRange(value.length))) }
@@ -86,7 +86,7 @@ fun PinEntryField(
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
+                .clip(UseIdTheme.shapes.roundedSmall)
                 .focusRequester(focusRequester)
                 .clipToBounds()
                 .testTag("PINEntryField")

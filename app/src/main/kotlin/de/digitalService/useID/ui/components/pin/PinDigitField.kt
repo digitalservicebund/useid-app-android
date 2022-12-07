@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.components.pin
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
@@ -18,8 +19,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
@@ -47,13 +53,9 @@ fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
                         .clearAndSetSemantics { testTag = "Obfuscation" }
                 )
             } else {
-                val textStyle = MaterialTheme.typography.titleLarge
-                val fontSizeDp = with(LocalDensity.current) { textStyle.fontSize.value.dp.toSp() }
-
                 Text(
                     text = input.toString(),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontSize = fontSizeDp,
+                    style = UseIdTheme.typography.headingXl,
                     modifier = Modifier
                         .align(Alignment.Center)
                         .clearAndSetSemantics { testTag = "PINEntry" }
@@ -72,10 +74,12 @@ fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
     }
 }
 
-@Preview(showBackground = true, fontScale = 2f)
+@Preview(showBackground = true)
 @Composable
 fun PreviewPinDigitFieldWithInputNotObfuscated() {
-    PinDigitField(input = '2', obfuscation = false, placeholder = false)
+    UseIdTheme {
+        PinDigitField(input = '2', obfuscation = false, placeholder = false)
+    }
 }
 
 @Preview(showBackground = true)
