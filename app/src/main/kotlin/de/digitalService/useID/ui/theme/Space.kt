@@ -13,7 +13,7 @@ data class UseIdSpaces(
     val l: Dp,
     val xl: Dp,
     val xxl: Dp,
-    val xxxl: Dp,
+    val xxxl: Dp
 )
 
 val LocalUseIdSpaces = staticCompositionLocalOf {
@@ -25,6 +25,6 @@ val LocalUseIdSpaces = staticCompositionLocalOf {
         l = Dp.Unspecified,
         xl = Dp.Unspecified,
         xxl = Dp.Unspecified,
-        xxxl = Dp.Unspecified,
+        xxxl = Dp.Unspecified
     )
 }

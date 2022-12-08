@@ -1,7 +1,6 @@
 package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,7 +23,6 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface = hiltViewModel<SetupPersonalPinConfirmViewModel>()) {
-
     val pinEntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_textFieldLabel_second,
         viewModel.pin.map { "$it " }

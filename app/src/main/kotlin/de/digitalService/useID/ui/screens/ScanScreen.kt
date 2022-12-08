@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,7 +26,6 @@ import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.dialogs.WhatIsNfcDialog
-import de.digitalService.useID.ui.theme.UseIdColors
 import de.digitalService.useID.ui.theme.UseIdTheme
 import dev.jeziellago.compose.markdowntext.MarkdownText
 

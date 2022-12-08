@@ -55,7 +55,7 @@ fun StandardPinScreen(
 
             Text(
                 text = header,
-                style = UseIdTheme.typography.headingXl,
+                style = UseIdTheme.typography.headingXl
             )
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))

@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 
 @Immutable

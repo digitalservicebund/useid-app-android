@@ -20,7 +20,6 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = hiltViewModel<SetupPersonalPinInputViewModel>()) {
-
     val pinEntryFieldDescription = stringResource(
         id = R.string.firstTimeUser_personalPIN_textFieldLabel_first,
         viewModel.pin.map { "$it " }

@@ -45,7 +45,7 @@ fun UseIdTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable 
         neutrals400 = Color(0xFFDFE1E5),
         neutrals600 = Color(0xFFB8BDC3),
         neutrals900 = Color(0xFF4E596A),
-        black = Color(0xFF0B0C0C),
+        black = Color(0xFF0B0C0C)
     )
 
     val bundesSans = FontFamily(
