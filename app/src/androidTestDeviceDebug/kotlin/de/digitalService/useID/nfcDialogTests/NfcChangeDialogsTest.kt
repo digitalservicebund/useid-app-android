@@ -14,6 +14,7 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert
@@ -49,7 +50,7 @@ class NfcChangeDialogsTest {
 
     @Test
     fun NfcChangeDialogsTest() {
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(appCoordinator, mockTrackerManager)
         }
 
