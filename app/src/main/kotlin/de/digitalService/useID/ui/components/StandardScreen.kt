@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,7 @@ fun StandardButtonScreen(
     content: @Composable (Dp) -> Unit
 ) {
     Scaffold(
+        containerColor = UseIdTheme.colors.white,
         bottomBar = {
             Column(
                 horizontalAlignment = CenterHorizontally,

@@ -59,6 +59,7 @@ fun ScreenWithTopBar(
     var showConfirmDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        containerColor = UseIdTheme.colors.white,
         topBar = {
             SmallTopAppBar(
                 title = { },
