@@ -27,7 +27,8 @@ fun StandardPinScreen(
     onNavigationButtonBackClick: () -> Unit,
     onInitialize: () -> Unit,
     onValueChanged: (String) -> Unit,
-    onDone: () -> Unit
+    onDone: () -> Unit,
+    delayFocusRequest: Boolean = true
 ) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
@@ -47,7 +48,10 @@ fun StandardPinScreen(
 
             LaunchedEffect(Unit) {
                 onInitialize()
-                delay(400)
+                if (delayFocusRequest) {
+                    delay(400)
+                }
+
                 focusRequesterPin.requestFocus()
             }
 

@@ -36,7 +36,8 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
         onNavigationButtonBackClick = viewModel::onNavigationButtonClicked,
         onInitialize = viewModel::onInitialize,
         onValueChanged = viewModel::userInputPin,
-        onDone = viewModel::onDoneClicked
+        onDone = viewModel::onDoneClicked,
+        delayFocusRequest = false
     )
 
     AnimatedVisibility(visible = viewModel.shouldShowError) {
