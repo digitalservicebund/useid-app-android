@@ -11,6 +11,7 @@ import de.digitalService.useID.ui.screens.setup.SetupTransportPin
 import de.digitalService.useID.ui.screens.setup.SetupTransportPinViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -42,7 +43,7 @@ class SetupTransportPinTest {
         every { mockViewModel.transportPin } answers { testPinState.value }
         every { mockViewModel.attempts } answers { testAttempts }
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupTransportPin(viewModel = mockViewModel)
         }
 
@@ -86,7 +87,7 @@ class SetupTransportPinTest {
         every { mockViewModel.transportPin } answers { testPinState.value }
         every { mockViewModel.attempts } answers { 2 }
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupTransportPin(viewModel = mockViewModel)
         }
 

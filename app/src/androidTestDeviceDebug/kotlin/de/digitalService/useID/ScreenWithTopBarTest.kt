@@ -15,6 +15,7 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -38,7 +39,7 @@ class ScreenWithTopBarTest {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             ScreenWithTopBar(
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Back,
@@ -60,7 +61,7 @@ class ScreenWithTopBarTest {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             ScreenWithTopBar(
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
@@ -82,7 +83,7 @@ class ScreenWithTopBarTest {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             ScreenWithTopBar(
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
@@ -115,7 +116,7 @@ class ScreenWithTopBarTest {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             ScreenWithTopBar(
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
@@ -143,7 +144,7 @@ class ScreenWithTopBarTest {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             ScreenWithTopBar(
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
@@ -167,7 +168,7 @@ class ScreenWithTopBarTest {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             ScreenWithTopBar(
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
@@ -197,7 +198,7 @@ class ScreenWithTopBarTest {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             ScreenWithTopBar(
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,

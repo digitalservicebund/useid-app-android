@@ -13,6 +13,7 @@ import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Rule
@@ -34,7 +35,7 @@ class SetupScanTest {
     fun whatIsNfcDialogOpen() {
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupScan(viewModel = mockViewModel)
         }
 

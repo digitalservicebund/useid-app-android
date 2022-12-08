@@ -11,6 +11,7 @@ import de.digitalService.useID.ui.screens.setup.SetupPersonalPinConfirm
 import de.digitalService.useID.ui.screens.setup.SetupPersonalPinConfirmViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -33,7 +34,7 @@ class SetupPersonalPinConfirmTest {
     fun inputReceived() {
         val mockViewModel: SetupPersonalPinConfirmViewModel = mockk(relaxed = true)
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupPersonalPinConfirm(viewModel = mockViewModel)
         }
 
@@ -74,7 +75,7 @@ class SetupPersonalPinConfirmTest {
         val mockViewModel: SetupPersonalPinConfirmViewModel = mockk(relaxed = true)
         every { mockViewModel.pin } answers { testPin.value }
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupPersonalPinConfirm(viewModel = mockViewModel)
         }
 
@@ -127,7 +128,7 @@ class SetupPersonalPinConfirmTest {
 
         every { mockViewModel.shouldShowError } returns true
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupPersonalPinConfirm(viewModel = mockViewModel)
         }
 

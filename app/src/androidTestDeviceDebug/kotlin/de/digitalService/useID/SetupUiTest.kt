@@ -17,6 +17,7 @@ import de.digitalService.useID.ui.screens.destinations.SetupFinishDestination
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -74,7 +75,7 @@ class SetupUiTest {
 //
 //        every { mockStorageManager.getIsFirstTimeUser() } returns true
 //
-//        composeTestRule.activity.setContent {
+//        composeTestRule.activity.setContentUsingUseIdTheme {
 //            UseIDApp(appCoordinator, mockTrackerManager)
 //        }
 //

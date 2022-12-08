@@ -14,6 +14,7 @@ import de.digitalService.useID.ui.screens.identification.IdentificationFetchMeta
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -38,7 +39,7 @@ class IdentificationFetchMetadataTest {
 
         every { viewModel.didSetup } returns true
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationFetchMetadata(viewModel = viewModel)
         }
 
@@ -60,7 +61,7 @@ class IdentificationFetchMetadataTest {
 
         every { viewModel.didSetup } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationFetchMetadata(viewModel = viewModel)
         }
 

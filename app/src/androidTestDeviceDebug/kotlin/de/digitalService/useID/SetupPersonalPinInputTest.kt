@@ -11,6 +11,7 @@ import de.digitalService.useID.ui.screens.setup.SetupPersonalPinInput
 import de.digitalService.useID.ui.screens.setup.SetupPersonalPinInputViewModel
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -33,7 +34,7 @@ class SetupPersonalPinInputTest {
     fun inputReceived() {
         val mockViewModel: SetupPersonalPinInputViewModel = mockk(relaxed = true)
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupPersonalPinInput(viewModel = mockViewModel)
         }
 
@@ -70,7 +71,7 @@ class SetupPersonalPinInputTest {
         val mockViewModel: SetupPersonalPinInputViewModel = mockk(relaxed = true)
         every { mockViewModel.pin } answers { testPin.value }
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupPersonalPinInput(viewModel = mockViewModel)
         }
 

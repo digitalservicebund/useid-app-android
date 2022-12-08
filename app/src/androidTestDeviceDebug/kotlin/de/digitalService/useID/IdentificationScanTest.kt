@@ -13,6 +13,7 @@ import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -36,7 +37,7 @@ class IdentificationScanTest {
         val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
         every { mockViewModel.errorState } returns null
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationScan(viewModel = mockViewModel)
         }
 
@@ -74,7 +75,7 @@ class IdentificationScanTest {
         every { mockViewModel.errorState } returns null
         every { mockViewModel.shouldShowProgress } returns true
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationScan(viewModel = mockViewModel)
         }
 
@@ -86,7 +87,7 @@ class IdentificationScanTest {
     fun whatIsNfcDialogOpen() {
         val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupScan(viewModel = mockViewModel)
         }
 

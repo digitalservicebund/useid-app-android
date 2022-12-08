@@ -12,6 +12,7 @@ import de.digitalService.useID.ui.screens.identification.IdentificationAttribute
 import de.digitalService.useID.ui.screens.identification.ProviderInfoDialogContent
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -47,7 +48,7 @@ class IdentificationAttributeConsentTest {
         every { viewModel.shouldShowInfoDialog } returns false
         every { viewModel.didSetup } returns true
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
         }
 
@@ -93,7 +94,7 @@ class IdentificationAttributeConsentTest {
         )
         every { viewModel.didSetup } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
         }
 
@@ -145,7 +146,7 @@ class IdentificationAttributeConsentTest {
         )
         every { viewModel.didSetup } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
         }
 
@@ -184,7 +185,7 @@ class IdentificationAttributeConsentTest {
         )
         every { viewModel.didSetup } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
         }
 

@@ -13,6 +13,7 @@ import de.digitalService.useID.ui.screens.setup.SetupIntro
 import de.digitalService.useID.ui.screens.setup.SetupIntroViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -37,7 +38,7 @@ class SetupIntroTest {
 
         every { viewModel.shouldShowConfirmCancelDialog } returns true
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
         }
 
@@ -56,7 +57,7 @@ class SetupIntroTest {
 
         every { viewModel.shouldShowConfirmCancelDialog } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
         }
 
@@ -76,7 +77,7 @@ class SetupIntroTest {
 
         every { viewModel.shouldShowConfirmCancelDialog } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
         }
 
@@ -92,7 +93,7 @@ class SetupIntroTest {
 
         every { viewModel.shouldShowConfirmCancelDialog } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
         }
 

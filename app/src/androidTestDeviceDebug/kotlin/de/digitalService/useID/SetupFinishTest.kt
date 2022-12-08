@@ -11,6 +11,7 @@ import de.digitalService.useID.ui.screens.setup.SetupFinish
 import de.digitalService.useID.ui.screens.setup.SetupFinishViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -34,7 +35,7 @@ class SetupFinishTest {
         val mockViewModel: SetupFinishViewModelInterface = mockk(relaxed = true)
         every { mockViewModel.identificationPending() } returns false
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupFinish(viewModel = mockViewModel)
         }
 
@@ -49,7 +50,7 @@ class SetupFinishTest {
         val mockViewModel: SetupFinishViewModelInterface = mockk(relaxed = true)
         every { mockViewModel.identificationPending() } returns true
 
-        composeTestRule.activity.setContent {
+        composeTestRule.activity.setContentUsingUseIdTheme {
             SetupFinish(viewModel = mockViewModel)
         }
 
