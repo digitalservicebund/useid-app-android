@@ -86,9 +86,8 @@ fun IdentificationAttributeConsent(
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 AttributeList(attributeIDs = viewModel.requiredReadAttributes)
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
-                BundButton(
-                    type = ButtonType.SECONDARY,
-                    onClick = viewModel::onInfoButtonClicked,
+                BundInformationButton(
+                    onClick =viewModel::onInfoButtonClicked,
                     label = stringResource(id = R.string.identification_attributeConsent_button_additionalInformation)
                 )
             }

@@ -24,6 +24,7 @@ import com.google.android.exoplayer2.Player.REPEAT_MODE_ONE
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.RawResourceDataSource
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.components.BundInformationButton
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.dialogs.WhatIsNfcDialog
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -103,39 +104,23 @@ fun ScanScreen(
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
-            Button(
+            BundInformationButton(
                 onClick = {
                     onNfcDialogShown()
                     whatIsNfcDialogShown = true
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = UseIdTheme.colors.blue200,
-                    contentColor = UseIdTheme.colors.blue800
-                ),
-                shape = UseIdTheme.shapes.roundedSmall,
-                modifier = Modifier
-                    .height(40.dp)
-            ) {
-                Text(stringResource(id = R.string.scan_helpNFC))
-            }
+                label = stringResource(id = R.string.scan_helpNFC)
+            )
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
-            Button(
+            BundInformationButton(
                 onClick = {
                     onHelpDialogShown()
                     helpDialogShown = true
                 },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = UseIdTheme.colors.blue200,
-                    contentColor = UseIdTheme.colors.blue800
-                ),
-                shape = UseIdTheme.shapes.roundedSmall,
-                modifier = Modifier
-                    .height(40.dp)
-            ) {
-                Text(stringResource(id = R.string.scan_helpScanning))
-            }
+                label = stringResource(id = R.string.scan_helpScanning)
+            )
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
         }
