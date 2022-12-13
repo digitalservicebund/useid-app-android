@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -52,15 +53,19 @@ fun IdentificationAttributeConsent(
             isIdentification = true
         )
     ) { topPadding ->
-        Scaffold(bottomBar = {
-            BundButton(
-                type = ButtonType.PRIMARY,
-                onClick = viewModel::onPinButtonClicked,
-                label = stringResource(id = R.string.identification_attributeConsent_continue),
-                modifier = Modifier
-                    .padding(UseIdTheme.spaces.m)
-            )
-        }, modifier = modifier.padding(top = topPadding)) { paddingValues ->
+        Scaffold(
+            bottomBar = {
+                BundButton(
+                    type = ButtonType.PRIMARY,
+                    onClick = viewModel::onPinButtonClicked,
+                    label = stringResource(id = R.string.identification_attributeConsent_continue),
+                    modifier = Modifier
+                        .padding(UseIdTheme.spaces.m)
+                )
+            },
+            modifier = modifier.padding(top = topPadding),
+            containerColor = UseIdTheme.colors.white
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .padding(bottom = paddingValues.calculateBottomPadding())
