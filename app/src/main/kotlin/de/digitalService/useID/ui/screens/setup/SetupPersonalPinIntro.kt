@@ -62,7 +62,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                         modifier = Modifier
                             .padding(UseIdTheme.spaces.s)
                     ) {
-                        Row {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Filled.Info,
                                 contentDescription = "",
