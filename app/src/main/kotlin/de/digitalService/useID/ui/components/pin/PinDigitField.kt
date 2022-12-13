@@ -79,17 +79,23 @@ fun PreviewPinDigitFieldWithInputNotObfuscated() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewPinDigitFieldWithInputObfuscated() {
-    PinDigitField(input = '2', obfuscation = true, placeholder = false)
+    UseIdTheme {
+        PinDigitField(input = '2', obfuscation = true, placeholder = false)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewPinDigitFieldWithoutInput() {
-    PinDigitField(input = null, obfuscation = false, placeholder = false)
+    UseIdTheme {
+        PinDigitField(input = null, obfuscation = false, placeholder = false)
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewPinDigitFieldWithouInputAndPlaceholder() {
-    PinDigitField(input = null, obfuscation = false, placeholder = true)
+fun PreviewPinDigitFieldWithoutInputAndPlaceholder() {
+    UseIdTheme {
+        PinDigitField(input = null, obfuscation = false, placeholder = true)
+    }
 }
