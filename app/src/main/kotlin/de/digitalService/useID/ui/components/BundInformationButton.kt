@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -15,7 +14,6 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun BundInformationButton(onClick: () -> Unit, label: String, modifier: Modifier = Modifier) {
-
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
