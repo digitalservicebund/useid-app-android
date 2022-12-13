@@ -127,3 +127,27 @@ fun PreviewPinEntryField() {
         }
     }
 }
+
+@Preview
+@Composable
+fun PreviewPinEntryFieldWide() {
+    UseIdTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            var text by remember { mutableStateOf("123") }
+            val focusRequester = remember {
+                FocusRequester()
+            }
+
+            PinEntryField(
+                text,
+                onValueChanged = { text = it },
+                digitCount = 6,
+                obfuscation = false,
+                spacerPosition = 3,
+                contentDescription = "",
+                focusRequester = focusRequester,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}

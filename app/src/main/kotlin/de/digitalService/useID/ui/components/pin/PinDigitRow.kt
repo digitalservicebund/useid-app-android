@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun PinDigitRow(
@@ -21,8 +22,10 @@ fun PinDigitRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceAround,
-        modifier = modifier.fillMaxWidth().background(color = Color.Transparent)
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = Color.Transparent)
     ) {
         for (position in 0 until digitCount) {
             val char = input.toCharArray().getOrNull(position)
@@ -30,13 +33,18 @@ fun PinDigitRow(
                 if (spacerPosition == position) {
                     Spacer(
                         modifier = Modifier
-                            .width(8.dp)
+                            .width(UseIdTheme.spaces.s)
                             .testTag("PINDigitRowSpacer")
                     )
                 }
             }
 
-            PinDigitField(input = char, obfuscation = obfuscation, placeholder = placeholder)
+            PinDigitField(
+                input = char,
+                obfuscation = obfuscation,
+                placeholder = placeholder,
+                modifier = Modifier.padding(horizontal = UseIdTheme.spaces.xxs)
+            )
         }
     }
 }
@@ -44,11 +52,33 @@ fun PinDigitRow(
 @Preview
 @Composable
 fun PreviewPinDigitRowTransportPin() {
-    PinDigitRow(input = "12", digitCount = 5, obfuscation = false, placeholder = false, spacerPosition = null, modifier = Modifier.width(300.dp))
+    UseIdTheme {
+        PinDigitRow(
+            input = "12",
+            digitCount = 5,
+            obfuscation = false,
+            placeholder = false,
+            spacerPosition = null,
+            modifier = Modifier
+                .width(300.dp)
+                .background(Color.White)
+        )
+    }
 }
 
 @Preview
 @Composable
 fun PreviewPinDigitRowPersonalPin() {
-    PinDigitRow(input = "12", digitCount = 6, obfuscation = true, placeholder = false, spacerPosition = 3, modifier = Modifier.width(300.dp))
+    UseIdTheme {
+        PinDigitRow(
+            input = "12",
+            digitCount = 6,
+            obfuscation = true,
+            placeholder = false,
+            spacerPosition = 3,
+            modifier = Modifier
+                .width(300.dp)
+                .background(Color.White)
+        )
+    }
 }

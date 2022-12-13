@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
-fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean) {
+fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .size(30.dp)
             .drawBehind {
                 drawLine(
