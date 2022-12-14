@@ -9,10 +9,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
@@ -72,21 +70,12 @@ fun StandardPinScreen(
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
-            PinEntryField(
+            PersonalPinEntryField(
                 value = pin,
-                digitCount = 6,
-                obfuscation = true,
-                spacerPosition = 3,
                 onValueChanged = onValueChanged,
                 onDone = onDone,
-                contentDescription = pinEntryDescription,
                 focusRequester = focusRequesterPin,
-                backgroundColor = UseIdTheme.colors.neutrals100,
-                modifier = Modifier
-                    .height(56.dp)
-                    .clip(UseIdTheme.shapes.roundedMedium)
-                    .fillMaxWidth(),
-                digitsModifier = Modifier.padding(horizontal = 30.dp)
+                entryDescription = pinEntryDescription
             )
         }
     }

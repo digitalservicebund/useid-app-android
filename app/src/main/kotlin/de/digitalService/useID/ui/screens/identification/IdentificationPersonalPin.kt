@@ -23,7 +23,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.pin.PinEntryField
+import de.digitalService.useID.ui.components.pin.PersonalPinEntryField
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -71,20 +71,13 @@ fun IdentificationPersonalPin(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            PinEntryField(
+            PersonalPinEntryField(
                 value = viewModel.pin,
-                digitCount = 6,
-                obfuscation = true,
-                spacerPosition = 3,
                 onValueChanged = viewModel::userInputPin,
-                contentDescription = pinEntryFieldDescription,
-                focusRequester = focusRequester,
                 onDone = viewModel::onDone,
-                backgroundColor = UseIdTheme.colors.neutrals100,
-                modifier = Modifier
-                    .padding(top = 50.dp)
-                    .fillMaxWidth()
-                    .height(56.dp)
+                focusRequester = focusRequester,
+                entryDescription = pinEntryFieldDescription,
+                modifier = Modifier.padding(top = 50.dp)
             )
 
             viewModel.attempts?.let { attempts ->
