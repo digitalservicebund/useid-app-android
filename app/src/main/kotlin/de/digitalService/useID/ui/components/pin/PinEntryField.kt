@@ -42,6 +42,7 @@ fun PinEntryField(
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
     backgroundColor: Color = UseIdTheme.colors.neutrals100,
+    digitsModifier: Modifier = Modifier,
     onDone: () -> Unit = { }
 ) {
     var textFieldValueState by remember(value) { mutableStateOf(TextFieldValue(value, TextRange(value.length))) }
@@ -97,7 +98,7 @@ fun PinEntryField(
             obfuscation = obfuscation,
             placeholder = false,
             spacerPosition = spacerPosition,
-            modifier = Modifier
+            modifier = digitsModifier
                 .align(Alignment.Center)
                 .focusable(false)
         )

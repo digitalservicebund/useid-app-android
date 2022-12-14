@@ -43,7 +43,7 @@ fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean, modi
                     contentDescription = "",
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .size(10.dp)
+                        .size(16.dp)
                         .clearAndSetSemantics { testTag = "Obfuscation" }
                 )
             } else {
