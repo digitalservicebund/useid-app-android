@@ -102,7 +102,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestCan({}))
+            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestPinAndCan { _, _ -> })
         }
         trackerManager.trackScreen("identification/cardSuspended")
     }

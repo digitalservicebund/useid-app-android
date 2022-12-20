@@ -13,6 +13,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 fun PersonalPinEntryField(
     value: String,
     onValueChanged: (String) -> Unit,
+    obfuscation: Boolean,
     onDone: () -> Unit,
     focusRequester: FocusRequester,
     entryDescription: String,
@@ -21,7 +22,7 @@ fun PersonalPinEntryField(
     PinEntryField(
         value = value,
         digitCount = 6,
-        obfuscation = true,
+        obfuscation = obfuscation,
         spacerPosition = 3,
         onValueChanged = onValueChanged,
         onDone = onDone,
@@ -43,6 +44,22 @@ fun PreviewPersonalPinEntryField() {
         PersonalPinEntryField(
             value = "12",
             onValueChanged = { },
+            obfuscation = false,
+            onDone = { },
+            focusRequester = FocusRequester(),
+            entryDescription = "Description"
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewPersonalPinEntryFieldObfuscated() {
+    UseIdTheme {
+        PersonalPinEntryField(
+            value = "12",
+            onValueChanged = { },
+            obfuscation = true,
             onDone = { },
             focusRequester = FocusRequester(),
             entryDescription = "Description"

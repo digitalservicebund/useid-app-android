@@ -456,4 +456,14 @@
     <string name="identification_confirmEnd_title">Ausweisen beenden?</string>
     <string name="identification_confirmEnd_confirm">Beenden</string>
     <string name="identification_confirmEnd_deny">Abbrechen</string>
+    <string name="identification_can_pinForgotten_title">Haben Sie Ihre persönliche Ausweis-PIN vielleicht vergessen?</string>
+    <string name="identification_can_pinForgotten_body">Sie haben ihre PIN zweimal falsch eingegeben.</string>
+    <string name="identification_can_pinForgotten_orderNewPin">Ja, ich möchte eine neue PIN</string>
+    <string name="identification_can_pinForgotten_retry">Nein, erneut versuchen</string>
+    <string name="identification_can_intro_title">Geben Sie die 6-stellige Nummer von Ihrem Ausweis ein.</string>
+    <string name="identification_can_intro_body">Die Nummer, auch bekannt als CAN, steht rechts unten auf der Vorderseite Ihres Ausweises.</string>
+    <string name="identification_can_intro_continue">Jetzt eingeben</string>
+    <string name="identification_can_input_title">Geben Sie die 6-stellige Nummer von Ihrem Ausweis ein.</string>
+    <string name="identification_can_input_body">Die Nummer steht rechts unten auf der Vorderseite Ihres Ausweises.</string>
+    <string name="identification_can_input_canInputLabel">CAN Eingabe, sechsstellig</string>
 </resources>
