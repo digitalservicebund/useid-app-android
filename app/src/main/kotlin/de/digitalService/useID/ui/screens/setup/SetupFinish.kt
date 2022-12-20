@@ -34,7 +34,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_done_title),
             body = null,
-            imageID = R.drawable.eid_3_pin,
+            imageID = R.drawable.eid_3,
             imageScaling = ContentScale.Inside,
             primaryButton = buttonConfig,
             modifier = Modifier.padding(top = topPadding)
