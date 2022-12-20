@@ -137,12 +137,14 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.eid_3),
-                contentScale = ContentScale.Inside,
+                contentScale = ContentScale.FillWidth,
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(bottom = 40.dp)
-                    .padding(top = UseIdTheme.spaces.xs)
-                    .padding(horizontal = UseIdTheme.spaces.xs)
+                    .padding(bottom = 62.dp)
+                    .padding(top = UseIdTheme.spaces.s)
+                    .padding(horizontal = UseIdTheme.spaces.l)
+                    .align(Alignment.TopCenter)
+                    .fillMaxWidth()
             )
 
             BundButton(

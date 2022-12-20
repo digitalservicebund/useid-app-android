@@ -99,7 +99,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
                 Image(
-                    painter = painterResource(id = R.drawable.eid_3),
+                    painter = painterResource(id = R.drawable.eid_3_pin),
                     contentScale = ContentScale.Inside,
                     contentDescription = "",
                     modifier = Modifier.align(Alignment.CenterHorizontally)
