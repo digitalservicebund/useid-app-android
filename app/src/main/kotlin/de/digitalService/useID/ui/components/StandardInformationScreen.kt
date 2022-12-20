@@ -33,6 +33,7 @@ fun StandardInformationScreen(
             MarkdownText(
                 markdown = markdown,
                 fontResource = R.font.bundes_sans_dtp_regular,
+                fontSize = UseIdTheme.typography.bodyLRegular.fontSize,
                 modifier = Modifier.padding(bottom = UseIdTheme.spaces.m)
             )
         }

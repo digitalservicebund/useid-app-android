@@ -62,7 +62,8 @@ fun ScanErrorScreen(
 
                 MarkdownText(
                     markdown = markDownResource(id = bodyResId, imagePath),
-                    fontResource = R.font.bundes_sans_dtp_regular
+                    fontResource = R.font.bundes_sans_dtp_regular,
+                    fontSize = UseIdTheme.typography.bodyLRegular.fontSize
                 )
 
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))

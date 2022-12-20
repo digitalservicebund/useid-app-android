@@ -170,7 +170,8 @@ fun ScanScreen(
                             id = R.string.scanError_cardUnreadable_body,
                             imagePath
                         ),
-                        fontResource = R.font.bundes_sans_dtp_regular
+                        fontResource = R.font.bundes_sans_dtp_regular,
+                        fontSize = UseIdTheme.typography.bodyLRegular.fontSize
                     )
                 }
             },

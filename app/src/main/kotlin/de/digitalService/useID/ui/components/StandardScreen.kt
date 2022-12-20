@@ -95,7 +95,8 @@ fun StandardStaticComposition(
                 MarkdownText(
                     body,
                     style = UseIdTheme.typography.bodyLRegular,
-                    fontResource = R.font.bundes_sans_dtp_regular
+                    fontResource = R.font.bundes_sans_dtp_regular,
+                    fontSize = UseIdTheme.typography.bodyLRegular.fontSize
                 )
             }
 

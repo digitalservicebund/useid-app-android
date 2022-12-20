@@ -70,6 +70,7 @@ fun ScanErrorAlertDialog(error: ScanError, onButtonClick: () -> Unit) {
                 MarkdownText(
                     markdown = markDownResource(id = error.textResID, imagePath),
                     fontResource = R.font.bundes_sans_dtp_regular,
+                    fontSize = UseIdTheme.typography.bodyLRegular.fontSize,
                     modifier = Modifier.testTag("${error.textResID}")
                 )
             }
