@@ -26,6 +26,7 @@ fun StandardPinScreen(
     onNavigationButtonBackClick: () -> Unit,
     onInitialize: () -> Unit,
     onValueChanged: (String) -> Unit,
+    obfuscation: Boolean = true,
     onDone: () -> Unit,
     delayFocusRequest: Boolean = true
 ) {
@@ -73,6 +74,7 @@ fun StandardPinScreen(
             PersonalPinEntryField(
                 value = pin,
                 onValueChanged = onValueChanged,
+                obfuscation = obfuscation,
                 onDone = onDone,
                 focusRequester = focusRequesterPin,
                 entryDescription = pinEntryDescription

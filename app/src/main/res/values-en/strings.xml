@@ -466,4 +466,14 @@
     <string name="identification_confirmEnd_title">End identification process?</string>
     <string name="identification_confirmEnd_confirm">Exit</string>
     <string name="identification_confirmEnd_deny">Cancel</string>
+    <string name="identification_can_pinForgotten_title">Have you forgotten your personal ID PIN?</string>
+    <string name="identification_can_pinForgotten_body">You have entered your PIN incorrectly twice.</string>
+    <string name="identification_can_pinForgotten_orderNewPin">Yes, I want a new PIN</string>
+    <string name="identification_can_pinForgotten_retry">No, try again</string>
+    <string name="identification_can_intro_title">Enter the 6-digit number from your ID card.</string>
+    <string name="identification_can_intro_body">The number, also known as CAN, is located at the bottom right of the front of your ID card.</string>
+    <string name="identification_can_intro_continue">Enter now</string>
+    <string name="identification_can_input_title">Enter the 6-digit number from your ID card.</string>
+    <string name="identification_can_input_body">The number is at the bottom right of the front of your ID card.</string>
+    <string name="identification_can_input_canInputLabel">CAN input, six digits</string>
 </resources>

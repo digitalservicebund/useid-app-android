@@ -37,6 +37,7 @@ class IdentificationCoordinator @Inject constructor(
 
     private var requestAuthenticationEvent: EidInteractionEvent.RequestAuthenticationRequestConfirmation? = null
     private var pinCallback: ((String) -> Unit)? = null
+    private var pinCanCallback: ((String, String) -> Unit)? = null
 
     private var reachedScanState = false
     private var incorrectPin: Boolean = false
@@ -83,6 +84,16 @@ class IdentificationCoordinator @Inject constructor(
         pinCallback(pin)
         this.pinCallback = null
         incorrectPin = false
+    }
+
+    fun onCanPinEntered(pin: String, can: String) {
+        val pinCanCallback = pinCanCallback ?: run {
+            logger.error("Cannot process CAN and PIN because there isn't any can/pin callback saved.")
+            return
+        }
+
+        appCoordinator.navigate(IdentificationScanDestination)
+        pinCanCallback(pin, can)
     }
 
     private fun onIncorrectPersonalPin(attempts: Int) {
@@ -208,21 +219,17 @@ class IdentificationCoordinator @Inject constructor(
                             onIncorrectPersonalPin(event.attempts)
                         }
                     }
-                    is EidInteractionEvent.RequestCan -> {
-                        logger.debug("Requesting CAN")
-                        _scanEventFlow.emit(ScanEvent.Error(ScanError.PinSuspended))
-                        appCoordinator.navigate(IdentificationCardSuspendedDestination)
-
-                        trackerManager.trackScreen("identification/cardSuspended")
-                        cancel()
-                    }
                     is EidInteractionEvent.RequestPinAndCan -> {
                         logger.debug("Requesting PIN and CAN")
                         _scanEventFlow.emit(ScanEvent.Error(ScanError.PinSuspended))
-                        appCoordinator.navigate(IdentificationCardSuspendedDestination)
+//                        appCoordinator.navigate(IdentificationCardSuspendedDestination)
+//
+//                        trackerManager.trackScreen("identification/cardSuspended")
+//                        cancel()
 
-                        trackerManager.trackScreen("identification/cardSuspended")
-                        cancel()
+                        pinCanCallback = event.pinCanCallback
+                        reachedScanState = false
+                        appCoordinator.navigate(IdentificationCanPinForgottenDestination)
                     }
                     is EidInteractionEvent.RequestPUK -> {
                         logger.debug("Requesting PUK")
