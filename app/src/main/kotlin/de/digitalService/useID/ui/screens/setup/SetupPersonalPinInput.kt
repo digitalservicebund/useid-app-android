@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.pin.StandardPinScreen
+import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
@@ -20,29 +20,18 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = hiltViewModel<SetupPersonalPinInputViewModel>()) {
-    val pinEntryFieldDescription = stringResource(
-        id = R.string.firstTimeUser_personalPIN_textFieldLabel_first,
-        viewModel.pin.map { "$it " }
-    )
-
-    StandardPinScreen(
-        header = stringResource(id = R.string.firstTimeUser_personalPIN_title),
-        description = stringResource(id = R.string.firstTimeUser_personalPIN_body),
-        pinEntryDescription = pinEntryFieldDescription,
-        pin = viewModel.pin,
+    StandardNumberEntryScreen(
+        title = stringResource(id = R.string.firstTimeUser_personalPIN_title),
+        body = stringResource(id = R.string.firstTimeUser_personalPIN_body),
+        entryFieldDescription = stringResource(id = R.string.firstTimeUser_personalPIN_textFieldLabel_first),
         onNavigationButtonBackClick = viewModel::onNavigationButtonClicked,
-        onInitialize = viewModel::onInitialize,
-        onValueChanged = viewModel::userInputPin,
+        obfuscation = true,
         onDone = viewModel::onDoneClicked
     )
 }
 
 interface SetupPersonalPinInputViewModelInterface {
-    val pin: String
-
-    fun onInitialize()
-    fun onDoneClicked()
-    fun userInputPin(value: String)
+    fun onDoneClicked(pin: String)
     fun onNavigationButtonClicked()
 }
 
@@ -50,24 +39,8 @@ interface SetupPersonalPinInputViewModelInterface {
 class SetupPersonalPinInputViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), SetupPersonalPinInputViewModelInterface {
-    override var pin: String by mutableStateOf("")
-
-    override fun onInitialize() {
-        pin = ""
-    }
-
-    override fun userInputPin(value: String) {
-        if (!value.isDigitsOnly()) {
-            return
-        }
-
-        pin = value
-    }
-
-    override fun onDoneClicked() {
-        if (pin.length == 6) {
-            setupCoordinator.onPersonalPinInput(pin)
-        }
+    override fun onDoneClicked(pin: String) {
+        setupCoordinator.onPersonalPinInput(pin)
     }
 
     override fun onNavigationButtonClicked() {
@@ -76,10 +49,7 @@ class SetupPersonalPinInputViewModel @Inject constructor(
 }
 
 private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewModelInterface {
-    override val pin: String = ""
-    override fun onInitialize() {}
-    override fun onDoneClicked() {}
-    override fun userInputPin(value: String) {}
+    override fun onDoneClicked(pin: String) {}
     override fun onNavigationButtonClicked() {}
 }
 

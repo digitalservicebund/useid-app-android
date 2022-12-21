@@ -22,10 +22,9 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.pin.PersonalPinEntryField
-import de.digitalService.useID.ui.components.pin.StandardPinScreen
+import de.digitalService.useID.ui.components.pin.NumberEntryField
+import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -33,112 +32,38 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun IdentificationCanPinInput(viewModel: IdentificationCanPinInputViewModelInterface = hiltViewModel<IdentificationCanPinInputViewModel>()) {
-    val resources = LocalContext.current.resources
-
-    val pinEntryFieldDescription = stringResource(
-        id = R.string.identification_personalPIN_PINTextFieldDescription,
-        viewModel.pin.map { "$it " }
-    )
-
-    ScreenWithTopBar(
-        navigationButton = NavigationButton(
-            icon = NavigationIcon.Back,
-            onClick = viewModel::onBack,
-            shouldShowConfirmDialog = false,
-            isIdentification = true
-        )
-    ) { topPadding ->
-        val focusRequester = remember { FocusRequester() }
-        LaunchedEffect(Unit) {
-            delay(100)
-            focusRequester.requestFocus()
-        }
-
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(horizontal = UseIdTheme.spaces.m)
-                .padding(top = topPadding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                stringResource(id = R.string.identification_personalPIN_title),
-                style = UseIdTheme.typography.headingXl
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            PersonalPinEntryField(
-                value = viewModel.pin,
-                onValueChanged = viewModel::userInputPin,
-                obfuscation = true,
-                onDone = viewModel::onDone,
-                focusRequester = focusRequester,
-                entryDescription = pinEntryFieldDescription,
-                modifier = Modifier.padding(top = 50.dp)
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-            val attemptString = resources.getQuantityString(
-                R.plurals.identification_personalPIN_remainingAttempts,
-                1,
-                1
-            )
-            Text(
-                attemptString,
-                style = UseIdTheme.typography.bodyLRegular,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-        }
-    }
+    StandardNumberEntryScreen(
+        title = stringResource(id = R.string.identification_personalPIN_title),
+        attempts = 1,
+        entryFieldDescription = stringResource(id = R.string.identification_personalPIN_PINTextFieldDescription),
+        onNavigationButtonBackClick = viewModel::onBack,
+        obfuscation = true,
+        onDone = viewModel::onDone)
 }
 
 interface IdentificationCanPinInputViewModelInterface {
-    val pin: String
-
-    fun onInitialize()
-    fun userInputPin(value: String)
     fun onBack()
-    fun onDone()
+    fun onDone(pin: String)
 }
 
 @HiltViewModel
 class IdentificationCanPinInputViewModel @Inject constructor(
     val coordinator: CanCoordinator
 ): ViewModel(), IdentificationCanPinInputViewModelInterface {
-    override var pin by mutableStateOf("")
-        private set
-
-    override fun onInitialize() {
-        pin = ""
-    }
-
-    override fun userInputPin(value: String) {
-        if (!checkPinString(value)) return
-        pin = value
-    }
-
     override fun onBack() {
         coordinator.onBack()
     }
 
-    override fun onDone() {
-        if (pin.length == 6) {
-            coordinator.onPinEntered(pin)
-        }
+    override fun onDone(pin: String) {
+        coordinator.onPinEntered(pin)
     }
 
     private fun checkPinString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
 }
 
 private class PreviewIdentificationCanPinInputViewModel: IdentificationCanPinInputViewModelInterface {
-    override val pin: String = "123"
-    override fun onInitialize() {}
-    override fun userInputPin(value: String) {}
     override fun onBack() {}
-    override fun onDone() {}
+    override fun onDone(pin: String) {}
 }
 
 @Preview

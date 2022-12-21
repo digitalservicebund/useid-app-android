@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.pin.StandardPinScreen
+import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -23,19 +23,12 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface = hiltViewModel<SetupPersonalPinConfirmViewModel>()) {
-    val pinEntryFieldDescription = stringResource(
-        id = R.string.firstTimeUser_personalPIN_textFieldLabel_second,
-        viewModel.pin.map { "$it " }
-    )
-
-    StandardPinScreen(
-        header = stringResource(id = R.string.firstTimeUser_personalPIN_confirmation_title),
-        description = stringResource(id = R.string.firstTimeUser_personalPIN_confirmation_body),
-        pinEntryDescription = pinEntryFieldDescription,
-        pin = viewModel.pin,
+    StandardNumberEntryScreen(
+        title = stringResource(id = R.string.firstTimeUser_personalPIN_confirmation_title),
+        body = stringResource(id = R.string.firstTimeUser_personalPIN_confirmation_body),
+        entryFieldDescription = stringResource(id = R.string.firstTimeUser_personalPIN_textFieldLabel_second),
         onNavigationButtonBackClick = viewModel::onNavigationButtonClicked,
-        onInitialize = viewModel::onInitialize,
-        onValueChanged = viewModel::userInputPin,
+        obfuscation = true,
         onDone = viewModel::onDoneClicked,
         delayFocusRequest = false
     )
@@ -56,12 +49,9 @@ fun SetupPersonalPinConfirm(viewModel: SetupPersonalPinConfirmViewModelInterface
 }
 
 interface SetupPersonalPinConfirmViewModelInterface {
-    val pin: String
     val shouldShowError: Boolean
 
-    fun onInitialize()
-    fun userInputPin(value: String)
-    fun onDoneClicked()
+    fun onDoneClicked(pin: String)
     fun onErrorDialogButtonClicked()
     fun onNavigationButtonClicked()
 }
@@ -70,25 +60,10 @@ interface SetupPersonalPinConfirmViewModelInterface {
 class SetupPersonalPinConfirmViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), SetupPersonalPinConfirmViewModelInterface {
-    override var pin: String by mutableStateOf("")
     override var shouldShowError: Boolean by mutableStateOf(false)
 
-    override fun onInitialize() {
-        pin = ""
-    }
-
-    override fun userInputPin(value: String) {
-        if (!value.isDigitsOnly()) {
-            return
-        }
-
-        pin = value
-    }
-
-    override fun onDoneClicked() {
-        if (pin.length == 6) {
-            shouldShowError = !setupCoordinator.confirmPersonalPin(pin)
-        }
+    override fun onDoneClicked(pin: String) {
+        shouldShowError = !setupCoordinator.confirmPersonalPin(pin)
     }
 
     override fun onErrorDialogButtonClicked() {
@@ -101,12 +76,9 @@ class SetupPersonalPinConfirmViewModel @Inject constructor(
 }
 
 private class PreviewSetupPersonalPinConfirmViewModel : SetupPersonalPinConfirmViewModelInterface {
-    override val pin: String = ""
     override val shouldShowError: Boolean = false
 
-    override fun onInitialize() {}
-    override fun userInputPin(value: String) {}
-    override fun onDoneClicked() {}
+    override fun onDoneClicked(pin: String) {}
     override fun onErrorDialogButtonClicked() {}
     override fun onNavigationButtonClicked() {}
 }

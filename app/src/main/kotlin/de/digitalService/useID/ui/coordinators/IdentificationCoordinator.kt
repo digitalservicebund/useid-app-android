@@ -62,7 +62,7 @@ class IdentificationCoordinator @Inject constructor(
     fun confirmAttributesForIdentification() {
         val requestAuthenticationEvent = requestAuthenticationEvent ?: run {
             logger.debug("No confirmation event saved. Attributes might have been confirmed before.")
-            appCoordinator.navigate(IdentificationPersonalPinDestination(null))
+            appCoordinator.navigate(IdentificationPersonalPinDestination(false))
             return
         }
 
@@ -98,7 +98,7 @@ class IdentificationCoordinator @Inject constructor(
 
     private fun onIncorrectPersonalPin(attempts: Int) {
         incorrectPin = true
-        appCoordinator.navigate(IdentificationPersonalPinDestination(attempts))
+        appCoordinator.navigate(IdentificationPersonalPinDestination(true))
     }
 
     fun pop() {
@@ -212,7 +212,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         if (event.attempts == null) {
                             logger.debug("PIN request without attempts")
-                            appCoordinator.navigate(IdentificationPersonalPinDestination(null))
+                            appCoordinator.navigate(IdentificationPersonalPinDestination(false))
                         } else {
                             logger.debug("PIN request with ${event.attempts} attempts")
                             _scanEventFlow.emit(ScanEvent.CardRequested)

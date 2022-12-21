@@ -95,8 +95,6 @@ fun SetupTransportPin(
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             TransportPinEntryField(
-                value = viewModel.transportPin,
-                onValueChanged = viewModel::onInputChanged,
                 onDone = viewModel::onDoneClicked,
                 focusRequester = focusRequester
             )
@@ -120,11 +118,9 @@ data class SetupTransportPinNavArgs(
 )
 
 interface SetupTransportPinViewModelInterface {
-    val transportPin: String
     val attempts: Int?
 
-    fun onInputChanged(value: String)
-    fun onDoneClicked()
+    fun onDoneClicked(pin: String)
     fun onCancelClicked()
     fun onBackButtonClicked()
 }
@@ -135,28 +131,14 @@ class SetupTransportPinViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupTransportPinViewModelInterface {
-    private val logger by getLogger()
-
     override val attempts: Int?
-
-    override var transportPin: String by mutableStateOf("")
-        private set
 
     init {
         attempts = SetupTransportPinDestination.argsFrom(savedStateHandle).attempts
     }
 
-    override fun onInputChanged(value: String) {
-        transportPin = value
-    }
-
-    override fun onDoneClicked() {
-        if (transportPin.length == 5) {
-            coordinator.onTransportPinEntered(transportPin)
-            transportPin = ""
-        } else {
-            logger.debug("Transport PIN too short.")
-        }
+    override fun onDoneClicked(transportPin: String) {
+        coordinator.onTransportPinEntered(transportPin)
     }
 
     override fun onCancelClicked() {
@@ -170,11 +152,10 @@ class SetupTransportPinViewModel @Inject constructor(
 
 //region Preview
 private class PreviewSetupTransportPinViewModel(
-    override val transportPin: String,
+//    override val transportPin: String,
     override val attempts: Int?
 ) : SetupTransportPinViewModelInterface {
-    override fun onInputChanged(value: String) {}
-    override fun onDoneClicked() {}
+    override fun onDoneClicked(pin: String) {}
     override fun onCancelClicked() {}
     override fun onBackButtonClicked() {}
 }
@@ -183,7 +164,7 @@ private class PreviewSetupTransportPinViewModel(
 @Composable
 fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", null))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(null))
     }
 }
 
@@ -191,7 +172,7 @@ fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
 @Composable
 fun PreviewSetupTransportPinWithoutAttempts() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", null))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(null))
     }
 }
 
@@ -199,7 +180,7 @@ fun PreviewSetupTransportPinWithoutAttempts() {
 @Composable
 fun PreviewSetupTransportPinOneAttempt() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", attempts = 1))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(attempts = 1))
     }
 }
 
@@ -207,15 +188,7 @@ fun PreviewSetupTransportPinOneAttempt() {
 @Composable
 fun PreviewSetupTransportPinTwoAttempts() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", attempts = 2))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSetupTransportPinCancelDialog() {
-    UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel("12", attempts = 2))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(attempts = 2))
     }
 }
 //endregion

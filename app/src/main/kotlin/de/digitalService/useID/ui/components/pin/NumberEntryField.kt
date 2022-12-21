@@ -10,23 +10,17 @@ import androidx.compose.ui.unit.dp
 import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
-fun PersonalPinEntryField(
-    value: String,
-    onValueChanged: (String) -> Unit,
+fun NumberEntryField(
     obfuscation: Boolean,
-    onDone: () -> Unit,
+    onDone: (String) -> Unit,
     focusRequester: FocusRequester,
-    entryDescription: String,
     modifier: Modifier = Modifier
 ) {
     PinEntryField(
-        value = value,
         digitCount = 6,
         obfuscation = obfuscation,
         spacerPosition = 3,
-        onValueChanged = onValueChanged,
         onDone = onDone,
-        contentDescription = entryDescription,
         focusRequester = focusRequester,
         backgroundColor = UseIdTheme.colors.neutrals100,
         modifier = modifier
@@ -41,13 +35,10 @@ fun PersonalPinEntryField(
 @Composable
 fun PreviewPersonalPinEntryField() {
     UseIdTheme {
-        PersonalPinEntryField(
-            value = "12",
-            onValueChanged = { },
+        NumberEntryField(
             obfuscation = false,
             onDone = { },
             focusRequester = FocusRequester(),
-            entryDescription = "Description"
         )
     }
 }
@@ -56,13 +47,10 @@ fun PreviewPersonalPinEntryField() {
 @Composable
 fun PreviewPersonalPinEntryFieldObfuscated() {
     UseIdTheme {
-        PersonalPinEntryField(
-            value = "12",
-            onValueChanged = { },
+        NumberEntryField(
             obfuscation = true,
             onDone = { },
             focusRequester = FocusRequester(),
-            entryDescription = "Description"
         )
     }
 }
