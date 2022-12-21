@@ -15,7 +15,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.text.isDigitsOnly
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
@@ -30,7 +29,7 @@ fun StandardNumberEntryScreen(
     entryFieldDescription: String,
     errorMessage: String? = null,
     attempts: Int? = null,
-    onNavigationButtonBackClick: () -> Unit,
+    navigationButton: NavigationButton? = null,
     obfuscation: Boolean,
     onDone: (String) -> Unit,
     delayFocusRequest: Boolean = true
@@ -38,10 +37,7 @@ fun StandardNumberEntryScreen(
     val resources = LocalContext.current.resources
 
     ScreenWithTopBar(
-        navigationButton = NavigationButton(
-            icon = NavigationIcon.Back,
-            onClick = onNavigationButtonBackClick
-        )
+        navigationButton = navigationButton
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -139,7 +135,7 @@ private fun PreviewWithObfuscation() {
             title = "This is a test header for this pin entry page",
             body = "This a description. This is a description. This is a description.",
             entryFieldDescription = "This description is specific for the pin entry field.",
-            onNavigationButtonBackClick = {},
+            navigationButton = null,
             obfuscation = true,
             onDone = {}
         )
@@ -154,7 +150,7 @@ private fun PreviewWithBody() {
             title = "This is a test header for this pin entry page",
             body = null,
             entryFieldDescription = "This description is specific for the pin entry field.",
-            onNavigationButtonBackClick = {},
+            navigationButton = null,
             obfuscation = true,
             onDone = {}
         )
@@ -170,7 +166,7 @@ private fun PreviewWithErrorMessage() {
             body = null,
             errorMessage = "Error Message",
             entryFieldDescription = "This description is specific for the pin entry field.",
-            onNavigationButtonBackClick = {},
+            navigationButton = null,
             obfuscation = true,
             onDone = {}
         )
@@ -186,7 +182,7 @@ private fun PreviewWithAttempts() {
             body = null,
             attempts = 2,
             entryFieldDescription = "This description is specific for the pin entry field.",
-            onNavigationButtonBackClick = {},
+            navigationButton = null,
             obfuscation = true,
             onDone = {}
         )
@@ -203,7 +199,7 @@ private fun PreviewWithErrorMessageAndAttempts() {
             errorMessage = "Error message",
             attempts = 2,
             entryFieldDescription = "This description is specific for the pin entry field.",
-            onNavigationButtonBackClick = {},
+            navigationButton = null,
             obfuscation = true,
             onDone = {}
         )

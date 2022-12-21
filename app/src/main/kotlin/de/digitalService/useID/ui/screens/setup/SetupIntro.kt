@@ -26,9 +26,8 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            shouldShowConfirmDialog = viewModel.shouldShowConfirmCancelDialog,
+            confirmation = Flow.Identification.takeIf { viewModel.shouldShowConfirmCancelDialog },
             onClick = viewModel::onCancelSetup,
-            isIdentification = true
         )
     ) { topPadding ->
         LaunchedEffect(Unit) {

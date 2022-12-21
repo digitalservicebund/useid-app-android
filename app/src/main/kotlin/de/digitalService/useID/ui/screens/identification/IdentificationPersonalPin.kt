@@ -4,13 +4,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.components.Flow
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
@@ -25,9 +27,13 @@ fun IdentificationPersonalPin(
 ) {
     StandardNumberEntryScreen(
         title = stringResource(id = R.string.identification_personalPIN_title),
-        errorMessage = if (viewModel.retry) stringResource(id = R.string.identification_personalPIN_error_incorrectPIN) else null,
+        errorMessage =stringResource(id = R.string.identification_personalPIN_error_incorrectPIN).takeIf { viewModel.retry },
         entryFieldDescription = stringResource(id = R.string.identification_personalPIN_PINTextFieldDescription),
-        onNavigationButtonBackClick = viewModel::onNavigationButtonClicked,
+        navigationButton = NavigationButton(
+            icon = if (viewModel.retry) NavigationIcon.Cancel else NavigationIcon.Back,
+            onClick = viewModel::onNavigationButtonClicked,
+            confirmation = Flow.Identification.takeIf { viewModel.retry }
+        ),
         obfuscation = true,
         onDone = viewModel::onDone
     )

@@ -22,7 +22,7 @@ fun SetupResetPersonalPin(
     navigator: DestinationsNavigator
 ) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() })
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() }, confirmation = null)
     ) { topPadding ->
         StandardStaticComposition(
             title = stringResource(R.string.firstTimeUser_missingPINLetter_title),

@@ -1,17 +1,15 @@
 package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -24,7 +22,11 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
         title = stringResource(id = R.string.firstTimeUser_personalPIN_title),
         body = stringResource(id = R.string.firstTimeUser_personalPIN_body),
         entryFieldDescription = stringResource(id = R.string.firstTimeUser_personalPIN_textFieldLabel_first),
-        onNavigationButtonBackClick = viewModel::onNavigationButtonClicked,
+        navigationButton = NavigationButton(
+            icon = NavigationIcon.Back,
+            onClick = viewModel::onBack,
+            confirmation = null
+        ),
         obfuscation = true,
         onDone = viewModel::onDoneClicked
     )
@@ -32,7 +34,7 @@ fun SetupPersonalPinInput(viewModel: SetupPersonalPinInputViewModelInterface = h
 
 interface SetupPersonalPinInputViewModelInterface {
     fun onDoneClicked(pin: String)
-    fun onNavigationButtonClicked()
+    fun onBack()
 }
 
 @HiltViewModel
@@ -43,14 +45,14 @@ class SetupPersonalPinInputViewModel @Inject constructor(
         setupCoordinator.onPersonalPinInput(pin)
     }
 
-    override fun onNavigationButtonClicked() {
+    override fun onBack() {
         setupCoordinator.onBackClicked()
     }
 }
 
 private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewModelInterface {
     override fun onDoneClicked(pin: String) {}
-    override fun onNavigationButtonClicked() {}
+    override fun onBack() {}
 }
 
 @Preview(showBackground = true)

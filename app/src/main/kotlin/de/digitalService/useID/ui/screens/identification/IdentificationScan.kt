@@ -21,6 +21,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.ScanError
+import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
@@ -41,8 +42,7 @@ fun IdentificationScan(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
             onClick = viewModel::onCancelIdentification,
-            shouldShowConfirmDialog = true,
-            isIdentification = true
+            confirmation = Flow.Identification,
         )
     ) { topPadding ->
         ScanScreen(

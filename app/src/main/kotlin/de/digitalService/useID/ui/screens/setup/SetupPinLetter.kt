@@ -20,7 +20,7 @@ import javax.inject.Inject
 @Composable
 fun SetupPinLetter(viewModel: SetupPinLetterScreenViewModelInterface = hiltViewModel<SetupPinLetterViewModel>()) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonClicked)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onBackButtonClicked, confirmation = null)
     ) { topPadding ->
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_pinLetter_title),

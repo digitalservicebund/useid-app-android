@@ -21,6 +21,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.getLogger
+import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
@@ -63,7 +64,7 @@ fun SetupTransportPin(
         navigationButton = NavigationButton(
             icon = icon,
             onClick = if (viewModel.attempts == null) viewModel::onBackButtonClicked else viewModel::onCancelClicked,
-            shouldShowConfirmDialog = viewModel.attempts != null,
+            confirmation = Flow.Setup.takeIf { viewModel.attempts != null },
             contentDescription = "$titleString $attemptString"
         )
     ) { topPadding ->

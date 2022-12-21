@@ -22,9 +22,8 @@ fun IdentificationCanIntro(viewModel: IdentificationCanIntroViewModelInterface =
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
-            shouldShowConfirmDialog = false,
-            onClick = viewModel::onBack,
-            isIdentification = true
+            confirmation = null,
+            onClick = viewModel::onBack
         )
     ) { topPadding ->
         StandardStaticComposition(

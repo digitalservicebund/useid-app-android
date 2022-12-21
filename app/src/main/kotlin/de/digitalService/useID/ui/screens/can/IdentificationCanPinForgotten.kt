@@ -23,9 +23,8 @@ fun IdentificationCanPinForgotten(viewModel: IdentificationCanPinForgottenViewMo
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            shouldShowConfirmDialog = true,
-            onClick = viewModel::onCancelIdentification,
-            isIdentification = true
+            confirmation = Flow.Identification,
+            onClick = viewModel::onCancelIdentification
         )
     ) { topPadding ->
         StandardStaticComposition(

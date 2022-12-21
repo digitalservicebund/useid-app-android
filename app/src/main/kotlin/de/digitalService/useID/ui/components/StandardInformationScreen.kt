@@ -21,7 +21,7 @@ fun StandardInformationScreen(
     markdown: String
 ) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() })
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() }, confirmation = null)
     ) { topPadding ->
         Column(
             modifier = Modifier

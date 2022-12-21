@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
@@ -35,9 +36,8 @@ fun IdentificationFetchMetadata(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
-            shouldShowConfirmDialog = !viewModel.didSetup,
+            confirmation = Flow.Identification.takeIf { !viewModel.didSetup },
             onClick = viewModel::onCancelButtonClicked,
-            isIdentification = true
         )
     ) { topPadding ->
         Column(

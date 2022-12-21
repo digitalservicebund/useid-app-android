@@ -34,7 +34,7 @@ fun SetupScan(
     viewModel: SetupScanViewModelInterface = hiltViewModel<SetupScanViewModel>()
 ) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onCancelConfirm)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onCancelConfirm, confirmation = null)
     ) { topPadding ->
         ScanScreen(
             title = stringResource(id = R.string.firstTimeUser_scan_title),

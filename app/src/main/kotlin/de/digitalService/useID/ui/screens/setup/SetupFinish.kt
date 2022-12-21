@@ -19,7 +19,7 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
-    val buttonLabelStringId = if (viewModel.identificationPending()) {
+    val buttonLabelStringId = if (viewModel.identificationPending) {
         stringResource(id = R.string.firstTimeUser_done_identify)
     } else {
         stringResource(id = R.string.firstTimeUser_done_close)
@@ -27,8 +27,8 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 
     val buttonConfig = BundButtonConfig(buttonLabelStringId, viewModel::onButtonClicked)
 
-    val navigationButton = NavigationButton(icon = NavigationIcon.Cancel, onClick = viewModel::onButtonClicked)
-        .takeIf { !viewModel.identificationPending() }
+    val navigationButton = NavigationButton(icon = NavigationIcon.Cancel, onClick = viewModel::onButtonClicked, confirmation = Flow.Identification)
+        .takeIf { !viewModel.identificationPending }
 
     ScreenWithTopBar(navigationButton = navigationButton) { topPadding ->
         StandardStaticComposition(
@@ -43,7 +43,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 }
 
 interface SetupFinishViewModelInterface {
-    fun identificationPending(): Boolean
+    val identificationPending: Boolean
     fun onButtonClicked()
 }
 
@@ -51,9 +51,8 @@ interface SetupFinishViewModelInterface {
 class SetupFinishViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), SetupFinishViewModelInterface {
-    override fun identificationPending(): Boolean {
-        return setupCoordinator.identificationPending()
-    }
+    override val identificationPending: Boolean
+        get() = setupCoordinator.identificationPending()
 
     override fun onButtonClicked() {
         setupCoordinator.finishSetup()
@@ -61,7 +60,7 @@ class SetupFinishViewModel @Inject constructor(
 }
 
 class PreviewSetupFinishViewModel(private val hasTcTokenUrl: Boolean) : SetupFinishViewModelInterface {
-    override fun identificationPending(): Boolean = hasTcTokenUrl
+    override val identificationPending: Boolean = hasTcTokenUrl
     override fun onButtonClicked() {}
 }
 

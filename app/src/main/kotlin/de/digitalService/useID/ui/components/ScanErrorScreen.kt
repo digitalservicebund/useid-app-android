@@ -29,7 +29,7 @@ fun ScanErrorScreen(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            shouldShowConfirmDialog = confirmNavigationButtonDialog,
+            confirmation = Flow.Identification.takeIf { confirmNavigationButtonDialog },
             onClick = onNavigationButtonClicked
         )
     ) { topPadding ->
