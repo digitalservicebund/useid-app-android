@@ -123,6 +123,7 @@
     <string name="home_more_terms">Nutzungsbedingungen</string>
     <string name="home_more_title">Mehr</string>
     <string name="home_startSetup">Online-Ausweis einrichten</string>
+    <string name="identification_attributeConsent_header">Freigabe erteilen für »%1s«.</string>
     <string name="identification_attributeConsent_body">Der Diensteanbieter möchte auf folgende Daten von Ihrem Ausweis zugreifen:</string>
     <string name="identification_attributeConsent_button_additionalInformation">Weitere Informationen</string>
     <string name="identification_attributeConsent_continue">Freigabe erteilen</string>

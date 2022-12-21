@@ -72,15 +72,15 @@ fun IdentificationAttributeConsent(
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    viewModel.identificationProvider,
+                    stringResource(
+                        id = R.string.identification_attributeConsent_header,
+                        viewModel.identificationProvider
+                    ),
                     style = UseIdTheme.typography.headingXl
                 )
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 Text(
-                    stringResource(
-                        id = R.string.identification_attributeConsent_body,
-                        viewModel.identificationProvider
-                    ),
+                    stringResource(id = R.string.identification_attributeConsent_body),
                     style = UseIdTheme.typography.bodyLRegular
                 )
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
