@@ -41,11 +41,14 @@ enum class NavigationIcon {
     abstract fun Icon()
 }
 
+enum class Flow {
+    Setup, Identification
+}
+
 data class NavigationButton(
     val icon: NavigationIcon,
     val onClick: () -> Unit,
-    val shouldShowConfirmDialog: Boolean = false,
-    val isIdentification: Boolean = false,
+    val confirmation: Flow?,
     val contentDescription: String? = null
 )
 
@@ -74,7 +77,7 @@ fun ScreenWithTopBar(
                                     }
                                 },
                             onClick = {
-                                if (navigationButton.shouldShowConfirmDialog) {
+                                if (navigationButton.confirmation != null) {
                                     showConfirmDialog = true
                                 } else {
                                     navigationButton.onClick()
@@ -95,21 +98,9 @@ fun ScreenWithTopBar(
         content(paddingValues.calculateTopPadding())
 
         if (showConfirmDialog) {
-            navigationButton?.let { navigationButton ->
-                if (navigationButton.isIdentification) {
-                    CancelDialog(
-                        title = stringResource(R.string.identification_confirmEnd_title),
-                        message = stringResource(R.string.identification_confirmEnd_message),
-                        confirmButtonText = stringResource(id = R.string.identification_confirmEnd_confirm),
-                        onConfirm = {
-                            showConfirmDialog = false
-                            navigationButton.onClick()
-                        },
-                        dismissButtonText = stringResource(id = R.string.identification_confirmEnd_deny),
-                        onDismiss = { showConfirmDialog = false }
-                    )
-                } else {
-                    CancelDialog(
+            navigationButton?.confirmation?.let { flow ->
+                when (flow) {
+                    Flow.Setup -> CancelDialog(
                         title = stringResource(R.string.firstTimeUser_confirmEnd_title),
                         message = stringResource(R.string.firstTimeUser_confirmEnd_message),
                         confirmButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_confirm),
@@ -120,19 +111,30 @@ fun ScreenWithTopBar(
                         dismissButtonText = stringResource(id = R.string.firstTimeUser_confirmEnd_deny),
                         onDismiss = { showConfirmDialog = false }
                     )
+                    Flow.Identification -> CancelDialog(
+                        title = stringResource(R.string.identification_confirmEnd_title),
+                        message = stringResource(R.string.identification_confirmEnd_message),
+                        confirmButtonText = stringResource(id = R.string.identification_confirmEnd_confirm),
+                        onConfirm = {
+                            showConfirmDialog = false
+                            navigationButton.onClick()
+                        },
+                        dismissButtonText = stringResource(id = R.string.identification_confirmEnd_deny),
+                        onDismiss = { showConfirmDialog = false }
+                    )
                 }
             }
         }
     }
 
     BackHandler(onBack = {
-        navigationButton?.let { navigationButton ->
-            if (!navigationButton.shouldShowConfirmDialog) {
+        navigationButton?.let {
+            if (navigationButton.confirmation != null) {
+                showConfirmDialog = true
+            } else {
                 navigationButton.onClick()
                 return@BackHandler
             }
-
-            showConfirmDialog = true
         }
     })
 }

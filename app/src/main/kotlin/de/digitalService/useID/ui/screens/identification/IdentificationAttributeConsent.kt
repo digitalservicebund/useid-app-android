@@ -47,9 +47,8 @@ fun IdentificationAttributeConsent(
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
-            shouldShowConfirmDialog = !viewModel.didSetup,
+            confirmation = Flow.Identification.takeIf { !viewModel.didSetup },
             onClick = viewModel::onCancelButtonClicked,
-            isIdentification = true
         )
     ) { topPadding ->
         Scaffold(
@@ -136,7 +135,8 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
         ScreenWithTopBar(
             navigationButton = NavigationButton(
                 icon = NavigationIcon.Cancel,
-                onClick = onDismissalRequest
+                onClick = onDismissalRequest,
+                confirmation = null
             ),
             modifier = Modifier.height(500.dp)
         ) { topPadding ->

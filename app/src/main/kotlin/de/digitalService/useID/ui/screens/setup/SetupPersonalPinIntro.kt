@@ -22,14 +22,14 @@ import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = hiltViewModel<SetupPersonalPinIntroViewModel>()) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
-            onClick = viewModel::onBackButtonClicked
+            onClick = viewModel::onBackButtonClicked,
+            confirmation = null
         )
     ) { topPadding ->
         StandardButtonScreen(
