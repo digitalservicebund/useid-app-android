@@ -8,48 +8,37 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.launch
 
 class IdCardManager {
     private val logger by getLogger()
 
-    private lateinit var identifyChannel: BroadcastChannel<EidInteractionEvent>
-    private lateinit var changePinChannel: BroadcastChannel<EidInteractionEvent>
+    private val _eidFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+    val eidFlow: Flow<EidInteractionEvent>
+        get() = _eidFlow
 
     fun handleNfcTag(tag: Tag) = logger.debug("Ignoring NFC tag in preview.")
 
-    fun identify(context: Context, url: String): Flow<EidInteractionEvent> {
-        identifyChannel = BroadcastChannel(1)
-        return identifyChannel.asFlow()
-    }
+    fun identify(context: Context, url: String) {}
 
-    fun changePin(context: Context): Flow<EidInteractionEvent> {
-        changePinChannel = BroadcastChannel(1)
-        CoroutineScope(Dispatchers.Default).launch {
+    fun changePin(context: Context) {
+        CoroutineScope(Dispatchers.IO).launch {
             delay(100L)
-            changePinChannel.send(EidInteractionEvent.RequestCardInsertion)
+            _eidFlow.emit(EidInteractionEvent.RequestCardInsertion)
         }
-        return changePinChannel.asFlow()
     }
 
     fun cancelTask() {
         logger.debug("Cancel task")
     }
 
-    suspend fun injectIdentifyEvent(event: EidInteractionEvent) {
-        identifyChannel.send(event)
+    suspend fun injectEvent(event: EidInteractionEvent) {
+        _eidFlow.emit(event)
     }
 
-    suspend fun injectIdentifyException(exception: Exception) {
-        identifyChannel.close(exception)
-    }
-
-    suspend fun injectChangePinEvent(event: EidInteractionEvent) {
-        changePinChannel.send(event)
-    }
-
-    suspend fun injectChangePinException(exception: Exception) {
-        changePinChannel.close(exception)
+    suspend fun injectException(exception: IdCardInteractionException) {
+        _eidFlow.emit(EidInteractionEvent.Error(exception))
     }
 }

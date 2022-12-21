@@ -8,6 +8,7 @@ import io.sentry.Sentry
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import org.openecard.android.activation.AndroidContextManager
 import org.openecard.android.activation.OpeneCard
@@ -26,42 +27,48 @@ class IdCardManager {
         object PinManagement : Task()
     }
 
+    private val _eidFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+    val eidFlow: Flow<EidInteractionEvent>
+        get() = _eidFlow
+
     fun handleNfcTag(tag: Tag) = androidContextManager?.onNewIntent(tag) ?: Log.d(logTag, "Ignoring NFC tag because no ID card related process is running.")
 
-    fun identify(context: Context, url: String): Flow<EidInteractionEvent> = executeTask(context, Task.EAC(url))
-    fun changePin(context: Context): Flow<EidInteractionEvent> = executeTask(context, Task.PinManagement)
+    fun identify(context: Context, url: String) = executeTask(context, Task.EAC(url))
+    fun changePin(context: Context) = executeTask(context, Task.PinManagement)
 
-    private class ControllerCallbackHandler(private val channel: SendChannel<EidInteractionEvent>) : ControllerCallback {
+    private class ControllerCallbackHandler(private val eidFlow: MutableStateFlow<EidInteractionEvent>) : ControllerCallback {
         private val logTag = javaClass.canonicalName!!
 
         override fun onStarted() {
             Log.d(logTag, "Started process.")
-            channel.trySendClosingOnError(EidInteractionEvent.AuthenticationStarted)
+            CoroutineScope(Dispatchers.IO).launch {
+                eidFlow.emit(EidInteractionEvent.AuthenticationStarted)
+            }
         }
 
         override fun onAuthenticationCompletion(p0: ActivationResult?) {
-            Log.d(logTag, "Process completed.")
-            if (p0 == null) {
-                channel.close(IdCardInteractionException.FrameworkError())
-                return
-            }
+            CoroutineScope(Dispatchers.IO).launch {
+                Log.d(logTag, "Process completed.")
+                if (p0 == null) {
+                    eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+                    return@launch
+                }
 
-            when (p0.resultCode) {
-                ActivationResultCode.OK -> {
-                    channel.trySendClosingOnError(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
-                    channel.close()
-                }
-                ActivationResultCode.REDIRECT -> {
-                    if (p0.processResultMinor != null) {
-                        channel.close(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
-                    } else {
-                        channel.trySendClosingOnError(EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
-                        channel.close()
+                when (p0.resultCode) {
+                    ActivationResultCode.OK -> {
+                        eidFlow.emit(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
                     }
+                    ActivationResultCode.REDIRECT -> {
+                        if (p0.processResultMinor != null) {
+                            eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor)))
+                        } else {
+                            eidFlow.emit(EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
+                        }
+                    }
+                    else -> eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor)))
                 }
-                else -> channel.close(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor))
-            }
         }
+    }
     }
 
     private class StopServiceHandlerImplementation : StopServiceHandler {
@@ -78,21 +85,23 @@ class IdCardManager {
         }
     }
 
-    private fun executeTask(context: Context, task: Task): Flow<EidInteractionEvent> = callbackFlow {
+    private fun executeTask(context: Context, task: Task) {
         androidContextManager = openECard.context(context)
 
         androidContextManager?.initializeContext(object : StartServiceHandler {
             override fun onSuccess(p0: ActivationSource?) {
                 if (p0 == null) {
                     Log.e(logTag, "onSuccess called without parameter.")
-                    cancel(IdCardInteractionException.FrameworkError())
+                    CoroutineScope(Dispatchers.IO).launch {
+                        _eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+                    }
                     return
                 }
 
-                val controllerCallback = ControllerCallbackHandler(channel)
+                val controllerCallback = ControllerCallbackHandler(_eidFlow)
                 activationController = when (task) {
-                    is Task.EAC -> p0.eacFactory().create(task.tokenURL, controllerCallback, EacInteractionHandler(channel))
-                    is Task.PinManagement -> p0.pinManagementFactory().create(controllerCallback, PinManagementInteractionHandler(channel))
+                    is Task.EAC -> p0.eacFactory().create(task.tokenURL, controllerCallback, EacInteractionHandler(_eidFlow))
+                    is Task.PinManagement -> p0.pinManagementFactory().create(controllerCallback, PinManagementInteractionHandler(_eidFlow))
                 }
             }
 
@@ -101,14 +110,11 @@ class IdCardManager {
                     logTag,
                     "Failure. ${p0?.errorDescription() ?: "n/a"}"
                 )
-                cancel(IdCardInteractionException.FrameworkError(p0?.errorDescription()))
+                CoroutineScope(Dispatchers.IO).launch {
+                    _eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError(p0?.errorDescription())))
+                }
             }
         })
-
-        awaitClose {
-            Log.d(logTag, "Closing flow channel.")
-            cancelTask()
-        }
     }
 
     fun cancelTask() {

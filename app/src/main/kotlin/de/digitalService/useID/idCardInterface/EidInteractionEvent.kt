@@ -1,6 +1,9 @@
 package de.digitalService.useID.idCardInterface
 
 sealed class EidInteractionEvent {
+    object Idle: EidInteractionEvent()
+    class Error(val exception: IdCardInteractionException): EidInteractionEvent()
+
     object RequestCardInsertion : EidInteractionEvent()
     object CardInteractionComplete : EidInteractionEvent()
     object CardRecognized : EidInteractionEvent()
@@ -22,6 +25,8 @@ sealed class EidInteractionEvent {
 
     val redacted: RedactedEIDInteractionEvent
         get() = when (this) {
+            is Idle -> RedactedEIDInteractionEvent.Idle
+            is Error -> RedactedEIDInteractionEvent.Error
             is RequestCardInsertion -> RedactedEIDInteractionEvent.RequestCardInsertion
             is CardInteractionComplete -> RedactedEIDInteractionEvent.CardInteractionComplete
             is CardRecognized -> RedactedEIDInteractionEvent.CardRecognized
@@ -42,6 +47,8 @@ sealed class EidInteractionEvent {
 }
 
 sealed class RedactedEIDInteractionEvent : Exception() {
+    object Idle: RedactedEIDInteractionEvent()
+    object Error: RedactedEIDInteractionEvent()
     object RequestCardInsertion : RedactedEIDInteractionEvent()
     object CardInteractionComplete : RedactedEIDInteractionEvent()
     object CardRecognized : RedactedEIDInteractionEvent()

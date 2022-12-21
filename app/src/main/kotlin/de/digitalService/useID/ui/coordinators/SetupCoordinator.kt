@@ -9,13 +9,10 @@ import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,7 +36,78 @@ class SetupCoordinator @Inject constructor(
     private var transportPin: String? = null
     private var personalPin: String? = null
 
+    private var firstTransportPinRequest = true
+
     private var changePinFlowCoroutineScope: Job? = null
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            idCardManager.eidFlow.catch { exception ->
+                logger.error("Error during setup: $exception")
+            }.collect { event ->
+                when (event) {
+                    EidInteractionEvent.Idle -> logger.debug("Received idle event.")
+                    EidInteractionEvent.RequestCardInsertion -> {
+                        logger.debug("Card insertion requested.")
+                        appCoordinator.navigatePopping(SetupScanDestination)
+                    }
+
+                    EidInteractionEvent.CardInteractionComplete -> logger.debug("Card interaction complete.")
+                    EidInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started.")
+                    EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
+                    EidInteractionEvent.CardRecognized -> {
+                        logger.debug("Card recognized.")
+                        _scanInProgress.value = true
+                    }
+                    EidInteractionEvent.CardRemoved -> {
+                        logger.debug("Card removed.")
+                        _scanInProgress.value = false
+                    }
+                    is EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
+                        logger.debug("Process completed successfully.")
+                        _scanInProgress.value = false
+                        onSettingPinSucceeded()
+                    }
+                    is EidInteractionEvent.RequestChangedPin -> {
+                        if (firstTransportPinRequest) {
+                            logger.debug("Changed PIN requested for the first time. Entering transport PIN and personal PIN")
+                            firstTransportPinRequest = false
+                            event.pinCallback(transportPin!!, personalPin!!)
+                        } else {
+                            val attempts = event.attempts ?: run {
+                                logger.error("Number of attempts not provided by framework.")
+                                appCoordinator.navigate(SetupOtherErrorDestination)
+                                return@collect
+                            }
+
+                            logger.debug("Old and new PIN requested for a second time. The Transport-PIN seems to be incorrect.")
+                            _scanInProgress.value = false
+                            onIncorrectTransportPin(attempts)
+                            cancel()
+                        }
+                    }
+                    is EidInteractionEvent.RequestCanAndChangedPin -> {
+                        _scanInProgress.value = false
+                        appCoordinator.navigate(SetupCardSuspendedDestination)
+                        cancel()
+                    }
+                    is EidInteractionEvent.RequestPUK -> {
+                        _scanInProgress.value = false
+                        appCoordinator.navigate(SetupCardBlockedDestination)
+                        cancel()
+                    }
+                    else -> {
+                        logger.debug("Collected unexpected event: $event")
+                        _scanInProgress.value = false
+                        appCoordinator.navigate(SetupOtherErrorDestination)
+
+                        issueTrackerManager.capture(event.redacted)
+                        cancel()
+                    }
+                }
+            }
+        }
+    }
 
     fun setTCTokenURL(tcTokenURL: String) {
         this.tcTokenURL = tcTokenURL
@@ -121,89 +189,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     private fun setPin(transportPin: String, pin: String) {
-        var firstTransportPinRequest = true
-
-        changePinFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-            idCardManager.changePin(context).catch { exception ->
-                _scanInProgress.value = false
-
-                when (exception) {
-                    is IdCardInteractionException.CardDeactivated -> {
-                        appCoordinator.navigate(SetupCardDeactivatedDestination)
-                    }
-                    is IdCardInteractionException.CardBlocked -> {
-                        appCoordinator.navigate(SetupCardBlockedDestination)
-                    }
-                    else -> {
-                        (exception as? IdCardInteractionException)?.redacted?.let {
-                            issueTrackerManager.capture(it)
-                        }
-
-                        appCoordinator.navigatePopping(SetupCardUnreadableDestination(false))
-                    }
-                }
-            }.collect { event ->
-                when (event) {
-                    EidInteractionEvent.RequestCardInsertion -> {
-                        logger.debug("Card insertion requested.")
-                        appCoordinator.navigatePopping(SetupScanDestination)
-                    }
-
-                    EidInteractionEvent.CardInteractionComplete -> logger.debug("Card interaction complete.")
-                    EidInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started.")
-                    EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
-                    EidInteractionEvent.CardRecognized -> {
-                        logger.debug("Card recognized.")
-                        _scanInProgress.value = true
-                    }
-                    EidInteractionEvent.CardRemoved -> {
-                        logger.debug("Card removed.")
-                        _scanInProgress.value = false
-                    }
-                    is EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
-                        logger.debug("Process completed successfully.")
-                        _scanInProgress.value = false
-                        onSettingPinSucceeded()
-                    }
-                    is EidInteractionEvent.RequestChangedPin -> {
-                        if (firstTransportPinRequest) {
-                            logger.debug("Changed PIN requested for the first time. Entering transport PIN and personal PIN")
-                            firstTransportPinRequest = false
-                            event.pinCallback(transportPin, pin)
-                        } else {
-                            val attempts = event.attempts ?: run {
-                                logger.error("Number of attempts not provided by framework.")
-                                appCoordinator.navigate(SetupOtherErrorDestination)
-                                return@collect
-                            }
-
-                            logger.debug("Old and new PIN requested for a second time. The Transport-PIN seems to be incorrect.")
-                            _scanInProgress.value = false
-                            onIncorrectTransportPin(attempts)
-                            cancel()
-                        }
-                    }
-                    is EidInteractionEvent.RequestCanAndChangedPin -> {
-                        _scanInProgress.value = false
-                        appCoordinator.navigate(SetupCardSuspendedDestination)
-                        cancel()
-                    }
-                    is EidInteractionEvent.RequestPUK -> {
-                        _scanInProgress.value = false
-                        appCoordinator.navigate(SetupCardBlockedDestination)
-                        cancel()
-                    }
-                    else -> {
-                        logger.debug("Collected unexpected event: $event")
-                        _scanInProgress.value = false
-                        appCoordinator.navigate(SetupOtherErrorDestination)
-
-                        issueTrackerManager.capture(event.redacted)
-                        cancel()
-                    }
-                }
-            }
-        }
+        idCardManager.changePin(context)
     }
 
     fun onPersonalPinErrorTryAgain() {

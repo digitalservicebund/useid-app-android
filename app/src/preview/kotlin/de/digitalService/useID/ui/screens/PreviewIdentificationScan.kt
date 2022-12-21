@@ -64,7 +64,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect("https://digitalservice.bund.de"))
+            idCardManager.injectEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect("https://digitalservice.bund.de"))
         }
     }
 
@@ -72,7 +72,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestPin(2) {})
+            idCardManager.injectEvent(EidInteractionEvent.RequestPin(2) {})
         }
     }
 
@@ -80,7 +80,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyException(IdCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
+            idCardManager.injectException(IdCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
         }
     }
 
@@ -88,7 +88,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyException(
+            idCardManager.injectException(
                 IdCardInteractionException.ProcessFailed(
                     ActivationResultCode.BAD_REQUEST,
                     "https://digitalservice.bund.de",
@@ -102,7 +102,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestPinAndCan { _, _ -> })
+            idCardManager.injectEvent(EidInteractionEvent.RequestPinAndCan { _, _ -> })
         }
         trackerManager.trackScreen("identification/cardSuspended")
     }
@@ -111,7 +111,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyEvent(EidInteractionEvent.RequestPUK({}))
+            idCardManager.injectEvent(EidInteractionEvent.RequestPUK({}))
         }
         trackerManager.trackScreen("identification/cardBlocked")
     }
@@ -120,15 +120,15 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectIdentifyException(IdCardInteractionException.CardDeactivated)
+            idCardManager.injectException(IdCardInteractionException.CardDeactivated)
         }
         trackerManager.trackScreen("identification/cardDeactivated")
     }
 
     private suspend fun simulateWaiting() {
-        idCardManager.injectIdentifyEvent(EidInteractionEvent.CardRecognized)
+        idCardManager.injectEvent(EidInteractionEvent.CardRecognized)
         delay(3000L)
-        idCardManager.injectIdentifyEvent(EidInteractionEvent.CardRemoved)
+        idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
     }
 }
 
