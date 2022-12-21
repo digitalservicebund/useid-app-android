@@ -61,7 +61,7 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
+            idCardManager.injectEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
         }
     }
 
@@ -69,8 +69,8 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
-            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
+            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
+            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
         }
         trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
     }
@@ -79,7 +79,7 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinException(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
+            idCardManager.injectException(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
         }
         trackerManager.trackScreen("firstTimeUser/cardUnreadable")
     }
@@ -88,7 +88,7 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestCanAndChangedPin(pinCallback = { _, _, _ -> }))
+            idCardManager.injectEvent(EidInteractionEvent.RequestCanAndChangedPin(pinCallback = { _, _, _ -> }))
         }
         trackerManager.trackScreen("firstTimeUser/cardSuspended")
     }
@@ -97,7 +97,7 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinEvent(EidInteractionEvent.RequestPUK { _ -> })
+            idCardManager.injectEvent(EidInteractionEvent.RequestPUK { _ -> })
         }
         trackerManager.trackScreen("firstTimeUser/cardBlocked")
     }
@@ -106,15 +106,15 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectChangePinException(IdCardInteractionException.CardDeactivated)
+            idCardManager.injectException(IdCardInteractionException.CardDeactivated)
         }
         trackerManager.trackScreen("firstTimeUser/cardDeactivated")
     }
 
     private suspend fun simulateWaiting() {
-        idCardManager.injectChangePinEvent(EidInteractionEvent.CardRecognized)
+        idCardManager.injectEvent(EidInteractionEvent.CardRecognized)
         delay(3000L)
-        idCardManager.injectChangePinEvent(EidInteractionEvent.CardRemoved)
+        idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
     }
 }
 

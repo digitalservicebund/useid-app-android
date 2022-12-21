@@ -1,53 +1,73 @@
 package de.digitalService.useID.idCardInterface
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.SendChannel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import org.openecard.mobile.activation.*
 
-class EacInteractionHandler(private val channel: SendChannel<EidInteractionEvent>) : EacInteraction {
+class EacInteractionHandler(private val eidFlow: MutableStateFlow<EidInteractionEvent>) : EacInteraction {
     private val logTag = javaClass.canonicalName!!
 
     override fun requestCardInsertion() {
         Log.d(logTag, "Request card insertion.")
-        channel.trySendClosingOnError(EidInteractionEvent.RequestCardInsertion)
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.RequestCardInsertion)
+        }
     }
 
     override fun requestCardInsertion(p0: NFCOverlayMessageHandler?) {
         Log.e(logTag, "Requesting card insertion with overlay message handler not implemented.")
-        channel.close(IdCardInteractionException.FrameworkError())
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+        }
     }
 
     override fun onCardInteractionComplete() {
         Log.d(logTag, "Card interaction complete.")
-        channel.trySendClosingOnError(EidInteractionEvent.CardInteractionComplete)
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.CardInteractionComplete)
+        }
     }
 
     override fun onCardRecognized() {
         Log.d(logTag, "Card recognized.")
-        channel.trySendClosingOnError(EidInteractionEvent.CardRecognized)
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.CardRecognized)
+        }
     }
 
     override fun onCardRemoved() {
         Log.d(logTag, "Card removed.")
-        channel.trySendClosingOnError(EidInteractionEvent.CardRemoved)
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.CardRemoved)
+        }
     }
 
     override fun onCanRequest(p0: ConfirmPasswordOperation?) {
         Log.d(logTag, "Requesting CAN.")
 
         if (p0 == null) {
-            channel.close(IdCardInteractionException.FrameworkError())
+            CoroutineScope(Dispatchers.IO).launch {
+                eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+            }
             return
         }
 
-        channel.trySendClosingOnError(EidInteractionEvent.RequestCan(p0::confirmPassword))
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.RequestCan(p0::confirmPassword))
+        }
     }
 
     override fun onPinRequest(p0: ConfirmPasswordOperation?) {
         Log.d(logTag, "Requesting PIN without attempts.")
 
         if (p0 == null) {
-            channel.close(IdCardInteractionException.FrameworkError())
+            CoroutineScope(Dispatchers.IO).launch {
+                eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+            }
             return
         }
 
@@ -58,7 +78,9 @@ class EacInteractionHandler(private val channel: SendChannel<EidInteractionEvent
         Log.d(logTag, "Requesting PIN with attempts.")
 
         if (p1 == null) {
-            channel.close(IdCardInteractionException.FrameworkError())
+            CoroutineScope(Dispatchers.IO).launch {
+                eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+            }
             return
         }
 
@@ -66,28 +88,43 @@ class EacInteractionHandler(private val channel: SendChannel<EidInteractionEvent
     }
 
     private fun onGeneralPinRequest(attempts: Int?, confirmPasswordOperation: ConfirmPasswordOperation) {
-        channel.trySendClosingOnError(EidInteractionEvent.RequestPin(attempts, confirmPasswordOperation::confirmPassword))
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(
+                EidInteractionEvent.RequestPin(
+                    attempts,
+                    confirmPasswordOperation::confirmPassword
+                )
+            )
+        }
     }
 
     override fun onPinCanRequest(p0: ConfirmPinCanOperation?) {
         Log.d(logTag, "Requesting PIN and CAN.")
 
         if (p0 == null) {
-            channel.close(IdCardInteractionException.FrameworkError())
+            CoroutineScope(Dispatchers.IO).launch {
+                eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+            }
             return
         }
 
-        channel.trySendClosingOnError(EidInteractionEvent.RequestPinAndCan(p0::confirmPassword))
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.RequestPinAndCan(p0::confirmPassword))
+        }
     }
 
     override fun onCardBlocked() {
         Log.w(logTag, "Card blocked.")
-        channel.close(IdCardInteractionException.CardBlocked)
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.CardBlocked))
+        }
     }
 
     override fun onCardDeactivated() {
         Log.w(logTag, "Card deactivated.")
-        channel.close(IdCardInteractionException.CardDeactivated)
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated))
+        }
     }
 
     override fun onServerData(
@@ -98,13 +135,17 @@ class EacInteractionHandler(private val channel: SendChannel<EidInteractionEvent
         Log.d(logTag, "Requesting to confirm server data.")
 
         if (p0 == null || p2 == null) {
-            channel.close(IdCardInteractionException.FrameworkError())
+            CoroutineScope(Dispatchers.IO).launch {
+                eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.FrameworkError()))
+            }
             return
         }
 
         val readAttributes =
             try { p0.readAccessAttributes.reduceToMap() } catch (e: IdCardInteractionException.UnexpectedReadAttribute) {
-                channel.close(e)
+                CoroutineScope(Dispatchers.IO).launch {
+                    eidFlow.emit(EidInteractionEvent.Error(e))
+                }
                 return
             }
 
@@ -121,11 +162,20 @@ class EacInteractionHandler(private val channel: SendChannel<EidInteractionEvent
 
         val confirmationCallback: (Map<IdCardAttribute, Boolean>) -> Unit = { p2.enterAttributeSelection(it.toSelectableItems(), listOf()) }
 
-        channel.trySendClosingOnError(EidInteractionEvent.RequestAuthenticationRequestConfirmation(eidServerData, confirmationCallback))
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(
+                EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                    eidServerData,
+                    confirmationCallback
+                )
+            )
+        }
     }
 
     override fun onCardAuthenticationSuccessful() {
         Log.d(logTag, "Card authentication successful.")
-        channel.trySendClosingOnError(EidInteractionEvent.AuthenticationSuccessful)
+        CoroutineScope(Dispatchers.IO).launch {
+            eidFlow.emit(EidInteractionEvent.AuthenticationSuccessful)
+        }
     }
 }
