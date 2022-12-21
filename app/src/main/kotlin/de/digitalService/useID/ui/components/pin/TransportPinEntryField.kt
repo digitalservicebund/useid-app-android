@@ -9,6 +9,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
@@ -16,16 +18,10 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun TransportPinEntryField(
-    value: String,
-    onValueChanged: (String) -> Unit,
-    onDone: () -> Unit,
+    onDone: (String) -> Unit,
     focusRequester: FocusRequester,
-    extraContentDescription: String? = null
 ) {
-    val description = stringResource(
-        id = R.string.firstTimeUser_transportPIN_textFieldLabel,
-        value.map { "$it " }
-    )
+    val contentDescription = stringResource(id = R.string.firstTimeUser_transportPIN_textFieldLabel)
 
     Box(
         modifier = Modifier
@@ -40,12 +36,9 @@ fun TransportPinEntryField(
                 .fillMaxWidth()
         )
         PinEntryField(
-            value = value,
-            onValueChanged = onValueChanged,
             digitCount = 5,
             obfuscation = false,
             spacerPosition = null,
-            contentDescription = extraContentDescription?.let { description + it } ?: description,
             focusRequester = focusRequester,
             onDone = onDone,
             modifier = Modifier
@@ -54,6 +47,9 @@ fun TransportPinEntryField(
                 .padding(horizontal = 25.dp)
                 .clip(UseIdTheme.shapes.roundedMedium)
                 .fillMaxSize()
+                .semantics {
+                    this.contentDescription = contentDescription
+                }
         )
     }
 }
@@ -63,8 +59,6 @@ fun TransportPinEntryField(
 fun PreviewTransportPinEntryField() {
     UseIdTheme {
         TransportPinEntryField(
-            value = "12",
-            onValueChanged = { },
             onDone = { },
             focusRequester = FocusRequester()
         )

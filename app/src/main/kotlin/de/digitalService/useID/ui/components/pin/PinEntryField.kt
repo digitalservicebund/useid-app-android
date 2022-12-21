@@ -33,43 +33,27 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
 fun PinEntryField(
-    value: String,
-    onValueChanged: (String) -> Unit,
     digitCount: Int,
     obfuscation: Boolean = false,
     spacerPosition: Int?,
-    contentDescription: String,
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
     backgroundColor: Color = UseIdTheme.colors.neutrals100,
     digitsModifier: Modifier = Modifier,
-    onDone: () -> Unit = { }
+    onDone: (String) -> Unit
 ) {
-    var textFieldValueState by remember(value) { mutableStateOf(TextFieldValue(value, TextRange(value.length))) }
-
-    val cursorPositionDescription = stringResource(
-        id = R.string.pinEntryField_accessibility_cursorPosition,
-        textFieldValueState.selection.end + 1
-    )
+    var number: String by remember { mutableStateOf("") }
 
     Box(
         modifier = modifier
             .background(backgroundColor)
-            .semantics(mergeDescendants = false) {
-                this.contentDescription = contentDescription
-                stateDescription = value.replace(".".toRegex(), "$0 ") + cursorPositionDescription
-            }
             .focusable(false)
     ) {
         BasicTextField(
-            value = textFieldValueState,
-            onValueChange = { newValue ->
-                if (newValue.text.length <= digitCount) {
-                    if (newValue.selection.length > 0) {
-                        textFieldValueState = newValue.copy(selection = textFieldValueState.selection)
-                    } else {
-                        onValueChanged(newValue.text)
-                    }
+            value = number,
+            onValueChange = { newNumber ->
+                if (newNumber.length <= digitCount) {
+                    number = newNumber
                 }
             },
             singleLine = true,
@@ -78,7 +62,10 @@ fun PinEntryField(
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = { onDone() }
+                onDone = {
+                if (number.length == digitCount)
+                    onDone(number)
+                }
             ),
             textStyle = TextStyle(color = Color.Transparent),
             cursorBrush = SolidColor(Color.Transparent),
@@ -93,7 +80,7 @@ fun PinEntryField(
         )
 
         PinDigitRow(
-            input = value,
+            input = number,
             digitCount = digitCount,
             obfuscation = obfuscation,
             placeholder = false,
@@ -116,14 +103,12 @@ fun PreviewPinEntryField() {
             }
 
             PinEntryField(
-                text,
-                onValueChanged = { text = it },
                 digitCount = 6,
                 obfuscation = false,
                 spacerPosition = 3,
-                contentDescription = "",
                 focusRequester = focusRequester,
-                modifier = Modifier.padding(64.dp)
+                modifier = Modifier.padding(64.dp),
+                onDone = { }
             )
         }
     }
@@ -140,14 +125,12 @@ fun PreviewPinEntryFieldWide() {
             }
 
             PinEntryField(
-                text,
-                onValueChanged = { text = it },
                 digitCount = 6,
                 obfuscation = false,
                 spacerPosition = 3,
-                contentDescription = "",
                 focusRequester = focusRequester,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onDone = { }
             )
         }
     }
