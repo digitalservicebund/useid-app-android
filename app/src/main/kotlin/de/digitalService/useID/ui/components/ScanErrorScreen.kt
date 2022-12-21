@@ -24,13 +24,15 @@ fun ScanErrorScreen(
     showErrorCard: Boolean = false,
     confirmNavigationButtonDialog: Boolean = false,
     onNavigationButtonClicked: () -> Unit,
-    onButtonClicked: () -> Unit
+    onButtonClicked: () -> Unit,
+    isIdentification: Boolean = false
 ) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
             shouldShowConfirmDialog = confirmNavigationButtonDialog,
-            onClick = onNavigationButtonClicked
+            onClick = onNavigationButtonClicked,
+            isIdentification = isIdentification
         )
     ) { topPadding ->
         Column(

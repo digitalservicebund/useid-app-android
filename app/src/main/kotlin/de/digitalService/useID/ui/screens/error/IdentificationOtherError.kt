@@ -22,7 +22,8 @@ fun IdentificationOtherError(viewModel: IdentificationOtherErrorViewModel = hilt
         buttonTitleResId = R.string.identification_fetchMetadataError_retry,
         confirmNavigationButtonDialog = true,
         onNavigationButtonClicked = viewModel::onCancelButtonClicked,
-        onButtonClicked = viewModel::onRetryButtonClicked
+        onButtonClicked = viewModel::onRetryButtonClicked,
+        isIdentification = true
     )
 }
 
