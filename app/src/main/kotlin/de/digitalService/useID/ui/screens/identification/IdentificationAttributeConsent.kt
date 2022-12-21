@@ -73,7 +73,7 @@ fun IdentificationAttributeConsent(
             ) {
                 Text(
                     stringResource(
-                        id = R.string.identification_attributeConsent_header,
+                        id = R.string.identification_attributeConsent_title,
                         viewModel.identificationProvider
                     ),
                     style = UseIdTheme.typography.headingXl
