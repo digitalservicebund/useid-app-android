@@ -56,7 +56,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                     title = stringResource(R.string.firstTimeUser_personalPINIntro_info_title),
                     body = stringResource(id = R.string.firstTimeUser_personalPINIntro_info_body)
                 )
-                
+
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
                 Image(
