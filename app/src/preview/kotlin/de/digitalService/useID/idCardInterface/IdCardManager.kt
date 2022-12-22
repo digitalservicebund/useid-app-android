@@ -32,6 +32,10 @@ class IdCardManager {
 
     fun cancelTask() {
         logger.debug("Cancel task")
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(100L)
+            _eidFlow.emit(EidInteractionEvent.Idle)
+        }
     }
 
     suspend fun injectEvent(event: EidInteractionEvent) {

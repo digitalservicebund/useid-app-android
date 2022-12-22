@@ -105,7 +105,7 @@ private class PreviewAppCoordinator(
     override fun navigate(route: Direction) {}
     override fun pop() {}
     override fun popToRoot() {}
-    override fun startIdSetup(tcTokenURL: String?) {}
+    override fun offerIdSetup(tcTokenURL: String?) {}
     override fun startIdentification(tcTokenURL: String, didSetup: Boolean) {}
     override fun homeScreenLaunched() {}
     override fun setNfcAvailability(availability: NfcAvailability) {}

@@ -11,7 +11,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
@@ -39,15 +39,10 @@ interface SetupPersonalPinInputViewModelInterface {
 
 @HiltViewModel
 class SetupPersonalPinInputViewModel @Inject constructor(
-    private val setupCoordinator: SetupCoordinator
+    private val setupCoordinator: PinManagementCoordinator
 ) : ViewModel(), SetupPersonalPinInputViewModelInterface {
-    override fun onDoneClicked(pin: String) {
-        setupCoordinator.onPersonalPinInput(pin)
-    }
-
-    override fun onBack() {
-        setupCoordinator.onBackClicked()
-    }
+    override fun onDoneClicked(pin: String) = setupCoordinator.setNewPin(pin)
+    override fun onBack() = setupCoordinator.onBack()
 }
 
 private class PreviewSetupPersonalPinInputViewModel : SetupPersonalPinInputViewModelInterface {

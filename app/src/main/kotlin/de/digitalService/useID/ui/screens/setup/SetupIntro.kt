@@ -80,6 +80,7 @@ class SetupIntroViewModel @Inject constructor(
         tcTokenURL = SetupIntroDestination.argsFrom(savedStateHandle).tcTokenURL
     }
 
+    // TODO: Move that into initializer?
     override fun onInitScreen() {
         tcTokenURL?.let {
             setupCoordinator.setTCTokenURL(it)
@@ -87,7 +88,7 @@ class SetupIntroViewModel @Inject constructor(
     }
 
     override fun onFirstTimeUsage() {
-        setupCoordinator.startSetupIDCard()
+        setupCoordinator.startSetupIdCard()
     }
 
     override fun onNonFirstTimeUsage() {
