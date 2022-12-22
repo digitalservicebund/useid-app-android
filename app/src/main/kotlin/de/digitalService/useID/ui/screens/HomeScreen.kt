@@ -149,7 +149,7 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
 
             BundButton(
                 type = ButtonType.PRIMARY,
-                onClick = viewModel::setupOnlineID,
+                onClick = viewModel::setupOnlineId,
                 label = stringResource(R.string.home_startSetup),
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
@@ -216,7 +216,7 @@ private fun CardButton(
 }
 
 interface HomeScreenViewModelInterface {
-    fun setupOnlineID()
+    fun setupOnlineId()
     fun homeScreenLaunched()
     fun onPrivacyButtonClicked()
     fun onImprintButtonClicked()
@@ -235,8 +235,8 @@ class HomeScreenViewModel @Inject constructor(
         appCoordinator.homeScreenLaunched()
     }
 
-    override fun setupOnlineID() {
-        appCoordinator.startIdSetup(null)
+    override fun setupOnlineId() {
+        appCoordinator.offerIdSetup(null)
         trackerManager.trackEvent(category = "firstTimeUser", action = "buttonPressed", name = "start")
     }
 
@@ -262,7 +262,7 @@ class HomeScreenViewModel @Inject constructor(
 }
 
 private class PreviewViewModel : HomeScreenViewModelInterface {
-    override fun setupOnlineID() {}
+    override fun setupOnlineId() {}
     override fun homeScreenLaunched() {}
     override fun onPrivacyButtonClicked() {}
     override fun onImprintButtonClicked() {}

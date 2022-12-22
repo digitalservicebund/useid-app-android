@@ -20,13 +20,12 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.TransportPinEntryField
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
@@ -40,32 +39,31 @@ fun SetupTransportPin(
 ) {
     val resources = LocalContext.current.resources
 
-    val icon = if (viewModel.attempts == null) {
-        NavigationIcon.Back
-    } else {
+    val icon = if (viewModel.retry) {
         NavigationIcon.Cancel
-    }
-
-    val titleString = if (viewModel.attempts == null) {
-        stringResource(id = R.string.firstTimeUser_transportPIN_title)
     } else {
-        stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title)
+        NavigationIcon.Back
     }
 
-    val attemptString = viewModel.attempts?.let { attempts ->
+    val titleString = if (viewModel.retry) {
+        stringResource(id = R.string.firstTimeUser_incorrectTransportPIN_title)
+    } else {
+        stringResource(id = R.string.firstTimeUser_transportPIN_title)
+    }
+
+    val attemptString =
         resources.getQuantityString(
             R.plurals.firstTimeUser_transportPIN_remainingAttempts,
-            attempts,
-            attempts
-        )
-    }
+            2,
+            2
+        ).takeIf { viewModel.retry }
 
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = icon,
-            onClick = if (viewModel.attempts == null) viewModel::onBackButtonClicked else viewModel::onCancelClicked,
-            confirmation = Flow.Setup.takeIf { viewModel.attempts != null },
-            contentDescription = "$titleString $attemptString"
+            onClick = viewModel::onNavigationButtonClicked,
+            confirmation = Flow.Setup.takeIf { viewModel.retry },
+            contentDescription = titleString
         )
     ) { topPadding ->
         val focusRequester = remember { FocusRequester() }
@@ -115,57 +113,54 @@ fun SetupTransportPin(
 }
 
 data class SetupTransportPinNavArgs(
-    val attempts: Int?
+    val retry: Boolean
 )
 
 interface SetupTransportPinViewModelInterface {
-    val attempts: Int?
+    val retry: Boolean
 
     fun onDoneClicked(pin: String)
-    fun onCancelClicked()
-    fun onBackButtonClicked()
+    fun onNavigationButtonClicked()
 }
 
 @HiltViewModel
 class SetupTransportPinViewModel @Inject constructor(
-    private val coordinator: SetupCoordinator,
+    private val coordinator: PinManagementCoordinator,
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupTransportPinViewModelInterface {
-    override val attempts: Int?
+    override val retry: Boolean
 
     init {
-        attempts = SetupTransportPinDestination.argsFrom(savedStateHandle).attempts
+        retry = SetupTransportPinDestination.argsFrom(savedStateHandle).retry
     }
 
-    override fun onDoneClicked(transportPin: String) {
-        coordinator.onTransportPinEntered(transportPin)
+    override fun onDoneClicked(pin: String) {
+        coordinator.setOldPin(pin)
     }
 
-    override fun onCancelClicked() {
-        coordinator.cancelSetup()
-    }
-
-    override fun onBackButtonClicked() {
-        coordinator.onBackClicked()
+    override fun onNavigationButtonClicked() {
+        if (retry) {
+            coordinator.cancelPinManagement()
+        } else {
+            coordinator.onBack()
+        }
     }
 }
 
 //region Preview
 private class PreviewSetupTransportPinViewModel(
-//    override val transportPin: String,
-    override val attempts: Int?
+    override val retry: Boolean
 ) : SetupTransportPinViewModelInterface {
     override fun onDoneClicked(pin: String) {}
-    override fun onCancelClicked() {}
-    override fun onBackButtonClicked() {}
+    override fun onNavigationButtonClicked() {}
 }
 
 @Preview(widthDp = 300, showBackground = true)
 @Composable
 fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(null))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false))
     }
 }
 
@@ -173,23 +168,15 @@ fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
 @Composable
 fun PreviewSetupTransportPinWithoutAttempts() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(null))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false))
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSetupTransportPinOneAttempt() {
+fun PreviewSetupTransportPinRetry() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(attempts = 1))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewSetupTransportPinTwoAttempts() {
-    UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(attempts = 2))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(true))
     }
 }
 //endregion

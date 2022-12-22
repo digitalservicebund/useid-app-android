@@ -18,6 +18,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
+import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
@@ -35,7 +36,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
         StandardButtonScreen(
             primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.firstTimeUser_personalPINIntro_continue),
-                action = viewModel::onSetPin
+                action = viewModel::onContinue
             ),
             modifier = Modifier.padding(top = topPadding)
         ) {
@@ -71,24 +72,21 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
 }
 
 interface SetupPersonalPinIntroViewModelInterface {
-    fun onSetPin()
+    fun onContinue()
     fun onBackButtonClicked()
 }
 
 @HiltViewModel
-class SetupPersonalPinIntroViewModel @Inject constructor(private val coordinator: SetupCoordinator) :
+class SetupPersonalPinIntroViewModel @Inject constructor(private val coordinator: PinManagementCoordinator) :
     ViewModel(),
     SetupPersonalPinIntroViewModelInterface {
-    override fun onSetPin() {
-        coordinator.onPersonalPinIntroFinished()
-    }
-
-    override fun onBackButtonClicked() = coordinator.onBackClicked()
+    override fun onContinue() = coordinator.onPersonalPinIntroFinished()
+    override fun onBackButtonClicked() = coordinator.onBack()
 }
 
 //region Preview
 private class PreviewSetupPersonalPinIntroViewModel : SetupPersonalPinIntroViewModelInterface {
-    override fun onSetPin() { }
+    override fun onContinue() { }
     override fun onBackButtonClicked() {}
 }
 

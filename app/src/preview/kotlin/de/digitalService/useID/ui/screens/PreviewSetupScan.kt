@@ -62,6 +62,8 @@ class PreviewSetupScanViewModel @Inject constructor(
             simulateWaiting()
 
             idCardManager.injectEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
+            delay(100L)
+            idCardManager.injectEvent(EidInteractionEvent.Idle)
         }
     }
 
@@ -69,8 +71,11 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
-            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
+            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2) { _, _ ->
+                viewModelScope.launch {
+                    idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
+                }
+            })
         }
         trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
     }

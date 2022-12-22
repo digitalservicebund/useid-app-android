@@ -13,35 +13,40 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.screens.destinations.Destination
 import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
-import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface AppCoordinatorType {
+interface AppCoordinatorType: NavigatorDelegate {
     val nfcAvailability: State<NfcAvailability>
     val currentlyHandlingNfcTags: Boolean
 
     fun setNavController(navController: NavController)
-    fun navigate(route: Direction)
-    fun pop()
-    fun popToRoot()
-    fun startIdSetup(tcTokenURL: String?)
+    fun offerIdSetup(tcTokenURL: String?)
     fun startIdentification(tcTokenURL: String, didSetup: Boolean)
     fun homeScreenLaunched()
     fun setNfcAvailability(availability: NfcAvailability)
     fun setIsNotFirstTimeUser()
     fun handleDeepLink(uri: Uri)
+    fun popUpTo(direction: Destination)
+}
+
+interface NavigatorDelegate {
+    fun navigate(route: Direction)
+    fun navigatePopping(route: Direction)
+    fun pop()
+    fun popToRoot()
+
+    // Will be eliminated after switch to AA2
     fun startNfcTagHandling()
     fun stopNfcTagHandling()
-    fun navigatePopping(route: Direction)
-    fun popUpTo(direction: Destination)
 }
 
 @Singleton
 class AppCoordinator @Inject constructor(
+    private val setupCoordinator: SetupCoordinator,
     private val storageManager: StorageManagerType
 ) : AppCoordinatorType {
     private val logger by getLogger()
@@ -83,9 +88,9 @@ class AppCoordinator @Inject constructor(
         navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)
     }
 
-    override fun startIdSetup(tcTokenURL: String?) {
+    override fun offerIdSetup(tcTokenURL: String?) {
         popToRoot()
-        navigate(SetupIntroDestination(tcTokenURL))
+        setupCoordinator.showSetupIntro()
     }
 
     override fun startIdentification(tcTokenURL: String, didSetup: Boolean) {
@@ -100,7 +105,7 @@ class AppCoordinator @Inject constructor(
     override fun homeScreenLaunched() {
         if (storageManager.getIsFirstTimeUser()) {
             if (coldLaunch || tcTokenURL != null) {
-                startIdSetup(tcTokenURL)
+                offerIdSetup(tcTokenURL)
             }
         } else {
             tcTokenURL?.let { startIdentification(it, false) }

@@ -19,6 +19,7 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
+import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -56,7 +57,7 @@ interface SetupScanViewModelInterface {
 
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
-    private val coordinator: SetupCoordinator,
+    private val coordinator: PinManagementCoordinator,
     private val trackerManager: TrackerManagerType,
     @Nullable coroutineScope: CoroutineScope? = null
 ) : ViewModel(), SetupScanViewModelInterface {
@@ -81,7 +82,7 @@ class SetupScanViewModel @Inject constructor(
     }
 
     override fun onCancelConfirm() {
-        coordinator.onBackClicked()
+        coordinator.onBack()
     }
 }
 

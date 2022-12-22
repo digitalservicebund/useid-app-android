@@ -36,7 +36,7 @@ class IdCardManager {
     fun identify(context: Context, url: String) = executeTask(context, Task.EAC(url))
     fun changePin(context: Context) = executeTask(context, Task.PinManagement)
 
-    private class ControllerCallbackHandler(private val eidFlow: MutableStateFlow<EidInteractionEvent>) : ControllerCallback {
+    private class ControllerCallbackHandler(private val eidFlow: MutableStateFlow<EidInteractionEvent>, private val completion: () -> Unit) : ControllerCallback {
         private val logTag = javaClass.canonicalName!!
 
         override fun onStarted() {
@@ -67,8 +67,10 @@ class IdCardManager {
                     }
                     else -> eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor)))
                 }
+                
+                completion()
+            }
         }
-    }
     }
 
     private class StopServiceHandlerImplementation : StopServiceHandler {
@@ -98,7 +100,7 @@ class IdCardManager {
                     return
                 }
 
-                val controllerCallback = ControllerCallbackHandler(_eidFlow)
+                val controllerCallback = ControllerCallbackHandler(_eidFlow, this@IdCardManager::cancelTask)
                 activationController = when (task) {
                     is Task.EAC -> p0.eacFactory().create(task.tokenURL, controllerCallback, EacInteractionHandler(_eidFlow))
                     is Task.PinManagement -> p0.pinManagementFactory().create(controllerCallback, PinManagementInteractionHandler(_eidFlow))
@@ -118,6 +120,10 @@ class IdCardManager {
     }
 
     fun cancelTask() {
+        CoroutineScope(Dispatchers.IO).launch {
+            _eidFlow.emit(EidInteractionEvent.Idle)
+        }
+
         activationController?.cancelOngoingAuthentication()
         androidContextManager?.terminateContext(stopHandler)
         androidContextManager = null
