@@ -100,7 +100,7 @@ class IdentificationCoordinator @Inject constructor(
         identificationFlowCoroutineScope?.cancel()
         val popToRoot = reachedScanState
         CoroutineScope(Dispatchers.Main).launch {
-            if (didSetup && !popToRoot) {
+            if (!didSetup && !popToRoot) {
                 appCoordinator.popUpTo(SetupIntroDestination)
             } else {
                 appCoordinator.popToRoot()
