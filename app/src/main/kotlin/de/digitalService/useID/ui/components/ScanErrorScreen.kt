@@ -53,7 +53,11 @@ fun ScanErrorScreen(
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
                 if (showErrorCard) {
-                    ErrorCard()
+                    BundCard(
+                        type = BundCardType.ERROR,
+                        title = stringResource(id = R.string.scanError_box_title),
+                        body = stringResource(id = R.string.scanError_box_body)
+                    )
                     Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
                 }
 
@@ -77,40 +81,6 @@ fun ScanErrorScreen(
                     .fillMaxWidth()
                     .padding(bottom = UseIdTheme.spaces.m, top = 12.dp)
                     .height(50.dp)
-            )
-        }
-    }
-}
-
-@Composable
-private fun ErrorCard() {
-    Card(
-        colors = CardDefaults.cardColors(containerColor = UseIdTheme.colors.red200),
-        shape = UseIdTheme.shapes.roundedLarge
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(UseIdTheme.spaces.m)
-        ) {
-            Row {
-                Icon(
-                    imageVector = Icons.Outlined.ErrorOutline,
-                    contentDescription = "",
-                    tint = UseIdTheme.colors.red900,
-                    modifier = Modifier.padding(end = 6.dp)
-                )
-
-                Text(
-                    text = stringResource(R.string.scanError_box_title),
-                    style = UseIdTheme.typography.bodyMBold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xxs))
-
-            Text(
-                stringResource(id = R.string.scanError_box_body),
-                style = UseIdTheme.typography.bodyMRegular
             )
         }
     }
