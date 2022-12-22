@@ -48,7 +48,7 @@ fun BundCard(type: BundCardType, title: String, body: String) {
 
     Card(
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = UseIdTheme.shapes.roundedMedium,
+        shape = UseIdTheme.shapes.roundedMedium
     ) {
         ConstraintLayout(modifier = Modifier.padding(12.dp)) {
             val (iconRef, titleRef, bodyRef) = createRefs()
@@ -74,7 +74,7 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                     .constrainAs(titleRef) {
                         centerVerticallyTo(iconRef)
                         start.linkTo(iconRef.end)
-                }
+                    }
             )
 
             Text(
@@ -86,7 +86,7 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                     .constrainAs(bodyRef) {
                         top.linkTo(titleRef.bottom)
                         start.linkTo(titleRef.start)
-                }
+                    }
             )
         }
     }
