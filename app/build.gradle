@@ -171,6 +171,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.6.1'
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     implementation 'androidx.core:core-splashscreen:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout-compose:1.0.1'
 
     implementation 'io.github.raamcosta.compose-destinations:core:1.7.22-beta'
     ksp 'io.github.raamcosta.compose-destinations:ksp:1.7.22-beta'

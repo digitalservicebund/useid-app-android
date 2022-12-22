@@ -5,14 +5,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import de.digitalService.useID.R
+import androidx.constraintlayout.compose.ConstraintLayout
 import de.digitalService.useID.ui.theme.UseIdTheme
 
 enum class BundCardType {
@@ -50,43 +48,46 @@ fun BundCard(type: BundCardType, title: String, body: String) {
 
     Card(
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        shape = UseIdTheme.shapes.roundedLarge
+        shape = UseIdTheme.shapes.roundedMedium,
     ) {
-        Column(
-            modifier = Modifier
-                .padding(UseIdTheme.spaces.s)
-        ) {
-            val iconSize = 26.dp
-            val iconTextSpacerWidth = 6.dp
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(iconSize),
-                    tint = iconTint
-                )
-                Spacer(modifier = Modifier.width(iconTextSpacerWidth))
-                Text(
-                    text = title,
-                    style = UseIdTheme.typography.bodyMBold,
-                    color = UseIdTheme.colors.black
-                )
-            }
+        ConstraintLayout(modifier = Modifier.padding(12.dp)) {
+            val (iconRef, titleRef, bodyRef) = createRefs()
 
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xxs))
+            Icon(
+                imageVector = icon,
+                contentDescription = "",
+                modifier = Modifier
+                    .size(30.dp)
+                    .padding(end = UseIdTheme.spaces.xs)
+                    .constrainAs(iconRef) {
+                        top.linkTo(parent.top)
+                        start.linkTo(parent.start)
+                    },
+                tint = iconTint
+            )
 
-            Row(horizontalArrangement = Arrangement.Start) {
-                Spacer(modifier = Modifier.width(iconSize + iconTextSpacerWidth))
-                Text(
-                    text = body,
-                    style = UseIdTheme.typography.bodyMRegular,
-                    color = UseIdTheme.colors.black
-                )
-            }
+            Text(
+                text = title,
+                style = UseIdTheme.typography.bodyMBold,
+                color = UseIdTheme.colors.black,
+                modifier = Modifier
+                    .constrainAs(titleRef) {
+                        centerVerticallyTo(iconRef)
+                        start.linkTo(iconRef.end)
+                }
+            )
+
+            Text(
+                text = body,
+                style = UseIdTheme.typography.bodyMRegular,
+                color = UseIdTheme.colors.black,
+                modifier = Modifier
+                    .padding(top = UseIdTheme.spaces.xxs)
+                    .constrainAs(bodyRef) {
+                        top.linkTo(titleRef.bottom)
+                        start.linkTo(titleRef.start)
+                }
+            )
         }
     }
 }
