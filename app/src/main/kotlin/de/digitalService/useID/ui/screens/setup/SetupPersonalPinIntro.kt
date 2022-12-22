@@ -56,48 +56,7 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                     title = stringResource(R.string.firstTimeUser_personalPINIntro_info_title),
                     body = stringResource(id = R.string.firstTimeUser_personalPINIntro_info_body)
                 )
-//                Card(
-//                    colors = CardDefaults.cardColors(containerColor = UseIdTheme.colors.blue200),
-//                    shape = UseIdTheme.shapes.roundedLarge
-//                ) {
-//                    Column(
-//                        modifier = Modifier
-//                            .padding(UseIdTheme.spaces.s)
-//                    ) {
-//                        val iconSize = 26.dp
-//                        val iconTextSpacerWidth = 6.dp
-//                        Row(
-//                            verticalAlignment = Alignment.CenterVertically,
-//                            horizontalArrangement = Arrangement.Start
-//                        ) {
-//                            Icon(
-//                                imageVector = Icons.Filled.Info,
-//                                contentDescription = "",
-//                                modifier = Modifier
-//                                    .size(iconSize),
-//                                tint = UseIdTheme.colors.blue700
-//                            )
-//                            Spacer(modifier = Modifier.width(iconTextSpacerWidth))
-//                            Text(
-//                                text = stringResource(R.string.firstTimeUser_personalPINIntro_info_title),
-//                                style = UseIdTheme.typography.bodyMBold,
-//                                color = UseIdTheme.colors.black
-//                            )
-//                        }
-//
-//                        Spacer(modifier = Modifier.height(UseIdTheme.spaces.xxs))
-//
-//                        Row(horizontalArrangement = Arrangement.Start) {
-//                            Spacer(modifier = Modifier.width(iconSize + iconTextSpacerWidth))
-//                            Text(
-//                                stringResource(id = R.string.firstTimeUser_personalPINIntro_info_body),
-//                                style = UseIdTheme.typography.bodyMRegular,
-//                                color = UseIdTheme.colors.black
-//                            )
-//                        }
-//                    }
-//                }
-
+                
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
                 Image(
