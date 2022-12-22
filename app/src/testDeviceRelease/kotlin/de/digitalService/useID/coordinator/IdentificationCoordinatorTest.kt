@@ -347,7 +347,7 @@ class IdentificationCoordinatorTest {
 
         advanceUntilIdle()
 
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+        verify(exactly = 1) { mockAppCoordinator.popUpTo(SetupIntroDestination) }
 
         job.cancel()
     }
@@ -414,7 +414,7 @@ class IdentificationCoordinatorTest {
 
         advanceUntilIdle()
 
-        verify(exactly = 1) { mockAppCoordinator.popUpTo(SetupIntroDestination) }
+        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
         job.cancel()
     }
