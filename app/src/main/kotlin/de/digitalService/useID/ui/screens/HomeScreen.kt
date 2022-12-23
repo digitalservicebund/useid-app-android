@@ -23,9 +23,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.BuildConfig
 import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.components.BundButton
 import de.digitalService.useID.ui.components.ButtonType
 import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.coordinators.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.theme.*
 import javax.inject.Inject
@@ -228,10 +230,13 @@ interface HomeScreenViewModelInterface {
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
     private val appCoordinator: AppCoordinator,
+    private val appNavigator: Navigator,
     private val trackerManager: TrackerManagerType
 ) : ViewModel(), HomeScreenViewModelInterface {
+    private val logger by getLogger()
 
     override fun homeScreenLaunched() {
+        logger.debug("Home screen launched.")
         appCoordinator.homeScreenLaunched()
     }
 
@@ -241,23 +246,23 @@ class HomeScreenViewModel @Inject constructor(
     }
 
     override fun onPrivacyButtonClicked() {
-        appCoordinator.navigate(PrivacyScreenDestination)
+        appNavigator.navigate(PrivacyScreenDestination)
     }
 
     override fun onAccessibilityButtonClicked() {
-        appCoordinator.navigate(AccessibilityScreenDestination)
+        appNavigator.navigate(AccessibilityScreenDestination)
     }
 
     override fun onTermsOfUseButtonClicked() {
-        appCoordinator.navigate(TermsOfUseScreenDestination)
+        appNavigator.navigate(TermsOfUseScreenDestination)
     }
 
     override fun onLicenseButtonClicked() {
-        appCoordinator.navigate(DependenciesScreenDestination)
+        appNavigator.navigate(DependenciesScreenDestination)
     }
 
     override fun onImprintButtonClicked() {
-        appCoordinator.navigate(ImprintScreenDestination)
+        appNavigator.navigate(ImprintScreenDestination)
     }
 }
 

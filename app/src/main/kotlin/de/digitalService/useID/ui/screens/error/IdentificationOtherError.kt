@@ -13,7 +13,7 @@ import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationOtherErrorDestination
 import javax.inject.Inject
 
-@Destination(navArgsDelegate = IdentificationOtherErrorNavArgs::class)
+@Destination
 @Composable
 fun IdentificationOtherError(viewModel: IdentificationOtherErrorViewModel = hiltViewModel()) {
     ScanErrorScreen(
@@ -28,26 +28,14 @@ fun IdentificationOtherError(viewModel: IdentificationOtherErrorViewModel = hilt
 
 @HiltViewModel
 class IdentificationOtherErrorViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    private val identificationCoordinator: IdentificationCoordinator,
-    private val appCoordinator: AppCoordinator
+    private val coordinator: IdentificationCoordinator
 ) : ViewModel() {
-    val tcTokenURL: String
-
-    init {
-        val args = IdentificationOtherErrorDestination.argsFrom(savedStateHandle)
-        tcTokenURL = args.tcTokenURL
-    }
 
     fun onRetryButtonClicked() {
-        appCoordinator.startIdentification(tcTokenURL, identificationCoordinator.didSetup)
+        coordinator.retryIdentification()
     }
 
     fun onCancelButtonClicked() {
-        identificationCoordinator.cancelIdentification()
+        coordinator.cancelIdentification()
     }
 }
-
-data class IdentificationOtherErrorNavArgs(
-    val tcTokenURL: String
-)

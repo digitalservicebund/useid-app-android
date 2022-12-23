@@ -1,6 +1,5 @@
 package de.digitalService.useID
 
-import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -37,7 +36,7 @@ class IdentificationFetchMetadataTest {
     fun hasBackNavigation() {
         val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.didSetup } returns true
+        every { viewModel.backAllowed } returns true
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationFetchMetadata(viewModel = viewModel)
@@ -52,14 +51,14 @@ class IdentificationFetchMetadataTest {
         val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
         composeTestRule.onNodeWithText(cancelButton).assertDoesNotExist()
 
-        verify(exactly = 1) { viewModel.onCancelButtonClicked() }
+        verify(exactly = 1) { viewModel.onNavigationButtonClicked() }
     }
 
     @Test
     fun hasCancelNavigation() {
         val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.didSetup } returns false
+        every { viewModel.backAllowed } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationFetchMetadata(viewModel = viewModel)
@@ -74,6 +73,6 @@ class IdentificationFetchMetadataTest {
         val cancelButton = composeTestRule.activity.getString(R.string.identification_confirmEnd_confirm)
         composeTestRule.onNodeWithText(cancelButton).performClick()
 
-        verify(exactly = 1) { viewModel.onCancelButtonClicked() }
+        verify(exactly = 1) { viewModel.onNavigationButtonClicked() }
     }
 }

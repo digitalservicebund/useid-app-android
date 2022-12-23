@@ -29,7 +29,9 @@ import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.CoroutineContextProviderType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import javax.annotation.Nullable
 import javax.inject.Inject
 
 @Destination
@@ -55,39 +57,30 @@ fun IdentificationScan(
     }
 }
 
-sealed class ScanEvent {
-    object CardRequested : ScanEvent()
-    object CardAttached : ScanEvent()
-    data class Finished(val redirectAddress: String) : ScanEvent()
-    data class Error(val error: ScanError) : ScanEvent()
-}
-
 interface IdentificationScanViewModelInterface {
     val shouldShowProgress: Boolean
-    val errorState: ScanError.IncorrectPin?
 
     fun onHelpButtonClicked()
     fun onNfcButtonClicked()
     fun onErrorDialogButtonClicked(context: Context)
     fun onCancelIdentification()
-    fun onNewPersonalPinEntered(pin: String)
 }
 
 @HiltViewModel
 class IdentificationScanViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val coordinator: IdentificationCoordinator,
-    private val coroutineContextProvider: CoroutineContextProviderType,
-    private val trackerManager: TrackerManagerType
+    private val trackerManager: TrackerManagerType,
+    @Nullable coroutineScope: CoroutineScope? = null
 ) : ViewModel(), IdentificationScanViewModelInterface {
+    private val viewModelCoroutineScope: CoroutineScope = coroutineScope ?: viewModelScope
+
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
 
-    override var errorState: ScanError.IncorrectPin? by mutableStateOf(null)
-        private set
-
     init {
-        collectScanEvents()
+        viewModelCoroutineScope.launch {
+            coordinator.scanInProgress.collect { shouldShowProgress = it }
+        }
     }
 
     override fun onHelpButtonClicked() {
@@ -105,56 +98,22 @@ class IdentificationScanViewModel @Inject constructor(
     override fun onCancelIdentification() {
         coordinator.cancelIdentification()
     }
-
-    override fun onNewPersonalPinEntered(pin: String) {
-        errorState = null
-        coordinator.onPinEntered(pin)
-    }
-
-    private fun collectScanEvents() {
-        viewModelScope.launch(coroutineContextProvider.IO) {
-            coordinator.scanEventFlow.collect { event: ScanEvent ->
-                launch(coroutineContextProvider.Main) {
-                    when (event) {
-                        ScanEvent.CardRequested -> shouldShowProgress = false
-                        ScanEvent.CardAttached -> shouldShowProgress = true
-                        is ScanEvent.Finished -> {
-                            shouldShowProgress = false
-
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(event.redirectAddress))
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(context, intent, null)
-                        }
-                        is ScanEvent.Error -> {
-                            shouldShowProgress = false
-
-                            if (event.error is ScanError.IncorrectPin) {
-                                errorState = event.error
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 private class PreviewIdentificationScanViewModel(
-    override val shouldShowProgress: Boolean,
-    override val errorState: ScanError.IncorrectPin?
+    override val shouldShowProgress: Boolean
 ) : IdentificationScanViewModelInterface {
     override fun onHelpButtonClicked() {}
     override fun onNfcButtonClicked() {}
     override fun onErrorDialogButtonClicked(context: Context) {}
     override fun onCancelIdentification() {}
-    override fun onNewPersonalPinEntered(pin: String) {}
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PreviewIdentificationScan() {
     UseIdTheme {
-        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(false, null))
+        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(false))
     }
 }
 
@@ -162,22 +121,6 @@ fun PreviewIdentificationScan() {
 @Composable
 fun PreviewIdentificationScanWithProgress() {
     UseIdTheme {
-        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, null))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewIdentificationScanWithError() {
-    UseIdTheme {
-        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true, ScanError.IncorrectPin(2)))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewIdentificationScanWithCancelDialog() {
-    UseIdTheme {
-        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(false, null))
+        IdentificationScan(viewModel = PreviewIdentificationScanViewModel(true))
     }
 }

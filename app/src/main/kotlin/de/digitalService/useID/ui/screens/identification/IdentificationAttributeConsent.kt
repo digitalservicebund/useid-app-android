@@ -46,9 +46,9 @@ fun IdentificationAttributeConsent(
 ) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
-            icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
-            confirmation = Flow.Identification.takeIf { !viewModel.didSetup },
-            onClick = viewModel::onCancelButtonClicked,
+            icon = if (viewModel.backAllowed) NavigationIcon.Back else NavigationIcon.Cancel,
+            confirmation = Flow.Identification.takeIf { !viewModel.backAllowed },
+            onClick = viewModel::onNavigationButtonClicked,
         )
     ) { topPadding ->
         Scaffold(
@@ -196,7 +196,8 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
 }
 
 data class IdentificationAttributeConsentNavArgs(
-    val request: EidAuthenticationRequest
+    val request: EidAuthenticationRequest,
+    val backAllowed: Boolean
 )
 
 data class ProviderInfoDialogContent(
@@ -222,12 +223,12 @@ interface IdentificationAttributeConsentViewModelInterface {
     val shouldShowInfoDialog: Boolean
     val infoDialogContent: ProviderInfoDialogContent
 
-    val didSetup: Boolean
+    val backAllowed: Boolean
 
     fun onInfoButtonClicked()
     fun onInfoDialogDismissalRequest()
     fun onPinButtonClicked()
-    fun onCancelButtonClicked()
+    fun onNavigationButtonClicked()
 }
 
 @HiltViewModel
@@ -242,11 +243,14 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
     override var shouldShowInfoDialog: Boolean by mutableStateOf(false)
         private set
 
-    override val didSetup: Boolean
-        get() = coordinator.didSetup
+    override val backAllowed: Boolean
 
     init {
-        val request = IdentificationAttributeConsentDestination.argsFrom(savedStateHandle).request
+        val args = IdentificationAttributeConsentDestination.argsFrom(savedStateHandle)
+
+        backAllowed = args.backAllowed
+
+        val request = args.request
         identificationProvider = request.subject
         requiredReadAttributes = request
             .readAttributes
@@ -268,8 +272,12 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         coordinator.confirmAttributesForIdentification()
     }
 
-    override fun onCancelButtonClicked() {
-        coordinator.cancelIdentification()
+    override fun onNavigationButtonClicked() {
+        if (backAllowed) {
+            coordinator.onBack()
+        } else {
+            coordinator.cancelIdentification()
+        }
     }
 
     private fun attributeDescriptionID(attribute: IdCardAttribute): Int = when (attribute) {
@@ -298,11 +306,11 @@ class PreviewIdentificationAttributeConsentViewModel(
     override val infoDialogContent: ProviderInfoDialogContent
 ) :
     IdentificationAttributeConsentViewModelInterface {
-    override val didSetup: Boolean = false
+    override val backAllowed: Boolean = false
     override fun onInfoButtonClicked() {}
     override fun onInfoDialogDismissalRequest() {}
     override fun onPinButtonClicked() {}
-    override fun onCancelButtonClicked() {}
+    override fun onNavigationButtonClicked() {}
 }
 
 private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean): IdentificationAttributeConsentViewModelInterface =

@@ -17,6 +17,8 @@ import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
+import de.digitalService.useID.ui.coordinators.AppNavigator
+import de.digitalService.useID.ui.coordinators.Navigator
 import de.digitalService.useID.util.NfcAdapterUtil
 import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +38,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appCoordinator: AppCoordinatorType
+
+    @Inject
+    lateinit var appNavigator: Navigator
 
     @Inject
     lateinit var trackerManager: TrackerManagerType
@@ -67,7 +72,7 @@ class MainActivity : ComponentActivity() {
         handleNewIntent(intent)
 
         setContent {
-            UseIDApp(appCoordinator, trackerManager)
+            UseIDApp(appCoordinator, appNavigator, trackerManager)
         }
     }
 
@@ -113,15 +118,15 @@ class MainActivity : ComponentActivity() {
         when (intent.action) {
             NfcAdapter.ACTION_TAG_DISCOVERED -> {
                 intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)?.let {
-                    if (appCoordinator.currentlyHandlingNfcTags) {
+//                    if (appCoordinator.currentlyHandlingNfcTags) {
                         try {
                             idCardManager.handleNfcTag(it)
                         } catch (e: IOException) {
                             logger.error("IDCardManager failed to handle NFC tag.")
                         }
-                    } else {
-                        logger.debug("Got new NFC tag but app coordinator is not awaiting any. Ignoring.")
-                    }
+//                    } else {
+//                        logger.debug("Got new NFC tag but app coordinator is not awaiting any. Ignoring.")
+//                    }
                 }
             }
 

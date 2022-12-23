@@ -12,53 +12,46 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.screens.destinations.Destination
 import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetadataDestination
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
-interface AppCoordinatorType: NavigatorDelegate {
+interface AppCoordinatorType {
     val nfcAvailability: State<NfcAvailability>
     val currentlyHandlingNfcTags: Boolean
 
-    fun setNavController(navController: NavController)
-    fun offerIdSetup(tcTokenURL: String?)
-    fun startIdentification(tcTokenURL: String, didSetup: Boolean)
+    fun offerIdSetup(tcTokenUrl: String?)
+//    fun startIdentification(tcTokenUrl: String, didSetup: Boolean)
     fun homeScreenLaunched()
     fun setNfcAvailability(availability: NfcAvailability)
     fun setIsNotFirstTimeUser()
     fun handleDeepLink(uri: Uri)
-    fun popUpTo(direction: Destination)
 }
 
-interface NavigatorDelegate {
+interface Navigator {
+    val isAtRoot: Boolean
+
+    fun setNavController(navController: NavController)
+
     fun navigate(route: Direction)
     fun navigatePopping(route: Direction)
+    fun popUpTo(direction: Destination)
     fun pop()
     fun popToRoot()
 
     // Will be eliminated after switch to AA2
-    fun startNfcTagHandling()
-    fun stopNfcTagHandling()
+//    fun startNfcTagHandling()
+//    fun stopNfcTagHandling()
 }
 
 @Singleton
-class AppCoordinator @Inject constructor(
-    private val setupCoordinator: SetupCoordinator,
-    private val storageManager: StorageManagerType
-) : AppCoordinatorType {
-    private val logger by getLogger()
-
+class AppNavigator @Inject constructor(): Navigator {
     private lateinit var navController: NavController
 
-    private var tcTokenURL: String? = null
-    private var coldLaunch: Boolean = true
-
-    override val nfcAvailability: MutableState<NfcAvailability> = mutableStateOf(NfcAvailability.Available)
-    override var currentlyHandlingNfcTags: Boolean = false
-        private set
+    override val isAtRoot: Boolean
+        get() = navController.previousBackStackEntry == null
 
     override fun setNavController(navController: NavController) {
         this.navController = navController
@@ -81,38 +74,65 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun popUpTo(direction: Destination) {
-        navController.popBackStack(route = direction.route, inclusive = false)
+        CoroutineScope(Dispatchers.Main).launch { navController.popBackStack(route = direction.route, inclusive = false) }
     }
 
     override fun popToRoot() {
-        navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)
+        CoroutineScope(Dispatchers.Main).launch { navController.popBackStack(route = HomeScreenDestination.route, inclusive = false) }
     }
+}
 
-    override fun offerIdSetup(tcTokenURL: String?) {
-        popToRoot()
-        setupCoordinator.showSetupIntro()
-    }
+@Singleton
+class AppCoordinator @Inject constructor(
+    private val navigator: Navigator,
+    private val setupCoordinator: SetupCoordinator,
+    private val identificationCoordinator: IdentificationCoordinator,
+    private val storageManager: StorageManagerType
+) : AppCoordinatorType {
+    private val logger by getLogger()
 
-    override fun startIdentification(tcTokenURL: String, didSetup: Boolean) {
-        if (nfcAvailability.value != NfcAvailability.Available) {
-            logger.warn("Do not start identification because NFC is not available.")
-            return
-        }
+    private var tcTokenUrl: String? = null
+    private var coldLaunch: Boolean = true
 
-        navController.navigate(IdentificationFetchMetadataDestination(tcTokenURL, didSetup))
+    override val nfcAvailability: MutableState<NfcAvailability> = mutableStateOf(NfcAvailability.Available)
+    override var currentlyHandlingNfcTags: Boolean = false
+        private set
+
+    override fun offerIdSetup(tcTokenUrl: String?) {
+        navigator.popToRoot()
+        setupCoordinator.showSetupIntro(tcTokenUrl)
     }
 
     override fun homeScreenLaunched() {
-        if (storageManager.getIsFirstTimeUser()) {
-            if (coldLaunch || tcTokenURL != null) {
-                offerIdSetup(tcTokenURL)
-            }
-        } else {
-            tcTokenURL?.let { startIdentification(it, false) }
+        logger.debug("Home screen launched. Setup coordinator: ${setupCoordinator.stateFlow.value}, identification coordinator: ${identificationCoordinator.stateFlow.value}")
+
+        if (coldLaunch &&
+            setupCoordinator.stateFlow.value != SubFlowState.Active &&
+            identificationCoordinator.stateFlow.value != SubFlowState.Active &&
+            storageManager.firstTimeUser
+        ) {
+            offerIdSetup(null)
         }
 
         coldLaunch = false
-        tcTokenURL = null
+
+//        if (storageManager.firstTimeUser) {
+//            if (coldLaunch || tcTokenUrl != null) {
+//                offerIdSetup(tcTokenUrl)
+//            }
+//        } else {
+//            tcTokenUrl?.let { tcTokenUrl ->
+//                if (nfcAvailability.value != NfcAvailability.Available) {
+//                    logger.warn("Do not start identification because NFC is not available.")
+//                    return
+//                }
+//
+//                identificationCoordinator.startIdentificationProcess(tcTokenUrl, false)
+//            }
+//        }
+//
+//        coldLaunch = false
+//        tcTokenUrl = null
     }
 
     override fun setNfcAvailability(availability: NfcAvailability) {
@@ -124,26 +144,37 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun handleDeepLink(uri: Uri) {
-        Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")?.let { url ->
-            tcTokenURL = url
+        logger.debug("Handling deep link.")
 
-            if (!coldLaunch) {
-                if (navController.previousBackStackEntry != null) {
-                    popToRoot()
-                } else {
-                    homeScreenLaunched()
-                }
+        Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")?.let { url ->
+            tcTokenUrl = url
+
+//            if (!coldLaunch) {
+//                if (navigator.isAtRoot) {
+//                    navigator.popToRoot()
+//                } else {
+//                    homeScreenLaunched()
+//                }
+//            }
+
+            navigator.popToRoot()
+            if (storageManager.firstTimeUser) {
+                offerIdSetup(url)
+            } else {
+                identificationCoordinator.startIdentificationProcess(url, false)
             }
+
+            coldLaunch = false
         } ?: run {
-            logger.info("URL does not contain tcTokenURL parameter.")
+            logger.info("URL does not contain tcTokenUrl parameter.")
         }
     }
 
-    override fun startNfcTagHandling() {
-        currentlyHandlingNfcTags = true
-    }
-
-    override fun stopNfcTagHandling() {
-        currentlyHandlingNfcTags = false
-    }
+//    override fun startNfcTagHandling() {
+//        currentlyHandlingNfcTags = true
+//    }
+//
+//    override fun stopNfcTagHandling() {
+//        currentlyHandlingNfcTags = false
+//    }
 }

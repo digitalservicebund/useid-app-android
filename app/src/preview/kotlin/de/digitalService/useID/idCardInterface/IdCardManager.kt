@@ -21,7 +21,12 @@ class IdCardManager {
 
     fun handleNfcTag(tag: Tag) = logger.debug("Ignoring NFC tag in preview.")
 
-    fun identify(context: Context, url: String) {}
+    fun identify(context: Context, url: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            delay(100L)
+            _eidFlow.emit(EidInteractionEvent.AuthenticationStarted)
+        }
+    }
 
     fun changePin(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -31,11 +36,7 @@ class IdCardManager {
     }
 
     fun cancelTask() {
-        logger.debug("Cancel task")
-        CoroutineScope(Dispatchers.IO).launch {
-            delay(100L)
-            _eidFlow.emit(EidInteractionEvent.Idle)
-        }
+        _eidFlow.value = EidInteractionEvent.Idle
     }
 
     suspend fun injectEvent(event: EidInteractionEvent) {
