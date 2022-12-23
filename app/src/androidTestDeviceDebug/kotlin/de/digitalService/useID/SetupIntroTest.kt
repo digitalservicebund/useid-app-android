@@ -1,6 +1,5 @@
 package de.digitalService.useID
 
-import androidx.activity.compose.setContent
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -36,7 +35,7 @@ class SetupIntroTest {
     fun shouldShowCancelDialog() {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.shouldShowConfirmCancelDialog } returns true
+        every { viewModel.confirmCancellation } returns true
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -55,7 +54,7 @@ class SetupIntroTest {
     fun doNotShowCancelDialog() {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.shouldShowConfirmCancelDialog } returns false
+        every { viewModel.confirmCancellation } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -75,7 +74,7 @@ class SetupIntroTest {
     fun primaryButton() {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.shouldShowConfirmCancelDialog } returns false
+        every { viewModel.confirmCancellation } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -91,7 +90,7 @@ class SetupIntroTest {
     fun secondaryButton() {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
-        every { viewModel.shouldShowConfirmCancelDialog } returns false
+        every { viewModel.confirmCancellation } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)

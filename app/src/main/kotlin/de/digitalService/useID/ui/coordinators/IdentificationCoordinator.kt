@@ -1,17 +1,18 @@
 package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
+import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
-import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.destinations.*
-import de.digitalService.useID.ui.screens.identification.ScanEvent
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -19,54 +20,170 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.properties.Delegates
 
 @Singleton
 class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val appCoordinator: AppCoordinator,
+    private val navigator: Navigator,
     private val idCardManager: IdCardManager,
+    private val storageManager: StorageManagerType,
     private val trackerManager: TrackerManagerType,
     private val issueTrackerManager: IssueTrackerManagerType,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
 
-    private val _scanEventFlow: MutableStateFlow<ScanEvent> = MutableStateFlow(ScanEvent.CardRequested)
-    val scanEventFlow: Flow<ScanEvent>
-        get() = _scanEventFlow
+    private val _scanInProgress: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val scanInProgress: Flow<Boolean>
+        get() = _scanInProgress
 
     private var requestAuthenticationEvent: EidInteractionEvent.RequestAuthenticationRequestConfirmation? = null
+    private var attributesConfirmed = false
     private var pinCallback: ((String) -> Unit)? = null
-    private var pinCanCallback: ((String, String) -> Unit)? = null
+//    private var pinCanCallback: ((String, String) -> Unit)? = null
 
     private var reachedScanState = false
-    private var incorrectPin: Boolean = false
+//    private var incorrectPin: Boolean = false
 
-    private var identificationFlowCoroutineScope: Job? = null
+    private var setupSkipped by Delegates.notNull<Boolean>()
+    private lateinit var identificationUrl: String
 
-    private var tcTokenUrl: String = ""
+    private var eIdEventFlowCoroutineScope: Job? = null
 
-    var didSetup: Boolean = false
-        private set
+    val stateFlow: MutableStateFlow<SubFlowState> = MutableStateFlow(SubFlowState.Idle)
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            idCardManager.eidFlow.catch { error ->
-                logger.error("Identification error: $error")
-                cancel()
+    fun startIdentificationProcess(tcTokenUrl: String, setupSkipped: Boolean) {
+        this.setupSkipped = setupSkipped
+        identificationUrl = Uri
+            .Builder()
+            .scheme("http")
+            .encodedAuthority("127.0.0.1:24727")
+            .appendPath("eID-Client")
+            .appendQueryParameter("tcTokenURL", tcTokenUrl)
+            .build()
+            .toString()
+
+        executeIdentification()
+    }
+
+    private fun executeIdentification() {
+        logger.debug("Start identification process.")
+
+        stateFlow.value = SubFlowState.Active
+
+        eIdEventFlowCoroutineScope?.cancel()
+        idCardManager.cancelTask()
+        reachedScanState = false
+        attributesConfirmed = false
+        pinCallback = null
+
+        collectEidEvents()
+        idCardManager.identify(context, identificationUrl)
+    }
+
+    fun confirmAttributesForIdentification() {
+        if (!attributesConfirmed) {
+            val requestAuthenticationEvent = requestAuthenticationEvent ?: run {
+                logger.debug("No confirmation event saved. Attributes might have been confirmed before.")
+
+                logger.error("Not implemented.")
+//            navigator.navigate(IdentificationPersonalPinDestination(false))
+                return
+            }
+
+            attributesConfirmed = true
+            val requiredAttributes = requestAuthenticationEvent.request.readAttributes.filterValues { it }
+            requestAuthenticationEvent.confirmationCallback(requiredAttributes)
+            this.requestAuthenticationEvent = null
+        }
+    }
+
+    fun setPin(pin: String) {
+//        if (incorrectPin) {
+//            appCoordinator.pop()
+//        }
+
+        val pinCallback = pinCallback ?: run {
+            logger.error("Cannot process PIN because there isn't any pin callback saved.")
+            return
+        }
+
+        logger.debug("Executing PIN callback.")
+        pinCallback(pin)
+        this.pinCallback = null
+//        incorrectPin = false
+    }
+
+//    fun onCanPinEntered(pin: String, can: String) {
+//        val pinCanCallback = pinCanCallback ?: run {
+//            logger.error("Cannot process CAN and PIN because there isn't any can/pin callback saved.")
+//            return
+//        }
+//
+//        appCoordinator.navigate(IdentificationScanDestination)
+//        pinCanCallback(pin, can)
+//    }
+
+//    private fun onIncorrectPersonalPin(attempts: Int) {
+//        incorrectPin = true
+//        appCoordinator.navigate(IdentificationPersonalPinDestination(true))
+//    }
+
+    fun onBack() {
+        navigator.pop()
+    }
+
+    fun retryIdentification() {
+        executeIdentification()
+    }
+
+    fun cancelIdentification() {
+        logger.debug("Cancel identification process.")
+//        navigator.stopNfcTagHandling()
+        eIdEventFlowCoroutineScope?.cancel()
+        idCardManager.cancelTask()
+
+//        if (didSetup && !reachedScanState) {
+//            navigator.popUpTo(SetupIntroDestination)
+//        } else {
+            navigator.popToRoot()
+//        }
+
+        stateFlow.value = SubFlowState.Cancelled
+    }
+
+    private fun finishIdentification(redirectUrl: String) {
+        logger.debug("Finish identification process.")
+        eIdEventFlowCoroutineScope?.cancel()
+
+        storageManager.setIsNotFirstTimeUser()
+        navigator.popToRoot()
+        trackerManager.trackEvent(category = "identification", action = "success", name = "")
+
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        ContextCompat.startActivity(context, intent, null)
+
+        stateFlow.value = SubFlowState.Finished
+    }
+
+    private fun collectEidEvents() {
+        eIdEventFlowCoroutineScope?.cancel()
+        eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
+            idCardManager.eidFlow.catch { exception ->
+                logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-                    EidInteractionEvent.AuthenticationStarted -> logger.debug("Authentication started")
+                    is EidInteractionEvent.AuthenticationStarted -> {
+                        logger.debug("Authentication started.")
+                        navigator.navigate(IdentificationFetchMetadataDestination(setupSkipped))
+                    }
                     is EidInteractionEvent.RequestAuthenticationRequestConfirmation -> {
-                        logger.debug(
-                            "Requesting authentication confirmation:\n" +
-                                "${event.request.subject}\n" +
-                                "Read attributes: ${event.request.readAttributes.keys}"
-                        )
-
+                        logger.debug("Requesting authentication confirmation")
                         requestAuthenticationEvent = event
 
-                        appCoordinator.navigate(IdentificationAttributeConsentDestination(event.request))
+                        navigator.navigatePopping(IdentificationAttributeConsentDestination(event.request, setupSkipped))
                     }
                     is EidInteractionEvent.RequestPin -> {
                         logger.debug("Requesting PIN")
@@ -74,100 +191,74 @@ class IdentificationCoordinator @Inject constructor(
                         pinCallback = event.pinCallback
 
                         if (event.attempts == null) {
-                            logger.debug("PIN request without attempts")
-                            appCoordinator.navigate(IdentificationPersonalPinDestination(false))
+                            logger.debug("PIN request without attempts.")
+                            navigator.navigate(IdentificationPersonalPinDestination(false))
                         } else {
-                            logger.debug("PIN request with ${event.attempts} attempts")
-                            _scanEventFlow.emit(ScanEvent.CardRequested)
-                            onIncorrectPersonalPin(event.attempts)
+                            logger.debug("PIN request with ${event.attempts} attempts.")
+                            _scanInProgress.value = false
+                            navigator.navigate(IdentificationPersonalPinDestination(true))
                         }
-                    }
-                    is EidInteractionEvent.RequestPinAndCan -> {
-                        logger.debug("Requesting PIN and CAN")
-                        _scanEventFlow.emit(ScanEvent.Error(ScanError.PinSuspended))
-//                        appCoordinator.navigate(IdentificationCardSuspendedDestination)
-//
-//                        trackerManager.trackScreen("identification/cardSuspended")
-//                        cancel()
-
-                        pinCanCallback = event.pinCanCallback
-                        reachedScanState = false
-                        appCoordinator.navigate(IdentificationCanPinForgottenDestination)
-                    }
-                    is EidInteractionEvent.RequestPUK -> {
-                        logger.debug("Requesting PUK")
-                        _scanEventFlow.emit(ScanEvent.Error(ScanError.PinBlocked))
-                        appCoordinator.navigate(IdentificationCardBlockedDestination)
-
-                        trackerManager.trackScreen("identification/cardBlocked")
-                        cancel()
                     }
                     EidInteractionEvent.RequestCardInsertion -> {
-                        logger.debug("Requesting ID card")
-                        if (!reachedScanState) {
-                            appCoordinator.navigate(IdentificationScanDestination)
-                            reachedScanState = true
-                        }
-                        appCoordinator.startNfcTagHandling()
+                        logger.debug("Card insertion requested.")
+                        navigator.navigatePopping(IdentificationScanDestination)
+                        reachedScanState = true
                     }
                     EidInteractionEvent.CardRecognized -> {
-                        logger.debug("Card recognized")
-                        _scanEventFlow.emit(ScanEvent.CardAttached)
+                        logger.debug("Card recognized.")
+                        _scanInProgress.value = true
+                    }
+                    EidInteractionEvent.CardRemoved -> {
+                        logger.debug("Card removed.")
+                        _scanInProgress.value = false
                     }
                     is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
-                        logger.debug("Process completed successfully")
-                        _scanEventFlow.emit(ScanEvent.Finished(event.redirectURL))
-
-                        finishIdentification()
+                        logger.debug("Process completed successfully.")
+                        finishIdentification(event.redirectURL)
                     }
-                    is EidInteractionEvent.CardInteractionComplete -> {
-                        logger.debug("Card interaction complete.")
-                        appCoordinator.stopNfcTagHandling()
+                    is EidInteractionEvent.RequestPinAndCan -> {
+                        logger.debug("PIN and CAN requested.")
+                        _scanInProgress.value = false
+                        navigator.navigate(IdentificationCardSuspendedDestination)
+                        idCardManager.cancelTask()
+                        stateFlow.value = SubFlowState.Cancelled
+                        cancel()
+                    }
+                    is EidInteractionEvent.RequestPUK -> {
+                        logger.debug("PUK requested.")
+                        _scanInProgress.value = false
+                        navigator.navigate(IdentificationCardBlockedDestination)
+                        idCardManager.cancelTask()
+                        stateFlow.value = SubFlowState.Cancelled
+                        cancel()
                     }
                     is EidInteractionEvent.Error -> {
                         logger.error("Identification error: ${event.exception}")
+                        _scanInProgress.value = false
 
-                        when (event.exception) {
+                        val destination = when (event.exception) {
                             IdCardInteractionException.CardDeactivated -> {
                                 trackerManager.trackScreen("identification/cardDeactivated")
 
-                                _scanEventFlow.emit(ScanEvent.Error(ScanError.CardDeactivated))
-                                appCoordinator.navigate(IdentificationCardDeactivatedDestination)
+                                IdentificationCardDeactivatedDestination
                             }
                             IdCardInteractionException.CardBlocked -> {
                                 trackerManager.trackScreen("identification/cardBlocked")
 
-                                _scanEventFlow.emit(ScanEvent.Error(ScanError.PinBlocked))
-                                appCoordinator.navigate(IdentificationCardBlockedDestination)
+                                IdentificationCardBlockedDestination
                             }
                             is IdCardInteractionException.ProcessFailed -> {
                                 if (reachedScanState) {
-                                    val scanEvent = if (event.exception.redirectUrl != null) {
-                                        appCoordinator.navigate(
-                                            IdentificationCardUnreadableDestination(
-                                                true,
-                                                event.exception.redirectUrl
-                                            )
-                                        )
-                                        ScanEvent.Error(ScanError.CardErrorWithRedirect(event.exception.redirectUrl))
+                                    if (event.exception.redirectUrl != null) {
+                                        IdentificationCardUnreadableDestination(true, event.exception.redirectUrl)
                                     } else {
-                                        appCoordinator.navigate(
-                                            IdentificationCardUnreadableDestination(
-                                                true,
-                                                null
-                                            )
-                                        )
-                                        ScanEvent.Error(ScanError.CardErrorWithoutRedirect)
+                                            IdentificationCardUnreadableDestination(true, null)
                                     }
-                                    _scanEventFlow.emit(scanEvent)
                                 } else {
-                                    appCoordinator.navigate(IdentificationOtherErrorDestination(tcTokenUrl))
+                                    IdentificationOtherErrorDestination
                                 }
                             }
                             else -> {
-                                appCoordinator.navigate(IdentificationOtherErrorDestination(tcTokenUrl))
-                                _scanEventFlow.emit(ScanEvent.Error(ScanError.Other(null)))
-
                                 if (pinCallback == null && !reachedScanState) {
                                     trackerManager.trackEvent(
                                         category = "identification",
@@ -179,118 +270,18 @@ class IdentificationCoordinator @Inject constructor(
                                         issueTrackerManager.capture(it)
                                     }
                                 }
+
+                                IdentificationOtherErrorDestination
                             }
                         }
+
+                        navigator.navigate(destination)
+                        idCardManager.cancelTask()
+                        cancel()
                     }
-                    else -> {
-                        logger.debug("Unhandled authentication event: $event")
-                        issueTrackerManager.capture(event.redacted)
-                    }
+                    else -> logger.debug("Ignoring event: $event")
                 }
             }
         }
-    }
-
-    fun startIdentificationProcess(tcTokenUrl: String, didSetup: Boolean) {
-        logger.debug("Start identification process.")
-        this.didSetup = didSetup
-        this.tcTokenUrl = tcTokenUrl
-
-        idCardManager.cancelTask()
-        reachedScanState = false
-        CoroutineScope(coroutineContextProvider.IO).launch {
-            _scanEventFlow.emit(ScanEvent.CardRequested)
-        }
-        startIdentification(tcTokenUrl)
-    }
-
-    fun confirmAttributesForIdentification() {
-        val requestAuthenticationEvent = requestAuthenticationEvent ?: run {
-            logger.debug("No confirmation event saved. Attributes might have been confirmed before.")
-            appCoordinator.navigate(IdentificationPersonalPinDestination(false))
-            return
-        }
-
-        val requiredAttributes = requestAuthenticationEvent.request.readAttributes.filterValues { it }
-        requestAuthenticationEvent.confirmationCallback(requiredAttributes)
-        this.requestAuthenticationEvent = null
-    }
-
-    fun onPinEntered(pin: String) {
-        if (incorrectPin) {
-            appCoordinator.pop()
-        }
-
-        val pinCallback = pinCallback ?: run {
-            logger.error("Cannot process PIN because there isn't any pin callback saved.")
-            return
-        }
-        logger.debug("Executing PIN callback.")
-        pinCallback(pin)
-        this.pinCallback = null
-        incorrectPin = false
-    }
-
-    fun onCanPinEntered(pin: String, can: String) {
-        val pinCanCallback = pinCanCallback ?: run {
-            logger.error("Cannot process CAN and PIN because there isn't any can/pin callback saved.")
-            return
-        }
-
-        appCoordinator.navigate(IdentificationScanDestination)
-        pinCanCallback(pin, can)
-    }
-
-    private fun onIncorrectPersonalPin(attempts: Int) {
-        incorrectPin = true
-        appCoordinator.navigate(IdentificationPersonalPinDestination(true))
-    }
-
-    fun pop() {
-        appCoordinator.pop()
-    }
-
-    fun cancelIdentification() {
-        logger.debug("Cancel identification process.")
-        appCoordinator.stopNfcTagHandling()
-        identificationFlowCoroutineScope?.cancel()
-        val popToRoot = reachedScanState
-        CoroutineScope(Dispatchers.Main).launch {
-            if (didSetup && !popToRoot) {
-                appCoordinator.popUpTo(SetupIntroDestination)
-            } else {
-                appCoordinator.popToRoot()
-            }
-        }
-        reachedScanState = false
-        incorrectPin = false
-        idCardManager.cancelTask()
-    }
-
-    private fun finishIdentification() {
-        logger.debug("Finish identification process.")
-        identificationFlowCoroutineScope?.cancel()
-
-        appCoordinator.setIsNotFirstTimeUser()
-        CoroutineScope(Dispatchers.Main).launch {
-            appCoordinator.popToRoot()
-        }
-        reachedScanState = false
-        incorrectPin = false
-        trackerManager.trackEvent(category = "identification", action = "success", name = "")
-    }
-
-    private fun startIdentification(tcTokenURL: String) {
-        val fullURL = Uri
-            .Builder()
-            .scheme("http")
-            .encodedAuthority("127.0.0.1:24727")
-            .appendPath("eID-Client")
-            .appendQueryParameter("tcTokenURL", tcTokenURL)
-            .build()
-            .toString()
-
-
-        idCardManager.identify(context, fullURL)
     }
 }

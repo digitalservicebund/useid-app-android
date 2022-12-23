@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -35,9 +34,9 @@ fun IdentificationFetchMetadata(
 ) {
     ScreenWithTopBar(
         navigationButton = NavigationButton(
-            icon = if (viewModel.didSetup) NavigationIcon.Back else NavigationIcon.Cancel,
-            confirmation = Flow.Identification.takeIf { !viewModel.didSetup },
-            onClick = viewModel::onCancelButtonClicked,
+            icon = if (viewModel.backAllowed) NavigationIcon.Back else NavigationIcon.Cancel,
+            confirmation = Flow.Identification.takeIf { !viewModel.backAllowed },
+            onClick = viewModel::onNavigationButtonClicked,
         )
     ) { topPadding ->
         Column(
@@ -75,21 +74,15 @@ fun IdentificationFetchMetadata(
             }
         }
     }
-
-    LaunchedEffect(Unit) {
-        viewModel.startIdentificationProcess()
-    }
 }
 
 data class IdentificationFetchMetadataNavArgs(
-    val tcTokenURL: String,
-    val didSetup: Boolean
+    val backAllowed: Boolean
 )
 
 interface IdentificationFetchMetadataViewModelInterface {
-    fun startIdentificationProcess()
-    fun onCancelButtonClicked()
-    val didSetup: Boolean
+    fun onNavigationButtonClicked()
+    val backAllowed: Boolean
 }
 
 @HiltViewModel
@@ -97,27 +90,24 @@ class IdentificationFetchMetadataViewModel @Inject constructor(
     private val coordinator: IdentificationCoordinator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), IdentificationFetchMetadataViewModelInterface {
-    override val didSetup: Boolean
-    private val tcTokenURL: String
+    override val backAllowed: Boolean
 
     init {
-        tcTokenURL = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).tcTokenURL
-        didSetup = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).didSetup
+        backAllowed = IdentificationFetchMetadataDestination.argsFrom(savedStateHandle).backAllowed
     }
 
-    override fun startIdentificationProcess() {
-        coordinator.startIdentificationProcess(tcTokenURL, didSetup)
-    }
-
-    override fun onCancelButtonClicked() {
-        coordinator.cancelIdentification()
+    override fun onNavigationButtonClicked() {
+        if (backAllowed) {
+            coordinator.onBack()
+        } else {
+            coordinator.cancelIdentification()
+        }
     }
 }
 
 class PreviewIdentificationFetchMetadataViewModel() : IdentificationFetchMetadataViewModelInterface {
-    override fun startIdentificationProcess() {}
-    override fun onCancelButtonClicked() {}
-    override val didSetup: Boolean = false
+    override fun onNavigationButtonClicked() {}
+    override val backAllowed: Boolean = false
 }
 
 @Preview(device = Devices.PIXEL_3A, showBackground = true)

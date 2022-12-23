@@ -37,7 +37,7 @@ class IdentificationFetchMetadataViewModelTest {
         Dispatchers.setMain(dispatcher)
 
         savedStateHandle = SavedStateHandle()
-        savedStateHandle["tcTokenURL"] = testURL
+        savedStateHandle["tcTokenUrl"] = testURL
     }
 
     @AfterEach

@@ -17,6 +17,7 @@ import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
+import de.digitalService.useID.ui.coordinators.Navigator
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
@@ -25,10 +26,10 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
-fun UseIDApp(appCoordinator: AppCoordinatorType, trackerManager: TrackerManagerType) {
+fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerManager: TrackerManagerType) {
     val navController = rememberNavController().withSentryObservableEffect()
 
-    appCoordinator.setNavController(navController)
+    navigator.setNavController(navController)
 
     val context = LocalContext.current
     trackerManager.initTracker(context)
@@ -101,18 +102,20 @@ private class PreviewAppCoordinator(
     override val nfcAvailability: State<NfcAvailability>,
     override val currentlyHandlingNfcTags: Boolean
 ) : AppCoordinatorType {
-    override fun setNavController(navController: NavController) {}
-    override fun navigate(route: Direction) {}
-    override fun pop() {}
-    override fun popToRoot() {}
-    override fun offerIdSetup(tcTokenURL: String?) {}
-    override fun startIdentification(tcTokenURL: String, didSetup: Boolean) {}
+    override fun offerIdSetup(tcTokenUrl: String?) {}
+//    override fun startIdentification(tcTokenUrl: String, didSetup: Boolean) {}
     override fun homeScreenLaunched() {}
     override fun setNfcAvailability(availability: NfcAvailability) {}
     override fun setIsNotFirstTimeUser() {}
     override fun handleDeepLink(uri: Uri) {}
-    override fun startNfcTagHandling() {}
-    override fun stopNfcTagHandling() {}
+}
+
+private class PreviewAppNavigator: Navigator {
+    override val isAtRoot: Boolean = false
+    override fun setNavController(navController: NavController) {}
+    override fun navigate(route: Direction) {}
+    override fun pop() {}
+    override fun popToRoot() {}
     override fun navigatePopping(route: Direction) {}
     override fun popUpTo(direction: Destination) {}
 }
@@ -122,7 +125,7 @@ private class PreviewAppCoordinator(
 @Composable
 private fun PreviewNfc() {
     UseIDApp(
-        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false),
+        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false), PreviewAppNavigator(),
         PreviewTrackerManager()
     )
 }
@@ -131,7 +134,7 @@ private fun PreviewNfc() {
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun PreviewNoNfc() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc), false), PreviewTrackerManager())
+    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc), false), PreviewAppNavigator(), PreviewTrackerManager())
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
@@ -139,7 +142,7 @@ private fun PreviewNoNfc() {
 @Composable
 private fun PreviewNfcDeactivated() {
     UseIDApp(
-        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false),
+        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false), PreviewAppNavigator(),
         PreviewTrackerManager()
     )
 }

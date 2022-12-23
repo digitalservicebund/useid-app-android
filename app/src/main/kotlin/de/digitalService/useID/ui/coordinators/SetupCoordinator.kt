@@ -1,36 +1,39 @@
 package de.digitalService.useID.ui.coordinators
 
-import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SetupCoordinator @Inject constructor(
-    private val navigator: NavigatorDelegate,
+    private val navigator: Navigator,
     private val pinManagementCoordinator: PinManagementCoordinator,
+    private val identificationCoordinator: IdentificationCoordinator,
     private val storageManager: StorageManagerType,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
 
-    private var tcTokenURL: String? = null
+    private var tcTokenUrl: String? = null
 
     val identificationPending: Boolean
-        get() = this.tcTokenURL != null
+        get() = this.tcTokenUrl != null
+
+    val stateFlow: MutableStateFlow<SubFlowState> = MutableStateFlow(SubFlowState.Idle)
 
     private var subFlowCoroutineScope: Job? = null
+    private var identificationStateCoroutineScope: Job? = null
 
-    fun setTCTokenURL(tcTokenURL: String) {
-        this.tcTokenURL = tcTokenURL
-    }
-
-    fun showSetupIntro() {
-        navigator.navigate(SetupIntroDestination(tcTokenURL))
+    fun showSetupIntro(tcTokenUrl: String?) {
+        stateFlow.value = SubFlowState.Active
+        this.tcTokenUrl = tcTokenUrl
+        navigator.navigate(SetupIntroDestination(tcTokenUrl != null))
     }
 
     fun startSetupIdCard() {
@@ -67,19 +70,44 @@ class SetupCoordinator @Inject constructor(
         navigator.navigate(SetupFinishDestination)
     }
 
-    fun cancelSetup() {
-        subFlowCoroutineScope?.cancel()
-        navigator.popToRoot()
-        tcTokenURL = null
+    fun skipSetup() {
+        finishSetup(true)
     }
 
     fun finishSetup() {
-        tcTokenURL?.let {
-            // TODO: Relink
-//            navigator.startIdentification(it, true)
-            tcTokenURL = null
+        finishSetup(false)
+    }
+
+    fun cancelSetup() {
+        subFlowCoroutineScope?.cancel()
+        navigator.popToRoot()
+        tcTokenUrl = null
+
+        stateFlow.value = SubFlowState.Cancelled
+    }
+
+    private fun finishSetup(skipped: Boolean) {
+        identificationStateCoroutineScope?.cancel()
+
+        tcTokenUrl?.let {
+            identificationStateCoroutineScope = CoroutineScope(coroutineContextProvider.Default).launch {
+                identificationCoordinator.stateFlow.collect { state ->
+                    when (state) {
+                        SubFlowState.Finished -> {
+                            tcTokenUrl = null
+                            cancel()
+                        }
+                        SubFlowState.Cancelled -> cancel()
+                        else -> logger.debug("Ignoring sub flow state: $state")
+                    }
+                }
+            }
+
+            identificationCoordinator.startIdentificationProcess(it, skipped)
         } ?: run {
             navigator.popToRoot()
         }
+
+        stateFlow.value = SubFlowState.Finished
     }
 }

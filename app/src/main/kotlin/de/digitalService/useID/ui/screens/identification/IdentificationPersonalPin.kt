@@ -63,14 +63,14 @@ class IdentificationPersonalPinViewModel @Inject constructor(
     }
 
     override fun onDone(pin: String) {
-        coordinator.onPinEntered(pin)
+        coordinator.setPin(pin)
     }
 
     override fun onNavigationButtonClicked() {
         if (retry) {
             coordinator.cancelIdentification()
         } else {
-            coordinator.pop()
+            coordinator.onBack()
         }
     }
 }

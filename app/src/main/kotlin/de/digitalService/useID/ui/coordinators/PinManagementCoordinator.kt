@@ -30,7 +30,7 @@ enum class SubFlowState {
 @Singleton
 class PinManagementCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val navigator: NavigatorDelegate,
+    private val navigator: Navigator,
     private val idCardManager: IdCardManager,
     private val issueTrackerManager: IssueTrackerManagerType,
     private val coroutineContextProvider: CoroutineContextProviderType
@@ -129,7 +129,7 @@ class PinManagementCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-                        navigator.startNfcTagHandling()
+//                        navigator.startNfcTagHandling()
                         navigator.navigatePopping(SetupScanDestination)
                     }
                     EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
@@ -166,7 +166,7 @@ class PinManagementCoordinator @Inject constructor(
                             logger.debug("Old and new PIN requested for a second time. The old PIN seems to be incorrect.")
                             _scanInProgress.value = false
                             navigator.navigate(SetupTransportPinDestination(true))
-                            navigator.stopNfcTagHandling()
+//                            navigator.stopNfcTagHandling()
                             cancelPinManagement()
                             firstOldPinRequest = true
                         }
@@ -204,7 +204,7 @@ class PinManagementCoordinator @Inject constructor(
 
                         navigator.navigate(destination)
                         idCardManager.cancelTask()
-                        navigator.stopNfcTagHandling()
+//                        navigator.stopNfcTagHandling()
                         stateFlow.emit(SubFlowState.Cancelled)
                         stateFlow.emit(SubFlowState.Idle)
                         cancel()

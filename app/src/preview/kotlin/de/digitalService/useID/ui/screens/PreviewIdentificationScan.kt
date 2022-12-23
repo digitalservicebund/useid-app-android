@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
@@ -72,7 +73,11 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestPin(2) {})
+            idCardManager.injectEvent(EidInteractionEvent.RequestPin(2) {
+                viewModelScope.launch(Dispatchers.Main) {
+                    idCardManager.injectEvent(EidInteractionEvent.RequestCardInsertion)
+                }
+            })
         }
     }
 
@@ -143,13 +148,11 @@ fun PreviewPreviewIdentificationScan() {
             ),
             object : IdentificationScanViewModelInterface {
                 override val shouldShowProgress: Boolean = false
-                override val errorState: ScanError.IncorrectPin? = null
 
                 override fun onHelpButtonClicked() {}
                 override fun onNfcButtonClicked() {}
                 override fun onErrorDialogButtonClicked(context: Context) {}
                 override fun onCancelIdentification() {}
-                override fun onNewPersonalPinEntered(pin: String) {}
             }
         )
     }

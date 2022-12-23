@@ -24,20 +24,20 @@ class CanCoordinator @Inject constructor(
     }
 
     fun onNewPin() {
-        appCoordinator.navigate(SetupResetPersonalPinDestination)
+//        appCoordinator.navigate(SetupResetPersonalPinDestination)
     }
 
     fun startCanFlow() {
-        appCoordinator.navigate(IdentificationCanIntroDestination)
+//        appCoordinator.navigate(IdentificationCanIntroDestination)
     }
 
     fun continueAfterIntro() {
-        appCoordinator.navigate(IdentificationCanInputDestination)
+//        appCoordinator.navigate(IdentificationCanInputDestination)
     }
 
     fun onCanEntered(can: String) {
         this.can = can
-        appCoordinator.navigate(IdentificationCanPinInputDestination)
+//        appCoordinator.navigate(IdentificationCanPinInputDestination)
     }
 
     fun onPinEntered(pin: String) {
@@ -48,10 +48,10 @@ class CanCoordinator @Inject constructor(
 
         this.pin = pin
 
-        identificationCoordinator.onCanPinEntered(pin, can)
+//        identificationCoordinator.onCanPinEntered(pin, can)
     }
 
     fun onBack() {
-        appCoordinator.pop()
+//        appCoordinator.pop()
     }
 }

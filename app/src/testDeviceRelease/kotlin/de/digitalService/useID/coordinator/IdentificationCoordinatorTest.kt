@@ -73,7 +73,7 @@ class IdentificationCoordinatorTest {
                 .scheme("http")
                 .encodedAuthority("127.0.0.1:24727")
                 .appendPath("eID-Client")
-                .appendQueryParameter("tcTokenURL", testTokenURL)
+                .appendQueryParameter("tcTokenUrl", testTokenURL)
         } returns mockUriBuilder
 
         val mockedUri = mockk<Uri>()

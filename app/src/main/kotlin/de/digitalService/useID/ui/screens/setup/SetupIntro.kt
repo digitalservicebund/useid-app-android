@@ -26,13 +26,13 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
     ScreenWithTopBar(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
-            confirmation = Flow.Identification.takeIf { viewModel.shouldShowConfirmCancelDialog },
+            confirmation = Flow.Identification.takeIf { viewModel.confirmCancellation },
             onClick = viewModel::onCancelSetup,
         )
     ) { topPadding ->
-        LaunchedEffect(Unit) {
-            viewModel.onInitScreen()
-        }
+//        LaunchedEffect(Unit) {
+//            viewModel.onInitScreen()
+//        }
 
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_intro_title),
@@ -54,12 +54,13 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
 }
 
 data class SetupIntroNavArgs(
-    val tcTokenURL: String?
+//    val tcTokenUrl: String?
+    val confirmCancellation: Boolean
 )
 
 interface SetupIntroViewModelInterface {
-    val shouldShowConfirmCancelDialog: Boolean
-    fun onInitScreen()
+    val confirmCancellation: Boolean
+//    fun onInitScreen()
     fun onFirstTimeUsage()
     fun onNonFirstTimeUsage()
     fun onCancelSetup()
@@ -71,28 +72,29 @@ class SetupIntroViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), SetupIntroViewModelInterface {
 
-    override val shouldShowConfirmCancelDialog: Boolean
-        get() = tcTokenURL != null
+    override val confirmCancellation: Boolean
+//        get() = tcTokenUrl != null
 
-    private val tcTokenURL: String?
-
+//    private val tcTokenUrl: String?
+//
     init {
-        tcTokenURL = SetupIntroDestination.argsFrom(savedStateHandle).tcTokenURL
+//        tcTokenUrl = SetupIntroDestination.argsFrom(savedStateHandle).tcTokenUrl
+        confirmCancellation = SetupIntroDestination.argsFrom(savedStateHandle).confirmCancellation
     }
 
-    // TODO: Move that into initializer?
-    override fun onInitScreen() {
-        tcTokenURL?.let {
-            setupCoordinator.setTCTokenURL(it)
-        }
-    }
+//    // TODO: Move that into initializer?
+//    override fun onInitScreen() {
+//        tcTokenUrl?.let {
+//            setupCoordinator.setTCTokenUrl(it)
+//        }
+//    }
 
     override fun onFirstTimeUsage() {
         setupCoordinator.startSetupIdCard()
     }
 
     override fun onNonFirstTimeUsage() {
-        setupCoordinator.finishSetup()
+        setupCoordinator.skipSetup()
     }
 
     override fun onCancelSetup() {
@@ -102,8 +104,8 @@ class SetupIntroViewModel @Inject constructor(
 
 //region Preview
 private class PreviewSetupIntroViewModel : SetupIntroViewModelInterface {
-    override val shouldShowConfirmCancelDialog: Boolean = false
-    override fun onInitScreen() {}
+    override val confirmCancellation: Boolean = false
+//    override fun onInitScreen() {}
     override fun onFirstTimeUsage() {}
     override fun onNonFirstTimeUsage() {}
     override fun onCancelSetup() {}
