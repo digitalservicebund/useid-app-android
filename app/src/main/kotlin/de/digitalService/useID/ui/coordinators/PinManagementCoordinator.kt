@@ -7,6 +7,7 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
@@ -21,10 +22,6 @@ import javax.inject.Singleton
 
 enum class PinStatus {
     TransportPin, PersonalPin
-}
-
-enum class SubFlowState {
-    Idle, Active, Finished, Cancelled
 }
 
 @Singleton
@@ -49,9 +46,9 @@ class PinManagementCoordinator @Inject constructor(
     val scanInProgress: Flow<Boolean>
         get() = _scanInProgress
 
-    private val stateFlow: MutableStateFlow<SubFlowState> = MutableStateFlow(SubFlowState.Idle)
+    private val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
 
-    fun startPinManagement(pinStatus: PinStatus): Flow<SubFlowState> {
+    fun startPinManagement(pinStatus: PinStatus): Flow<SubCoordinatorState> {
         oldPin = null
         newPin = null
         firstOldPinRequest = true
@@ -64,7 +61,7 @@ class PinManagementCoordinator @Inject constructor(
             PinStatus.PersonalPin -> throw NotImplementedError("Pin Management for personal PIN not implemented yet.")
         }
 
-        stateFlow.value = SubFlowState.Active
+        stateFlow.value = SubCoordinatorState.Active
         return stateFlow
     }
 
@@ -129,7 +126,6 @@ class PinManagementCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-//                        navigator.startNfcTagHandling()
                         navigator.navigatePopping(SetupScanDestination)
                     }
                     EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
@@ -144,7 +140,7 @@ class PinManagementCoordinator @Inject constructor(
                     EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
                         logger.debug("Process completed successfully.")
                         _scanInProgress.value = false
-                        stateFlow.emit(SubFlowState.Finished)
+                        stateFlow.emit(SubCoordinatorState.Finished)
                     }
                     is EidInteractionEvent.RequestChangedPin -> {
                         if (firstOldPinRequest) {
@@ -166,7 +162,6 @@ class PinManagementCoordinator @Inject constructor(
                             logger.debug("Old and new PIN requested for a second time. The old PIN seems to be incorrect.")
                             _scanInProgress.value = false
                             navigator.navigate(SetupTransportPinDestination(true))
-//                            navigator.stopNfcTagHandling()
                             cancelPinManagement()
                             firstOldPinRequest = true
                         }
@@ -204,9 +199,8 @@ class PinManagementCoordinator @Inject constructor(
 
                         navigator.navigate(destination)
                         idCardManager.cancelTask()
-//                        navigator.stopNfcTagHandling()
-                        stateFlow.emit(SubFlowState.Cancelled)
-                        stateFlow.emit(SubFlowState.Idle)
+                        stateFlow.emit(SubCoordinatorState.Cancelled)
+                        stateFlow.emit(SubCoordinatorState.Idle)
                         cancel()
                     }
                     else -> logger.debug("Ignoring event: $event")

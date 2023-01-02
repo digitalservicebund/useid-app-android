@@ -12,6 +12,7 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.*
@@ -39,19 +40,16 @@ class IdentificationCoordinator @Inject constructor(
         get() = _scanInProgress
 
     private var requestAuthenticationEvent: EidInteractionEvent.RequestAuthenticationRequestConfirmation? = null
-    private var attributesConfirmed = false
     private var pinCallback: ((String) -> Unit)? = null
-//    private var pinCanCallback: ((String, String) -> Unit)? = null
 
     private var reachedScanState = false
-//    private var incorrectPin: Boolean = false
 
     private var setupSkipped by Delegates.notNull<Boolean>()
     private lateinit var identificationUrl: String
 
     private var eIdEventFlowCoroutineScope: Job? = null
 
-    val stateFlow: MutableStateFlow<SubFlowState> = MutableStateFlow(SubFlowState.Idle)
+    val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
 
     fun startIdentificationProcess(tcTokenUrl: String, setupSkipped: Boolean) {
         this.setupSkipped = setupSkipped
@@ -70,12 +68,12 @@ class IdentificationCoordinator @Inject constructor(
     private fun executeIdentification() {
         logger.debug("Start identification process.")
 
-        stateFlow.value = SubFlowState.Active
+        stateFlow.value = SubCoordinatorState.Active
 
         eIdEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
         reachedScanState = false
-        attributesConfirmed = false
+        requestAuthenticationEvent = null
         pinCallback = null
 
         collectEidEvents()
@@ -83,27 +81,19 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     fun confirmAttributesForIdentification() {
-        if (!attributesConfirmed) {
-            val requestAuthenticationEvent = requestAuthenticationEvent ?: run {
-                logger.debug("No confirmation event saved. Attributes might have been confirmed before.")
-
-                logger.error("Not implemented.")
-//            navigator.navigate(IdentificationPersonalPinDestination(false))
-                return
-            }
-
-            attributesConfirmed = true
-            val requiredAttributes = requestAuthenticationEvent.request.readAttributes.filterValues { it }
+        requestAuthenticationEvent?.let { requestAuthenticationEvent ->
+            val requiredAttributes =
+                requestAuthenticationEvent.request.readAttributes.filterValues { it }
             requestAuthenticationEvent.confirmationCallback(requiredAttributes)
             this.requestAuthenticationEvent = null
+        } ?: run {
+            logger.debug("No confirmation event saved. Attributes have been confirmed before.")
+
+            navigator.navigate(IdentificationPersonalPinDestination(false))
         }
     }
 
     fun setPin(pin: String) {
-//        if (incorrectPin) {
-//            appCoordinator.pop()
-//        }
-
         val pinCallback = pinCallback ?: run {
             logger.error("Cannot process PIN because there isn't any pin callback saved.")
             return
@@ -112,23 +102,7 @@ class IdentificationCoordinator @Inject constructor(
         logger.debug("Executing PIN callback.")
         pinCallback(pin)
         this.pinCallback = null
-//        incorrectPin = false
     }
-
-//    fun onCanPinEntered(pin: String, can: String) {
-//        val pinCanCallback = pinCanCallback ?: run {
-//            logger.error("Cannot process CAN and PIN because there isn't any can/pin callback saved.")
-//            return
-//        }
-//
-//        appCoordinator.navigate(IdentificationScanDestination)
-//        pinCanCallback(pin, can)
-//    }
-
-//    private fun onIncorrectPersonalPin(attempts: Int) {
-//        incorrectPin = true
-//        appCoordinator.navigate(IdentificationPersonalPinDestination(true))
-//    }
 
     fun onBack() {
         navigator.pop()
@@ -140,17 +114,13 @@ class IdentificationCoordinator @Inject constructor(
 
     fun cancelIdentification() {
         logger.debug("Cancel identification process.")
-//        navigator.stopNfcTagHandling()
+
         eIdEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
 
-//        if (didSetup && !reachedScanState) {
-//            navigator.popUpTo(SetupIntroDestination)
-//        } else {
-            navigator.popToRoot()
-//        }
+        navigator.popToRoot()
 
-        stateFlow.value = SubFlowState.Cancelled
+        stateFlow.value = SubCoordinatorState.Cancelled
     }
 
     private fun finishIdentification(redirectUrl: String) {
@@ -165,7 +135,7 @@ class IdentificationCoordinator @Inject constructor(
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         ContextCompat.startActivity(context, intent, null)
 
-        stateFlow.value = SubFlowState.Finished
+        stateFlow.value = SubCoordinatorState.Finished
     }
 
     private fun collectEidEvents() {
@@ -175,10 +145,7 @@ class IdentificationCoordinator @Inject constructor(
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-                    is EidInteractionEvent.AuthenticationStarted -> {
-                        logger.debug("Authentication started.")
-                        navigator.navigate(IdentificationFetchMetadataDestination(setupSkipped))
-                    }
+                    is EidInteractionEvent.AuthenticationStarted -> navigator.navigate(IdentificationFetchMetadataDestination(setupSkipped))
                     is EidInteractionEvent.RequestAuthenticationRequestConfirmation -> {
                         logger.debug("Requesting authentication confirmation")
                         requestAuthenticationEvent = event
@@ -221,7 +188,7 @@ class IdentificationCoordinator @Inject constructor(
                         _scanInProgress.value = false
                         navigator.navigate(IdentificationCardSuspendedDestination)
                         idCardManager.cancelTask()
-                        stateFlow.value = SubFlowState.Cancelled
+                        stateFlow.value = SubCoordinatorState.Cancelled
                         cancel()
                     }
                     is EidInteractionEvent.RequestPUK -> {
@@ -229,7 +196,7 @@ class IdentificationCoordinator @Inject constructor(
                         _scanInProgress.value = false
                         navigator.navigate(IdentificationCardBlockedDestination)
                         idCardManager.cancelTask()
-                        stateFlow.value = SubFlowState.Cancelled
+                        stateFlow.value = SubCoordinatorState.Cancelled
                         cancel()
                     }
                     is EidInteractionEvent.Error -> {
