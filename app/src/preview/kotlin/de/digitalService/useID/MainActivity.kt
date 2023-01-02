@@ -10,8 +10,7 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
-import de.digitalService.useID.ui.coordinators.AppNavigator
-import de.digitalService.useID.ui.coordinators.Navigator
+import de.digitalService.useID.ui.navigation.Navigator
 import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

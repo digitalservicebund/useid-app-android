@@ -20,6 +20,7 @@ import de.digitalService.useID.ui.screens.identification.IdentificationFetchMeta
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModel
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
 import de.digitalService.useID.ui.theme.UseIdTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.openecard.mobile.activation.ActivationResultCode
@@ -67,10 +68,10 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
                         readAttributes = IdCardAttribute.values().associateWith { true }
                     )
                 ) {
-                    viewModelScope.launch {
+                    CoroutineScope(Dispatchers.Main).launch {
                         getLogger().value.debug("request pin")
                         idCardManager.injectEvent(EidInteractionEvent.RequestPin(null) {
-                            viewModelScope.launch {
+                            CoroutineScope(Dispatchers.Main).launch {
                                 idCardManager.injectEvent(EidInteractionEvent.RequestCardInsertion)
                             }
                         })
@@ -95,9 +96,8 @@ fun PreviewPreviewIdentificationFetchMetadata() {
         PreviewIdentificationFetchMetadata(
             PreviewIdentificationFetchMetadataViewModel(IdCardManager(), PreviewTrackerManager()),
             object : IdentificationFetchMetadataViewModelInterface {
-                override fun startIdentificationProcess() {}
-                override fun onCancelButtonClicked() {}
-                override val didSetup: Boolean = false
+                override val backAllowed: Boolean = false
+                override fun onNavigationButtonClicked() {}
             }
         )
     }

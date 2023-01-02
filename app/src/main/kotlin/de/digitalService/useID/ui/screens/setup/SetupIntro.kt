@@ -30,10 +30,6 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
             onClick = viewModel::onCancelSetup,
         )
     ) { topPadding ->
-//        LaunchedEffect(Unit) {
-//            viewModel.onInitScreen()
-//        }
-
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_intro_title),
             body = stringResource(id = R.string.firstTimeUser_intro_body),
@@ -54,13 +50,11 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
 }
 
 data class SetupIntroNavArgs(
-//    val tcTokenUrl: String?
     val confirmCancellation: Boolean
 )
 
 interface SetupIntroViewModelInterface {
     val confirmCancellation: Boolean
-//    fun onInitScreen()
     fun onFirstTimeUsage()
     fun onNonFirstTimeUsage()
     fun onCancelSetup()
@@ -73,21 +67,10 @@ class SetupIntroViewModel @Inject constructor(
 ) : ViewModel(), SetupIntroViewModelInterface {
 
     override val confirmCancellation: Boolean
-//        get() = tcTokenUrl != null
 
-//    private val tcTokenUrl: String?
-//
     init {
-//        tcTokenUrl = SetupIntroDestination.argsFrom(savedStateHandle).tcTokenUrl
         confirmCancellation = SetupIntroDestination.argsFrom(savedStateHandle).confirmCancellation
     }
-
-//    // TODO: Move that into initializer?
-//    override fun onInitScreen() {
-//        tcTokenUrl?.let {
-//            setupCoordinator.setTCTokenUrl(it)
-//        }
-//    }
 
     override fun onFirstTimeUsage() {
         setupCoordinator.startSetupIdCard()
@@ -105,7 +88,6 @@ class SetupIntroViewModel @Inject constructor(
 //region Preview
 private class PreviewSetupIntroViewModel : SetupIntroViewModelInterface {
     override val confirmCancellation: Boolean = false
-//    override fun onInitScreen() {}
     override fun onFirstTimeUsage() {}
     override fun onNonFirstTimeUsage() {}
     override fun onCancelSetup() {}

@@ -2,11 +2,11 @@ package de.digitalService.useID.ui.coordinators
 
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.getLogger
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,13 +25,13 @@ class SetupCoordinator @Inject constructor(
     val identificationPending: Boolean
         get() = this.tcTokenUrl != null
 
-    val stateFlow: MutableStateFlow<SubFlowState> = MutableStateFlow(SubFlowState.Idle)
+    val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
 
     private var subFlowCoroutineScope: Job? = null
     private var identificationStateCoroutineScope: Job? = null
 
     fun showSetupIntro(tcTokenUrl: String?) {
-        stateFlow.value = SubFlowState.Active
+        stateFlow.value = SubCoordinatorState.Active
         this.tcTokenUrl = tcTokenUrl
         navigator.navigate(SetupIntroDestination(tcTokenUrl != null))
     }
@@ -45,8 +45,8 @@ class SetupCoordinator @Inject constructor(
         subFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             pinManagementCoordinator.startPinManagement(PinStatus.TransportPin).collect { event ->
                 when (event) {
-                    SubFlowState.Cancelled -> cancelSetup()
-                    SubFlowState.Finished -> onSuccessfulPinManagement()
+                    SubCoordinatorState.Cancelled -> cancelSetup()
+                    SubCoordinatorState.Finished -> onSuccessfulPinManagement()
                     else -> logger.debug("Ignoring sub flow event: $event")
                 }
             }
@@ -83,7 +83,7 @@ class SetupCoordinator @Inject constructor(
         navigator.popToRoot()
         tcTokenUrl = null
 
-        stateFlow.value = SubFlowState.Cancelled
+        stateFlow.value = SubCoordinatorState.Cancelled
     }
 
     private fun finishSetup(skipped: Boolean) {
@@ -93,11 +93,11 @@ class SetupCoordinator @Inject constructor(
             identificationStateCoroutineScope = CoroutineScope(coroutineContextProvider.Default).launch {
                 identificationCoordinator.stateFlow.collect { state ->
                     when (state) {
-                        SubFlowState.Finished -> {
+                        SubCoordinatorState.Finished -> {
                             tcTokenUrl = null
                             cancel()
                         }
-                        SubFlowState.Cancelled -> cancel()
+                        SubCoordinatorState.Cancelled -> cancel()
                         else -> logger.debug("Ignoring sub flow state: $state")
                     }
                 }
@@ -108,6 +108,6 @@ class SetupCoordinator @Inject constructor(
             navigator.popToRoot()
         }
 
-        stateFlow.value = SubFlowState.Finished
+        stateFlow.value = SubCoordinatorState.Finished
     }
 }

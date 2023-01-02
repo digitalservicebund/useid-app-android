@@ -17,7 +17,7 @@ import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
-import de.digitalService.useID.ui.coordinators.Navigator
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.screens.noNfc.NfcDeactivatedScreen
@@ -103,10 +103,8 @@ private class PreviewAppCoordinator(
     override val currentlyHandlingNfcTags: Boolean
 ) : AppCoordinatorType {
     override fun offerIdSetup(tcTokenUrl: String?) {}
-//    override fun startIdentification(tcTokenUrl: String, didSetup: Boolean) {}
     override fun homeScreenLaunched() {}
     override fun setNfcAvailability(availability: NfcAvailability) {}
-    override fun setIsNotFirstTimeUser() {}
     override fun handleDeepLink(uri: Uri) {}
 }
 

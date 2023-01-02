@@ -12,8 +12,8 @@ import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
-import de.digitalService.useID.ui.coordinators.AppNavigator
-import de.digitalService.useID.ui.coordinators.Navigator
+import de.digitalService.useID.ui.navigation.AppNavigator
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.CoroutineContextProviderType
 import de.digitalService.useID.util.CurrentTimeProvider

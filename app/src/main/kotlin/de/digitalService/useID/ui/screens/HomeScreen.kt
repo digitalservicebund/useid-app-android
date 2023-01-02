@@ -27,7 +27,7 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.components.BundButton
 import de.digitalService.useID.ui.components.ButtonType
 import de.digitalService.useID.ui.coordinators.AppCoordinator
-import de.digitalService.useID.ui.coordinators.Navigator
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.theme.*
 import javax.inject.Inject
