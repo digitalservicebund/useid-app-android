@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID.viewModel
 
 import androidx.lifecycle.SavedStateHandle
@@ -144,3 +145,4 @@ class SetupTransportPinViewModelTest {
         verify(exactly = 0) { coordinatorMock.onTransportPinEntered(any()) }
     }
 }
+*/

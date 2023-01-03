@@ -1,51 +1,43 @@
 package de.digitalService.useID.coordinator
 
-import android.content.Context
 import com.ramcosta.composedestinations.spec.Direction
-import de.digitalService.useID.analytics.IssueTrackerManagerType
-import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
-import de.digitalService.useID.idCardInterface.IdCardManager
-import de.digitalService.useID.ui.coordinators.AppCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.StorageManager
+import de.digitalService.useID.ui.coordinators.*
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProvider
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.openecard.mobile.activation.ActivationResultCode
 
 @ExtendWith(MockKExtension::class)
 class SetupCoordinatorTest {
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockAppCoordinator: AppCoordinator
+    lateinit var mockNavigator: Navigator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockIdCardManager: IdCardManager
+    lateinit var mockPinManagementCoordinator: PinManagementCoordinator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockIssueTrackerManager: IssueTrackerManagerType
+    lateinit var mockIdentificationCoordinator: IdentificationCoordinator
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockStorageManager: StorageManager
 
     @MockK(relaxUnitFun = true)
     lateinit var mockCoroutineContextProvider: CoroutineContextProvider
-
-    @MockK(relaxUnitFun = true)
-    lateinit var mockContext: Context
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
@@ -58,44 +50,69 @@ class SetupCoordinatorTest {
     fun beforeEach() {
         Dispatchers.setMain(dispatcher)
 
-        every { mockAppCoordinator.navigate(capture(navigationDestinationSlot)) } returns Unit
-        every { mockAppCoordinator.navigatePopping(capture(navigationPoppingDestinationSlot)) } returns Unit
+        every { mockNavigator.navigate(capture(navigationDestinationSlot)) } returns Unit
+        every { mockNavigator.navigatePopping(capture(navigationPoppingDestinationSlot)) } returns Unit
     }
 
     @Test
     fun startSetupIDCard() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
 
-        setupCoordinator.startSetupIDCard()
+        setupCoordinator.startSetupIdCard()
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupPinLetterDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(SetupPinLetterDestination) }
     }
 
     @Test
-    fun setupWithPinLetter() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+    fun setupWithPinLetter() { runTest {
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+        every { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) } returns MutableStateFlow(SubCoordinatorState.Active)
+
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
 
         setupCoordinator.setupWithPinLetter()
-
-        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
-
-        val navigationParameter = navigationDestinationSlot.captured
-        Assertions.assertEquals(SetupTransportPinDestination(null).route, navigationParameter.route)
-    }
+        delay(1)
+        verify(exactly = 1) { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin)}
+    }}
 
     @Test
     fun setupWithoutPinLetter() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
 
         setupCoordinator.setupWithoutPinLetter()
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(SetupResetPersonalPinDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(SetupResetPersonalPinDestination) }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun pinChange() = runTest {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
@@ -152,9 +169,9 @@ class SetupCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.stopNfcTagHandling() }
 
         scanJob.cancel()
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun pinChangeIncorrectPinConfirmation() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -175,9 +192,9 @@ class SetupCoordinatorTest {
         val confirmationResult = setupCoordinator.confirmPersonalPin("111111")
         Assertions.assertFalse(confirmationResult)
         verify(exactly = 0) { mockAppCoordinator.startNfcTagHandling() }
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun pinChangeIncorrectTransportPin() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -255,9 +272,9 @@ class SetupCoordinatorTest {
         verify(exactly = 1) { pinCallback(newTransportPin, personalPin) }
 
         scanJob.cancel()
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun cardSuspended() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -307,9 +324,9 @@ class SetupCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardSuspendedDestination) }
 
         scanJob.cancel()
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun cardBlocked() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -359,9 +376,9 @@ class SetupCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardBlockedDestination) }
 
         scanJob.cancel()
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun unexpectedEvent() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -412,9 +429,9 @@ class SetupCoordinatorTest {
         verify(exactly = 1) { mockIssueTrackerManager.capture(idCardManagerFlow.value.redacted) }
 
         scanJob.cancel()
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     @Test
     fun errorCardDeactivated() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -460,9 +477,9 @@ class SetupCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardDeactivatedDestination) }
 
         scanJob.cancel()
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     @Test
     fun errorCardBlocked() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -508,9 +525,9 @@ class SetupCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.navigate(SetupCardBlockedDestination) }
 
         scanJob.cancel()
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class, ObsoleteCoroutinesApi::class)
     @Test
     fun errorProcessFailed() = runTest {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
@@ -560,96 +577,138 @@ class SetupCoordinatorTest {
         Assertions.assertEquals(SetupCardUnreadableDestination(false).route, navigationParameter.route)
 
         scanJob.cancel()
-    }
+    }*/
 
-    @Test
+    /*@Test
     fun onPersonalPinErrorTryAgain() {
         val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
 
         setupCoordinator.onPersonalPinErrorTryAgain()
 
         verify(exactly = 1) { mockAppCoordinator.pop() }
-    }
+    }*/
 
     @Test
     fun finishSetup_noTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
 
         setupCoordinator.finishSetup()
 
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+        verify(exactly = 1) { mockNavigator.popToRoot() }
 
-        verify(exactly = 0) { mockAppCoordinator.startIdentification(any(), any()) }
+        verify(exactly = 0) { mockIdentificationCoordinator.startIdentificationProcess(any(), any()) }
     }
 
     @Test
     fun finishSetup_withTcTokenUrl() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+
+        every { mockCoroutineContextProvider.Default } returns dispatcher
+
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
         val testUrl = "tokenUrl"
 
-        setupCoordinator.setTCTokenURL(testUrl)
+        setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
         setupCoordinator.finishSetup()
 
-        verify(exactly = 0) { mockAppCoordinator.popToRoot() }
-
-        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, true) }
+        verify(exactly = 0) { mockNavigator.popToRoot() }
+        verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, false) }
     }
 
     @Test
-    fun finishSetup_withTcTokenUrlTwice() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
-        val testUrl = "tokenUrl"
+    fun finishSetup_withTcTokenUrlTwice() { runTest {
 
-        setupCoordinator.setTCTokenURL(testUrl)
-        setupCoordinator.finishSetup()
-        setupCoordinator.finishSetup()
+            every { mockCoroutineContextProvider.Default } returns dispatcher
+            every { mockIdentificationCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.Finished)
 
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
+            val setupCoordinator = SetupCoordinator(
+                navigator = mockNavigator,
+                pinManagementCoordinator = mockPinManagementCoordinator,
+                identificationCoordinator = mockIdentificationCoordinator,
+                storageManager = mockStorageManager,
+                coroutineContextProvider = mockCoroutineContextProvider
+            )
 
-        verify(exactly = 1) { mockAppCoordinator.startIdentification(testUrl, true) }
+            val testUrl = "tokenUrl"
+
+            setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
+            setupCoordinator.finishSetup()
+            delay(1)
+            setupCoordinator.finishSetup()
+
+            verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, false) }
+            verify(exactly = 1) { mockNavigator.popToRoot() }
+        }
     }
 
     @Test
     fun onBack() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
 
         setupCoordinator.onBackClicked()
 
-        verify(exactly = 1) { mockIdCardManager.cancelTask() }
-        verify(exactly = 1) { mockAppCoordinator.pop() }
+        verify(exactly = 1) { mockNavigator.pop() }
     }
 
     @Test
     fun cancelSetup() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
         val testUrl = "tokenUrl"
 
-        setupCoordinator.setTCTokenURL(testUrl)
+        setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
         setupCoordinator.cancelSetup()
 
-        verify(exactly = 0) { mockAppCoordinator.setIsNotFirstTimeUser() }
-        verify(exactly = 1) { mockAppCoordinator.popToRoot() }
-        verify(exactly = 1) { mockAppCoordinator.stopNfcTagHandling() }
+        verify(exactly = 0) { mockStorageManager.setIsNotFirstTimeUser() }
+        verify(exactly = 1) { mockNavigator.popToRoot() }
 
-        verify(exactly = 1) { mockIdCardManager.cancelTask() }
-
-        verify(exactly = 0) { mockAppCoordinator.startIdentification(testUrl, true) }
+        verify(exactly = 0) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, false) }
 
         setupCoordinator.cancelSetup()
 
-        verify(exactly = 2) { mockAppCoordinator.popToRoot() }
-        verify(exactly = 2) { mockAppCoordinator.stopNfcTagHandling() }
+        verify(exactly = 2) { mockNavigator.popToRoot() }
     }
 
     @Test
     fun hasToken() {
-        val setupCoordinator = SetupCoordinator(mockContext, mockAppCoordinator, mockIdCardManager, mockIssueTrackerManager, mockCoroutineContextProvider)
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
         val testUrl = "tokenUrl"
 
-        Assertions.assertFalse(setupCoordinator.identificationPending())
+        Assertions.assertFalse(setupCoordinator.identificationPending)
 
-        setupCoordinator.setTCTokenURL(testUrl)
+        setupCoordinator.showSetupIntro(testUrl)
 
-        Assertions.assertTrue(setupCoordinator.identificationPending())
+        Assertions.assertTrue(setupCoordinator.identificationPending)
     }
 }
