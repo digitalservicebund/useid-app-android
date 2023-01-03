@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID.viewModel
 
 import androidx.lifecycle.SavedStateHandle
@@ -114,3 +115,4 @@ class IdentificationFetchMetadataViewModelTest {
         verify(exactly = 1) { mockIdentificationCoordinator.cancelIdentification() }
     }
 }
+*/

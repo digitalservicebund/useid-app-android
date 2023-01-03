@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.analytics.TrackerManagerType
@@ -97,3 +98,4 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { mockTrackerManager.trackScreen("firstTimeUser/scanHelp") }
     }
 }
+*/

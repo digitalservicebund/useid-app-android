@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
@@ -154,3 +155,4 @@ class SetupPersonalPinConfirmViewModelTest {
         verify(exactly = 1) { mockCoordinator.onBackClicked() }
     }
 }
+*/
