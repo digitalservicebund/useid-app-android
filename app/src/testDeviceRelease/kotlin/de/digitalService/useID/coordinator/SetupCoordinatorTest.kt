@@ -14,6 +14,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.jupiter.api.Assertions
@@ -70,10 +71,12 @@ class SetupCoordinatorTest {
     }
 
     @Test
-    fun setupWithPinLetter() { runTest {
+    fun setupWithPinLetterCanceled() = runTest {
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
-        every { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) } returns MutableStateFlow(SubCoordinatorState.Active)
+
+        val pinManagementFlow = MutableStateFlow(SubCoordinatorState.Active)
+        every { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) } returns pinManagementFlow
 
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
@@ -84,9 +87,39 @@ class SetupCoordinatorTest {
         )
 
         setupCoordinator.setupWithPinLetter()
-        delay(1)
-        verify(exactly = 1) { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin)}
-    }}
+        advanceUntilIdle()
+        verify(exactly = 1) { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) }
+
+        pinManagementFlow.value = SubCoordinatorState.Cancelled
+        advanceUntilIdle()
+        verify(exactly = 1) { setupCoordinator.cancelSetup() }
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+    }
+
+    @Test
+    fun setupWithPinLetterSuccessful() = runTest {
+
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val pinManagementFlow = MutableStateFlow(SubCoordinatorState.Active)
+        every { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) } returns pinManagementFlow
+
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        setupCoordinator.setupWithPinLetter()
+        advanceUntilIdle()
+        verify(exactly = 1) { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) }
+
+        pinManagementFlow.value = SubCoordinatorState.Finished
+        advanceUntilIdle()
+        verify(exactly = 1) { mockNavigator.navigate(SetupFinishDestination) }
+    }
 
     @Test
     fun setupWithoutPinLetter() {
@@ -113,17 +146,21 @@ class SetupCoordinatorTest {
             coroutineContextProvider = mockCoroutineContextProvider
         )
 
+        setupCoordinator.showSetupIntro(null)
+        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
         setupCoordinator.finishSetup()
 
         verify(exactly = 1) { mockNavigator.popToRoot() }
-
-        verify(exactly = 0) { mockIdentificationCoordinator.startIdentificationProcess(any(), any()) }
+        Assertions.assertEquals(SubCoordinatorState.Finished, setupCoordinator.stateFlow.value)
     }
 
     @Test
-    fun finishSetupWithTcTokenUrl() {
+    fun finishSetupWithTcTokenUrl() = runTest {
 
         every { mockCoroutineContextProvider.Default } returns dispatcher
+
+        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Idle)
+        every { mockIdentificationCoordinator.stateFlow } returns identificationCoordinatorFlow
 
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
@@ -136,36 +173,15 @@ class SetupCoordinatorTest {
         val testUrl = "tokenUrl"
 
         setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
+        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
         setupCoordinator.finishSetup()
 
         verify(exactly = 0) { mockNavigator.popToRoot() }
         verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, false) }
-    }
 
-    @Test
-    fun finishSetupWithTcTokenUrlTwice() { runTest {
-
-            every { mockCoroutineContextProvider.Default } returns dispatcher
-            every { mockIdentificationCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.Finished)
-
-            val setupCoordinator = SetupCoordinator(
-                navigator = mockNavigator,
-                pinManagementCoordinator = mockPinManagementCoordinator,
-                identificationCoordinator = mockIdentificationCoordinator,
-                storageManager = mockStorageManager,
-                coroutineContextProvider = mockCoroutineContextProvider
-            )
-
-            val testUrl = "tokenUrl"
-
-            setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
-            setupCoordinator.finishSetup()
-            delay(1)
-            setupCoordinator.finishSetup()
-
-            verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, false) }
-            verify(exactly = 1) { mockNavigator.popToRoot() }
-        }
+        identificationCoordinatorFlow.value = SubCoordinatorState.Finished
+        advanceUntilIdle()
+        Assertions.assertEquals(false, setupCoordinator.identificationPending)
     }
 
     @Test
@@ -184,7 +200,7 @@ class SetupCoordinatorTest {
     }
 
     @Test
-    fun cancelSetup() {
+    fun cancelSetup() = runTest {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
             pinManagementCoordinator = mockPinManagementCoordinator,
@@ -196,16 +212,12 @@ class SetupCoordinatorTest {
         val testUrl = "tokenUrl"
 
         setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
+        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
         setupCoordinator.cancelSetup()
 
-        verify(exactly = 0) { mockStorageManager.setIsNotFirstTimeUser() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
-
-        verify(exactly = 0) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, false) }
-
-        setupCoordinator.cancelSetup()
-
-        verify(exactly = 2) { mockNavigator.popToRoot() }
+        advanceUntilIdle()
+        Assertions.assertEquals(SubCoordinatorState.Cancelled, setupCoordinator.stateFlow.value)
     }
 
     @Test
