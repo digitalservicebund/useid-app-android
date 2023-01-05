@@ -221,6 +221,33 @@ class SetupCoordinatorTest {
     }
 
     @Test
+    fun skipSetup() {
+        every { mockCoroutineContextProvider.Default } returns dispatcher
+
+        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Idle)
+        every { mockIdentificationCoordinator.stateFlow } returns identificationCoordinatorFlow
+
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        val testUrl = "tokenUrl"
+
+        setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
+        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
+        setupCoordinator.skipSetup()
+
+        verify(exactly = 0) { mockNavigator.popToRoot() }
+        verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, true) }
+
+        identificationCoordinatorFlow.value = SubCoordinatorState.Finished
+    }
+
+    @Test
     fun hasToken() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
