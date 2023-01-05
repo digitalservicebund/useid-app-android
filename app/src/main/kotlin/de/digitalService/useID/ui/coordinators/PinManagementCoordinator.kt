@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
+import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
@@ -102,14 +103,22 @@ class PinManagementCoordinator @Inject constructor(
         executePinManagement()
     }
 
-    fun cancelPinManagement() {
+    fun cancelIdCardManagerTasks() {
         eIdEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
     }
 
     fun onBack() {
         navigator.pop()
-        cancelPinManagement()
+        cancelIdCardManagerTasks()
+    }
+
+    private fun cancelPinManagementAndNavigate(destination: Direction) {
+        _scanInProgress.value = false
+        navigator.navigate(destination)
+        cancelIdCardManagerTasks()
+        stateFlow.value = SubCoordinatorState.Cancelled
+        stateFlow.value = SubCoordinatorState.Idle
     }
 
     private fun executePinManagement() {
@@ -162,32 +171,19 @@ class PinManagementCoordinator @Inject constructor(
                             logger.debug("Old and new PIN requested for a second time. The old PIN seems to be incorrect.")
                             _scanInProgress.value = false
                             navigator.navigate(SetupTransportPinDestination(true))
-                            cancelPinManagement()
+                            cancelIdCardManagerTasks()
                             firstOldPinRequest = true
                         }
                     }
-                    is EidInteractionEvent.RequestCanAndChangedPin -> {
-                        _scanInProgress.value = false
-                        navigator.navigate(SetupCardSuspendedDestination)
-                        cancel()
-                    }
-                    is EidInteractionEvent.RequestPUK -> {
-                        _scanInProgress.value = false
-                        navigator.navigate(SetupCardBlockedDestination)
-                        cancel()
-                    }
+                    is EidInteractionEvent.RequestCanAndChangedPin -> cancelPinManagementAndNavigate(SetupCardSuspendedDestination)
+                    is EidInteractionEvent.RequestPUK -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
+                    is EidInteractionEvent.AuthenticationSuccessful -> cancelPinManagementAndNavigate(SetupOtherErrorDestination)
                     is EidInteractionEvent.Error -> {
                         logger.debug("Received exception: ${event.exception}")
 
-                        _scanInProgress.value = false
-
                         val destination = when (event.exception) {
-                            is IdCardInteractionException.CardDeactivated -> {
-                                SetupCardDeactivatedDestination
-                            }
-                            is IdCardInteractionException.CardBlocked -> {
-                                SetupCardBlockedDestination
-                            }
+                            is IdCardInteractionException.CardDeactivated -> SetupCardDeactivatedDestination
+                            is IdCardInteractionException.CardBlocked -> SetupCardBlockedDestination
                             else -> {
                                 (event.exception as? IdCardInteractionException)?.redacted?.let {
                                     issueTrackerManager.capture(it)
@@ -197,11 +193,7 @@ class PinManagementCoordinator @Inject constructor(
                             }
                         }
 
-                        navigator.navigate(destination)
-                        idCardManager.cancelTask()
-                        stateFlow.emit(SubCoordinatorState.Cancelled)
-                        stateFlow.emit(SubCoordinatorState.Idle)
-                        cancel()
+                        cancelPinManagementAndNavigate(destination)
                     }
                     else -> logger.debug("Ignoring event: $event")
                 }
