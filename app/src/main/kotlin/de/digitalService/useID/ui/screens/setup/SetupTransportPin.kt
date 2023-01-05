@@ -141,7 +141,7 @@ class SetupTransportPinViewModel @Inject constructor(
 
     override fun onNavigationButtonClicked() {
         if (retry) {
-            coordinator.cancelPinManagement()
+            coordinator.cancelIdCardManagerTasks()
         } else {
             coordinator.onBack()
         }
