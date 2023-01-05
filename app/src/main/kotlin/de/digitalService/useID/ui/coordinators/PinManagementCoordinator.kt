@@ -178,25 +178,32 @@ class PinManagementCoordinator @Inject constructor(
                     is EidInteractionEvent.RequestCanAndChangedPin -> cancelPinManagementAndNavigate(SetupCardSuspendedDestination)
                     is EidInteractionEvent.RequestPUK -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
                     is EidInteractionEvent.AuthenticationSuccessful -> cancelPinManagementAndNavigate(SetupOtherErrorDestination)
-                    is EidInteractionEvent.Error -> {
-                        logger.debug("Received exception: ${event.exception}")
-
-                        val destination = when (event.exception) {
-                            is IdCardInteractionException.CardDeactivated -> SetupCardDeactivatedDestination
-                            is IdCardInteractionException.CardBlocked -> SetupCardBlockedDestination
-                            else -> {
-                                (event.exception as? IdCardInteractionException)?.redacted?.let {
-                                    issueTrackerManager.capture(it)
-                                }
-
-                                SetupCardUnreadableDestination(false)
-                            }
-                        }
-
-                        cancelPinManagementAndNavigate(destination)
-                    }
+                    is EidInteractionEvent.Error -> handleEidInteractionEventError(event.exception)
                     else -> logger.debug("Ignoring event: $event")
                 }
+            }
+        }
+    }
+
+    private fun handleEidInteractionEventError(exception: IdCardInteractionException) {
+        logger.debug("Received exception: ${exception}")
+
+        when (exception) {
+            is IdCardInteractionException.CardDeactivated -> cancelPinManagementAndNavigate(SetupCardDeactivatedDestination)
+            is IdCardInteractionException.CardBlocked -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
+            is IdCardInteractionException.ProcessFailed -> {
+                (exception as? IdCardInteractionException)?.redacted?.let {
+                    issueTrackerManager.capture(it)
+                }
+                _scanInProgress.value = false
+                navigator.navigate(SetupCardUnreadableDestination(false))
+                cancelIdCardManagerTasks()
+            }
+            else -> {
+                (exception as? IdCardInteractionException)?.redacted?.let {
+                    issueTrackerManager.capture(it)
+                }
+                cancelPinManagementAndNavigate(SetupOtherErrorDestination)
             }
         }
     }

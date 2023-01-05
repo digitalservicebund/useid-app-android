@@ -559,7 +559,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(pinManagementState, SubCoordinatorState.Idle)
+        Assertions.assertEquals(SubCoordinatorState.Idle, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupOtherErrorDestination) }
 
         scanJob.cancel()
@@ -805,14 +805,96 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Idle, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
         navigationParameter = navigationDestinationSlot.captured
         Assertions.assertEquals(SetupCardUnreadableDestination(false).route, navigationParameter.route)
 
         pinManagementCoordinator.retryPinManagement()
         advanceUntilIdle()
 
+        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        verify(exactly = 2) { mockIdCardManager.changePin(mockContext) }
+
+        scanJob.cancel()
+        stateJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun errorOther() = runTest {
+
+        // SETUP
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val pinManagementCoordinator = PinManagementCoordinator(
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        var progress = false
+        val scanJob = pinManagementCoordinator.scanInProgress
+            .onEach { progress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        // START PIN MANAGEMENT
+        val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
+        var pinManagementState = SubCoordinatorState.Idle
+        val stateJob = pinManagementStateFlow
+            .onEach { pinManagementState = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        var navigationParameter = navigationDestinationSlot.captured
+        Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
+
+        advanceUntilIdle()
+        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+
+        // SET TRANSPORT PIN
+        val transportPin = "12345"
+        pinManagementCoordinator.setOldPin(oldPin = transportPin)
+
+        verify(exactly = 1) { mockNavigator.navigate(SetupPersonalPinIntroDestination) }
+
+        pinManagementCoordinator.onPersonalPinIntroFinished()
+
+        verify(exactly = 1) { mockNavigator.navigate(SetupPersonalPinInputDestination) }
+
+        // SET NEW PERSONAL PIN
+        val personalPin = "000000"
+        pinManagementCoordinator.setNewPin(newPin = personalPin)
+
+        verify(exactly = 1) { mockNavigator.navigate(SetupPersonalPinConfirmDestination) }
+
+        val confirmationResult = pinManagementCoordinator.confirmNewPin(newPin = personalPin)
+
         verify(exactly = 1) { mockIdCardManager.changePin(mockContext) }
+
+        Assertions.assertTrue(confirmationResult)
+        advanceUntilIdle()
+
+        idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockNavigator.navigatePopping(SetupScanDestination) }
+        Assertions.assertFalse(progress)
+
+        idCardManagerFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        Assertions.assertTrue(progress)
+
+        idCardManagerFlow.value = EidInteractionEvent.Error(exception = IdCardInteractionException.FrameworkError())
+        advanceUntilIdle()
+
+        Assertions.assertFalse(progress)
+        Assertions.assertEquals(SubCoordinatorState.Idle, pinManagementState)
+        verify(exactly = 1) { mockNavigator.navigate(SetupOtherErrorDestination) }
 
         scanJob.cancel()
         stateJob.cancel()
