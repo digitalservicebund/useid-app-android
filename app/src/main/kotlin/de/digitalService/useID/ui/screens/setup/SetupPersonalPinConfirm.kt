@@ -63,20 +63,20 @@ interface SetupPersonalPinConfirmViewModelInterface {
 
 @HiltViewModel
 class SetupPersonalPinConfirmViewModel @Inject constructor(
-    private val setupCoordinator: PinManagementCoordinator
+    private val pinManagementCoordinator: PinManagementCoordinator
 ) : ViewModel(), SetupPersonalPinConfirmViewModelInterface {
     override var shouldShowError: Boolean by mutableStateOf(false)
 
     override fun onDoneClicked(pin: String) {
-        shouldShowError = !setupCoordinator.confirmNewPin(pin)
+        shouldShowError = !pinManagementCoordinator.confirmNewPin(pin)
     }
 
     override fun onErrorDialogButtonClicked() {
-        setupCoordinator.onConfirmPinMismatchError()
+        pinManagementCoordinator.onConfirmPinMismatchError()
     }
 
     override fun onBack() {
-        setupCoordinator.onBack()
+        pinManagementCoordinator.onBack()
     }
 }
 
