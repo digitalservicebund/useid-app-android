@@ -8,17 +8,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SetupCardErrorViewModel @Inject constructor(
-    private val setupCoordinator: SetupCoordinator,
-    private val idCardManager: IdCardManager
+    private val setupCoordinator: SetupCoordinator
 ) : ViewModel() {
 
     fun onNavigationButtonClicked() {
-        idCardManager.cancelTask()
         setupCoordinator.cancelSetup()
     }
 
     fun onButtonClicked() {
-        idCardManager.cancelTask()
         setupCoordinator.cancelSetup()
     }
 }
