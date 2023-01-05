@@ -1,16 +1,18 @@
-/*
 package de.digitalService.useID.coordinator
 
 import android.content.Context
 import android.net.Uri
 import android.util.Base64
 import com.ramcosta.composedestinations.spec.Direction
+import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.coordinators.SubCoordinatorState
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProvider
 import io.mockk.*
@@ -38,10 +40,13 @@ class IdentificationCoordinatorTest {
     lateinit var mockContext: Context
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockAppCoordinator: AppCoordinator
+    lateinit var mockNavigator: Navigator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockIDCardManager: IdCardManager
+    lateinit var mockIdCardManager: IdCardManager
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockStorageManager: StorageManager
 
     @MockK(relaxUnitFun = true)
     lateinit var mockTrackerManager: TrackerManagerType
@@ -73,7 +78,7 @@ class IdentificationCoordinatorTest {
                 .scheme("http")
                 .encodedAuthority("127.0.0.1:24727")
                 .appendPath("eID-Client")
-                .appendQueryParameter("tcTokenUrl", testTokenURL)
+                .appendQueryParameter("tcTokenURL", testTokenURL)
         } returns mockUriBuilder
 
         val mockedUri = mockk<Uri>()
@@ -82,7 +87,7 @@ class IdentificationCoordinatorTest {
 
         every { mockedUri.toString() } returns testURL
 
-        every { mockAppCoordinator.navigate(capture(destinationSlot)) } returns Unit
+        every { mockNavigator.navigate(capture(destinationSlot)) } returns Unit
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -95,6 +100,38 @@ class IdentificationCoordinatorTest {
     private val testURL = "bundesident://127.0.0.1/eID-Client?tokenURL="
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun successfulIdentificationWithSetup() = runTest {
+
+        // SETUP
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val identificationCoordinator = IdentificationCoordinator(
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        // START IDENTIFICATION PROCESS
+        identificationCoordinator.startIdentificationProcess(testTokenURL, false)
+        advanceUntilIdle()
+        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
+
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+
+//        verify(exactly = 1) { navigator.navigate(IdentificationFetchMetadataDestination(setupSkipped)) }
+    }
+
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun startIdentificationProcess_ProcessCompletedSuccessfully() = runTest {
         val testRedirectUrl = "testRedirectUrl"
@@ -161,9 +198,9 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
         verify(exactly = 1) { mockAppCoordinator.popToRoot() }
 
-    }
+    }*/
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun startIdentificationProcess_ProcessCompletedSuccessfully_WithoutRequest() = runTest {
         val testRedirectUrl = "testRedirectUrl"
@@ -1240,6 +1277,5 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.pop()
 
         verify(exactly = 1) { mockAppCoordinator.pop() }
-    }
+    }*/
 }
-*/
