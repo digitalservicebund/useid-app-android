@@ -23,6 +23,7 @@ import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIdTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -107,7 +108,11 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestPinAndCan { _, _ -> })
+            idCardManager.injectEvent(EidInteractionEvent.RequestPinAndCan { _, _ ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    idCardManager.injectEvent(EidInteractionEvent.RequestCardInsertion)
+                }
+            })
         }
         trackerManager.trackScreen("identification/cardSuspended")
     }

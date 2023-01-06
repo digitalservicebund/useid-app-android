@@ -33,7 +33,7 @@ fun IdentificationCanPinForgotten(viewModel: IdentificationCanPinForgottenViewMo
             imageScaling = ContentScale.Inside,
             primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.identification_can_pinForgotten_orderNewPin),
-                action = viewModel::onNewPin
+                action = viewModel::onResetPin
             ),
             secondaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.identification_can_pinForgotten_retry),
@@ -46,7 +46,7 @@ fun IdentificationCanPinForgotten(viewModel: IdentificationCanPinForgottenViewMo
 
 interface IdentificationCanPinForgottenViewModelInterface {
     fun onCancelIdentification()
-    fun onNewPin()
+    fun onResetPin()
     fun onRetry()
 }
 
@@ -56,21 +56,21 @@ class IdentificationCanPinForgottenViewModel @Inject constructor(
 ) : ViewModel(), IdentificationCanPinForgottenViewModelInterface {
 
     override fun onCancelIdentification() {
-        coordinator.onCancelIdentification()
+        coordinator.cancelCanFlow()
     }
 
-    override fun onNewPin() {
-        coordinator.onNewPin()
+    override fun onResetPin() {
+        coordinator.onResetPin()
     }
 
     override fun onRetry() {
-        coordinator.startCanFlow()
+        coordinator.proceedWithThirdAttempt()
     }
 }
 
 private class PreviewIdentificationCanPinForgottenViewModel : IdentificationCanPinForgottenViewModelInterface {
     override fun onCancelIdentification() {}
-    override fun onNewPin() {}
+    override fun onResetPin() {}
     override fun onRetry() {}
 }
 

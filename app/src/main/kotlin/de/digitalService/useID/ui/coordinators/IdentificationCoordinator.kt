@@ -26,6 +26,7 @@ import kotlin.properties.Delegates
 @Singleton
 class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val canCoordinator: CanCoordinator,
     private val navigator: Navigator,
     private val idCardManager: IdCardManager,
     private val storageManager: StorageManagerType,
@@ -48,6 +49,7 @@ class IdentificationCoordinator @Inject constructor(
     private lateinit var identificationUrl: String
 
     private var eIdEventFlowCoroutineScope: Job? = null
+    private var canEventFlowCoroutineScope: Job? = null
 
     val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
 
@@ -71,6 +73,7 @@ class IdentificationCoordinator @Inject constructor(
         stateFlow.value = SubCoordinatorState.Active
 
         eIdEventFlowCoroutineScope?.cancel()
+        canEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
         reachedScanState = false
         requestAuthenticationEvent = null
@@ -116,6 +119,7 @@ class IdentificationCoordinator @Inject constructor(
         logger.debug("Cancel identification process.")
 
         eIdEventFlowCoroutineScope?.cancel()
+        canEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
 
         navigator.popToRoot()
@@ -171,8 +175,14 @@ class IdentificationCoordinator @Inject constructor(
                     }
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-                        navigator.navigatePopping(IdentificationScanDestination)
-                        reachedScanState = true
+                        if (reachedScanState) {
+                            logger.debug("Requested card insertion again. Popping to scan screen.")
+                            navigator.popUpTo(IdentificationScanDestination)
+                        } else {
+                            logger.debug("Requested card insertion for the first time. Pushing scan screen.")
+                            navigator.navigate(IdentificationScanDestination)
+                            reachedScanState = true
+                        }
                     }
                     EidInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized.")
@@ -189,10 +199,19 @@ class IdentificationCoordinator @Inject constructor(
                     is EidInteractionEvent.RequestPinAndCan -> {
                         logger.debug("PIN and CAN requested.")
                         _scanInProgress.value = false
-                        navigator.navigate(IdentificationCardSuspendedDestination)
-                        idCardManager.cancelTask()
-                        stateFlow.value = SubCoordinatorState.Cancelled
-                        cancel()
+
+                        if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
+                            canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
+                                canCoordinator.startCanFlow().collect { state ->
+                                    when (state) {
+                                        SubCoordinatorState.Cancelled -> cancelIdentification()
+                                        else -> logger.debug("Ignoring sub flow event: $event")
+                                    }
+                                }
+                            }
+                        } else {
+                            logger.debug("Ignoring PIN and CAN request because CAN flow is already active.")
+                        }
                     }
                     is EidInteractionEvent.RequestPUK -> {
                         logger.debug("PUK requested.")

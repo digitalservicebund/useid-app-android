@@ -475,4 +475,5 @@
     <string name="identification_can_input_title">Geben Sie die 6-stellige Nummer von Ihrem Ausweis ein.</string>
     <string name="identification_can_input_body">Die Nummer steht rechts unten auf der Vorderseite Ihres Ausweises.</string>
     <string name="identification_can_input_canInputLabel">CAN Eingabe, sechsstellig</string>
+    <string name="identification_can_incorrectInput_error_incorrect_body">Inkorrekte 6-stellige Nummer</string>
 </resources>

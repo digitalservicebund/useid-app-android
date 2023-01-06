@@ -6,7 +6,9 @@ import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,13 +27,15 @@ class SetupCoordinator @Inject constructor(
     val identificationPending: Boolean
         get() = this.tcTokenUrl != null
 
-    val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
+    private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
+    val stateFlow: StateFlow<SubCoordinatorState>
+        get() = _stateFlow
 
     private var subFlowCoroutineScope: Job? = null
     private var identificationStateCoroutineScope: Job? = null
 
     fun showSetupIntro(tcTokenUrl: String?) {
-        stateFlow.value = SubCoordinatorState.Active
+        _stateFlow.value = SubCoordinatorState.Active
         this.tcTokenUrl = tcTokenUrl
         navigator.navigate(SetupIntroDestination(tcTokenUrl != null))
     }
@@ -54,7 +58,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun setupWithoutPinLetter() {
-        navigator.navigate(SetupResetPersonalPinDestination)
+        navigator.navigate(ResetPersonalPinDestination)
     }
 
     fun onBackClicked() {
@@ -83,7 +87,7 @@ class SetupCoordinator @Inject constructor(
         navigator.popToRoot()
         tcTokenUrl = null
 
-        stateFlow.value = SubCoordinatorState.Cancelled
+        _stateFlow.value = SubCoordinatorState.Cancelled
     }
 
     private fun finishSetup(skipped: Boolean) {
@@ -108,6 +112,6 @@ class SetupCoordinator @Inject constructor(
             navigator.popToRoot()
         }
 
-        stateFlow.value = SubCoordinatorState.Finished
+        _stateFlow.value = SubCoordinatorState.Finished
     }
 }

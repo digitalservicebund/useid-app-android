@@ -476,4 +476,5 @@
     <string name="identification_can_input_title">Enter the 6-digit number from your ID card.</string>
     <string name="identification_can_input_body">The number is at the bottom right of the front of your ID card.</string>
     <string name="identification_can_input_canInputLabel">CAN input, six digits</string>
+    <string name="identification_can_incorrectInput_error_incorrect_body">Incorrect 6-digit number</string>
 </resources>

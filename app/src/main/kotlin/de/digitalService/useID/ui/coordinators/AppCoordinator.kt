@@ -43,7 +43,6 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun homeScreenLaunched() {
-        logger.debug("Home screen launched. Setup coordinator: ${setupCoordinator.stateFlow.value}, identification coordinator: ${identificationCoordinator.stateFlow.value}")
 
         if (coldLaunch &&
             setupCoordinator.stateFlow.value != SubCoordinatorState.Active &&

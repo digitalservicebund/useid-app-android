@@ -42,9 +42,10 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerMa
 
         val trackerRoute = when (destination.route) {
             HomeScreenDestination.route -> "/"
+            ResetPersonalPinDestination.route -> firstTimeUserRoute("missingPINLetter")
+
             SetupIntroDestination.route -> firstTimeUserRoute("intro")
             SetupPinLetterDestination.route -> firstTimeUserRoute("PINLetter")
-            SetupResetPersonalPinDestination.route -> firstTimeUserRoute("missingPINLetter")
             SetupTransportPinDestination.route -> firstTimeUserRoute("transportPIN")
             SetupPersonalPinIntroDestination.route -> firstTimeUserRoute("personalPINIntro")
             SetupPersonalPinInputDestination.route -> firstTimeUserRoute("personalPINInput")

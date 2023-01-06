@@ -18,7 +18,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Destination
 @Composable
-fun SetupResetPersonalPin(
+fun ResetPersonalPin(
     navigator: DestinationsNavigator
 ) {
     ScreenWithTopBar(
@@ -38,6 +38,6 @@ fun SetupResetPersonalPin(
 @Preview
 fun PinReSetupPersonalPin() {
     UseIdTheme {
-        SetupResetPersonalPin(EmptyDestinationsNavigator)
+        ResetPersonalPin(EmptyDestinationsNavigator)
     }
 }

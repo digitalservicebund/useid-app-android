@@ -55,7 +55,7 @@ class IdentificationCanIntroViewModel @Inject constructor(
     }
 
     override fun onContinue() {
-        coordinator.continueAfterIntro()
+        coordinator.finishIntro()
     }
 }
 
