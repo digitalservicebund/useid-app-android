@@ -27,7 +27,7 @@ class SetupCoordinator @Inject constructor(
     val identificationPending: Boolean
         get() = this.tcTokenUrl != null
 
-    private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
+    private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Finished)
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
 
@@ -91,6 +91,8 @@ class SetupCoordinator @Inject constructor(
     }
 
     private fun finishSetup(skipped: Boolean) {
+        // TODO: Cleanup
+
         identificationStateCoroutineScope?.cancel()
 
         tcTokenUrl?.let {

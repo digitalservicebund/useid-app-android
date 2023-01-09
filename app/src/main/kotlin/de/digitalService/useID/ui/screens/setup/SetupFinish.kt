@@ -19,13 +19,13 @@ import javax.inject.Inject
 @Destination
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
-    val buttonLabelStringId = if (viewModel.identificationPending) {
+    val buttonLabelString = if (viewModel.identificationPending) {
         stringResource(id = R.string.firstTimeUser_done_identify)
     } else {
         stringResource(id = R.string.firstTimeUser_done_close)
     }
 
-    val buttonConfig = BundButtonConfig(buttonLabelStringId, viewModel::onButtonClicked)
+    val buttonConfig = BundButtonConfig(buttonLabelString, viewModel::onButtonClicked)
 
     val navigationButton = NavigationButton(
         icon = NavigationIcon.Cancel,
@@ -37,7 +37,7 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_done_title),
             body = null,
-            imageID = R.drawable.eid_3_pin,
+            imageId = R.drawable.eid_3_pin,
             imageScaling = ContentScale.Inside,
             primaryButton = buttonConfig,
             modifier = Modifier.padding(top = topPadding)

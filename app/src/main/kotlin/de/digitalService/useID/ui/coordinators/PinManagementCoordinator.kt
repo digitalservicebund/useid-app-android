@@ -10,6 +10,7 @@ import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
+import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -28,6 +29,7 @@ enum class PinStatus {
 @Singleton
 class PinManagementCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val canCoordinator: CanCoordinator,
     private val navigator: Navigator,
     private val idCardManager: IdCardManager,
     private val issueTrackerManager: IssueTrackerManagerType,
@@ -36,24 +38,25 @@ class PinManagementCoordinator @Inject constructor(
     private val logger by getLogger()
 
     private lateinit var pinStatus: PinStatus
-    private var oldPin: String? = null
+    private var oldPin: String? = null // TODO: Refactor to FSM
     private var newPin: String? = null
 
     private var firstOldPinRequest = true
+    private var reachedScanState = false
+    var backAllowed = true
+        private set
 
     private var eIdEventFlowCoroutineScope: Job? = null
+    private var canEventFlowCoroutineScope: Job? = null
 
     private val _scanInProgress: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val scanInProgress: Flow<Boolean>
         get() = _scanInProgress
 
-    private val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
+    private val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Finished)
 
     fun startPinManagement(pinStatus: PinStatus): Flow<SubCoordinatorState> {
-        oldPin = null
-        newPin = null
-        firstOldPinRequest = true
-        eIdEventFlowCoroutineScope?.cancel()
+        resetCoordinatorState()
 
         this.pinStatus = pinStatus
 
@@ -103,8 +106,9 @@ class PinManagementCoordinator @Inject constructor(
         executePinManagement()
     }
 
-    fun cancelIdCardManagerTasks() {
+    private fun cancelIdCardManagerTasks() {
         eIdEventFlowCoroutineScope?.cancel()
+        canEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
     }
 
@@ -113,17 +117,36 @@ class PinManagementCoordinator @Inject constructor(
         cancelIdCardManagerTasks()
     }
 
-    private fun cancelPinManagementAndNavigate(destination: Direction) {
+    fun cancelPinManagement() {
+        resetCoordinatorState()
+        idCardManager.cancelTask()
+    }
+
+    private fun cancelPinManagementAndNavigate(destination: Direction?) {
         _scanInProgress.value = false
-        navigator.navigate(destination)
-        cancelIdCardManagerTasks()
         stateFlow.value = SubCoordinatorState.Cancelled
-        stateFlow.value = SubCoordinatorState.Idle
+        resetCoordinatorState()
+        cancelIdCardManagerTasks()
+        destination?.let { navigator.navigate(destination) }
     }
 
     private fun executePinManagement() {
         collectEidEvents()
         idCardManager.changePin(context)
+    }
+
+    private fun finishPinManagementFlow() {
+        stateFlow.value = SubCoordinatorState.Finished
+        resetCoordinatorState()
+    }
+
+    private fun resetCoordinatorState() {
+        oldPin = null
+        newPin = null
+        firstOldPinRequest = true
+        backAllowed = true
+        eIdEventFlowCoroutineScope?.cancel()
+        canEventFlowCoroutineScope?.cancel()
     }
 
     private fun collectEidEvents() {
@@ -135,7 +158,16 @@ class PinManagementCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-                        navigator.navigatePopping(SetupScanDestination)
+                        if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
+                            logger.debug("Requested card insertion without subflow active. Pushing scan screen.")
+                            navigator.navigatePopping(SetupScanDestination)
+                        } else {
+                            logger.debug("Requested card insertion with active subflow. Popping to scan screen.")
+                            backAllowed = false
+                            navigator.popUpTo(SetupScanDestination)
+                        }
+
+                        reachedScanState = true
                     }
                     EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
                     EidInteractionEvent.CardRecognized -> {
@@ -175,7 +207,35 @@ class PinManagementCoordinator @Inject constructor(
                             firstOldPinRequest = true
                         }
                     }
-                    is EidInteractionEvent.RequestCanAndChangedPin -> cancelPinManagementAndNavigate(SetupCardSuspendedDestination)
+                    is EidInteractionEvent.RequestCanAndChangedPin -> {
+                        logger.debug("PIN and CAN requested.")
+                        _scanInProgress.value = false
+
+                        val oldPin = oldPin
+                        val newPin = newPin
+
+                        if (oldPin == null || newPin == null) {
+                            logger.error("Required PIN values not available for PIN management.")
+                            idCardManager.cancelTask()
+                            cancel()
+                            return@collect
+                        }
+
+                        if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
+                            canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
+                                canCoordinator.startSetupCanFlow(oldPin, newPin).collect { state ->
+                                    when (state) {
+                                        SubCoordinatorState.Cancelled -> cancelPinManagementAndNavigate(null)
+                                        SubCoordinatorState.Finished -> finishPinManagementFlow()
+                                        else -> logger.debug("Ignoring sub flow state: $state")
+                                    }
+                                }
+                            }
+                        } else {
+                            logger.debug("Ignoring PIN and CAN request because CAN flow is already active.")
+                        }
+                    }
+
                     is EidInteractionEvent.RequestPUK -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
                     is EidInteractionEvent.AuthenticationSuccessful -> cancelPinManagementAndNavigate(SetupOtherErrorDestination)
                     is EidInteractionEvent.Error -> handleEidInteractionEventError(event.exception)

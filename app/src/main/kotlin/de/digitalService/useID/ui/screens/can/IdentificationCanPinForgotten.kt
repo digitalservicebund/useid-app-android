@@ -29,7 +29,7 @@ fun IdentificationCanPinForgotten(viewModel: IdentificationCanPinForgottenViewMo
         StandardStaticComposition(
             title = stringResource(id = R.string.identification_can_pinForgotten_title),
             body = stringResource(id = R.string.identification_can_pinForgotten_body),
-            imageID = R.drawable.illustration_id_confused,
+            imageId = R.drawable.illustration_id_confused,
             imageScaling = ContentScale.Inside,
             primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.identification_can_pinForgotten_orderNewPin),

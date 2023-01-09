@@ -20,6 +20,8 @@ import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.ui.theme.UseIdTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.openecard.mobile.activation.ActivationResultCode
@@ -93,7 +95,11 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestCanAndChangedPin(pinCallback = { _, _, _ -> }))
+            idCardManager.injectEvent(EidInteractionEvent.RequestCanAndChangedPin(pinCallback = { _, _, _ ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    idCardManager.injectEvent(EidInteractionEvent.RequestCardInsertion)
+                }
+            }))
         }
         trackerManager.trackScreen("firstTimeUser/cardSuspended")
     }
@@ -130,11 +136,13 @@ fun PreviewPreviewSetupScan() {
         PreviewSetupScan(
             PreviewSetupScanViewModel(PreviewTrackerManager(), IdCardManager()),
             object : SetupScanViewModelInterface {
+                override val backAllowed: Boolean = false
+                override val identificationPending: Boolean = false
                 override val shouldShowProgress: Boolean = false
 
                 override fun onHelpButtonClicked() {}
                 override fun onNfcButtonClicked() {}
-                override fun onCancelConfirm() {}
+                override fun onNavigationButtonClicked() {}
             }
         )
     }

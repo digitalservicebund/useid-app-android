@@ -13,15 +13,13 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.screens.destinations.IdentificationCanInputDestination
+import de.digitalService.useID.ui.screens.destinations.CanInputDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
-@Destination(
-    navArgsDelegate = IdentificationCanInputNavArgs::class
-)
+@Destination(navArgsDelegate = CanInputNavArgs::class)
 @Composable
-fun IdentificationCanInput(viewModel: IdentificationCanInputViewModelInterface = hiltViewModel<IdentificationCanInputViewModel>()) {
+fun CanInput(viewModel: IdentificationCanInputViewModelInterface = hiltViewModel<IdentificationCanInputViewModel>()) {
     StandardNumberEntryScreen(
         title = stringResource(id = R.string.identification_can_input_title),
         body = stringResource(id = R.string.identification_can_input_body),
@@ -37,7 +35,7 @@ fun IdentificationCanInput(viewModel: IdentificationCanInputViewModelInterface =
     )
 }
 
-data class IdentificationCanInputNavArgs(
+data class CanInputNavArgs(
     val retry: Boolean
 )
 
@@ -56,7 +54,7 @@ class IdentificationCanInputViewModel @Inject constructor(
     override val retry: Boolean
 
     init {
-        retry = IdentificationCanInputDestination.argsFrom(savedStateHandle).retry
+        retry = CanInputDestination.argsFrom(savedStateHandle).retry
     }
 
     override fun onBack() {
@@ -78,6 +76,6 @@ private class PreviewIdentificationCanInputViewModel: IdentificationCanInputView
 @Composable
 private fun Preview() {
     UseIdTheme {
-        IdentificationCanInput(PreviewIdentificationCanInputViewModel())
+        CanInput(PreviewIdentificationCanInputViewModel())
     }
 }

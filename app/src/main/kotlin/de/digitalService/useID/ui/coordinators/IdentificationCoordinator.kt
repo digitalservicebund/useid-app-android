@@ -51,7 +51,7 @@ class IdentificationCoordinator @Inject constructor(
     private var eIdEventFlowCoroutineScope: Job? = null
     private var canEventFlowCoroutineScope: Job? = null
 
-    val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Idle)
+    val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Finished)
 
     fun startIdentificationProcess(tcTokenUrl: String, setupSkipped: Boolean) {
         this.setupSkipped = setupSkipped
@@ -202,7 +202,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
                             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-                                canCoordinator.startCanFlow().collect { state ->
+                                canCoordinator.startIdentCanFlow().collect { state ->
                                     when (state) {
                                         SubCoordinatorState.Cancelled -> cancelIdentification()
                                         else -> logger.debug("Ignoring sub flow event: $event")

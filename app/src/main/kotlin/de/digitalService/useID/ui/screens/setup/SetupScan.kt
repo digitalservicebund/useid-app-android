@@ -1,10 +1,7 @@
 package de.digitalService.useID.ui.screens.setup
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
@@ -16,10 +13,12 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +33,11 @@ fun SetupScan(
     viewModel: SetupScanViewModelInterface = hiltViewModel<SetupScanViewModel>()
 ) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = viewModel::onCancelConfirm, confirmation = null)
+        navigationButton = NavigationButton(
+            icon = if (viewModel.backAllowed) NavigationIcon.Back else NavigationIcon.Cancel,
+            onClick = viewModel::onNavigationButtonClicked,
+            confirmation = (if (viewModel.identificationPending) Flow.Identification else Flow.Setup).takeIf { !viewModel.backAllowed }
+        )
     ) { topPadding ->
         ScanScreen(
             title = stringResource(id = R.string.firstTimeUser_scan_title),
@@ -48,21 +51,28 @@ fun SetupScan(
 }
 
 interface SetupScanViewModelInterface {
+    val backAllowed: Boolean
+    val identificationPending: Boolean
     val shouldShowProgress: Boolean
     fun onHelpButtonClicked()
     fun onNfcButtonClicked()
-    fun onCancelConfirm()
+    fun onNavigationButtonClicked()
 }
 
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
     private val pinManagementCoordinator: PinManagementCoordinator,
+    private val setupCoordinator: SetupCoordinator,
     private val trackerManager: TrackerManagerType,
     @Nullable coroutineScope: CoroutineScope? = null
 ) : ViewModel(), SetupScanViewModelInterface {
 
     private val viewModelCoroutineScope: CoroutineScope = coroutineScope ?: viewModelScope
 
+    override val backAllowed: Boolean
+        get() = pinManagementCoordinator.backAllowed
+    override val identificationPending: Boolean
+        get() = setupCoordinator.identificationPending
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
 
@@ -80,24 +90,30 @@ class SetupScanViewModel @Inject constructor(
         trackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo")
     }
 
-    override fun onCancelConfirm() {
-        pinManagementCoordinator.onBack()
+    override fun onNavigationButtonClicked() {
+        if (backAllowed) {
+            pinManagementCoordinator.onBack()
+        } else {
+            pinManagementCoordinator.cancelPinManagement()
+        }
     }
 }
 
 class PreviewSetupScanViewModel(
+    override val backAllowed: Boolean,
+    override val identificationPending: Boolean,
     override val shouldShowProgress: Boolean
 ) :
     SetupScanViewModelInterface {
     override fun onHelpButtonClicked() {}
     override fun onNfcButtonClicked() {}
-    override fun onCancelConfirm() {}
+    override fun onNavigationButtonClicked() {}
 }
 
 @Preview(device = Devices.PIXEL_3A)
 @Composable
 fun PreviewSetupScanWithoutError() {
     UseIdTheme {
-        SetupScan(viewModel = PreviewSetupScanViewModel(false))
+        SetupScan(viewModel = PreviewSetupScanViewModel(false, false, false))
     }
 }

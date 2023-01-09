@@ -29,7 +29,7 @@ fun IdentificationCanIntro(viewModel: IdentificationCanIntroViewModelInterface =
         StandardStaticComposition(
             title = stringResource(id = R.string.identification_can_intro_title),
             body = stringResource(id = R.string.identification_can_intro_body),
-            imageID = R.drawable.illustration_id_can,
+            imageId = R.drawable.illustration_id_can,
             imageScaling = ContentScale.Inside,
             primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.identification_can_intro_continue),
@@ -47,9 +47,8 @@ interface IdentificationCanIntroViewModelInterface {
 
 @HiltViewModel
 class IdentificationCanIntroViewModel @Inject constructor(
-    val coordinator: CanCoordinator
-) : ViewModel(), IdentificationCanIntroViewModelInterface {
-
+    private val coordinator: CanCoordinator
+): ViewModel(), IdentificationCanIntroViewModelInterface {
     override fun onBack() {
         coordinator.onBack()
     }

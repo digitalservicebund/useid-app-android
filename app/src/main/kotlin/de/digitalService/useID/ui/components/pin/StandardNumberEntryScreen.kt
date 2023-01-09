@@ -22,6 +22,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 
 @Composable
+// TODO: Generalize to NumberEntryScreen and add Transport-PIN mode
 fun StandardNumberEntryScreen(
     title: String,
     body: String? = null,
@@ -37,12 +38,12 @@ fun StandardNumberEntryScreen(
 
     ScreenWithTopBar(
         navigationButton = navigationButton
-    ) {
+    ) { topPadding ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(top = it)
-                .padding(horizontal = UseIdTheme.spaces.s)
+                .padding(top = topPadding)
+                .padding(horizontal = UseIdTheme.spaces.m)
                 .verticalScroll(rememberScrollState())
 
         ) {
@@ -55,8 +56,6 @@ fun StandardNumberEntryScreen(
 
                 focusRequesterPin.requestFocus()
             }
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
             Text(
                 text = title,

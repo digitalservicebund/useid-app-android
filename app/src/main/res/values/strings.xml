@@ -476,4 +476,14 @@
     <string name="identification_can_input_body">Die Nummer steht rechts unten auf der Vorderseite Ihres Ausweises.</string>
     <string name="identification_can_input_canInputLabel">CAN Eingabe, sechsstellig</string>
     <string name="identification_can_incorrectInput_error_incorrect_body">Inkorrekte 6-stellige Nummer</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_title">Ist %1s wirklich Ihre Transport-PIN?</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_body">Sie haben %1s als Ihre Transport-PIN eingebegen. Bitte überprüfen Sie, ob diese mit der in Ihrem PIN-Brief angegebenen Transport-PIN übereinstimmt.</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_confirmInput">Ja, meine Eingabe war korrekt</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_incorrectInput">Nein, Transport-PIN korrigieren</string>
+    <string name="firstTimeUser_can_alreadySetup_title">Anscheinend ist Ihr Online-Ausweis bereits eingerichtet.</string>
+    <string name="firstTimeUser_can_alreadySetup_body_setup">Bei der Einrichtung haben Sie Ihre persönliche 6-stellige Ausweis-PIN festgelegt. Sie brauchen diese, um die Online-Ausweisfunktion zu nutzen.</string>
+    <string name="firstTimeUser_can_alreadySetup_body_ident">Bei der Einrichtung haben Sie Ihre persönliche 6-stellige Ausweis-PIN festgelegt. Mit dieser PIN können Sie sich jetzt ausweisen. </string>
+    <string name="firstTimeUser_can_alreadySetup_personalPINNotAvailable">Persönliche PIN nicht vorhanden?</string>
+    <!--string name="firstTimeUser_can_alreadySetup_finishSetup">Einrichtung abschließen</string>
+    <string name="firstTimeUser_can_alreadySetup_startIdentification">Jetzt ausweisen</string-->
 </resources>

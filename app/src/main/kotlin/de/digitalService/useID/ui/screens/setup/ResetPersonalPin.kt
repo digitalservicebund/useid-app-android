@@ -27,7 +27,7 @@ fun ResetPersonalPin(
         StandardStaticComposition(
             title = stringResource(R.string.firstTimeUser_missingPINLetter_title),
             body = stringResource(R.string.firstTimeUser_missingPINLetter_body),
-            imageID = R.drawable.ic_illustration_pin_letter,
+            imageId = R.drawable.ic_illustration_pin_letter,
             imageScaling = ContentScale.FillWidth,
             modifier = Modifier.padding(top = topPadding)
         )

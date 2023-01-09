@@ -25,6 +25,7 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.TransportPinEntryField
+import de.digitalService.useID.ui.components.pin.TransportPinEntryScreen
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -37,8 +38,6 @@ fun SetupTransportPin(
     modifier: Modifier = Modifier,
     viewModel: SetupTransportPinViewModelInterface = hiltViewModel<SetupTransportPinViewModel>()
 ) {
-    val resources = LocalContext.current.resources
-
     val icon = if (viewModel.retry) {
         NavigationIcon.Cancel
     } else {
@@ -51,65 +50,16 @@ fun SetupTransportPin(
         stringResource(id = R.string.firstTimeUser_transportPIN_title)
     }
 
-    val attemptString =
-        resources.getQuantityString(
-            R.plurals.firstTimeUser_transportPIN_remainingAttempts,
-            2,
-            2
-        ).takeIf { viewModel.retry }
-
-    ScreenWithTopBar(
+    TransportPinEntryScreen(
+        title = titleString,
+        attempts = if (viewModel.retry) 2 else null,
         navigationButton = NavigationButton(
             icon = icon,
             onClick = viewModel::onNavigationButtonClicked,
             confirmation = Flow.Setup.takeIf { viewModel.retry },
             contentDescription = titleString
-        )
-    ) { topPadding ->
-        val focusRequester = remember { FocusRequester() }
-
-        LaunchedEffect(Unit) {
-            delay(100)
-            focusRequester.requestFocus()
-        }
-
-        Column(
-            modifier = modifier
-                .padding(horizontal = UseIdTheme.spaces.m)
-                .padding(top = topPadding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Text(
-                text = titleString,
-                style = UseIdTheme.typography.headingXl
-            )
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
-
-            Text(
-                text = stringResource(id = R.string.firstTimeUser_transportPIN_body),
-                style = UseIdTheme.typography.bodyLRegular
-            )
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
-
-            TransportPinEntryField(
-                onDone = viewModel::onDoneClicked,
-                focusRequester = focusRequester
-            )
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
-
-            attemptString?.let {
-                Text(
-                    it,
-                    style = UseIdTheme.typography.bodyLRegular,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.align(androidx.compose.ui.Alignment.CenterHorizontally)
-                )
-            }
-        }
-    }
+        ),
+        onDone = viewModel::onDoneClicked)
 }
 
 data class SetupTransportPinNavArgs(
@@ -141,14 +91,13 @@ class SetupTransportPinViewModel @Inject constructor(
 
     override fun onNavigationButtonClicked() {
         if (retry) {
-            coordinator.cancelIdCardManagerTasks()
+            coordinator.cancelPinManagement()
         } else {
             coordinator.onBack()
         }
     }
 }
 
-//region Preview
 private class PreviewSetupTransportPinViewModel(
     override val retry: Boolean
 ) : SetupTransportPinViewModelInterface {
@@ -158,7 +107,7 @@ private class PreviewSetupTransportPinViewModel(
 
 @Preview(widthDp = 300, showBackground = true)
 @Composable
-fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
+private fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
     UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false))
     }
@@ -166,7 +115,7 @@ fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSetupTransportPinWithoutAttempts() {
+private fun PreviewSetupTransportPinWithoutAttempts() {
     UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false))
     }
@@ -174,9 +123,8 @@ fun PreviewSetupTransportPinWithoutAttempts() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewSetupTransportPinRetry() {
+private fun PreviewSetupTransportPinRetry() {
     UseIdTheme {
         SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(true))
     }
 }
-//endregion

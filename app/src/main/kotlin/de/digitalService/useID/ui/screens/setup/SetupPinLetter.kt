@@ -25,7 +25,7 @@ fun SetupPinLetter(viewModel: SetupPinLetterScreenViewModelInterface = hiltViewM
         StandardStaticComposition(
             title = stringResource(id = R.string.firstTimeUser_pinLetter_title),
             body = stringResource(id = R.string.firstTimeUser_pinLetter_body),
-            imageID = R.drawable.pin_letter,
+            imageId = R.drawable.pin_letter,
             imageScaling = ContentScale.FillWidth,
             primaryButton = BundButtonConfig(
                 title = stringResource(id = R.string.firstTimeUser_pinLetter_letterPresent),

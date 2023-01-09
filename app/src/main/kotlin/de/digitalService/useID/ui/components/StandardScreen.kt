@@ -67,8 +67,8 @@ fun StandardButtonScreen(
 fun StandardStaticComposition(
     title: String,
     body: String?,
-    @DrawableRes imageID: Int,
-    imageScaling: ContentScale,
+    @DrawableRes imageId: Int? = null,
+    imageScaling: ContentScale = ContentScale.Inside,
     imageModifier: Modifier = Modifier,
     modifier: Modifier = Modifier,
     primaryButton: BundButtonConfig? = null,
@@ -100,14 +100,16 @@ fun StandardStaticComposition(
                 )
             }
 
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
+            imageId?.let {
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
-            Image(
-                painter = painterResource(id = imageID),
-                contentScale = imageScaling,
-                contentDescription = "",
-                modifier = imageModifier.align(CenterHorizontally)
-            )
+                Image(
+                    painter = painterResource(id = imageId),
+                    contentScale = imageScaling,
+                    contentDescription = "",
+                    modifier = imageModifier.align(CenterHorizontally)
+                )
+            }
         }
     }
 }
@@ -119,7 +121,7 @@ fun PreviewOnboardingScreenTwoButtons() {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
-            imageID = R.drawable.eid_3,
+            imageId = R.drawable.eid_3,
             imageScaling = ContentScale.FillWidth,
             primaryButton = BundButtonConfig("Primary button", { }),
             secondaryButton = BundButtonConfig("Secondary button", { })
@@ -134,7 +136,7 @@ fun PreviewOnboardingScreenOneButton() {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
-            imageID = R.drawable.eid_3,
+            imageId = R.drawable.eid_3,
             imageScaling = ContentScale.FillWidth,
             primaryButton = BundButtonConfig("Primary button", { }),
             secondaryButton = null
@@ -149,7 +151,7 @@ fun PreviewOnboardingScreenNoButton() {
         StandardStaticComposition(
             title = "Title",
             body = "Body",
-            imageID = R.drawable.eid_3,
+            imageId = R.drawable.eid_3,
             imageScaling = ContentScale.FillWidth,
             primaryButton = null,
             secondaryButton = null

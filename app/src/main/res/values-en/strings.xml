@@ -477,4 +477,8 @@
     <string name="identification_can_input_body">The number is at the bottom right of the front of your ID card.</string>
     <string name="identification_can_input_canInputLabel">CAN input, six digits</string>
     <string name="identification_can_incorrectInput_error_incorrect_body">Incorrect 6-digit number</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_title">[Translation missing]</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_body">[Translation missing]</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_confirmInput">[Translation missing]</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_incorrectInput">[Translation missing]</string>
 </resources>
