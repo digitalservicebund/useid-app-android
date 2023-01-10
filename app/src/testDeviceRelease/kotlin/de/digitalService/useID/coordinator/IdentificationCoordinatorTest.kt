@@ -1,6 +1,7 @@
 package de.digitalService.useID.coordinator
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.Base64
 import com.ramcosta.composedestinations.spec.Direction
@@ -61,6 +62,7 @@ class IdentificationCoordinatorTest {
     val dispatcher = StandardTestDispatcher()
 
     private val destinationSlot = slot<Direction>()
+    private val destinationPoppingSlot = slot<Direction>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
@@ -88,6 +90,7 @@ class IdentificationCoordinatorTest {
         every { mockedUri.toString() } returns testURL
 
         every { mockNavigator.navigate(capture(destinationSlot)) } returns Unit
+        every { mockNavigator.navigatePopping(capture(destinationPoppingSlot)) } returns Unit
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -119,16 +122,88 @@ class IdentificationCoordinatorTest {
             coroutineContextProvider = mockCoroutineContextProvider
         )
 
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+            EidAuthenticationRequest(
+                "",
+                "",
+                "subject",
+                "",
+                "",
+                AuthenticationTerms.Text(""),
+                "",
+                mapOf()
+            )
+        ) {}
+
+        val testRedirectUrl = "testRedirectUrl"
+
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+
         // START IDENTIFICATION PROCESS
-        identificationCoordinator.startIdentificationProcess(testTokenURL, false)
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
+        // SEND AUTHENTIFICATION STARTED EVENT
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
 
-//        verify(exactly = 1) { navigator.navigate(IdentificationFetchMetadataDestination(setupSkipped)) }
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
+        advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
+
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts) {}
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        identificationCoordinator.setPin(pin)
+        idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+//        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
+
+        // RECOGNIZE CARD
+        idCardManagerFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+        Assertions.assertTrue(scanInProgress)
+
+        // FINISH WITH SUCCESS
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
+        val mockIntent = Intent(Intent.ACTION_VIEW, Uri.parse(testRedirectUrl))
+        every { mockIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+        idCardManagerFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
+        advanceUntilIdle()
+        verify(exactly = 1) { mockNavigator.popToRoot()  }
+        Assertions.assertEquals(SubCoordinatorState.Finished, identificationCoordinator.stateFlow.value)
+
+        scanJob.cancel()
     }
 
     /*@OptIn(ExperimentalCoroutinesApi::class)
