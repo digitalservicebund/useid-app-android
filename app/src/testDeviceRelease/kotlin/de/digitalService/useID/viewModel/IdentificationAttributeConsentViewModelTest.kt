@@ -42,11 +42,10 @@ class IdentificationAttributeConsentViewModelTest {
         val mockNavArgs: IdentificationAttributeConsentNavArgs = mockk()
         val mockRequest: EidAuthenticationRequest = mockk(relaxed = true)
 
-        every { mockNavArgs.request } returns mockRequest
-
         mockkObject(IdentificationAttributeConsentDestination)
         every { IdentificationAttributeConsentDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
-
+        every { mockNavArgs.request } returns mockRequest
+        every { mockNavArgs.backAllowed} returns true
         every { mockRequest.subject } returns testIdentificationProvider
         every { mockRequest.readAttributes } returns testIdAttributes
         every { mockRequest.terms } returns AuthenticationTerms.Text("termsText")
@@ -71,5 +70,71 @@ class IdentificationAttributeConsentViewModelTest {
 
         Assertions.assertEquals(expectedRequiredReadAttributes, viewModel.requiredReadAttributes)
         Assertions.assertEquals(testIdentificationProvider, viewModel.identificationProvider)
+    }
+
+    @Test
+    fun testOnNavigationButtonClickedWithNoSetup() {
+        val testIdentificationProvider = "identificationProvider"
+        val testIdAttributes = mapOf(
+            IdCardAttribute.DG01 to true,
+            IdCardAttribute.DG02 to true,
+            IdCardAttribute.DG03 to false,
+            IdCardAttribute.DG04 to true,
+            IdCardAttribute.DG05 to false
+        )
+
+        val mockNavArgs: IdentificationAttributeConsentNavArgs = mockk()
+        val mockRequest: EidAuthenticationRequest = mockk(relaxed = true)
+
+        mockkObject(IdentificationAttributeConsentDestination)
+        every { IdentificationAttributeConsentDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
+        every { mockNavArgs.request } returns mockRequest
+        val identificationCoordinatorSetupSkipped = true
+        every { mockNavArgs.backAllowed} returns identificationCoordinatorSetupSkipped
+        every { mockRequest.subject } returns testIdentificationProvider
+        every { mockRequest.readAttributes } returns testIdAttributes
+        every { mockRequest.terms } returns AuthenticationTerms.Text("termsText")
+
+        val viewModel = IdentificationAttributeConsentViewModel(
+            mockIdentificationCoordinator,
+            mockSaveStateHandle
+        )
+
+        viewModel.onNavigationButtonClicked()
+
+        verify(exactly = 1) { mockIdentificationCoordinator.onBack() }
+    }
+
+    @Test
+    fun testOnNavigationButtonClickedWithSetup() {
+        val testIdentificationProvider = "identificationProvider"
+        val testIdAttributes = mapOf(
+            IdCardAttribute.DG01 to true,
+            IdCardAttribute.DG02 to true,
+            IdCardAttribute.DG03 to false,
+            IdCardAttribute.DG04 to true,
+            IdCardAttribute.DG05 to false
+        )
+
+        val mockNavArgs: IdentificationAttributeConsentNavArgs = mockk()
+        val mockRequest: EidAuthenticationRequest = mockk(relaxed = true)
+
+        mockkObject(IdentificationAttributeConsentDestination)
+        every { IdentificationAttributeConsentDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
+        every { mockNavArgs.request } returns mockRequest
+        val identificationCoordinatorSetupSkipped = false
+        every { mockNavArgs.backAllowed} returns identificationCoordinatorSetupSkipped
+        every { mockRequest.subject } returns testIdentificationProvider
+        every { mockRequest.readAttributes } returns testIdAttributes
+        every { mockRequest.terms } returns AuthenticationTerms.Text("termsText")
+
+        val viewModel = IdentificationAttributeConsentViewModel(
+            mockIdentificationCoordinator,
+            mockSaveStateHandle
+        )
+
+        viewModel.onNavigationButtonClicked()
+
+        verify(exactly = 1) { mockIdentificationCoordinator.cancelIdentification() }
     }
 }
