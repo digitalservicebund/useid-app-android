@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.openecard.mobile.activation.ActivationResultCode
 
 @ExtendWith(MockKExtension::class)
 class IdentificationCoordinatorTest {
@@ -127,18 +128,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -152,7 +154,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = false
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -160,7 +165,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -180,7 +188,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
         // SET PIN AND CONTINUE
         val pin = "111111"
@@ -197,10 +208,14 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // FINISH WITH SUCCESS
-        idCardManagerFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
+        idCardManagerFlow.value =
+            EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.popToRoot()  }
-        Assertions.assertEquals(SubCoordinatorState.Finished, identificationCoordinator.stateFlow.value)
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        Assertions.assertEquals(
+            SubCoordinatorState.Finished,
+            identificationCoordinator.stateFlow.value
+        )
 
         scanJob.cancel()
     }
@@ -236,18 +251,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -261,7 +277,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -269,7 +288,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -289,7 +311,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
         // SET PIN AND CONTINUE
         val pin = "111111"
@@ -306,10 +331,14 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // FINISH WITH SUCCESS
-        idCardManagerFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
+        idCardManagerFlow.value =
+            EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.popToRoot()  }
-        Assertions.assertEquals(SubCoordinatorState.Finished, identificationCoordinator.stateFlow.value)
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        Assertions.assertEquals(
+            SubCoordinatorState.Finished,
+            identificationCoordinator.stateFlow.value
+        )
 
         scanJob.cancel()
     }
@@ -345,18 +374,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -370,7 +400,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -378,7 +411,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -398,7 +434,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
         // SET PIN AND CONTINUE
         val pin = "111111"
@@ -425,10 +464,14 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // FINISH WITH SUCCESS
-        idCardManagerFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
+        idCardManagerFlow.value =
+            EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.popToRoot()  }
-        Assertions.assertEquals(SubCoordinatorState.Finished, identificationCoordinator.stateFlow.value)
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        Assertions.assertEquals(
+            SubCoordinatorState.Finished,
+            identificationCoordinator.stateFlow.value
+        )
 
         scanJob.cancel()
     }
@@ -464,18 +507,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -489,7 +533,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -497,7 +544,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -517,7 +567,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
         // SET WRONG PIN AND CONTINUE
         var pin = "000000"
@@ -541,7 +594,10 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
         Assertions.assertFalse(scanInProgress)
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(true).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(true).route,
+            navigationParameter.route
+        )
 
         // SET CORRECT PIN
         pin = "111111"
@@ -560,10 +616,14 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // FINISH WITH SUCCESS
-        idCardManagerFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
+        idCardManagerFlow.value =
+            EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(testRedirectUrl)
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.popToRoot()  }
-        Assertions.assertEquals(SubCoordinatorState.Finished, identificationCoordinator.stateFlow.value)
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        Assertions.assertEquals(
+            SubCoordinatorState.Finished,
+            identificationCoordinator.stateFlow.value
+        )
 
         scanJob.cancel()
     }
@@ -595,18 +655,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -619,7 +680,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -627,7 +691,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -647,7 +714,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
         // SET WRONG PIN AND CONTINUE
         var pin = "000000"
@@ -671,7 +741,10 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
         Assertions.assertFalse(scanInProgress)
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(true).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(true).route,
+            navigationParameter.route
+        )
 
         // SET WRONG PIN AGAIN
         pin = "000000"
@@ -694,14 +767,20 @@ class IdentificationCoordinatorTest {
         Assertions.assertFalse(scanInProgress)
         verify(exactly = 1) { mockNavigator.navigate(IdentificationCardSuspendedDestination) }
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
 
         // CANCEL IDENTIFICATION
         identificationCoordinator.cancelIdentification()
         verify(exactly = 3) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
 
         scanJob.cancel()
     }
@@ -733,18 +812,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -757,7 +837,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -765,7 +848,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -785,7 +871,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(true).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(true).route,
+            navigationParameter.route
+        )
 
         // SET WRONG PIN THIRD TIME AND CONTINUE
         val pin = "000000"
@@ -809,14 +898,20 @@ class IdentificationCoordinatorTest {
         Assertions.assertFalse(scanInProgress)
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.navigate(IdentificationCardBlockedDestination) }
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
 
         // CANCEL IDENTIFICATION
         identificationCoordinator.cancelIdentification()
         verify(exactly = 3) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
 
         scanJob.cancel()
     }
@@ -845,7 +940,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -853,7 +951,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         val navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // CANCEL IDENTIFICATION
         identificationCoordinator.cancelIdentification()
@@ -861,7 +962,10 @@ class IdentificationCoordinatorTest {
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -884,18 +988,19 @@ class IdentificationCoordinatorTest {
             coroutineContextProvider = mockCoroutineContextProvider
         )
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -908,7 +1013,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -916,7 +1024,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -936,7 +1047,10 @@ class IdentificationCoordinatorTest {
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -961,18 +1075,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -985,7 +1100,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -993,7 +1111,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -1013,14 +1134,20 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(true).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(true).route,
+            navigationParameter.route
+        )
 
         // CANCEL IDENTIFICATION
         identificationCoordinator.cancelIdentification()
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -1045,18 +1172,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -1069,7 +1197,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = true
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -1077,7 +1208,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -1097,7 +1231,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
         // SET CORRECT PIN
         val pin = "111111"
@@ -1115,7 +1252,10 @@ class IdentificationCoordinatorTest {
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
     }
 
     // TEST ERROR HANDLING
@@ -1151,18 +1291,19 @@ class IdentificationCoordinatorTest {
 
         val pinCallback = mockk<(String) -> Unit>()
 
-        val testRequestAuthenticationRequestConfirmation = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                "",
-                "",
-                "subject",
-                "",
-                "",
-                AuthenticationTerms.Text(""),
-                "",
-                mapOf()
-            )
-        ) {}
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
         val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
@@ -1176,7 +1317,10 @@ class IdentificationCoordinatorTest {
         val setupSkipped = false
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
@@ -1184,7 +1328,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
         advanceUntilIdle()
         var navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationFetchMetadataDestination(setupSkipped).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
         // SEND TEST REQUEST CONFIRMATION
         idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
@@ -1204,7 +1351,10 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
         advanceUntilIdle()
         navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationPersonalPinDestination(false).route, navigationParameter.route)
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
         // SET PIN AND CONTINUE
         val pin = "111111"
@@ -1221,571 +1371,1001 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // CARD DEACTIVATED ERROR
-        idCardManagerFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
+        idCardManagerFlow.value =
+            EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
         advanceUntilIdle()
         Assertions.assertFalse(scanInProgress)
+        verify(exactly = 1) { mockTrackerManager.trackScreen("identification/cardDeactivated") }
         verify(exactly = 1) { mockNavigator.navigate(IdentificationCardDeactivatedDestination) }
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
 
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, identificationCoordinator.stateFlow.value)
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
         verify(exactly = 1) { mockNavigator.popToRoot() }
-        verify(exactly = 3) { mockIdCardManager.cancelTask() } // TODO: prevent this unnecessary call?
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
 
         scanJob.cancel()
     }
-    /*
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun startIdentificationProcess_RequestCan_Error() = runTest {
-        val testFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.AuthenticationStarted)
+    fun errorCardBlocked() = runTest {
 
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
+        // SETUP
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val mockIntent = mockkClass(Intent::class)
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+
         val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
             .launchIn(CoroutineScope(dispatcher))
 
-        advanceUntilIdle()
-
-        testFlow.value = EidInteractionEvent.RequestCan {}
-        advanceUntilIdle()
-
-        Assertions.assertEquals(ScanEvent.Error(ScanError.PinSuspended), results.get(1))
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_RequestPinAndCan_Error() = runTest {
-        val testFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.AuthenticationStarted)
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
-            .launchIn(CoroutineScope(dispatcher))
-
-        advanceUntilIdle()
-
-        testFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
-        advanceUntilIdle()
-
-        Assertions.assertEquals(ScanEvent.Error(ScanError.PinSuspended), results.get(1))
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_RequestPUK_Error() = runTest {
-        val testFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.AuthenticationStarted)
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
-            .launchIn(CoroutineScope(dispatcher))
-
-        advanceUntilIdle()
-
-        testFlow.value = EidInteractionEvent.RequestPUK {}
-        advanceUntilIdle()
-
-        Assertions.assertEquals(ScanEvent.Error(ScanError.PinBlocked), results.get(1))
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_RequestCardInsertion() = runTest {
-        val testFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.AuthenticationStarted)
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        advanceUntilIdle()
-
-        testFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationScanDestination) }
-        verify(exactly = 1) { mockAppCoordinator.startNfcTagHandling() }
-
-        testFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        testFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
-        testFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
-        verify(exactly = 2) { mockAppCoordinator.startNfcTagHandling() }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_CardInteractionComplete() = runTest {
-        val testFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.AuthenticationStarted)
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        advanceUntilIdle()
-
-        testFlow.value = EidInteractionEvent.CardInteractionComplete
-        advanceUntilIdle()
-
-        verify(exactly = 1) { mockAppCoordinator.stopNfcTagHandling() }
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_CardDeactivatedException() = runTest {
-        val testFlow: Flow<EidInteractionEvent> = flow {
-            throw IdCardInteractionException.CardDeactivated
-        }
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
-            .launchIn(CoroutineScope(dispatcher))
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(ScanEvent.Error(ScanError.CardDeactivated), results.get(0))
-
-        verify(exactly = 1) { mockAppCoordinator.navigate(IdentificationCardDeactivatedDestination) }
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_ScanErrorWithoutRedirect() = runTest {
-        val testFlow: Flow<EidInteractionEvent> = flow {
-            emit(EidInteractionEvent.RequestCardInsertion)
-            emit(EidInteractionEvent.CardRecognized)
-            delay(500L)
-            throw IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERNAL_ERROR, null, null)
-        }
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
-            .launchIn(CoroutineScope(dispatcher))
-
-        advanceTimeBy(100L)
-
-        Assertions.assertEquals(ScanEvent.CardAttached, results.get(0))
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(2, results.size)
-        Assertions.assertEquals(ScanEvent.Error(ScanError.CardErrorWithoutRedirect), results.last())
-
-        verify(exactly = 2) { mockAppCoordinator.navigate(any()) }
-
-        val navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationCardUnreadableDestination(true, null).route, navigationParameter.route)
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_ScanErrorWithRedirect() = runTest {
-        val redirectUrl = "redirectUrl"
-
-        val testFlow: Flow<EidInteractionEvent> = flow {
-            emit(EidInteractionEvent.RequestCardInsertion)
-            emit(EidInteractionEvent.CardRecognized)
-            delay(500L)
-            throw IdCardInteractionException.ProcessFailed(ActivationResultCode.REDIRECT, redirectUrl, null)
-        }
-
-        mockkStatic("android.util.Base64")
-        mockkStatic("android.net.Uri")
-        every { Base64.encodeToString(any(), any()) } returns redirectUrl
-        every { Uri.encode(any()) } returns redirectUrl
-        every { Uri.decode(any()) } returns redirectUrl
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
-            .launchIn(CoroutineScope(dispatcher))
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(ScanEvent.CardAttached, results.get(0))
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(2, results.size)
-        Assertions.assertEquals(ScanEvent.Error(ScanError.CardErrorWithRedirect(redirectUrl)), results.last())
-
-        verify(exactly = 2) { mockAppCoordinator.navigate(any()) }
-
-        val navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationCardUnreadableDestination(true, redirectUrl).route, navigationParameter.route)
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_ProcessFailedAfterCancellation_BeforeScanState() = runTest {
-        val redirectUrl = "redirectUrl"
-
-        val testFlow: Flow<EidInteractionEvent> = flow {
-            throw IdCardInteractionException.ProcessFailed(ActivationResultCode.REDIRECT, redirectUrl, null)
-        }
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
-            .launchIn(CoroutineScope(dispatcher))
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(1, results.size)
-        Assertions.assertEquals(ScanEvent.CardRequested, results.get(0))
-
-        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_ProcessFailedAfterCancellation_AfterScanState() = runTest {
-        val testFlow: Flow<EidInteractionEvent> = flow {
-            emit(EidInteractionEvent.CardRecognized)
-            delay(500L)
-            throw IdCardInteractionException.ProcessFailed(ActivationResultCode.REDIRECT, null, "resultMinor")
-        }
-
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
-        )
-
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val results = mutableListOf<ScanEvent>()
-        val job = identificationCoordinator.scanEventFlow
-            .onEach(results::add)
-            .launchIn(CoroutineScope(dispatcher))
-
-        advanceTimeBy(100L)
-
-        Assertions.assertEquals(ScanEvent.CardAttached, results.get(0))
-        identificationCoordinator.cancelIdentification()
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(1, results.size)
-        Assertions.assertEquals(ScanEvent.CardAttached, results.last())
-
-        verify(exactly = 0) { mockAppCoordinator.navigate(any()) }
-
-        job.cancel()
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun startIdentificationProcess_NullPointerException() = runTest {
-        val testRedirectUrl = "redirectUrl"
-
-        val testFlow: Flow<EidInteractionEvent> = flow {
-            throw NullPointerException()
-        }
-
+        val pinCallback = mockk<(String) -> Unit>()
+
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
+
+        val testRedirectUrl = "testRedirectUrl"
         mockkStatic("android.util.Base64")
         mockkStatic("android.net.Uri")
         every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
         every { Uri.encode(any()) } returns testRedirectUrl
         every { Uri.decode(any()) } returns testRedirectUrl
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
 
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
-        every { mockCoroutineContextProvider.IO } returns dispatcher
-
-        val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
+        // SEND AUTHENTIFICATION STARTED EVENT
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
-
-        verify { mockIDCardManager.cancelTask() }
-
-        val scanResults = mutableListOf<ScanEvent>()
-        val scanJob = identificationCoordinator.scanEventFlow
-            .onEach(scanResults::add)
-            .launchIn(CoroutineScope(dispatcher))
-
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
         advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
 
-        Assertions.assertEquals(ScanEvent.Error(ScanError.Other(null)), scanResults.get(0))
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        every { pinCallback(pin) } just Runs
+        identificationCoordinator.setPin(pin)
+        verify(exactly = 1) { pinCallback(pin) }
+        idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
 
-        val navigationParameter = destinationSlot.captured
-        Assertions.assertEquals(IdentificationOtherErrorDestination(testTokenURL).route, navigationParameter.route)
+        // RECOGNIZE CARD
+        idCardManagerFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+        Assertions.assertTrue(scanInProgress)
+
+        // CARD BLOCKED ERROR
+        idCardManagerFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
+        advanceUntilIdle()
+        Assertions.assertFalse(scanInProgress)
+        verify(exactly = 1) { mockTrackerManager.trackScreen("identification/cardBlocked") }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationCardBlockedDestination) }
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
 
         scanJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onPinEntered_WithPinCallback() = runTest {
-        val testFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.AuthenticationStarted)
+    fun errorProcessFailedScanStateReachedWithRedirectUrl() = runTest {
 
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
+        // SETUP
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val mockIntent = mockkClass(Intent::class)
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+
         val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
 
-        verify { mockIDCardManager.cancelTask() }
+        val pinCallback = mockk<(String) -> Unit>()
 
-        var didCallCallback = false
-        testFlow.value = EidInteractionEvent.RequestPin(null) {
-            didCallCallback = true
-        }
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
+        val testRedirectUrl = "testRedirectUrl"
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
+
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
-        identificationCoordinator.onPinEntered("testPin")
+        // SEND AUTHENTIFICATION STARTED EVENT
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
-        Assertions.assertTrue(didCallCallback)
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
+        advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
+
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        every { pinCallback(pin) } just Runs
+        identificationCoordinator.setPin(pin)
+        verify(exactly = 1) { pinCallback(pin) }
+        idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+
+        // RECOGNIZE CARD
+        idCardManagerFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+        Assertions.assertTrue(scanInProgress)
+
+        // PROCESS FAILED
+        idCardManagerFlow.value = EidInteractionEvent.Error(
+            IdCardInteractionException.ProcessFailed(
+                resultCode = ActivationResultCode.INTERNAL_ERROR,
+                redirectUrl = testRedirectUrl,
+                resultMinor = null
+            )
+        )
+        advanceUntilIdle()
+        Assertions.assertFalse(scanInProgress)
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationCardUnreadableDestination(
+                true,
+                testRedirectUrl
+            ).route, navigationParameter.route
+        )
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
+
+        scanJob.cancel()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onPinEntered_CalledTwice() = runTest {
-        val testFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.AuthenticationStarted)
+    fun errorProcessFailedScanStateReachedWithoutRedirectUrl() = runTest {
 
-        every { mockIDCardManager.identify(mockContext, testURL) } returns testFlow
-
+        // SETUP
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val mockIntent = mockkClass(Intent::class)
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+
         val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
         )
 
-        identificationCoordinator.startIdentificationProcess(testTokenURL, true)
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
 
-        verify { mockIDCardManager.cancelTask() }
+        val pinCallback = mockk<(String) -> Unit>()
 
-        var callbackCalledCount = 0
-        testFlow.value = EidInteractionEvent.RequestPin(null) {
-            callbackCalledCount++
-        }
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
 
+        val testRedirectUrl = "testRedirectUrl"
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
+
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
 
-        identificationCoordinator.onPinEntered("testPin1")
-        identificationCoordinator.onPinEntered("testPin2")
+        // SEND AUTHENTIFICATION STARTED EVENT
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
 
-        Assertions.assertEquals(1, callbackCalledCount)
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
+        advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
 
-        verify(exactly = 1) { mockAppCoordinator.navigate(any()) }
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
+
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        every { pinCallback(pin) } just Runs
+        identificationCoordinator.setPin(pin)
+        verify(exactly = 1) { pinCallback(pin) }
+        idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+
+        // PROCESS FAILED
+        idCardManagerFlow.value = EidInteractionEvent.Error(
+            IdCardInteractionException.ProcessFailed(
+                resultCode = ActivationResultCode.INTERNAL_ERROR,
+                redirectUrl = null,
+                resultMinor = null
+            )
+        )
+        advanceUntilIdle()
+        Assertions.assertFalse(scanInProgress)
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationCardUnreadableDestination(true, null).route,
+            navigationParameter.route
+        )
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
+
+        scanJob.cancel()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun pop() {
+    fun errorProcessFailedScanStateNotReached() = runTest {
+
+        // SETUP
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val mockIntent = mockkClass(Intent::class)
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+
         val identificationCoordinator = IdentificationCoordinator(
-            mockContext,
-            mockAppCoordinator,
-            mockIDCardManager,
-            mockTrackerManager,
-            mockIssueTrackerManager,
-            mockCoroutineContextProvider
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
         )
 
-        identificationCoordinator.pop()
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
 
-        verify(exactly = 1) { mockAppCoordinator.pop() }
-    }*/
+        val pinCallback = mockk<(String) -> Unit>()
+
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
+
+        val testRedirectUrl = "testRedirectUrl"
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
+
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
+
+        // SEND AUTHENTIFICATION STARTED EVENT
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
+
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
+        advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
+
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
+
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        every { pinCallback(pin) } just Runs
+        identificationCoordinator.setPin(pin)
+        verify(exactly = 1) { pinCallback(pin) }
+
+        // PROCESS FAILED
+        idCardManagerFlow.value = EidInteractionEvent.Error(
+            IdCardInteractionException.ProcessFailed(
+                resultCode = ActivationResultCode.INTERNAL_ERROR,
+                redirectUrl = null,
+                resultMinor = null
+            )
+        )
+
+        advanceUntilIdle()
+        Assertions.assertFalse(scanInProgress)
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationOtherErrorDestination) }
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun frameworkErrorTrackedWhenScanStateNotReachedAndPinCallbackNull() = runTest {
+
+        // SETUP
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val mockIntent = mockkClass(Intent::class)
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+
+        val identificationCoordinator = IdentificationCoordinator(
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val pinCallback = mockk<(String) -> Unit>()
+
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
+
+        val testRedirectUrl = "testRedirectUrl"
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
+
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
+
+        // SEND AUTHENTIFICATION STARTED EVENT
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
+
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
+        advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
+
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
+
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        every { pinCallback(pin) } just Runs
+        identificationCoordinator.setPin(pin)
+        verify(exactly = 1) { pinCallback(pin) }
+
+        // PROCESS FAILED
+        idCardManagerFlow.value =
+            EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Error"))
+        advanceUntilIdle()
+        Assertions.assertFalse(scanInProgress)
+        verify(exactly = 1) {
+            mockTrackerManager.trackEvent(
+                category = "identification",
+                action = "loadingFailed",
+                name = "attributes"
+            )
+        }
+        verify(exactly = 1) { mockIssueTrackerManager.capture(RedactedIDCardInteractionException.FrameworkError) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationOtherErrorDestination) }
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun unexpectedReadAttributeErrorTrackedWhenScanStateNotReachedAndPinCallbackNull() = runTest {
+
+        // SETUP
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val mockIntent = mockkClass(Intent::class)
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+
+        val identificationCoordinator = IdentificationCoordinator(
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val pinCallback = mockk<(String) -> Unit>()
+
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
+
+        val testRedirectUrl = "testRedirectUrl"
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
+
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
+
+        // SEND AUTHENTIFICATION STARTED EVENT
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
+
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
+        advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
+
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
+
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        every { pinCallback(pin) } just Runs
+        identificationCoordinator.setPin(pin)
+        verify(exactly = 1) { pinCallback(pin) }
+
+        // PROCESS FAILED
+        idCardManagerFlow.value =
+            EidInteractionEvent.Error(IdCardInteractionException.UnexpectedReadAttribute("Error"))
+        advanceUntilIdle()
+        Assertions.assertFalse(scanInProgress)
+        verify(exactly = 1) {
+            mockTrackerManager.trackEvent(
+                category = "identification",
+                action = "loadingFailed",
+                name = "attributes"
+            )
+        }
+        verify(exactly = 1) { mockIssueTrackerManager.capture(RedactedIDCardInteractionException.UnexpectedReadAttribute) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationOtherErrorDestination) }
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun otherErrorsNotTrackedWhenScanStateReached() = runTest {
+
+        // SETUP
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val mockIntent = mockkClass(Intent::class)
+        mockkConstructor(Intent::class)
+        every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
+
+        val identificationCoordinator = IdentificationCoordinator(
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        val pinCallback = mockk<(String) -> Unit>()
+
+        val testRequestAuthenticationRequestConfirmation =
+            EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+                EidAuthenticationRequest(
+                    "",
+                    "",
+                    "subject",
+                    "",
+                    "",
+                    AuthenticationTerms.Text(""),
+                    "",
+                    mapOf()
+                )
+            ) {}
+
+        val testRedirectUrl = "testRedirectUrl"
+        mockkStatic("android.util.Base64")
+        mockkStatic("android.net.Uri")
+        every { Base64.encodeToString(any(), any()) } returns testRedirectUrl
+        every { Uri.encode(any()) } returns testRedirectUrl
+        every { Uri.decode(any()) } returns testRedirectUrl
+        every { Uri.parse(testRedirectUrl) } returns Uri.EMPTY
+
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockIdCardManager.cancelTask() }
+        verify(exactly = 1) { mockIdCardManager.identify(mockContext, testURL) }
+
+        // SEND AUTHENTIFICATION STARTED EVENT
+        idCardManagerFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+        var navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationFetchMetadataDestination(setupSkipped).route,
+            navigationParameter.route
+        )
+
+        // SEND TEST REQUEST CONFIRMATION
+        idCardManagerFlow.value = testRequestAuthenticationRequestConfirmation
+        advanceUntilIdle()
+        navigationParameter = destinationPoppingSlot.captured
+        Assertions.assertEquals(
+            IdentificationAttributeConsentDestination(
+                testRequestAuthenticationRequestConfirmation.request,
+                setupSkipped
+            ).route,
+            navigationParameter.route
+        )
+
+        // CONFIRM ATTRIBUTES AND NAVIGATE TO PIN ENTRY
+        identificationCoordinator.confirmAttributesForIdentification()
+        val attempts: Int? = null
+        idCardManagerFlow.value = EidInteractionEvent.RequestPin(attempts, pinCallback)
+        advanceUntilIdle()
+        navigationParameter = destinationSlot.captured
+        Assertions.assertEquals(
+            IdentificationPersonalPinDestination(false).route,
+            navigationParameter.route
+        )
+
+        // SET PIN AND CONTINUE
+        val pin = "111111"
+        every { pinCallback(pin) } just Runs
+        identificationCoordinator.setPin(pin)
+        verify(exactly = 1) { pinCallback(pin) }
+
+        idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+
+        // PROCESS FAILED
+        idCardManagerFlow.value =
+            EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Error"))
+        advanceUntilIdle()
+        Assertions.assertFalse(scanInProgress)
+        verify(exactly = 0) {
+            mockTrackerManager.trackEvent(
+                category = "identification",
+                action = "loadingFailed",
+                name = "attributes"
+            )
+        }
+        verify(exactly = 0) { mockIssueTrackerManager.capture(RedactedIDCardInteractionException.FrameworkError) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationOtherErrorDestination) }
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
+
+        scanJob.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testNullPointerExceptionInEidInteractionFlow() = runTest {
+
+        // SETUP
+        every { mockCoroutineContextProvider.IO } returns dispatcher
+
+        every { mockIdCardManager.eidFlow } returns flow {
+            throw NullPointerException()
+        }
+
+        val identificationCoordinator = IdentificationCoordinator(
+            context = mockContext,
+            navigator = mockNavigator,
+            idCardManager = mockIdCardManager,
+            storageManager = mockStorageManager,
+            trackerManager = mockTrackerManager,
+            issueTrackerManager = mockIssueTrackerManager,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        var scanInProgress = false
+        val scanJob = identificationCoordinator.scanInProgress
+            .onEach { scanInProgress = it }
+            .launchIn(CoroutineScope(dispatcher))
+
+        // START IDENTIFICATION PROCESS
+        val setupSkipped = false
+        identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Active,
+            identificationCoordinator.stateFlow.value
+        )
+
+        Assertions.assertFalse(scanInProgress)
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationOtherErrorDestination) }
+        verify(exactly = 2) { mockIdCardManager.cancelTask() }
+
+        identificationCoordinator.cancelIdentification()
+        advanceUntilIdle()
+        Assertions.assertEquals(
+            SubCoordinatorState.Cancelled,
+            identificationCoordinator.stateFlow.value
+        )
+        verify(exactly = 1) { mockNavigator.popToRoot() }
+        verify(exactly = 3) { mockIdCardManager.cancelTask() }
+
+        scanJob.cancel()
+    }
 }
