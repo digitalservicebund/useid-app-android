@@ -1,6 +1,5 @@
 package de.digitalService.useID
 
-import androidx.activity.compose.setContent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
@@ -46,7 +45,7 @@ class IdentificationAttributeConsentTest {
         every { viewModel.identificationProvider } returns testIdentificationProviderString
         every { viewModel.requiredReadAttributes } returns testRequiredReadAttributes
         every { viewModel.shouldShowInfoDialog } returns false
-        every { viewModel.didSetup } returns true
+        every { viewModel.backAllowed } returns true
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
@@ -92,7 +91,7 @@ class IdentificationAttributeConsentTest {
             testSubjectUrl,
             testTerms
         )
-        every { viewModel.didSetup } returns false
+        every { viewModel.backAllowed } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
@@ -144,7 +143,7 @@ class IdentificationAttributeConsentTest {
             testSubjectUrl,
             testTerms
         )
-        every { viewModel.didSetup } returns false
+        every { viewModel.backAllowed } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
@@ -183,7 +182,7 @@ class IdentificationAttributeConsentTest {
             testSubjectUrl,
             testTerms
         )
-        every { viewModel.didSetup } returns false
+        every { viewModel.backAllowed } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationAttributeConsent(viewModel = viewModel)
