@@ -62,7 +62,6 @@ interface IdentificationScanViewModelInterface {
 
     fun onHelpButtonClicked()
     fun onNfcButtonClicked()
-    fun onErrorDialogButtonClicked(context: Context)
     fun onCancelIdentification()
 }
 
@@ -91,10 +90,6 @@ class IdentificationScanViewModel @Inject constructor(
         trackerManager.trackEvent("identification", "alertShown", "NFCInfo")
     }
 
-    override fun onErrorDialogButtonClicked(context: Context) {
-        coordinator.cancelIdentification()
-    }
-
     override fun onCancelIdentification() {
         coordinator.cancelIdentification()
     }
@@ -105,7 +100,6 @@ private class PreviewIdentificationScanViewModel(
 ) : IdentificationScanViewModelInterface {
     override fun onHelpButtonClicked() {}
     override fun onNfcButtonClicked() {}
-    override fun onErrorDialogButtonClicked(context: Context) {}
     override fun onCancelIdentification() {}
 }
 
