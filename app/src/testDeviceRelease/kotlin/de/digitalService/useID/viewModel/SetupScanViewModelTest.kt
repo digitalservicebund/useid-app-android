@@ -1,80 +1,84 @@
-/*
 package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.analytics.TrackerManagerType
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.*
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
 class SetupScanViewModelTest {
     @MockK(relaxUnitFun = true)
-    lateinit var mockSetupCoordinator: SetupCoordinator
+    lateinit var mockPinManagementCoordinator: PinManagementCoordinator
 
     @MockK(relaxUnitFun = true)
     lateinit var mockTrackerManager: TrackerManagerType
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    fun collectProgressEvents() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
+    val dispatcher = StandardTestDispatcher()
 
-        val progressFlow = MutableStateFlow(false)
+    @BeforeEach
+    fun setup() {
+        Dispatchers.setMain(dispatcher)
+    }
 
-        every { mockSetupCoordinator.scanInProgress } returns progressFlow
+    @AfterEach
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun testProgressEventCollection() = runTest {
+        val scanInProgressFlow = MutableStateFlow(false)
+        every { mockPinManagementCoordinator.scanInProgress } returns scanInProgressFlow
 
         val viewModel = SetupScanViewModel(
-            mockSetupCoordinator,
-            mockTrackerManager,
-            testScope
+            mockPinManagementCoordinator,
+            mockTrackerManager
         )
 
-        Assertions.assertFalse(viewModel.shouldShowProgress)
-
-        progressFlow.value = true
+        scanInProgressFlow.value = true
         advanceUntilIdle()
-
         Assertions.assertTrue(viewModel.shouldShowProgress)
+
+        scanInProgressFlow.value = false
+        advanceUntilIdle()
+        Assertions.assertFalse(viewModel.shouldShowProgress)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onCancelConfirm() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
+    fun testOnHelpButtonClicked() = runTest {
 
-        every { mockSetupCoordinator.scanInProgress } returns flow { }
+        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
 
         val viewModel = SetupScanViewModel(
-            mockSetupCoordinator,
-            mockTrackerManager,
-            testScope
+            mockPinManagementCoordinator,
+            mockTrackerManager
         )
 
-        viewModel.onCancelConfirm()
+        viewModel.onHelpButtonClicked()
 
-        verify(exactly = 1) { mockSetupCoordinator.onBackClicked() }
+        verify(exactly = 1) { mockTrackerManager.trackScreen("firstTimeUser/scanHelp") }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onNfcButtonClicked() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
+    fun testOnNfcButtonClicked() = runTest {
+
+        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
 
         val viewModel = SetupScanViewModel(
-            mockSetupCoordinator,
-            mockTrackerManager,
-            testScope
+            mockPinManagementCoordinator,
+            mockTrackerManager
         )
 
         viewModel.onNfcButtonClicked()
@@ -82,20 +86,18 @@ class SetupScanViewModelTest {
         verify(exactly = 1) { mockTrackerManager.trackEvent("firstTimeUser", "alertShown", "NFCInfo") }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun onHelpButtonClicked() = runTest {
-        val testScope = CoroutineScope(StandardTestDispatcher(testScheduler))
+    fun testOnCancelConfirm() = runTest {
+
+        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
 
         val viewModel = SetupScanViewModel(
-            mockSetupCoordinator,
-            mockTrackerManager,
-            testScope
+            mockPinManagementCoordinator,
+            mockTrackerManager
         )
 
-        viewModel.onHelpButtonClicked()
+        viewModel.onCancelConfirm()
 
-        verify(exactly = 1) { mockTrackerManager.trackScreen("firstTimeUser/scanHelp") }
+        verify(exactly = 1) { mockPinManagementCoordinator.onBack() }
     }
 }
-*/

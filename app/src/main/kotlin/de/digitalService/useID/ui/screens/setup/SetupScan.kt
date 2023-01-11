@@ -20,7 +20,6 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.CoroutineScope
@@ -57,7 +56,7 @@ interface SetupScanViewModelInterface {
 
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
-    private val coordinator: PinManagementCoordinator,
+    private val pinManagementCoordinator: PinManagementCoordinator,
     private val trackerManager: TrackerManagerType,
     @Nullable coroutineScope: CoroutineScope? = null
 ) : ViewModel(), SetupScanViewModelInterface {
@@ -69,7 +68,7 @@ class SetupScanViewModel @Inject constructor(
 
     init {
         viewModelCoroutineScope.launch {
-            coordinator.scanInProgress.collect { shouldShowProgress = it }
+            pinManagementCoordinator.scanInProgress.collect { shouldShowProgress = it }
         }
     }
 
@@ -82,7 +81,7 @@ class SetupScanViewModel @Inject constructor(
     }
 
     override fun onCancelConfirm() {
-        coordinator.onBack()
+        pinManagementCoordinator.onBack()
     }
 }
 
