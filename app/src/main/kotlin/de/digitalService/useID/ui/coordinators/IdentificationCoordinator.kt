@@ -143,6 +143,9 @@ class IdentificationCoordinator @Inject constructor(
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             idCardManager.eidFlow.catch { exception ->
                 logger.error("Error: $exception")
+                _scanInProgress.value = false
+                idCardManager.cancelTask()
+                navigator.navigate(IdentificationOtherErrorDestination)
             }.collect { event ->
                 when (event) {
                     is EidInteractionEvent.AuthenticationStarted -> navigator.navigate(IdentificationFetchMetadataDestination(setupSkipped))
@@ -219,7 +222,7 @@ class IdentificationCoordinator @Inject constructor(
                                     if (event.exception.redirectUrl != null) {
                                         IdentificationCardUnreadableDestination(true, event.exception.redirectUrl)
                                     } else {
-                                            IdentificationCardUnreadableDestination(true, null)
+                                        IdentificationCardUnreadableDestination(true, null)
                                     }
                                 } else {
                                     IdentificationOtherErrorDestination
