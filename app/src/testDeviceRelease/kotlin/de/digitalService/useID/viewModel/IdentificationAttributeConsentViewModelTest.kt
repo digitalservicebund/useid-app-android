@@ -103,6 +103,7 @@ class IdentificationAttributeConsentViewModelTest {
         viewModel.onNavigationButtonClicked()
 
         verify(exactly = 1) { mockIdentificationCoordinator.onBack() }
+        verify(exactly = 0) { mockIdentificationCoordinator.cancelIdentification() }
     }
 
     @Test
@@ -135,6 +136,7 @@ class IdentificationAttributeConsentViewModelTest {
 
         viewModel.onNavigationButtonClicked()
 
+        verify(exactly = 0) { mockIdentificationCoordinator.onBack() }
         verify(exactly = 1) { mockIdentificationCoordinator.cancelIdentification() }
     }
 }
