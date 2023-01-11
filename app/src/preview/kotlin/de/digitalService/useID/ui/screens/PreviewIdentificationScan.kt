@@ -151,7 +151,6 @@ fun PreviewPreviewIdentificationScan() {
 
                 override fun onHelpButtonClicked() {}
                 override fun onNfcButtonClicked() {}
-                override fun onErrorDialogButtonClicked(context: Context) {}
                 override fun onCancelIdentification() {}
             }
         )
