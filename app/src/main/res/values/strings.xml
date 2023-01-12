@@ -114,9 +114,9 @@
     <string name="helpNFC_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kurze Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
     <string name="helpNFC_title">So funktioniert die NFC-Technologie</string>
     <string name="home_header_body">Öffnen Sie auf Ihrem Smartphone die Internetseite vom Anbieter und drücken Sie auf den Button »Mit BundesIdent ausweisen«.</string>
-    <string name="home_header_title">Ausweisen</string>
+    <string name="home_header_title">So funktioniert’s</string>
     <string name="home_more_accessibilityStatement">Barrierefreiheitserklärung</string>
-    <string name="home_more_imprint">Impressum</string>
+    <string name="home_more_imprint">Kontakt und Impressum</string>
     <string name="home_more_licenses">Lizenzen</string>
     <string name="home_more_privacy">Datenschutzerklärung</string>
     <string name="home_more_settings">Einstellungen</string>
@@ -145,7 +145,12 @@
     <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
     <string name="identification_scan_body">Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
     <string name="identification_scan_title">Halten Sie Ihren Ausweis dicht an die obere Rückseite des Smartphones.</string>
-    <string name="imprint_text">## Impressum
+    <string name="imprint_text">##Kontakt
+\n
+\nSchicken Sie uns Ihre Fragen und Verbesserungsvorschläge an:\\
+\n[hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)
+\n
+\n## Impressum
 \n### Verantwortlich für die Inhalte
 \n
 \nDigitalService GmbH des Bundes
