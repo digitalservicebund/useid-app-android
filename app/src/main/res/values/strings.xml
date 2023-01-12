@@ -73,13 +73,13 @@
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">Sie haben keine Versuche mehr.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Inkorrekte Transport-PIN eingegeben.</string>
-    <string name="firstTimeUser_intro_body">Sie müssen Ihren Ausweis insgesamt nur einmal einrichten. Falls Sie schon über eine 6-stellige PIN verfügen, ist Ihr Ausweis bereits eingerichtet.</string>
+    <string name="firstTimeUser_intro_body">Sie müssen Ihren Ausweis insgesamt nur einmal einrichten. Falls Sie schon über eine 6‑stellige PIN verfügen, ist Ihr Ausweis bereits eingerichtet.</string>
     <string name="firstTimeUser_intro_startSetup">Jetzt Online-Ausweis einrichten</string>
     <string name="firstTimeUser_intro_title">Haben Sie Ihren Online‑Ausweis bereits eingerichtet\?</string>
     <string name="firstTimeUser_intro_skipSetup">Bereits eingerichtet</string>
     <string name="firstTimeUser_missingPINLetter_body">Wir arbeiten noch an dieser Funktion.
 \n
-\nWeitere Informationen über den PIN-Rücksetzbrief finden Sie unter:
+\nWeitere Informationen über den PIN‑Rücksetzbrief finden Sie unter:
 \n
 \n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
     <string name="firstTimeUser_missingPINLetter_title">PIN-Rücksetzbrief bestellen.</string>
@@ -145,7 +145,7 @@
     <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
     <string name="identification_scan_body">Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
     <string name="identification_scan_title">Berühren Sie Ihren Ausweis mit der oberen Rückseite des Smartphones.</string>
-    <string name="imprint_text">##Kontakt
+    <string name="imprint_text">## Kontakt
 \n
 \nSchicken Sie uns Ihre Fragen und Verbesserungsvorschläge an:\\
 \n[hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)
@@ -363,7 +363,7 @@
 \nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10-stellige PUK finden Sie auf Ihrem PIN-Brief.</string>
     <string name="scanError_cardBlocked_title">Ihr Ausweis ist blockiert.</string>
     <string name="scanError_cardDeactivated_body">Um sich online ausweisen zu können, brauchen Sie eine aktivierte Online-Ausweisfunktion und Ihre persönliche Ausweis-PIN.
-\n#### Nachträglich mit dem PIN-Rücksetzbrief aktivieren:
+\n#### Nachträglich mit dem PIN‑Rücksetzbrief aktivieren:
 \n
 \nWeitere Informationen finden Sie auf der folgenden Internetseite:
 \n
@@ -385,7 +385,7 @@
 \n
 \n
 \n
-\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6-stelligen CAN in Kombination mit Ihrer persönlichen Ausweis-PIN in der AusweisApp2 entsperren. Ihre 6-stellige CAN finden Sie auf der Vorderseite Ihres Ausweis.
+\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6‑stelligen CAN in Kombination mit Ihrer persönlichen Ausweis-PIN in der AusweisApp2 entsperren. Ihre 6‑stellige CAN finden Sie auf der Vorderseite Ihres Ausweis.
 \n
 \n
 \n
