@@ -1,17 +1,12 @@
-/*
 package de.digitalService.useID
 
-import androidx.activity.compose.setContent
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.models.ScanError
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModel
-import de.digitalService.useID.ui.screens.setup.SetupScan
-import de.digitalService.useID.ui.screens.setup.SetupScanViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
@@ -60,11 +55,6 @@ class IdentificationScanTest {
 
         verify(exactly = 1) { mockViewModel.onCancelIdentification() }
 
-//        composeTestRule.onNodeWithTag(cancelButtonTag).performClick()
-//
-//        val dismissButton = composeTestRule.activity.getString(R.string.identification_confirmEnd_deny)
-//        composeTestRule.onNodeWithText(dismissButton).performClick()
-
         composeTestRule.onNodeWithText(cancelDialogTitle).assertDoesNotExist()
     }
 
@@ -84,14 +74,16 @@ class IdentificationScanTest {
 
     @Test
     fun testWhatIsNfcDialogOpen() {
-        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            SetupScan(viewModel = mockViewModel)
+            IdentificationScan(viewModel = mockViewModel)
         }
 
         val whatIsNfcButton = composeTestRule.activity.getString(R.string.scan_helpNFC)
         composeTestRule.onNodeWithText(whatIsNfcButton).performClick()
+
+        verify(exactly = 1) { mockViewModel.onNfcButtonClicked() }
 
         val whatIsNfcDialogTitle = composeTestRule.activity.getString(R.string.helpNFC_body)
         composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertIsDisplayed()
@@ -104,14 +96,16 @@ class IdentificationScanTest {
 
     @Test
     fun testHelpDialogOpen() {
-        val mockViewModel: SetupScanViewModelInterface = mockk(relaxed = true)
+        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            SetupScan(viewModel = mockViewModel)
+            IdentificationScan(viewModel = mockViewModel)
         }
 
         val helpButton = composeTestRule.activity.getString(R.string.scan_helpScanning)
         composeTestRule.onNodeWithText(helpButton).performClick()
+
+        verify(exactly = 1) { mockViewModel.onHelpButtonClicked() }
 
         val helpDialogTitle = composeTestRule.activity.getString(R.string.scanError_cardUnreadable_title)
         composeTestRule.onNodeWithText(helpDialogTitle).assertIsDisplayed()
@@ -122,4 +116,3 @@ class IdentificationScanTest {
         composeTestRule.onNodeWithText(helpDialogTitle).assertDoesNotExist()
     }
 }
-*/
