@@ -51,6 +51,7 @@ fun IdentificationScan(
             title = stringResource(id = R.string.identification_scan_title),
             body = stringResource(id = R.string.identification_scan_body),
             onHelpDialogShown = viewModel::onHelpButtonClicked,
+            onNfcDialogShown = viewModel::onNfcButtonClicked,
             showProgress = viewModel.shouldShowProgress,
             modifier = modifier.padding(top = topPadding)
         )
