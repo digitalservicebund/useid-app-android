@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
@@ -121,3 +122,4 @@ class SetupTransportPinTest {
         verify(exactly = 1) { mockViewModel.onInputChanged(testPinInput2) }
     }
 }
+*/

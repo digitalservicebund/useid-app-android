@@ -52,7 +52,7 @@ interface IdentificationPersonalPinViewModelInterface {
 
 @HiltViewModel
 class IdentificationPersonalPinViewModel @Inject constructor(
-    private val coordinator: IdentificationCoordinator,
+    private val identificationCoordinator: IdentificationCoordinator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), IdentificationPersonalPinViewModelInterface {
 
@@ -63,14 +63,14 @@ class IdentificationPersonalPinViewModel @Inject constructor(
     }
 
     override fun onDone(pin: String) {
-        coordinator.setPin(pin)
+        identificationCoordinator.setPin(pin)
     }
 
     override fun onNavigationButtonClicked() {
         if (retry) {
-            coordinator.cancelIdentification()
+            identificationCoordinator.cancelIdentification()
         } else {
-            coordinator.onBack()
+            identificationCoordinator.onBack()
         }
     }
 }

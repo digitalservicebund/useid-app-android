@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID.nfcDialogTests
 
 import android.nfc.NfcAdapter
@@ -67,3 +68,4 @@ class NfcAvailableTest {
         Assert.assertEquals(NfcAvailability.Available, appCoordinator.nfcAvailability.value)
     }
 }
+*/

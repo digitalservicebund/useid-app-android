@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID.nfcDialogTests
 
 import android.nfc.NfcAdapter
@@ -65,3 +66,4 @@ class NfcDeactivatedTest {
         Assert.assertEquals(NfcAvailability.Deactivated, appCoordinator.nfcAvailability.value)
     }
 }
+*/

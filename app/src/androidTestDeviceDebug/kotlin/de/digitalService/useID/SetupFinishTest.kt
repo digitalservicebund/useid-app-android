@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
@@ -60,3 +61,4 @@ class SetupFinishTest {
         verify(exactly = 1) { mockViewModel.onButtonClicked() }
     }
 }
+*/

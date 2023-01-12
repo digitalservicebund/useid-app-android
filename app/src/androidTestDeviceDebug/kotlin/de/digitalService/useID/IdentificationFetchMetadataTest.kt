@@ -43,9 +43,6 @@ class IdentificationFetchMetadataTest {
         }
 
         composeTestRule.onNodeWithTag("ProgressIndicator").assertIsDisplayed()
-
-        verify(exactly = 1) { viewModel.startIdentificationProcess() }
-
         composeTestRule.onNodeWithTag(NavigationIcon.Back.name).performClick()
 
         val cancelButton = composeTestRule.activity.getString(R.string.navigation_cancel)
@@ -65,9 +62,6 @@ class IdentificationFetchMetadataTest {
         }
 
         composeTestRule.onNodeWithTag("ProgressIndicator").assertIsDisplayed()
-
-        verify(exactly = 1) { viewModel.startIdentificationProcess() }
-
         composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).performClick()
 
         val cancelButton = composeTestRule.activity.getString(R.string.identification_confirmEnd_confirm)

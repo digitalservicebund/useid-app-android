@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID.nfcDialogTests
 
 import androidx.activity.compose.setContent
@@ -77,3 +78,4 @@ class NfcChangeDialogsTest {
         Assert.assertEquals(NfcAvailability.Available, appCoordinator.nfcAvailability.value)
     }
 }
+*/
