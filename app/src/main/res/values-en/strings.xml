@@ -71,7 +71,7 @@
     <string name="firstTimeUser_done_close">Finalize setup</string>
     <string name="firstTimeUser_done_identify">Identify yourself now</string>
     <string name="firstTimeUser_done_title">You have successfully set up your online ID card.</string>
-    <string name="firstTimeUser_incorrectTransportPIN_body">Enter your 5-digit transport PIN from the PIN letter.</string>
+    <string name="firstTimeUser_incorrectTransportPIN_body">Enter your 5‑digit transport PIN from the PIN letter.</string>
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">You have no more attempts.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Entered incorrect transport PIN.</string>
@@ -108,7 +108,7 @@
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blocked</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspended</string>
     <string name="firstTimeUser_scan_title">Hold your ID card close to the top back of the smartphone.</string>
-    <string name="firstTimeUser_transportPIN_body">You will find the 5-digit transport PIN in your PIN letter.</string>
+    <string name="firstTimeUser_transportPIN_body">You will find the 5‑digit transport PIN in your PIN letter.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
@@ -360,7 +360,7 @@
 \n
 \nWe are currently working on providing you with a solution in the app.
 \n
-\nIn the meantime, you can only unblock your ID card with your 10-digit PUK in AusweisApp2 or at the Bürgeramt. You can find your 10-digit PUK on your PIN letter.</string>
+\nIn the meantime, you can only unblock your ID card with your 10‑digit PUK in AusweisApp2 or at the Bürgeramt. You can find your 10‑digit PUK on your PIN letter.</string>
     <string name="scanError_cardBlocked_title">Your ID card is blocked.</string>
     <string name="scanError_cardDeactivated_body">To be able to identify yourself online, you need an activated online ID function and your personal ID PIN.
 \n
@@ -386,7 +386,7 @@
 \n
 \n
 \n
-\nIn the meantime, you can unlock your ID card using your 6-digit CAN in combination with your personal ID PIN in the AusweisApp2. You can find your 6-digit CAN on the front of your ID card.
+\nIn the meantime, you can unlock your ID card using your 6‑digit CAN in combination with your personal ID PIN in the AusweisApp2. You can find your 6‑digit CAN on the front of your ID card.
 \n
 \nAlternatively, you can reassign your personal ID PIN at the Bürgeramt if you have forgotten it.</string>
     <string name="scanError_cardSuspended_title">Your ID card is blocked.</string>
