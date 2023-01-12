@@ -75,7 +75,7 @@
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">You have no more attempts.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Entered incorrect transport PIN.</string>
-    <string name="firstTimeUser_intro_body">You only need to set up your ID card once. If you already have a 6-digit PIN, your ID card has been already set up.</string>
+    <string name="firstTimeUser_intro_body">You only need to set up your ID card once. If you already have a 6‑digit PIN, your ID card has been already set up.</string>
     <string name="firstTimeUser_intro_startSetup">Set up online ID card now</string>
     <string name="firstTimeUser_intro_title">Have you already set up your online ID card\?</string>
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
@@ -100,14 +100,14 @@
     <string name="firstTimeUser_pinLetter_requestLetter">No, order PIN reset letter</string>
     <string name="firstTimeUser_pinLetter_title">Do you still have your PIN letter\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Yes, the PIN letter is available</string>
-    <string name="firstTimeUser_scan_body">Almost there! The app uses NFC sensors in the smartphone and ID card to transfer your new PIN to the ID card.</string>
+    <string name="firstTimeUser_scan_body">The app does not use the camera, but the NFC sensors in the smartphone and ID to transfer your new PIN to the ID. Therefore, make sure the ID and smartphone touch each other during the PIN transfer.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">This function is not supported at present. Please use AusweisApp2.</string>
     <string name="firstTimeUser_scan_error_text_unknown">An unexpected error has occurred. Please have a look at the logs.</string>
     <string name="firstTimeUser_scan_error_title_id_deactivated">Online badge function deactivated</string>
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blocked</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspended</string>
-    <string name="firstTimeUser_scan_title">Hold your ID card close to the upper back of the smartphone.</string>
+    <string name="firstTimeUser_scan_title">Hold your ID card close to the top back of the smartphone.</string>
     <string name="firstTimeUser_transportPIN_body">You will find the 5-digit transport PIN in your PIN letter.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
@@ -398,7 +398,7 @@
 \n
 \n
 \n
-\n - Move your ID card away from your smartphone and then place the ID card close to the back of the smartphone once again. Try different positions: Top, middle, and back of the bottom.
+\n - Move your ID card away from your smartphone and then place the ID card close to the top back of the smartphone once again. Try different positions: Top, middle, and back of the bottom.
 \n
 \n ![](%1$s)
 \n
