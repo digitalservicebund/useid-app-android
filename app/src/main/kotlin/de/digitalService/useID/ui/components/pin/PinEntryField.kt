@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.text.isDigitsOnly
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.theme.UseIdTheme
 
@@ -52,7 +53,7 @@ fun PinEntryField(
         BasicTextField(
             value = number,
             onValueChange = { newNumber ->
-                if (newNumber.length <= digitCount) {
+                if (newNumber.length <= digitCount && newNumber.isDigitsOnly()) {
                     number = newNumber
                 }
             },
@@ -97,7 +98,7 @@ fun PinEntryField(
 fun PreviewPinEntryField() {
     UseIdTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            var text by remember { mutableStateOf("") }
+
             val focusRequester = remember {
                 FocusRequester()
             }
@@ -119,7 +120,7 @@ fun PreviewPinEntryField() {
 fun PreviewPinEntryFieldWide() {
     UseIdTheme {
         Column(modifier = Modifier.fillMaxSize()) {
-            var text by remember { mutableStateOf("123") }
+
             val focusRequester = remember {
                 FocusRequester()
             }
