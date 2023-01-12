@@ -75,7 +75,7 @@
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">You have no more attempts.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Entered incorrect transport PIN.</string>
-    <string name="firstTimeUser_intro_body">In the setup, you set your 6-digit personal ID PIN.</string>
+    <string name="firstTimeUser_intro_body">You only need to set up your ID card once. If you already have a 6-digit PIN, your ID card has been already set up.</string>
     <string name="firstTimeUser_intro_startSetup">Set up online ID card now</string>
     <string name="firstTimeUser_intro_title">Have you already set up your online ID card\?</string>
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
@@ -114,9 +114,9 @@
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
     <string name="helpNFC_title">How the NFC technology works</string>
     <string name="home_header_body">Open the website of the provider on your smartphone and press the button “Mit BundesIdent ausweisen”.</string>
-    <string name="home_header_title">Identify</string>
+    <string name="home_header_title">How it works</string>
     <string name="home_more_accessibilityStatement">Accessibility statement</string>
-    <string name="home_more_imprint">Imprint</string>
+    <string name="home_more_imprint">Contact and Imprint</string>
     <string name="home_more_licenses">Licenses</string>
     <string name="home_more_privacy">Privacy Policy</string>
     <string name="home_more_settings">Settings</string>
@@ -145,7 +145,12 @@
     <string name="identification_personalPIN_title">Enter your personal ID PIN.</string>
     <string name="identification_scan_body">The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
     <string name="identification_scan_title">Retrieve the data from your ID card.</string>
-    <string name="imprint_text">## Imprint
+    <string name="imprint_text">##Contact
+\n
+\nSend us your questions and feedback to:\\
+\n[hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)
+\n
+\n## Imprint
 \n### Responsible for the content
 \n
 \nDigitalService GmbH of the Federal Government
