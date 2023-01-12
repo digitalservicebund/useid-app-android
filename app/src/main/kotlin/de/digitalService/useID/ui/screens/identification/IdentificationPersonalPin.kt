@@ -22,18 +22,18 @@ import javax.inject.Inject
 @Destination(navArgsDelegate = IdentificationPersonalPinNavArgs::class)
 @Composable
 fun IdentificationPersonalPin(
-    modifier: Modifier = Modifier,
     viewModel: IdentificationPersonalPinViewModelInterface = hiltViewModel<IdentificationPersonalPinViewModel>()
 ) {
     StandardNumberEntryScreen(
         title = stringResource(id = R.string.identification_personalPIN_title),
-        errorMessage =stringResource(id = R.string.identification_personalPIN_error_incorrectPIN).takeIf { viewModel.retry },
+        errorMessage = stringResource(id = R.string.identification_personalPIN_error_incorrectPIN).takeIf { viewModel.retry },
         entryFieldDescription = stringResource(id = R.string.identification_personalPIN_PINTextFieldDescription),
         navigationButton = NavigationButton(
             icon = if (viewModel.retry) NavigationIcon.Cancel else NavigationIcon.Back,
             onClick = viewModel::onNavigationButtonClicked,
             confirmation = Flow.Identification.takeIf { viewModel.retry }
         ),
+        attempts = 2.takeIf { viewModel.retry },
         obfuscation = true,
         onDone = viewModel::onDone
     )

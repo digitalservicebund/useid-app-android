@@ -1,6 +1,5 @@
 package de.digitalService.useID
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
@@ -31,8 +30,7 @@ class IdentificationPersonalPinTest {
 
     @Test
     fun testPinInputAndVisualisationNullAttempts() {
-        val testPinInput1 = "12345"
-        val testPinInput2 = "123456"
+        val testSixDigitPin = "123456"
 
         val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
 
@@ -49,6 +47,11 @@ class IdentificationPersonalPinTest {
         )
         composeTestRule.onNodeWithText(quantityAttemptsString).assertDoesNotExist()
 
+        val errorMessage = composeTestRule.activity.resources.getString(
+            R.string.identification_personalPIN_error_incorrectPIN
+        )
+        composeTestRule.onNodeWithText(errorMessage).assertDoesNotExist()
+
         val pinEntryTestTag = "PINDigitField"
         composeTestRule.onAllNodesWithTag(pinEntryTestTag).assertCountEquals(6)
 
@@ -57,21 +60,17 @@ class IdentificationPersonalPinTest {
         val pinEntryFieldTestTag = "PINEntryField"
         val obfuscationTestTag = "Obfuscation"
 
-        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput1)
-        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(5)
-
-        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput2)
+        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testSixDigitPin)
         composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
     }
 
     @Test
     fun testPinInputAndVisualisation2Attempts() {
-        val testPinInput1 = "12345"
-        val testPinInput2 = "123456"
+        val testSixDigitPin = "123456"
 
         val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
 
-        every { mockViewModel.retry } answers { true }
+        every { mockViewModel.retry } returns true
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationPersonalPin(viewModel = mockViewModel)
@@ -84,7 +83,9 @@ class IdentificationPersonalPinTest {
         )
         composeTestRule.onNodeWithText(quantityAttemptsString).assertIsDisplayed()
 
-        val errorMessage = composeTestRule.activity.getString(R.string.identification_personalPIN_error_incorrectPIN)
+        val errorMessage = composeTestRule.activity.getString(
+            R.string.identification_personalPIN_error_incorrectPIN
+        )
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
 
         val pinEntryTestTag = "PINDigitField"
@@ -95,16 +96,13 @@ class IdentificationPersonalPinTest {
         val pinEntryFieldTestTag = "PINEntryField"
         val obfuscationTestTag = "Obfuscation"
 
-        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput1)
-        composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(5)
-
-        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput2)
+        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testSixDigitPin)
         composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
     }
 
     @Test
     fun testPinInputOnDoneClicked() {
-        val testPinInput = "123456"
+        val testSixDigitPin = "123456"
 
         val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
 
@@ -120,13 +118,13 @@ class IdentificationPersonalPinTest {
         composeTestRule.waitForIdle()
 
         val pinEntryFieldTestTag = "PINEntryField"
-        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testPinInput)
+        composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performTextInput(testSixDigitPin)
 
         val obfuscationTestTag = "Obfuscation"
         composeTestRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(6)
 
         composeTestRule.onNodeWithTag(pinEntryFieldTestTag).performImeAction()
 
-        verify(exactly = 1) { mockViewModel.onDone(testPinInput)  }
+        verify(exactly = 1) { mockViewModel.onDone(testSixDigitPin)  }
     }
 }
