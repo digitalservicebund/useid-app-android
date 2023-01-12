@@ -18,10 +18,10 @@
 \n
 \n- Wir unterstützen aktuell keinen Dark-Mode (Prüfschritt 11.7).
 \n- Querformat wird aktuell nicht unterstützt (Prüfschritt 11.1.3.4).
-\n- Eine Fehlermeldung bei inkorrekter PIN Eingabe (Transport-PIN sowie persönliche PIN) werden nicht proaktiv vorgelesen (Prüfschritt 11.5.2.11).
+\n- Eine Fehlermeldung bei inkorrekter PIN Eingabe (Transport‑PIN sowie persönliche PIN) werden nicht proaktiv vorgelesen (Prüfschritt 11.5.2.11).
 \n- Es ist keine direkte Beschriftung der PIN Eingaben direkt im Eingabefeld vorhanden. Diese existiert nur im Titel der Screens (Prüfschritt 11.3.3.2).
 \n- An zwei Stellen während der Persönlichen PIN Eingabe passiert eine unerwartete Kontextänderung (Prüfschritt 11.3.2.2).
-\n- Die Transport-PIN Eingabe ist nicht auf 200 % zoombar (Prüfschritt 11.1.4.4).
+\n- Die Transport‑PIN Eingabe ist nicht auf 200 % zoombar (Prüfschritt 11.1.4.4).
 \n- Die Überschriften werden nicht als solche ausgezeichnet (Prüfschritt 11.1.3.1).
 \n- Wir bieten keinen zweiten Supportweg an (Prüfschritt 12.2.3). Aktuell können wir nur über die E-Mail [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de) Support leisten.
 \n- Es werden nicht alle Namen und Rollen von Elementen korrekt wiedergegeben (Prüfschritt 11.4.1.2).
@@ -69,7 +69,7 @@
     <string name="firstTimeUser_done_close">Einrichtung abschließen</string>
     <string name="firstTimeUser_done_identify">Jetzt ausweisen</string>
     <string name="firstTimeUser_done_title">Sie haben Ihren Online-Ausweis erfolgreich eingerichtet.</string>
-    <string name="firstTimeUser_incorrectTransportPIN_body">Geben Sie Ihre 5-stellige Transport-PIN aus dem PIN-Brief ein.</string>
+    <string name="firstTimeUser_incorrectTransportPIN_body">Geben Sie Ihre 5‑stellige Transport‑PIN aus dem PIN‑Brief ein.</string>
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">Sie haben keine Versuche mehr.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Inkorrekte Transport-PIN eingegeben.</string>
@@ -96,11 +96,11 @@
     <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis‑PIN.</string>
     <string name="firstTimeUser_personalPIN_confirmation_body">Nutzen Sie nicht Ihr Geburtsdatum als Ihre PIN. Vergeben Sie eine PIN, die nicht leicht zu erraten ist.</string>
     <string name="firstTimeUser_personalPIN_confirmation_title">Bestätigen Sie Ihre persönliche Ausweis-PIN.</string>
-    <string name="firstTimeUser_pinLetter_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
+    <string name="firstTimeUser_pinLetter_body">Den PIN‑Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
     <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>
     <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN‑Brief noch\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Ja, PIN-Brief vorhanden</string>
-    <string name="firstTimeUser_scan_body">Die App nutzt nicht die Kamera, sondern die NFC‑Sensoren in Smartphone und Ausweis, um Ihre neue PIN auf den Ausweis zu übertragen. Deswegen müssen sich Ausweis und Smartphone während der PIN-Übertragung direkt berühren.</string>
+    <string name="firstTimeUser_scan_body">Die App nutzt nicht die Kamera, sondern die NFC‑Sensoren in Smartphone und Ausweis, um Ihre neue PIN auf den Ausweis zu übertragen. Deswegen müssen sich Ausweis und Smartphone während der PIN‑Übertragung direkt berühren.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
@@ -108,7 +108,7 @@
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
     <string name="firstTimeUser_scan_title">Berühren Sie Ihren Ausweis mit der oberen Rückseite des Smartphones.</string>
-    <string name="firstTimeUser_transportPIN_body">Die 5-stellige Transport-PIN finden Sie in Ihrem PIN-Brief.</string>
+    <string name="firstTimeUser_transportPIN_body">Die 5‑stellige Transport‑PIN finden Sie in Ihrem PIN‑Brief.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport‑PIN ein.</string>
     <string name="helpNFC_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kurze Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
@@ -360,7 +360,7 @@
 \n
 \nWir arbeiten gerade daran, Ihnen eine Lösung in der App anzubieten.
 \n
-\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10-stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10-stellige PUK finden Sie auf Ihrem PIN-Brief.</string>
+\nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10‑stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10‑stellige PUK finden Sie auf Ihrem PIN‑Brief.</string>
     <string name="scanError_cardBlocked_title">Ihr Ausweis ist blockiert.</string>
     <string name="scanError_cardDeactivated_body">Um sich online ausweisen zu können, brauchen Sie eine aktivierte Online-Ausweisfunktion und Ihre persönliche Ausweis-PIN.
 \n#### Nachträglich mit dem PIN‑Rücksetzbrief aktivieren:
