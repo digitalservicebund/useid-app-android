@@ -1,7 +1,5 @@
-/*
 package de.digitalService.useID
 
-import androidx.activity.compose.setContent
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -11,6 +9,7 @@ import androidx.test.espresso.Espresso
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
@@ -45,7 +44,7 @@ class ScreenWithTopBarTest {
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Back,
                     onClick = mockCallback,
-                    shouldShowConfirmDialog = false
+                    confirmation = null
                 )
             ) {}
         }
@@ -67,7 +66,7 @@ class ScreenWithTopBarTest {
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
                     onClick = mockCallback,
-                    shouldShowConfirmDialog = false
+                    confirmation = null
                 )
             ) {}
         }
@@ -80,7 +79,7 @@ class ScreenWithTopBarTest {
     }
 
     @Test
-    fun cancelNavigation_withConfirmDialog() {
+    fun cancelNavigationWithConfirmDialog() {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
@@ -89,7 +88,7 @@ class ScreenWithTopBarTest {
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
                     onClick = mockCallback,
-                    shouldShowConfirmDialog = true
+                    confirmation = Flow.Identification
                 )
             ) {}
         }
@@ -113,7 +112,7 @@ class ScreenWithTopBarTest {
     }
 
     @Test
-    fun cancelNavigation_withConfirmDialog_pressBackInDialog() {
+    fun cancelNavigationWithConfirmDialogPressBackInDialog() {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
@@ -122,7 +121,7 @@ class ScreenWithTopBarTest {
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
                     onClick = mockCallback,
-                    shouldShowConfirmDialog = true
+                    confirmation = Flow.Identification
                 )
             ) {}
         }
@@ -141,7 +140,7 @@ class ScreenWithTopBarTest {
     }
 
     @Test
-    fun cancelNavigation_withConfirmDialog_pressBackToOpenDialog() {
+    fun cancelNavigationWithConfirmDialogPressBackToOpenDialog() {
         val mockCallback: () -> Unit = mockk()
         every { mockCallback.invoke() } returns Unit
 
@@ -150,7 +149,7 @@ class ScreenWithTopBarTest {
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
                     onClick = mockCallback,
-                    shouldShowConfirmDialog = true,
+                    confirmation = Flow.Identification,
                 )
             ) {}
         }
@@ -174,8 +173,7 @@ class ScreenWithTopBarTest {
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
                     onClick = mockCallback,
-                    shouldShowConfirmDialog = true,
-                    isIdentification = true
+                    confirmation = Flow.Identification
                 )
             ) {}
         }
@@ -204,8 +202,7 @@ class ScreenWithTopBarTest {
                 navigationButton = NavigationButton(
                     icon = NavigationIcon.Cancel,
                     onClick = mockCallback,
-                    shouldShowConfirmDialog = true,
-                    isIdentification = false
+                    confirmation = Flow.Setup,
                 )
             ) {}
         }
@@ -224,4 +221,3 @@ class ScreenWithTopBarTest {
         composeTestRule.onNodeWithText(body).assertIsDisplayed()
     }
 }
-*/
