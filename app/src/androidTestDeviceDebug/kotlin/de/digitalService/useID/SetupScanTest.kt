@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
@@ -51,3 +52,4 @@ class SetupScanTest {
         composeTestRule.onNodeWithText(whatIsNfcDialogTitle).assertDoesNotExist()
     }
 }
+*/

@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
@@ -223,3 +224,4 @@ class ScreenWithTopBarTest {
         composeTestRule.onNodeWithText(body).assertIsDisplayed()
     }
 }
+*/

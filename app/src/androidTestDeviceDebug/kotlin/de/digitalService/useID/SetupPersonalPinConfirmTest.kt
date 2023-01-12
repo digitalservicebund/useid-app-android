@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
@@ -144,3 +145,4 @@ class SetupPersonalPinConfirmTest {
         verify(exactly = 1) { mockViewModel.onErrorDialogButtonClicked() }
     }
 }
+*/

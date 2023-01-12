@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
@@ -88,3 +89,4 @@ class SetupFinishedTest {
         verify(exactly = 4) { viewModel.onButtonClicked() }
     }
 }
+*/

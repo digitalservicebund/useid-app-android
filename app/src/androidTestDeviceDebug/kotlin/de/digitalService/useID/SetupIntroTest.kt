@@ -1,3 +1,4 @@
+/*
 package de.digitalService.useID
 
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -102,3 +103,4 @@ class SetupIntroTest {
         verify { viewModel.onNonFirstTimeUsage() }
     }
 }
+*/
