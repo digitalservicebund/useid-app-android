@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -28,9 +29,8 @@ fun IdentificationCanPinInput(viewModel: IdentificationCanPinInputViewModelInter
             onClick = viewModel::onBack,
             confirmation = null
         ),
-        obfuscation = true,
-        onDone = viewModel::onDone
-    )
+        inputType = InputType.Pin,
+        onDone = viewModel::onDone)
 }
 
 interface IdentificationCanPinInputViewModelInterface {

@@ -24,8 +24,8 @@ import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.components.pin.TransportPinEntryField
-import de.digitalService.useID.ui.components.pin.TransportPinEntryScreen
+import de.digitalService.useID.ui.components.pin.InputType
+import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -50,7 +50,7 @@ fun SetupTransportPin(
         stringResource(id = R.string.firstTimeUser_transportPIN_title)
     }
 
-    TransportPinEntryScreen(
+    StandardNumberEntryScreen(
         title = titleString,
         attempts = if (viewModel.retry) 2 else null,
         navigationButton = NavigationButton(
@@ -59,6 +59,8 @@ fun SetupTransportPin(
             confirmation = Flow.Setup.takeIf { viewModel.retry },
             contentDescription = titleString
         ),
+        inputType = InputType.TransportPin,
+        entryFieldDescription = "",
         onDone = viewModel::onDoneClicked)
 }
 

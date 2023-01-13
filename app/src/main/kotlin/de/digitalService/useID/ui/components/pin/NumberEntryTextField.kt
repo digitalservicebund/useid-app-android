@@ -26,7 +26,7 @@ import androidx.core.text.isDigitsOnly
 import de.digitalService.useID.ui.theme.UseIdTheme
 
 @Composable
-fun PinEntryField(
+fun NumberEntryTextField(
     digitCount: Int,
     obfuscation: Boolean = false,
     spacerPosition: Int?,
@@ -89,14 +89,14 @@ fun PinEntryField(
 
 @Preview
 @Composable
-fun PreviewPinEntryField() {
+fun PreviewPinEntryTextField() {
     UseIdTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             val focusRequester = remember {
                 FocusRequester()
             }
 
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = 6,
                 obfuscation = false,
                 spacerPosition = 3,
@@ -110,14 +110,14 @@ fun PreviewPinEntryField() {
 
 @Preview
 @Composable
-fun PreviewPinEntryFieldWide() {
+fun PreviewPinEntryTextFieldWide() {
     UseIdTheme {
         Column(modifier = Modifier.fillMaxSize()) {
             val focusRequester = remember {
                 FocusRequester()
             }
 
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = 6,
                 obfuscation = false,
                 spacerPosition = 3,

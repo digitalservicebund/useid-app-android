@@ -21,8 +21,11 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 
+enum class InputType {
+    TransportPin, Pin, Can
+}
+
 @Composable
-// TODO: Generalize to NumberEntryScreen and add Transport-PIN mode
 fun StandardNumberEntryScreen(
     title: String,
     body: String? = null,
@@ -30,7 +33,7 @@ fun StandardNumberEntryScreen(
     errorMessage: String? = null,
     attempts: Int? = null,
     navigationButton: NavigationButton? = null,
-    obfuscation: Boolean,
+    inputType: InputType,
     onDone: (String) -> Unit,
     delayFocusRequest: Boolean = true
 ) {
@@ -76,7 +79,7 @@ fun StandardNumberEntryScreen(
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             NumberEntryField(
-                obfuscation = obfuscation,
+                inputType = inputType,
                 onDone = onDone,
                 focusRequester = focusRequesterPin,
                 modifier = Modifier.semantics {
@@ -126,14 +129,14 @@ fun StandardNumberEntryScreen(
 
 @Composable
 @Preview
-private fun PreviewWithObfuscation() {
+private fun PreviewTransportPinScreen() {
     UseIdTheme {
         StandardNumberEntryScreen(
             title = "This is a test header for this pin entry page",
             body = "This a description. This is a description. This is a description.",
             entryFieldDescription = "This description is specific for the pin entry field.",
             navigationButton = null,
-            obfuscation = true,
+            inputType = InputType.TransportPin,
             onDone = {}
         )
     }
@@ -141,14 +144,14 @@ private fun PreviewWithObfuscation() {
 
 @Composable
 @Preview
-private fun PreviewWithBody() {
+private fun PreviewTransportPinScreenWithoutBody() {
     UseIdTheme {
         StandardNumberEntryScreen(
             title = "This is a test header for this pin entry page",
             body = null,
             entryFieldDescription = "This description is specific for the pin entry field.",
             navigationButton = null,
-            obfuscation = true,
+            inputType = InputType.TransportPin,
             onDone = {}
         )
     }
@@ -156,7 +159,7 @@ private fun PreviewWithBody() {
 
 @Composable
 @Preview
-private fun PreviewWithErrorMessage() {
+private fun PreviewTransportPinScreenWithErrorMessage() {
     UseIdTheme {
         StandardNumberEntryScreen(
             title = "This is a test header for this pin entry page",
@@ -164,7 +167,7 @@ private fun PreviewWithErrorMessage() {
             errorMessage = "Error Message",
             entryFieldDescription = "This description is specific for the pin entry field.",
             navigationButton = null,
-            obfuscation = true,
+            inputType = InputType.TransportPin,
             onDone = {}
         )
     }
@@ -172,7 +175,7 @@ private fun PreviewWithErrorMessage() {
 
 @Composable
 @Preview
-private fun PreviewWithAttempts() {
+private fun PreviewTransportPinScreenWithAttempts() {
     UseIdTheme {
         StandardNumberEntryScreen(
             title = "This is a test header for this pin entry page",
@@ -180,7 +183,7 @@ private fun PreviewWithAttempts() {
             attempts = 2,
             entryFieldDescription = "This description is specific for the pin entry field.",
             navigationButton = null,
-            obfuscation = true,
+            inputType = InputType.TransportPin,
             onDone = {}
         )
     }
@@ -188,7 +191,7 @@ private fun PreviewWithAttempts() {
 
 @Composable
 @Preview
-private fun PreviewWithErrorMessageAndAttempts() {
+private fun PreviewTransportPinScreenWithErrorMessageAndAttempts() {
     UseIdTheme {
         StandardNumberEntryScreen(
             title = "This is a test header for this pin entry page",
@@ -197,7 +200,7 @@ private fun PreviewWithErrorMessageAndAttempts() {
             attempts = 2,
             entryFieldDescription = "This description is specific for the pin entry field.",
             navigationButton = null,
-            obfuscation = true,
+            inputType = InputType.TransportPin,
             onDone = {}
         )
     }

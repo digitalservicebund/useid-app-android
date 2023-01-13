@@ -12,6 +12,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
@@ -33,7 +34,7 @@ fun IdentificationPersonalPin(
             confirmation = Flow.Identification.takeIf { viewModel.retry }
         ),
         attempts = 2.takeIf { viewModel.retry },
-        obfuscation = true,
+        inputType = InputType.Pin,
         onDone = viewModel::onDone
     )
 }
