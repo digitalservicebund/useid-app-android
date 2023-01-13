@@ -145,7 +145,7 @@
     <string name="identification_personalPIN_title">Enter your personal ID PIN.</string>
     <string name="identification_scan_body">The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
     <string name="identification_scan_title">Retrieve the data from your ID card.</string>
-    <string name="imprint_text">##Contact
+    <string name="imprint_text">## Contact
 \n
 \nSend us your questions and feedback to:\\
 \n[hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)
