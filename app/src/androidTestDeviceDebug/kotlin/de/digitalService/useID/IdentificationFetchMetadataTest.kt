@@ -29,9 +29,6 @@ class IdentificationFetchMetadataTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
-
     @Test
     fun hasBackNavigation() {
         val viewModel: IdentificationFetchMetadataViewModelInterface = mockk(relaxUnitFun = true)

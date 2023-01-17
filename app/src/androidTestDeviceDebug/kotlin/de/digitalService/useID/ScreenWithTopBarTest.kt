@@ -31,9 +31,6 @@ class ScreenWithTopBarTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
-
     @Test
     fun backNavigation() {
         val mockCallback: () -> Unit = mockk()

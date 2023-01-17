@@ -25,9 +25,6 @@ class IdentificationScanTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
-
     @Test
     fun testNoDialogIsOpenAfterCancellation() {
         val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)

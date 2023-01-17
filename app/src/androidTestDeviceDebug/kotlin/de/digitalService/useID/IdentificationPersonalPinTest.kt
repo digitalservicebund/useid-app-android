@@ -25,9 +25,6 @@ class IdentificationPersonalPinTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
-
     @Test
     fun testPinInputAndVisualisationNullAttempts() {
         val testSixDigitPin = "123456"
