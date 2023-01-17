@@ -8,6 +8,7 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsent
 import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationAttributeConsentViewModelInterface
 import de.digitalService.useID.ui.screens.identification.ProviderInfoDialogContent
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
@@ -29,7 +30,7 @@ class IdentificationAttributeConsentTest {
 
     @Test
     fun correctUsage() {
-        val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
+        val viewModel: IdentificationAttributeConsentViewModelInterface = mockk(relaxUnitFun = true)
         val testIdentificationProviderString = "testIdentificationProviderString"
         val testRequiredReadAttributes = listOf(
             R.string.cardAttribute_dg01,
@@ -61,7 +62,7 @@ class IdentificationAttributeConsentTest {
 
     @Test
     fun dialogTest() {
-        val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
+        val viewModel: IdentificationAttributeConsentViewModelInterface = mockk(relaxUnitFun = true)
         val testIdentificationProviderString = "testIdentificationProviderString"
         val testRequiredReadAttributes = listOf(
             R.string.cardAttribute_dg01,
@@ -113,7 +114,7 @@ class IdentificationAttributeConsentTest {
 
     @Test
     fun hasCancelButton() {
-        val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
+        val viewModel: IdentificationAttributeConsentViewModelInterface = mockk(relaxUnitFun = true)
         val testIdentificationProviderString = "testIdentificationProviderString"
         val testRequiredReadAttributes = listOf(
             R.string.cardAttribute_dg01,
@@ -152,7 +153,7 @@ class IdentificationAttributeConsentTest {
 
     @Test
     fun hasBacksButton() {
-        val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
+        val viewModel: IdentificationAttributeConsentViewModelInterface = mockk(relaxUnitFun = true)
         val testIdentificationProviderString = "testIdentificationProviderString"
         val testRequiredReadAttributes = listOf(
             R.string.cardAttribute_dg01,

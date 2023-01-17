@@ -7,6 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPin
 import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPinViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPinViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
@@ -29,7 +30,7 @@ class IdentificationPersonalPinTest {
     fun testPinInputAndVisualisationNullAttempts() {
         val testSixDigitPin = "123456"
 
-        val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationPersonalPinViewModelInterface = mockk(relaxed = true)
 
         every { mockViewModel.retry } returns false
 
@@ -65,7 +66,7 @@ class IdentificationPersonalPinTest {
     fun testPinInputAndVisualisation2Attempts() {
         val testSixDigitPin = "123456"
 
-        val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationPersonalPinViewModelInterface = mockk(relaxed = true)
 
         every { mockViewModel.retry } returns true
 
@@ -101,7 +102,7 @@ class IdentificationPersonalPinTest {
     fun testPinInputOnDoneClicked() {
         val testSixDigitPin = "123456"
 
-        val mockViewModel: IdentificationPersonalPinViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationPersonalPinViewModelInterface = mockk(relaxed = true)
 
         every { mockViewModel.retry } answers { false }
 
