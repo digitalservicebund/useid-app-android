@@ -3,7 +3,6 @@ package de.digitalService.useID.ui.screens.setup
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -27,7 +26,7 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
         navigationButton = NavigationButton(
             icon = NavigationIcon.Cancel,
             confirmation = Flow.Identification.takeIf { viewModel.confirmCancellation },
-            onClick = viewModel::onCancelSetup,
+            onClick = viewModel::onCancelSetup
         )
     ) { topPadding ->
         StandardStaticComposition(

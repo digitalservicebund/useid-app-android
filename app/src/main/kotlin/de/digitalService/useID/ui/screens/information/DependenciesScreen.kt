@@ -29,7 +29,7 @@ fun DependenciesScreen(
     navigator: DestinationsNavigator
 ) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() }, confirmation = null,)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() }, confirmation = null)
     ) { topPadding ->
         var dialogText: Set<License>? by remember { mutableStateOf(null) }
 

@@ -29,7 +29,8 @@ fun IdentificationCanPinInput(viewModel: IdentificationCanPinInputViewModelInter
             confirmation = null
         ),
         obfuscation = true,
-        onDone = viewModel::onDone)
+        onDone = viewModel::onDone
+    )
 }
 
 interface IdentificationCanPinInputViewModelInterface {
@@ -40,7 +41,7 @@ interface IdentificationCanPinInputViewModelInterface {
 @HiltViewModel
 class IdentificationCanPinInputViewModel @Inject constructor(
     val coordinator: CanCoordinator
-): ViewModel(), IdentificationCanPinInputViewModelInterface {
+) : ViewModel(), IdentificationCanPinInputViewModelInterface {
     override fun onBack() {
         coordinator.onBack()
     }
@@ -52,7 +53,7 @@ class IdentificationCanPinInputViewModel @Inject constructor(
     private fun checkPinString(value: String): Boolean = value.length < 7 && value.isDigitsOnly()
 }
 
-private class PreviewIdentificationCanPinInputViewModel: IdentificationCanPinInputViewModelInterface {
+private class PreviewIdentificationCanPinInputViewModel : IdentificationCanPinInputViewModelInterface {
     override fun onBack() {}
     override fun onDone(pin: String) {}
 }

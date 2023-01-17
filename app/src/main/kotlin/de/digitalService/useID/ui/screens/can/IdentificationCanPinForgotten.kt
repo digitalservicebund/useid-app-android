@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.screens.can
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -54,7 +53,7 @@ interface IdentificationCanPinForgottenViewModelInterface {
 @HiltViewModel
 class IdentificationCanPinForgottenViewModel @Inject constructor(
     val coordinator: CanCoordinator
-): ViewModel(), IdentificationCanPinForgottenViewModelInterface {
+) : ViewModel(), IdentificationCanPinForgottenViewModelInterface {
 
     override fun onCancelIdentification() {
         coordinator.onCancelIdentification()
@@ -69,7 +68,7 @@ class IdentificationCanPinForgottenViewModel @Inject constructor(
     }
 }
 
-private class PreviewIdentificationCanPinForgottenViewModel: IdentificationCanPinForgottenViewModelInterface {
+private class PreviewIdentificationCanPinForgottenViewModel : IdentificationCanPinForgottenViewModelInterface {
     override fun onCancelIdentification() {}
     override fun onNewPin() {}
     override fun onRetry() {}

@@ -19,7 +19,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 @Composable
 fun TransportPinEntryField(
     onDone: (String) -> Unit,
-    focusRequester: FocusRequester,
+    focusRequester: FocusRequester
 ) {
     val contentDescription = stringResource(id = R.string.firstTimeUser_transportPIN_textFieldLabel)
 

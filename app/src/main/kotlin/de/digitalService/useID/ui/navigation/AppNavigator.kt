@@ -12,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AppNavigator @Inject constructor(): Navigator {
+class AppNavigator @Inject constructor() : Navigator {
     private lateinit var navController: NavController
 
     override val isAtRoot: Boolean

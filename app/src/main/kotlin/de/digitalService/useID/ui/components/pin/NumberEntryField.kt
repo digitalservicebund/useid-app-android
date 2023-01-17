@@ -38,7 +38,7 @@ fun PreviewPersonalPinEntryField() {
         NumberEntryField(
             obfuscation = false,
             onDone = { },
-            focusRequester = FocusRequester(),
+            focusRequester = FocusRequester()
         )
     }
 }
@@ -50,7 +50,7 @@ fun PreviewPersonalPinEntryFieldObfuscated() {
         NumberEntryField(
             obfuscation = true,
             onDone = { },
-            focusRequester = FocusRequester(),
+            focusRequester = FocusRequester()
         )
     }
 }

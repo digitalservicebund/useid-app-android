@@ -48,7 +48,7 @@ fun IdentificationAttributeConsent(
         navigationButton = NavigationButton(
             icon = if (viewModel.backAllowed) NavigationIcon.Back else NavigationIcon.Cancel,
             confirmation = Flow.Identification.takeIf { !viewModel.backAllowed },
-            onClick = viewModel::onNavigationButtonClicked,
+            onClick = viewModel::onNavigationButtonClicked
         )
     ) { topPadding ->
         Scaffold(
