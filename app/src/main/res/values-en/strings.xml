@@ -2,16 +2,16 @@
 <resources>
     <string name="accessibility_text">## Accessibility Statement
 \n
-\nThe BundesIdent app seeks to ensure that the app is accessible free of any barriers in compliance with the provisions of the German Federal Disability Equality Act (BGG) and the German Barrier-Free Information Technology Ordinance (BITV 2.0) in the implementation of Directive (EU) 2016/2102. This Accessibility Statement applies to version 1.0, which is currently available in the Google Play Store. The Statement was drafted on 9 September 2022.
+\nThe BundesIdent app seeks to ensure that the app is accessible free of any barriers in compliance with the provisions of the German Federal Disability Equality Act (BGG) and the German Barrier‑Free Information Technology Ordinance (BITV 2.0) in the implementation of Directive (EU) 2016/2102. This Accessibility Statement applies to version 1.0, which is currently available in the Google Play Store. The Statement was drafted on 9 September 2022.
 \n
-\nThis Statement emanates from a self-assessment based on the current draft of the BIK BITV test for mobile apps ([github.com/BIK-BITV/BIK-App-Test ↗](https://github.com/BIK-BITV/BIK-App-Test)). In the near future, we are planning to have the app externally audited.
+\nThis Statement emanates from a self‑assessment based on the current draft of the BIK BITV test for mobile apps ([github.com/BIK-BITV/BIK-App-Test ↗](https://github.com/BIK-BITV/BIK-App-Test)). In the near future, we are planning to have the app externally audited.
 \n
-\n### How barrier-free is the service\?
+\n### How barrier‑free is the service\?
 \n
 \nThis app has been newly developed. The shortcomings listed below are being worked on.
 \nThe BundesIdent app is also to be developed continuously in the coming weeks based on future auditing and feedback from users.
 \n
-\n### Which areas are not barrier-free\?
+\n### Which areas are not barrier‑free\?
 \n
 \nWe have set ourselves the objective of rectifying problems as quickly as possible. The following incompatibilities with BITV 2.0 exist in the current version:
 \n
@@ -22,14 +22,14 @@
 \n- An unexpected change in context occurs at two points during entry of the personal PIN (test step 11.3.2.2).
 \n- The transport PIN input cannot be zoomed to 200% (test step 11.1.4.4).
 \n- The headings are not marked as such (test step 11.1.3.1).
-\n- We do not offer a second support channel (test step 12.2.3). Currently, we can only provide support via e-mail at [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de).
+\n- We do not offer a second support channel (test step 12.2.3). Currently, we can only provide support via e‑mail at [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de).
 \n- Not all names and roles of elements are reproduced correctly (test step 11.4.1.2).
 \n- Focus tracking is not possible in the PIN entries (test step 11.5.2.13).
 \n- Keyboard operation is virtually impossible (test steps 11.2.1.1 and 11.2.1.2) and the current focus in keyboard operation is not clear (test step 11.2.4.7).
 \n
 \n### Contact and feedback possibility
 \n
-\nHave you noticed any deficiencies in barrier-free access to content\? If so, please feel free to contact us at: [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de).
+\nHave you noticed any deficiencies in barrier‑free access to content\? If so, please feel free to contact us at: [hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de).
 \n
 \n### Arbitration
 \n
@@ -42,7 +42,7 @@
 \n10117 Berlin\\
 \nPhone: [+49 (0)30 18 527 2805](tel:+4930185272805)
 \n
-\nE-Mail:\\
+\nE‑Mail:\\
 \n[info@schlichtungsstelle-bgg.de ↗](mailto:info@schlichtungsstelle-bgg.de)
 \n
 \nInternet:\\
@@ -446,7 +446,7 @@
 \n
 \n### § 5 Maintenance and support
 \n
-\n(1) The Federal Government offers, at its own discretion and without being obligated to do so, additional free support services for parts of the app in the form of documentation and online help on the Internet at the address [github.com/digitalservicebund](https://github.com/digitalservicebund) and at the e-mail address: [hilfe@bundesident.de](mailto:hilfe@bundesident.de). It also makes new versions of the app available. However, this shall not give rise to any claim for the elimination of defects, for certification, for the maintenance of support services or the hotline and for the provision of new versions.
+\n(1) The Federal Government offers, at its own discretion and without being obligated to do so, additional free support services for parts of the app in the form of documentation and online help on the Internet at the address [github.com/digitalservicebund](https://github.com/digitalservicebund) and at the email address: [hilfe@bundesident.de](mailto:hilfe@bundesident.de). It also makes new versions of the app available. However, this shall not give rise to any claim for the elimination of defects, for certification, for the maintenance of support services or the hotline and for the provision of new versions.
 \n
 \n(2) New versions of the app that are available can be downloaded free of charge from generally accessible app stores on the Internet.
 \n
