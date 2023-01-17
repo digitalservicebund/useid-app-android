@@ -106,7 +106,7 @@ class PinManagementInteractionHandler(private val eidFlow: MutableStateFlow<EidI
         }
 
         CoroutineScope(Dispatchers.IO).launch {
-            eidFlow.emit(EidInteractionEvent.RequestPUK(p0::confirmPassword))
+            eidFlow.emit(EidInteractionEvent.RequestPuk(p0::confirmPassword))
         }
     }
 

@@ -10,7 +10,6 @@ import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
-import de.digitalService.useID.ui.screens.setup.SetupScan
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -236,7 +235,7 @@ class PinManagementCoordinator @Inject constructor(
                         }
                     }
 
-                    is EidInteractionEvent.RequestPUK -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
+                    is EidInteractionEvent.RequestPuk -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
                     is EidInteractionEvent.AuthenticationSuccessful -> cancelPinManagementAndNavigate(SetupOtherErrorDestination)
                     is EidInteractionEvent.Error -> handleEidInteractionEventError(event.exception)
                     else -> logger.debug("Ignoring event: $event")

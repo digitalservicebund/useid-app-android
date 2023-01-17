@@ -213,7 +213,7 @@ class IdentificationCoordinator @Inject constructor(
                             logger.debug("Ignoring PIN and CAN request because CAN flow is already active.")
                         }
                     }
-                    is EidInteractionEvent.RequestPUK -> {
+                    is EidInteractionEvent.RequestPuk -> {
                         logger.debug("PUK requested.")
                         _scanInProgress.value = false
                         navigator.navigate(IdentificationCardBlockedDestination)
