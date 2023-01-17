@@ -44,8 +44,8 @@ class NfcAvailableTest {
     @BindValue
     val mockTrackerManager: TrackerManager = mockk(relaxed = true)
 
-    @BindValue
-    val mockNavigator: Navigator = mockk(relaxed = true)
+    @Inject
+    lateinit var mockNavigator: Navigator
 
     @Inject
     lateinit var appCoordinator: AppCoordinator
