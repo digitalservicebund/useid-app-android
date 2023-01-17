@@ -64,11 +64,13 @@
     <string name="cardAttribute_restrictedIdentification">Anbieter- und kartenspezifische Kennung</string>
     <string name="firstTimeUser_confirmEnd_confirm">Beenden</string>
     <string name="firstTimeUser_confirmEnd_deny">Abbrechen</string>
-    <string name="firstTimeUser_confirmEnd_message">Möchten Sie die Einrichtung der Online-Ausweisfunktion abbrechen?\n\nSie können die Einrichtung später erneut starten.</string>
+    <string name="firstTimeUser_confirmEnd_message">Möchten Sie die Einrichtung der Online‑Ausweisfunktion abbrechen\?
+\n
+\nSie können die Einrichtung später erneut starten.</string>
     <string name="firstTimeUser_confirmEnd_title">Einrichtung beenden?</string>
     <string name="firstTimeUser_done_close">Einrichtung abschließen</string>
     <string name="firstTimeUser_done_identify">Jetzt ausweisen</string>
-    <string name="firstTimeUser_done_title">Sie haben Ihren Online-Ausweis erfolgreich eingerichtet.</string>
+    <string name="firstTimeUser_done_title">Sie haben Ihren Online‑Ausweis erfolgreich eingerichtet.</string>
     <string name="firstTimeUser_incorrectTransportPIN_body">Geben Sie Ihre 5‑stellige Transport‑PIN aus dem PIN‑Brief ein.</string>
     <string name="firstTimeUser_incorrectTransportPIN_noAttemptLeft">Sie haben keine Versuche mehr.</string>
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
@@ -91,11 +93,11 @@
     <string name="firstTimeUser_personalPIN_textFieldLabel_second">Eingabefeld Persönliche PIN bestätigen, sechsstellig</string>
     <string name="firstTimeUser_personalPIN_title">Vergeben Sie nun Ihre persönliche Ausweis‑PIN.</string>
     <string name="firstTimeUser_personalPINIntro_continue">Persönliche Ausweis–PIN vergeben</string>
-    <string name="firstTimeUser_personalPINIntro_info_body">Sie benötigen diese jedes Mal, wenn Sie die Online-Ausweisfunktion in Zukunft nutzen.</string>
+    <string name="firstTimeUser_personalPINIntro_info_body">Sie benötigen diese jedes Mal, wenn Sie die Online‑Ausweisfunktion in Zukunft nutzen.</string>
     <string name="firstTimeUser_personalPINIntro_info_title">Persönliche Ausweis–PIN gut merken</string>
     <string name="firstTimeUser_personalPINIntro_title">Vergeben Sie nun Ihre persönliche Ausweis‑PIN.</string>
     <string name="firstTimeUser_personalPIN_confirmation_body">Nutzen Sie nicht Ihr Geburtsdatum als Ihre PIN. Vergeben Sie eine PIN, die nicht leicht zu erraten ist.</string>
-    <string name="firstTimeUser_personalPIN_confirmation_title">Bestätigen Sie Ihre persönliche Ausweis-PIN.</string>
+    <string name="firstTimeUser_personalPIN_confirmation_title">Bestätigen Sie Ihre persönliche Ausweis‑PIN.</string>
     <string name="firstTimeUser_pinLetter_body">Den PIN‑Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
     <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>
     <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN‑Brief noch\?</string>
@@ -112,7 +114,7 @@
     <string name="firstTimeUser_transportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport‑PIN ein.</string>
     <string name="helpNFC_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kurze Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
-    <string name="helpNFC_title">So funktioniert die NFC-Technologie</string>
+    <string name="helpNFC_title">So funktioniert die NFC‑Technologie</string>
     <string name="home_header_body">Öffnen Sie die »Grundsteuererklärung für Privateigentum« Website, um die Identifizierung zu starten. Wir werden bald weitere Anbieter unterstützen.</string>
     <string name="home_header_title">So funktioniert’s</string>
     <string name="home_more_accessibilityStatement">Barrierefreiheitserklärung</string>
@@ -143,7 +145,7 @@
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
     <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
-    <string name="identification_scan_body">Die App nutzt die NFC-Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
+    <string name="identification_scan_body">Die App nutzt die NFC‑Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
     <string name="identification_scan_title">Berühren Sie Ihren Ausweis mit der oberen Rückseite des Smartphones.</string>
     <string name="imprint_text">## Kontakt
 \n
@@ -172,13 +174,13 @@
 \n
 \n### Kontakt
 \n
-\nE-Mail-Adresse:\\
+\nE‑Mail-Adresse:\\
 \n[hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)
 \n
 \nWebseite:\\
 \n[digitalservice.bund.de ↗](https://digitalservice.bund.de)
 \n
-\n### Informationspflichten gemäß Art. 14 ODR-VR, § 36 VSBG
+\n### Informationspflichten gemäß Art. 14 ODR‑VR, § 36 VSBG
 \n
 \nDie Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: [ec.europa.eu/consumers/odr ↗](https://ec.europa.eu/consumers/odr).\\
 \nIm Falle von Problemen bitten wir unsere Nutzer:innen, sich über die angegebenen Kontaktdaten direkt an uns zu wenden.\\
@@ -208,11 +210,13 @@
     <string name="navigation_back">Zurück</string>
     <string name="navigation_cancel">Abbrechen</string>
     <string name="ndcDeactivated_openSettings_button">Einstellungen anpassen</string>
-    <string name="nfcDeactivated_info_body">»BundesIdent« hat aktuell keine Berechtigung die NFC-Funktion zu nutzen.
+    <string name="nfcDeactivated_info_body">»BundesIdent« hat aktuell keine Berechtigung die NFC‑Funktion zu nutzen.
 \n
-\nPassen Sie Ihre Einstellungen entsprechend an, um die Online-Ausweisfunktion nutzen zu können.</string>
+\nPassen Sie Ihre Einstellungen entsprechend an, um die Online‑Ausweisfunktion nutzen zu können.</string>
     <string name="nfcDeactivated_info_title">NFC-Funktion deaktiviert</string>
-    <string name="noNfc_info_body">Leider hat das Smartphone keine NFC-Lesefunktion oder kann den NFC-Chip im Ausweis nicht auslesen.\n\nBitte nutzen Sie ein Smartphone mit NFC-Lesefunktion oder ein Kartenlesegerät.</string>
+    <string name="noNfc_info_body">Leider hat das Smartphone keine NFC‑Lesefunktion oder kann den NFC‑Chip im Ausweis nicht auslesen.
+\n
+\nBitte nutzen Sie ein Smartphone mit NFC‑Lesefunktion oder ein Kartenlesegerät.</string>
     <string name="noNfc_info_title">NFC-Funktion nicht verfügbar</string>
     <string name="noNfc_moreInformation_link">Weitere Informationen</string>
     <string name="noNfc_screen_title"><![CDATA[<strong>Bürger:in</strong> App]]></string>
@@ -244,19 +248,19 @@
 \n
 \nVertreten durch:\\
 \nFrau Christina Lang\\
-\nE-Mail:\\
+\nE‑Mail:\\
 \n[datenschutz@digitalservice.bund.de ↗](mailto:datenschutz@digitalservice.bund.de)
 \n
 \n### Wie erfolgt die Identifizierung in der App\?
-\nInnerhalb der App werden personenbezogene Daten weder gespeichert noch ermittelt. Die BundesIdent App fungiert, einfach gesagt, als Kartenlesegerät. Als Ausweis können Sie den deutschen Personalausweis, einen elektronischen Aufenthaltstitel oder die eID-Karte für Personen mit Unionsbürgerschaft sowie Angehörige des Europäischen Wirtschaftsraums verwenden. Durch die Abfrage Ihrer persönlichen PIN in Kombination mit der Überprüfung des Vorhandenseins Ihres Ausweises mittels NFC-Schnittstelle, wird lediglich die Freigabe der persönlichen Daten überprüft und bestätigt oder abgelehnt. NFC steht für Near Field Communication. Die Technik ermöglicht den Austausch von Daten über sehr kurze Strecken. Sie wird beispielsweise auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.
+\nInnerhalb der App werden personenbezogene Daten weder gespeichert noch ermittelt. Die BundesIdent App fungiert, einfach gesagt, als Kartenlesegerät. Als Ausweis können Sie den deutschen Personalausweis, einen elektronischen Aufenthaltstitel oder die eID‑Karte für Personen mit Unionsbürgerschaft sowie Angehörige des Europäischen Wirtschaftsraums verwenden. Durch die Abfrage Ihrer persönlichen PIN in Kombination mit der Überprüfung des Vorhandenseins Ihres Ausweises mittels NFC‑Schnittstelle, wird lediglich die Freigabe der persönlichen Daten überprüft und bestätigt oder abgelehnt. NFC steht für Near Field Communication. Die Technik ermöglicht den Austausch von Daten über sehr kurze Strecken. Sie wird beispielsweise auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.
 \n
-\nDie Überprüfung Ihrer persönlichen Daten erfolgt über einen sogenannten eID-Server. Auf diesen wird von dem jeweiligen Anwendungsservice zurückgegriffen.\\
-\nAuf dem eID-Server werden Berechtigungszertifikate verwaltet und Sperrlisten geführt. Der eID-Server übernimmt die sichere Kommunikation mit der BundesIdent App und dem Ausweis und gibt die ausgelesenen Daten an den Anwendungsservice weiter. Der eID-Server stellt die Authentizität und die Gültigkeit des Ausweises fest, prüft, ob dieser von der Ausweisinhaber:in gesperrt wurde, und übermittelt die persönlichen Daten an die weiteren Systeme des Anwendungsservices.\\
+\nDie Überprüfung Ihrer persönlichen Daten erfolgt über einen sogenannten eID‑Server. Auf diesen wird von dem jeweiligen Anwendungsservice zurückgegriffen.\\
+\nAuf dem eID‑Server werden Berechtigungszertifikate verwaltet und Sperrlisten geführt. Der eID‑Server übernimmt die sichere Kommunikation mit der BundesIdent App und dem Ausweis und gibt die ausgelesenen Daten an den Anwendungsservice weiter. Der eID‑Server stellt die Authentizität und die Gültigkeit des Ausweises fest, prüft, ob dieser von der Ausweisinhaber:in gesperrt wurde, und übermittelt die persönlichen Daten an die weiteren Systeme des Anwendungsservices.\\
 \nDer Anwendungsservice muss sicherstellen, dass die persönlichen Daten, die übermittelt werden, Datenschutzkonform verarbeitet werden.
 \n
 \n### Welche personenbezogenen Daten verarbeiten wir\?
 \n
-\nNehmen Sie unter der im App Store, beziehungsweise auf der Support Website angegebenen E-Mail-Adresse ([hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)) Kontakt zu uns auf, teilen Sie uns zumindest Ihre E-Mail-Adresse mit, sowie gegebenenfalls weitere Informationen, die Sie in Ihrer E-Mail preisgeben. Damit wir Ihr Anliegen bearbeiten können, müssen wir diese Daten verarbeiten. Rechtsgrundlage für die Verarbeitung Ihrer personenbezogenen Daten ist Art. 6 Abs. 1 DSGVO.
+\nNehmen Sie unter der im App Store, beziehungsweise auf der Support Website angegebenen E‑Mail-Adresse ([hilfe@bundesident.de ↗](mailto:hilfe@bundesident.de)) Kontakt zu uns auf, teilen Sie uns zumindest Ihre E‑Mail-Adresse mit, sowie gegebenenfalls weitere Informationen, die Sie in Ihrer E‑Mail preisgeben. Damit wir Ihr Anliegen bearbeiten können, müssen wir diese Daten verarbeiten. Rechtsgrundlage für die Verarbeitung Ihrer personenbezogenen Daten ist Art. 6 Abs. 1 DSGVO.
 \n
 \nFür die Identifizierung in der App werden keine personenbezogenen Daten in der App gespeichert und weitergeleitet. Sofern die persönliche PIN in Kombination mit dem Ausweis übereinstimmt, erfolgt eine Autorisierung, die an den eID Server weitergeleitet wird. Der eID Server, in Verantwortlichkeit des Bundes, erhält die überprüfte Autorisierung und übermittelt die dort hinterlegten personenbezogenen Daten an den von Ihnen genutzten Service. Die Weiterleitung der personenbezogenen Daten vom eID Server erfolgt im Rahmen der Verantwortlichkeit des Bundes. Die dort gespeicherten Daten können wir als DigitalService nicht einsehen und werden in der BundesIdent App nicht gespeichert und verarbeitet.
 \n
@@ -272,7 +276,7 @@
 \n### Wie lange und wo speichern wir Ihre Daten\?
 \nEs werden keine personenbezogene Daten beim DigitalService im Rahmen der BundesIdent App gespeichert.
 \n
-\nIhre E-Mails und Kontaktaufnahmen speichern wir so lange, wie es zur Bearbeitung Ihrer Anfrage erforderlich ist und speichern Sie anschließend maximal für den Zeitraum von 12 Monaten, falls Sie sich bezugnehmend auf Ihre ursprüngliche Frage noch einmal an uns wenden.
+\nIhre E‑Mails und Kontaktaufnahmen speichern wir so lange, wie es zur Bearbeitung Ihrer Anfrage erforderlich ist und speichern Sie anschließend maximal für den Zeitraum von 12 Monaten, falls Sie sich bezugnehmend auf Ihre ursprüngliche Frage noch einmal an uns wenden.
 \n
 \n### Werden Appanalyse-Dienste eingesetzt\?
 \nUm die App weiterzuentwickeln und zu analysieren, nutzen wir die Software zur Anwendungsüberwachung und Fehlerverfolgung sentry. Diese erhebt keine personenbezogenen Daten, noch kommen dabei Cookies zum Einsatz. Gemessen werden Abstürze und Fehler der App. Dafür verarbeitet sentry folgende Daten:
@@ -354,7 +358,7 @@
     <string name="scanError_box_body">Aufgrund eines Fehlers müssen Sie den Ausweisprozess erneut starten.</string>
     <string name="scanError_cardBlocked_body">### Warum ist Ihr Ausweis blockiert\?
 \n
-\nDa Sie Ihre persönliche Ausweis-PIN ein drittes Mal inkorrekt eingeben haben, wurde ihr Ausweis blockiert.
+\nDa Sie Ihre persönliche Ausweis‑PIN ein drittes Mal inkorrekt eingeben haben, wurde ihr Ausweis blockiert.
 \n
 \n### Was können Sie tun\?
 \n
@@ -362,7 +366,7 @@
 \n
 \nIn der Zwischenzeit können Sie Ihren Ausweis nur mit Ihrer 10‑stelligen PUK in der AusweisApp2 oder im Bürgeramt entsperren. Ihre 10‑stellige PUK finden Sie auf Ihrem PIN‑Brief.</string>
     <string name="scanError_cardBlocked_title">Ihr Ausweis ist blockiert.</string>
-    <string name="scanError_cardDeactivated_body">Um sich online ausweisen zu können, brauchen Sie eine aktivierte Online-Ausweisfunktion und Ihre persönliche Ausweis-PIN.
+    <string name="scanError_cardDeactivated_body">Um sich online ausweisen zu können, brauchen Sie eine aktivierte Online‑Ausweisfunktion und Ihre persönliche Ausweis‑PIN.
 \n#### Nachträglich mit dem PIN‑Rücksetzbrief aktivieren:
 \n
 \nWeitere Informationen finden Sie auf der folgenden Internetseite:
@@ -374,10 +378,10 @@
 \nNutzen Sie das Bürgertelefon unter der 115 oder informieren Sie sich auf der folgenden Internetseite:
 \n
 \n[www.behoerdenfinder.de ↗](https://www.behoerdenfinder.de)</string>
-    <string name="scanError_cardDeactivated_title">Für Ihren Ausweis ist die Online-Funktion nicht aktiviert.</string>
+    <string name="scanError_cardDeactivated_title">Für Ihren Ausweis ist die Online‑Funktion nicht aktiviert.</string>
     <string name="scanError_cardSuspended_body">### Warum ist Ihr Ausweis gesperrt\?
 \n
-\nDa Sie Ihre persönliche Ausweis-PIN zwei Mal inkorrekt eingegeben haben, wurde Ihr Ausweis gesperrt.
+\nDa Sie Ihre persönliche Ausweis‑PIN zwei Mal inkorrekt eingegeben haben, wurde Ihr Ausweis gesperrt.
 \n
 \n### Was können Sie tun\?
 \n
@@ -385,13 +389,13 @@
 \n
 \n
 \n
-\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6‑stelligen CAN in Kombination mit Ihrer persönlichen Ausweis-PIN in der AusweisApp2 entsperren. Ihre 6‑stellige CAN finden Sie auf der Vorderseite Ihres Ausweis.
+\nIn der Zwischenzeit können Sie Ihren Ausweis mit Ihrer 6‑stelligen CAN in Kombination mit Ihrer persönlichen Ausweis‑PIN in der AusweisApp2 entsperren. Ihre 6‑stellige CAN finden Sie auf der Vorderseite Ihres Ausweis.
 \n
 \n
 \n
-\nAlternativ können Sie im Bürgeramt Ihre persönliche Ausweis-PIN neu vergeben, sollten Sie diese vergessen haben.</string>
+\nAlternativ können Sie im Bürgeramt Ihre persönliche Ausweis‑PIN neu vergeben, sollten Sie diese vergessen haben.</string>
     <string name="scanError_cardSuspended_title">Ihr Ausweis ist gesperrt.</string>
-    <string name="scanError_cardUnreadable_body">Folgende deutsche Dokumente bieten die Funktion an: Personalausweis, elektronischer Aufenthaltstitel und die eID-Karte für Bürger:innen der Europäischen Union und des Europäischen Wirtschaftsraums.
+    <string name="scanError_cardUnreadable_body">Folgende deutsche Dokumente bieten die Funktion an: Personalausweis, elektronischer Aufenthaltstitel und die eID‑Karte für Bürger:innen der Europäischen Union und des Europäischen Wirtschaftsraums.
 \n
 \nWenn Ihr Smartphone Ihren Ausweis nicht erkennt oder „Ausweis entfernt” anzeigt, probieren Sie folgende Schritte aus:
 \n
