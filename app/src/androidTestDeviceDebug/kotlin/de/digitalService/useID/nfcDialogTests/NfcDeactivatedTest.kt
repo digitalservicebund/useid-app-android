@@ -1,4 +1,3 @@
-/*
 package de.digitalService.useID.nfcDialogTests
 
 import android.nfc.NfcAdapter
@@ -15,6 +14,7 @@ import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
@@ -46,6 +46,9 @@ class NfcDeactivatedTest {
     @BindValue
     val mockTrackerManager: TrackerManager = mockk(relaxed = true)
 
+    @BindValue
+    val mockNavigator: Navigator = mockk(relaxed = true)
+
     @Inject
     lateinit var appCoordinator: AppCoordinator
 
@@ -57,7 +60,7 @@ class NfcDeactivatedTest {
     @Test
     fun nfcDeactivatedTest() {
         composeTestRule.activity.setContentUsingUseIdTheme {
-            UseIDApp(appCoordinator, mockTrackerManager)
+            UseIDApp(appCoordinator, mockNavigator, mockTrackerManager)
         }
 
         val nfcDialogTitle = composeTestRule.activity.getString(R.string.nfcDeactivated_info_title)
@@ -66,4 +69,3 @@ class NfcDeactivatedTest {
         Assert.assertEquals(NfcAvailability.Deactivated, appCoordinator.nfcAvailability.value)
     }
 }
-*/

@@ -1,8 +1,6 @@
-/*
 package de.digitalService.useID.nfcDialogTests
 
 import android.nfc.NfcAdapter
-import androidx.activity.compose.setContent
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import dagger.hilt.android.testing.BindValue
@@ -14,6 +12,7 @@ import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
+import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
@@ -45,6 +44,9 @@ class NfcAvailableTest {
     @BindValue
     val mockTrackerManager: TrackerManager = mockk(relaxed = true)
 
+    @BindValue
+    val mockNavigator: Navigator = mockk(relaxed = true)
+
     @Inject
     lateinit var appCoordinator: AppCoordinator
 
@@ -56,7 +58,7 @@ class NfcAvailableTest {
     @Test
     fun nfcAvailableTest() {
         composeTestRule.activity.setContentUsingUseIdTheme {
-            UseIDApp(appCoordinator, mockTrackerManager)
+            UseIDApp(appCoordinator, mockNavigator, mockTrackerManager)
         }
 
         val nfcDialogTitle1 = composeTestRule.activity.getString(R.string.noNfc_info_title)
@@ -68,4 +70,3 @@ class NfcAvailableTest {
         Assert.assertEquals(NfcAvailability.Available, appCoordinator.nfcAvailability.value)
     }
 }
-*/
