@@ -27,8 +27,11 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
 
     val buttonConfig = BundButtonConfig(buttonLabelStringId, viewModel::onButtonClicked)
 
-    val navigationButton = NavigationButton(icon = NavigationIcon.Cancel, onClick = viewModel::onButtonClicked, confirmation = Flow.Identification)
-        .takeIf { viewModel.identificationPending }
+    val navigationButton = NavigationButton(
+        icon = NavigationIcon.Cancel,
+        onClick = viewModel::onButtonClicked,
+        confirmation = Flow.Identification.takeIf { viewModel.identificationPending }
+    ).takeIf { !viewModel.identificationPending }
 
     ScreenWithTopBar(navigationButton = navigationButton) { topPadding ->
         StandardStaticComposition(
