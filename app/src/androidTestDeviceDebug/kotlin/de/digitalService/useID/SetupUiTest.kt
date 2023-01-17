@@ -1,4 +1,3 @@
-/*
 package de.digitalService.useID
 
 import androidx.activity.compose.setContent
@@ -113,4 +112,3 @@ class SetupUiTest {
 //        composeTestRule.onNodeWithText(setupSuccessCloseButton).performClick()
 //    }
 }
-*/
