@@ -27,9 +27,6 @@ class IdentificationAttributeConsentTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
-
     @Test
     fun correctUsage() {
         val viewModel: IdentificationAttributeConsentViewModel = mockk(relaxUnitFun = true)
