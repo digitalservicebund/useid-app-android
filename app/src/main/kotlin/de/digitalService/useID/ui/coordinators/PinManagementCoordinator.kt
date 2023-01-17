@@ -186,7 +186,7 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     private fun handleEidInteractionEventError(exception: IdCardInteractionException) {
-        logger.debug("Received exception: ${exception}")
+        logger.debug("Received exception: $exception")
 
         when (exception) {
             is IdCardInteractionException.CardDeactivated -> cancelPinManagementAndNavigate(SetupCardDeactivatedDestination)

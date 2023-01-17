@@ -8,7 +8,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.ScanErrorScreen
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import javax.inject.Inject
 
 @Destination(navArgsDelegate = SetupCardUnreadableNavArgs::class)

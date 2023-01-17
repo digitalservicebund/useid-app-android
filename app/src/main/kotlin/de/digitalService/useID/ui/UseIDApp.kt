@@ -108,7 +108,7 @@ private class PreviewAppCoordinator(
     override fun handleDeepLink(uri: Uri) {}
 }
 
-private class PreviewAppNavigator: Navigator {
+private class PreviewAppNavigator : Navigator {
     override val isAtRoot: Boolean = false
     override fun setNavController(navController: NavController) {}
     override fun navigate(route: Direction) {}
@@ -123,7 +123,8 @@ private class PreviewAppNavigator: Navigator {
 @Composable
 private fun PreviewNfc() {
     UseIDApp(
-        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false), PreviewAppNavigator(),
+        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false),
+        PreviewAppNavigator(),
         PreviewTrackerManager()
     )
 }
@@ -140,7 +141,8 @@ private fun PreviewNoNfc() {
 @Composable
 private fun PreviewNfcDeactivated() {
     UseIDApp(
-        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false), PreviewAppNavigator(),
+        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false),
+        PreviewAppNavigator(),
         PreviewTrackerManager()
     )
 }

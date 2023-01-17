@@ -28,7 +28,8 @@ fun IdentificationCanInput(viewModel: IdentificationCanInputViewModelInterface =
             confirmation = null
         ),
         obfuscation = false,
-        onDone = viewModel::onDone)
+        onDone = viewModel::onDone
+    )
 }
 
 interface IdentificationCanInputViewModelInterface {
@@ -39,7 +40,7 @@ interface IdentificationCanInputViewModelInterface {
 @HiltViewModel
 class IdentificationCanInputViewModel @Inject constructor(
     val coordinator: CanCoordinator
-): ViewModel(), IdentificationCanInputViewModelInterface {
+) : ViewModel(), IdentificationCanInputViewModelInterface {
     override fun onBack() {
         coordinator.onBack()
     }
@@ -49,7 +50,7 @@ class IdentificationCanInputViewModel @Inject constructor(
     }
 }
 
-private class PreviewIdentificationCanInputViewModel: IdentificationCanInputViewModelInterface {
+private class PreviewIdentificationCanInputViewModel : IdentificationCanInputViewModelInterface {
     override fun onBack() {}
     override fun onDone(can: String) {}
 }

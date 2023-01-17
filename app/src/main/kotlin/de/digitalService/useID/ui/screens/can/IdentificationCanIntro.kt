@@ -48,7 +48,7 @@ interface IdentificationCanIntroViewModelInterface {
 @HiltViewModel
 class IdentificationCanIntroViewModel @Inject constructor(
     val coordinator: CanCoordinator
-): ViewModel(), IdentificationCanIntroViewModelInterface {
+) : ViewModel(), IdentificationCanIntroViewModelInterface {
 
     override fun onBack() {
         coordinator.onBack()
@@ -59,7 +59,7 @@ class IdentificationCanIntroViewModel @Inject constructor(
     }
 }
 
-private class PreviewIdentificationCanIntroViewModel: IdentificationCanIntroViewModelInterface {
+private class PreviewIdentificationCanIntroViewModel : IdentificationCanIntroViewModelInterface {
     override fun onBack() {}
     override fun onContinue() {}
 }

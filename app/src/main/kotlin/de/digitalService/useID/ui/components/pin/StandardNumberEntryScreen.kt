@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
-import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
@@ -120,7 +119,6 @@ fun StandardNumberEntryScreen(
                     )
                 }
             }
-
 
             Spacer(modifier = Modifier.weight(1f))
         }

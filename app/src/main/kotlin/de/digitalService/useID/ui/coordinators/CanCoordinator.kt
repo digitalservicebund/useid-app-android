@@ -1,11 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.ui.screens.destinations.IdentificationCanInputDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationCanIntroDestination
-import de.digitalService.useID.ui.screens.destinations.IdentificationCanPinInputDestination
-import de.digitalService.useID.ui.screens.destinations.SetupResetPersonalPinDestination
 import javax.inject.Inject
 import javax.inject.Singleton
 
