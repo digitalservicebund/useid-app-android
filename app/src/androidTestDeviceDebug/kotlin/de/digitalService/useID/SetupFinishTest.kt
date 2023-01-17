@@ -1,17 +1,16 @@
-/*
 package de.digitalService.useID
 
-import androidx.activity.compose.setContent
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dagger.hilt.android.testing.BindValue
+import androidx.test.espresso.Espresso
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.screens.setup.SetupFinish
 import de.digitalService.useID.ui.screens.setup.SetupFinishViewModelInterface
-import de.digitalService.useID.util.MockNfcAdapterUtil
-import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
@@ -28,37 +27,57 @@ class SetupFinishTest {
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
-    @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
-
     @Test
-    fun setupFinish_identificationPendingFalse() {
-        val mockViewModel: SetupFinishViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.identificationPending() } returns false
+    fun identificationPending() {
+        val viewModel: SetupFinishViewModelInterface = mockk(relaxUnitFun = true)
+
+        every { viewModel.identificationPending } returns true
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            SetupFinish(viewModel = mockViewModel)
+            SetupFinish(viewModel = viewModel)
         }
 
-        val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
-        composeTestRule.onNodeWithText(finishButtonText).performClick()
+        val wantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
+        composeTestRule.onNodeWithText(wantedButtonLabel).assertIsDisplayed()
 
-        verify(exactly = 1) { mockViewModel.onButtonClicked() }
+        val notWantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
+        composeTestRule.onNodeWithText(notWantedButtonLabel).assertDoesNotExist()
+
+        composeTestRule.onNodeWithTag(NavigationIcon.Back.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).assertDoesNotExist()
+
+        composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
+        verify(exactly = 1) { viewModel.onButtonClicked() }
     }
 
     @Test
-    fun setupFinish_identificationPendingTrue() {
-        val mockViewModel: SetupFinishViewModelInterface = mockk(relaxed = true)
-        every { mockViewModel.identificationPending() } returns true
+    fun noIdentificationPending() {
+        val viewModel: SetupFinishViewModelInterface = mockk(relaxUnitFun = true)
+
+        every { viewModel.identificationPending } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            SetupFinish(viewModel = mockViewModel)
+            SetupFinish(viewModel = viewModel)
         }
 
-        val finishButtonText = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
-        composeTestRule.onNodeWithText(finishButtonText).performClick()
+        val wantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_close)
+        composeTestRule.onNodeWithText(wantedButtonLabel).assertIsDisplayed()
 
-        verify(exactly = 1) { mockViewModel.onButtonClicked() }
+        val notWantedButtonLabel = composeTestRule.activity.getString(R.string.firstTimeUser_done_identify)
+        composeTestRule.onNodeWithText(notWantedButtonLabel).assertDoesNotExist()
+
+        composeTestRule.onNodeWithTag(NavigationIcon.Back.name).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(NavigationIcon.Cancel.name).performClick()
+        verify(exactly = 1) { viewModel.onButtonClicked() }
+
+        composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
+        verify(exactly = 2) { viewModel.onButtonClicked() }
+
+        composeTestRule.onNodeWithText(wantedButtonLabel).performClick()
+        verify(exactly = 3) { viewModel.onButtonClicked() }
+
+        Espresso.pressBack()
+
+        verify(exactly = 4) { viewModel.onButtonClicked() }
     }
 }
-*/
