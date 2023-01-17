@@ -7,6 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.screens.identification.IdentificationScan
 import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModel
+import de.digitalService.useID.ui.screens.identification.IdentificationScanViewModelInterface
 import de.digitalService.useID.util.MockNfcAdapterUtil
 import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
@@ -27,7 +28,7 @@ class IdentificationScanTest {
 
     @Test
     fun testNoDialogIsOpenAfterCancellation() {
-        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationScanViewModelInterface = mockk(relaxed = true)
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationScan(viewModel = mockViewModel)
@@ -57,7 +58,7 @@ class IdentificationScanTest {
 
     @Test
     fun testShowProgress() {
-        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationScanViewModelInterface = mockk(relaxed = true)
 
         every { mockViewModel.shouldShowProgress } returns true
 
@@ -71,7 +72,7 @@ class IdentificationScanTest {
 
     @Test
     fun testWhatIsNfcDialogOpen() {
-        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationScanViewModelInterface = mockk(relaxed = true)
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationScan(viewModel = mockViewModel)
@@ -93,7 +94,7 @@ class IdentificationScanTest {
 
     @Test
     fun testHelpDialogOpen() {
-        val mockViewModel: IdentificationScanViewModel = mockk(relaxed = true)
+        val mockViewModel: IdentificationScanViewModelInterface = mockk(relaxed = true)
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             IdentificationScan(viewModel = mockViewModel)
