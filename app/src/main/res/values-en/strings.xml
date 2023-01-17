@@ -156,14 +156,14 @@
 \nDigitalService GmbH of the Federal Government
 \n
 \n– upon the commission of the German Federal Ministry of the Interior and Community –\\
-\nPrinzessinnenstraße 8-14\\
+\nPrinzessinnenstraße 8‑14\\
 \n10969 Berlin
 \n
 \n### Legal notice
 \n
 \nThe content on these pages (online forms, texts, images and graphics) is provided by the Federal Government\'s DigitalService GmbH des Bundes. It is intended solely for the personal service and personal information of users.\\
-\nThe content and works created by us on these pages are subject to German copyright law. Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of copyright law are subject to the prior written consent of the respective author or creator. Downloads and copies of this site are only permitted for private, non-commercial use.\\
-\nInsofar as the content on this site was not created by us, copyrights held by third parties are respected. In particular, third-party content is identified as such. Should you become aware of any copyright infringement, please inform us accordingly. If we become aware of any infringements, we shall remove such content immediately.
+\nThe content and works created by us on these pages are subject to German copyright law. Duplication, processing, distribution, or any form of commercialization of such material beyond the scope of copyright law are subject to the prior written consent of the respective author or creator. Downloads and copies of this site are only permitted for private, non‑commercial use.\\
+\nInsofar as the content on this site was not created by us, copyrights held by third parties are respected. In particular, third‑party content is identified as such. Should you become aware of any copyright infringement, please inform us accordingly. If we become aware of any infringements, we shall remove such content immediately.
 \n
 \n### External links
 \n
@@ -173,13 +173,13 @@
 \n
 \n### Contact
 \n
-\nE-mail address:\\
+\nE‑mail address:\\
 \n[hilfe@bundesident.de](mailto:hilfe@bundesident.de)
 \n
 \nWebsite:\\
 \n[digitalservice.bund.de](https://digitalservice.bund.de)
 \n
-\n### Information obligations according to Art. 14 ODR-VR, § 36 VSBG
+\n### Information obligations according to Art. 14 ODR‑VR, § 36 VSBG
 \n
 \nThe European Commission provides a platform for online dispute resolution (OS): [ec.europa.eu/consumers/odr ↗](https://ec.europa.eu/consumers/odr).\\
 \nIn case of problems, we ask our users to contact us directly using the contact details provided.\\
@@ -195,7 +195,7 @@
 \n**Register court:**\\
 \nBerlin Charlottenburg
 \n
-\n**Value-added tax identification number:**\\
+\n**Value‑added tax identification number:**\\
 \nDE327075535
 \n
 \n### Responsible for the content according to § 18 Abs. 2 MStV
@@ -224,7 +224,7 @@
 \n
 \nThe BundesIdent app is developed and operated by the Federal Government\'s DigitalService GmbH on behalf of the German Federal Ministry of the Interior and Community (BMI).
 \n
-\nDigitalService is a federal limited liability company (GmbH). The Federal Republic of Germany holds 100 percent of the shares in the GmbH. Our aim and objective: services that work better for everyone. Government services should be just as easy for everyone to access and use as other digital products that we use regularly at work and in everyday life. That is why users and their needs are consistently at the heart of our product development work. We bring together teams with expertise in software development, design and product management with the public administration. Together with those offices and persons in charge in the public administration and with the involvement of citizens, we build digital solutions that are user-centered, modern, and which nurture trust and confidence.
+\nDigitalService is a federal limited liability company (GmbH). The Federal Republic of Germany holds 100 percent of the shares in the GmbH. Our aim and objective: services that work better for everyone. Government services should be just as easy for everyone to access and use as other digital products that we use regularly at work and in everyday life. That is why users and their needs are consistently at the heart of our product development work. We bring together teams with expertise in software development, design and product management with the public administration. Together with those offices and persons in charge in the public administration and with the involvement of citizens, we build digital solutions that are user‑centered, modern, and which nurture trust and confidence.
 \n
 \n[digitalservice.bund.de ↗](https://digitalservice.bund.de)
 \n
@@ -237,21 +237,21 @@
 \nThe data protection officer in charge of the app is
 \n
 \nDigitalService GmbH des Bundes\\
-\nPrinzessinnenstraße 8-14\\
+\nPrinzessinnenstraße 8‑14\\
 \n10969 Berlin\\
 \nCommercial Register: HRB 212879 B\\
 \nRegister Court: Charlottenburg
 \n
 \nRepresented by:\\
 \nMs. Christina Lang\\
-\nE-Mail:\\
+\nE‑Mail:\\
 \n[datenschutz@digitalservice.bund.de ↗](mailto:datenschutz@digitalservice.bund.de)
 \n
 \n### How is identification performed in the app\?
 \nPersonal data is neither stored nor determined in the app. Simply put, the BundesIdent app functions as a card reader. You can use the German ID card, a German electronic residence permit or, for persons with EU citizenship and nationals of the European Economic Area, the eID card as an identification card. By requesting your personal PIN in combination with verification of the existence of your ID card via an NFC interface, only the release of the personal data is verified and either confirmed or rejected. NFC stands for Near Field Communication. The technology enables an exchange of data over very short distances. It is also used, for example, when making payment using a smartphone at the supermarket checkout.
 \n
-\nThe verification of your personal data takes place via a so-called eID server. This is accessed by the respective application service.\\
-\nAuthorization certificates are managed and revocation lists are maintained on the eID server. The eID server performs secure communication with the BundesIdent app and the ID card and forwards the read-out data to the application service. The eID server establishes the authenticity and validity of the ID card, checks whether it has been blocked by the cardholder, and transmits the personal data to the other systems of the application service.\\
+\nThe verification of your personal data takes place via a so‑called eID server. This is accessed by the respective application service.\\
+\nAuthorization certificates are managed and revocation lists are maintained on the eID server. The eID server performs secure communication with the BundesIdent app and the ID card and forwards the read‑out data to the application service. The eID server establishes the authenticity and validity of the ID card, checks whether it has been blocked by the cardholder, and transmits the personal data to the other systems of the application service.\\
 \nThe application service must ensure that the personal data that is transmitted is processed in a manner that is compliant with data protection regulations.
 \n
 \n### What personal data do we process\?
@@ -265,14 +265,14 @@
 \nWe only disclose your personal data to third parties if:
 \n
 \n- you have provided your express consent to such
-\n- disclosure is necessary for the assertion, exercise or defense of legal claims and there is no reason to assume that you have an overriding interest worthy of protection in the non-disclosure of your data
+\n- disclosure is necessary for the assertion, exercise or defense of legal claims and there is no reason to assume that you have an overriding interest worthy of protection in the non‑disclosure of your data
 \n- in the event that there is a legal obligation to perform disclosure
 \n- this is legally permissible and necessary for the processing of a contractual relationship with you
 \n
 \n### How long and where do we store your data\?
 \nNo personal data is stored at DigitalService in connection with the BundesIdent App.
 \n
-\nWe store your e-mails and contacts for as long as is necessary to process your request and then store this data for a maximum period of 12 months in case you contact us again with reference to your original question.
+\nWe store your e‑mails and contacts for as long as is necessary to process your request and then store this data for a maximum period of 12 months in case you contact us again with reference to your original question.
 \n
 \n### Are app analytics services used\?
 \nTo further develop and analyze the app, we use an application monitoring and error tracking software called sentry. This does not collect any personal data, nor does it use cookies. Crashes and errors by the app are evaluated. For this purpose, sentry processes the following data:
@@ -340,9 +340,9 @@
 \n
 \nFax: [+49 (0)228-997799-5550](tel:+49228-997799-5550)
 \n
-\nE-Mail: [poststelle@bfdi.bund.de ↗](mailto:poststelle@bfdi.bund.de)
+\nE‑Mail: [poststelle@bfdi.bund.de ↗](mailto:poststelle@bfdi.bund.de)
 \n
-\nDe-Mail: [poststelle@bfdi.de-mail.de ↗](mailto:poststelle@bfdi.de-mail.de)
+\nDe‑Mail: [poststelle@bfdi.de-mail.de ↗](mailto:poststelle@bfdi.de-mail.de)
 \n
 \n**Online complaint**
 \n
