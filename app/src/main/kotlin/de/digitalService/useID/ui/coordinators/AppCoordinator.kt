@@ -43,7 +43,6 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun homeScreenLaunched() {
-
         if (coldLaunch &&
             setupCoordinator.stateFlow.value != SubCoordinatorState.Active &&
             identificationCoordinator.stateFlow.value != SubCoordinatorState.Active &&

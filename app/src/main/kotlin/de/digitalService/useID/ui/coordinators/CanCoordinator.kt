@@ -4,7 +4,6 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.ui.screens.can.SetupCanAlreadySetup
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
@@ -24,38 +23,38 @@ private typealias ChangePinCallback = (String, String, String) -> Unit
 class CanCoordinator @Inject constructor(
     private val navigator: Navigator,
     private val idCardManager: IdCardManager,
-    private val coroutineContextProvider: CoroutineContextProviderType,
+    private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
 
     private sealed class CanFlowState {
-        object Invalid: CanFlowState()
-        class InitializedForSetup(val oldPin: String, private val newPin: String): CanFlowState() {
+        object Invalid : CanFlowState()
+        class InitializedForSetup(val oldPin: String, private val newPin: String) : CanFlowState() {
             fun advance(callback: ChangePinCallback): CanFlowState = RequestedCanAndPinForSetup(newPin, callback)
         }
-        object InitializedForIdent: CanFlowState() {
+        object InitializedForIdent : CanFlowState() {
             fun advance(callback: PinCallback): CanFlowState = RequestedCanAndPinForIdent(callback)
         }
-        class RequestedCanAndPinForSetup(private val newPin: String, private val callback: ChangePinCallback): CanFlowState() {
+        class RequestedCanAndPinForSetup(private val newPin: String, private val callback: ChangePinCallback) : CanFlowState() {
             fun advance(can: String): CanFlowState = CanEnteredForSetup(can, newPin, callback)
         }
-        class RequestedCanAndPinForIdent(private val callback: PinCallback): CanFlowState() {
+        class RequestedCanAndPinForIdent(private val callback: PinCallback) : CanFlowState() {
             fun advance(can: String): CanFlowState = CanEnteredForIdent(can, callback)
         }
-        class CanEnteredForSetup(private val can: String, private val newPin: String, private val callback: ChangePinCallback): CanFlowState(), CanEntered {
+        class CanEnteredForSetup(private val can: String, private val newPin: String, private val callback: ChangePinCallback) : CanFlowState(), CanEntered {
             override fun back(): CanFlowState = RequestedCanAndPinForSetup(newPin, callback)
             override fun advance(pin: String): CanFlowState = CanAndPinEnteredForSetup(can, pin, newPin, callback)
         }
-        class CanEnteredForIdent(private val can: String, private val callback: PinCallback): CanFlowState(), CanEntered {
+        class CanEnteredForIdent(private val can: String, private val callback: PinCallback) : CanFlowState(), CanEntered {
             override fun back(): CanFlowState = RequestedCanAndPinForIdent(callback)
             override fun advance(pin: String): CanFlowState = CanAndPinEnteredForIdent(can, pin, callback)
         }
-        class CanAndPinEnteredForSetup(private var can: String, private val pin: String, private val newPin: String, private var callback: ChangePinCallback): CanFlowState(), CanAndPinEntered {
+        class CanAndPinEnteredForSetup(private var can: String, private val pin: String, private val newPin: String, private var callback: ChangePinCallback) : CanFlowState(), CanAndPinEntered {
             fun setNewCallback(callback: ChangePinCallback) { this.callback = callback }
             override fun setNewCan(can: String) { this.can = can }
             override fun executeCanStep() = callback(pin, can, newPin)
         }
-        class CanAndPinEnteredForIdent(private var can: String, private val pin: String, private var callback: PinCallback): CanFlowState(), CanAndPinEntered {
+        class CanAndPinEnteredForIdent(private var can: String, private val pin: String, private var callback: PinCallback) : CanFlowState(), CanAndPinEntered {
             fun setNewCallback(callback: PinCallback) { this.callback = callback }
             override fun setNewCan(can: String) { this.can = can }
             override fun executeCanStep() = callback(pin, can)

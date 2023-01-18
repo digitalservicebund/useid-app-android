@@ -30,7 +30,8 @@ fun IdentificationCanPinInput(viewModel: IdentificationCanPinInputViewModelInter
             confirmation = null
         ),
         inputType = InputType.Pin,
-        onDone = viewModel::onDone)
+        onDone = viewModel::onDone
+    )
 }
 
 interface IdentificationCanPinInputViewModelInterface {

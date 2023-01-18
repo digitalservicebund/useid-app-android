@@ -47,8 +47,8 @@ sealed class EidInteractionEvent {
 }
 
 sealed class RedactedEidInteractionEvent : Exception() {
-    object Idle: RedactedEidInteractionEvent()
-    object Error: RedactedEidInteractionEvent()
+    object Idle : RedactedEidInteractionEvent()
+    object Error : RedactedEidInteractionEvent()
     object RequestCardInsertion : RedactedEidInteractionEvent()
     object CardInteractionComplete : RedactedEidInteractionEvent()
     object CardRecognized : RedactedEidInteractionEvent()

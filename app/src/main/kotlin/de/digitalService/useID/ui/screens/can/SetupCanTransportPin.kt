@@ -31,11 +31,12 @@ fun SetupCanTransportPin(
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
             onClick = viewModel::onBack,
-            confirmation = null,
+            confirmation = null
         ),
         inputType = InputType.TransportPin,
         entryFieldDescription = "",
-        onDone = viewModel::onDoneClicked)
+        onDone = viewModel::onDoneClicked
+    )
 }
 
 interface SetupCanTransportPinViewModelInterface {
@@ -66,7 +67,7 @@ class SetupCanTransportPinViewModel @Inject constructor(
 
 private class PreviewSetupCanTransportPinViewModel(
     override val identificationPending: Boolean
-): SetupCanTransportPinViewModelInterface {
+) : SetupCanTransportPinViewModelInterface {
     override fun onDoneClicked(pin: String) {}
     override fun onBack() {}
 }

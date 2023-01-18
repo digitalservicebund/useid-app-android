@@ -93,7 +93,7 @@ interface SetupCanAlreadySetupViewModelInterface {
 class SetupCanAlreadySetupViewModel @Inject constructor(
     private val canCoordinator: CanCoordinator,
     private val setupCoordinator: SetupCoordinator
-): ViewModel(), SetupCanAlreadySetupViewModelInterface {
+) : ViewModel(), SetupCanAlreadySetupViewModelInterface {
     override val identificationPending: Boolean
         get() = setupCoordinator.identificationPending
 
@@ -110,7 +110,7 @@ class SetupCanAlreadySetupViewModel @Inject constructor(
     }
 }
 
-private class PreviewSetupCanAlreadySetupViewModel: SetupCanAlreadySetupViewModelInterface {
+private class PreviewSetupCanAlreadySetupViewModel : SetupCanAlreadySetupViewModelInterface {
     override val identificationPending: Boolean = false
     override fun onPinNotAvailable() {}
     override fun onBack() {}

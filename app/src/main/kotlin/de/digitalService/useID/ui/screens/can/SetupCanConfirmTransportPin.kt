@@ -56,7 +56,7 @@ class SetupCanConfirmTransportPinViewModel @Inject constructor(
     private val canCoordinator: CanCoordinator,
     private val setupCoordinator: SetupCoordinator,
     savedStateHandle: SavedStateHandle
-): ViewModel(), SetupCanConfirmTransportPinViewModelInterface {
+) : ViewModel(), SetupCanConfirmTransportPinViewModelInterface {
     override val transportPin: String
     override val identificationPending: Boolean
         get() = setupCoordinator.identificationPending
@@ -79,7 +79,7 @@ class SetupCanConfirmTransportPinViewModel @Inject constructor(
     }
 }
 
-private class PreviewSetupCanConfirmTransportPinViewModel: SetupCanConfirmTransportPinViewModelInterface {
+private class PreviewSetupCanConfirmTransportPinViewModel : SetupCanConfirmTransportPinViewModelInterface {
     override val identificationPending: Boolean = false
     override val transportPin: String = "12345"
     override fun onConfirm() {}

@@ -51,7 +51,8 @@ fun SetupTransportPin(
         ),
         inputType = InputType.TransportPin,
         entryFieldDescription = "",
-        onDone = viewModel::onDoneClicked)
+        onDone = viewModel::onDoneClicked
+    )
 }
 
 data class SetupTransportPinNavArgs(

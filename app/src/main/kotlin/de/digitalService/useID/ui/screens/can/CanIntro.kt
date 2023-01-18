@@ -60,7 +60,7 @@ class SetupCanIntroViewModel @Inject constructor(
     private val canCoordinator: CanCoordinator,
     private val setupCoordinator: SetupCoordinator,
     savedStateHandle: SavedStateHandle
-): ViewModel(), SetupCanIntroViewModelInterface {
+) : ViewModel(), SetupCanIntroViewModelInterface {
     override val backAllowed: Boolean
     override val identificationPending: Boolean
         get() = setupCoordinator.identificationPending
@@ -82,7 +82,7 @@ class SetupCanIntroViewModel @Inject constructor(
     }
 }
 
-private class PreviewSetupCanIntroViewModel: SetupCanIntroViewModelInterface {
+private class PreviewSetupCanIntroViewModel : SetupCanIntroViewModelInterface {
     override val backAllowed: Boolean = false
     override val identificationPending: Boolean = false
     override fun onNavigationButtonClicked() {}

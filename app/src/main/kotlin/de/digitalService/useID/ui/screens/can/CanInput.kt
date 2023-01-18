@@ -32,7 +32,8 @@ fun CanInput(viewModel: IdentificationCanInputViewModelInterface = hiltViewModel
             confirmation = null
         ),
         inputType = InputType.Can,
-        onDone = viewModel::onDone)
+        onDone = viewModel::onDone
+    )
 }
 
 data class CanInputNavArgs(
@@ -50,7 +51,7 @@ interface IdentificationCanInputViewModelInterface {
 class IdentificationCanInputViewModel @Inject constructor(
     val coordinator: CanCoordinator,
     savedStateHandle: SavedStateHandle
-): ViewModel(), IdentificationCanInputViewModelInterface {
+) : ViewModel(), IdentificationCanInputViewModelInterface {
     override val retry: Boolean
 
     init {
@@ -66,7 +67,7 @@ class IdentificationCanInputViewModel @Inject constructor(
     }
 }
 
-private class PreviewIdentificationCanInputViewModel: IdentificationCanInputViewModelInterface {
+private class PreviewIdentificationCanInputViewModel : IdentificationCanInputViewModelInterface {
     override val retry: Boolean = false
     override fun onBack() {}
     override fun onDone(can: String) {}
