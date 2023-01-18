@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.components.pin
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
@@ -25,7 +26,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 fun PinDigitField(input: Char?, obfuscation: Boolean, placeholder: Boolean, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .size(30.dp)
+            .size(width = 30.dp, height = 35.dp)
             .drawBehind {
                 drawLine(
                     color = Color.Black,
