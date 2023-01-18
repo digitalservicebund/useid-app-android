@@ -117,8 +117,7 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     fun cancelPinManagement() {
-        resetCoordinatorState()
-        idCardManager.cancelTask()
+        cancelPinManagementAndNavigate(null)
     }
 
     private fun cancelPinManagementAndNavigate(destination: Direction?) {
