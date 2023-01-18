@@ -481,4 +481,8 @@
     <string name="firstTimeUser_can_confirmTransportPIN_body">[Translation missing]</string>
     <string name="firstTimeUser_can_confirmTransportPIN_confirmInput">[Translation missing]</string>
     <string name="firstTimeUser_can_confirmTransportPIN_incorrectInput">[Translation missing]</string>
+    <string name="firstTimeUser_can_alreadySetup_title">[Translation missing]</string>
+    <string name="firstTimeUser_can_alreadySetup_body_setup">[Translation missing]</string>
+    <string name="firstTimeUser_can_alreadySetup_body_ident">[Translation missing]</string>
+    <string name="firstTimeUser_can_alreadySetup_personalPINNotAvailable">[Translation missing]</string>
 </resources>
