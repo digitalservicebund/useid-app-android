@@ -5,7 +5,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import de.digitalService.useID.ui.components.pin.PinEntryField
+import de.digitalService.useID.ui.components.pin.NumberEntryTextField
 import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.mockk
 import org.junit.Rule
@@ -33,7 +33,7 @@ class PinEntryFieldTest {
         val testSixDigitPin = "123456"
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = digitCount,
                 obfuscation = true,
                 spacerPosition = null,
@@ -60,7 +60,7 @@ class PinEntryFieldTest {
         val testSixDigitPin = "123456"
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = digitCount,
                 obfuscation = false,
                 spacerPosition = null,
@@ -86,7 +86,7 @@ class PinEntryFieldTest {
         val digitCount = 6
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = digitCount,
                 obfuscation = true,
                 spacerPosition = 2,
@@ -107,7 +107,7 @@ class PinEntryFieldTest {
         val digitCount = 6
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = digitCount,
                 obfuscation = true,
                 spacerPosition = null,
@@ -128,7 +128,7 @@ class PinEntryFieldTest {
         val digitCount = 6
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = digitCount,
                 obfuscation = false,
                 spacerPosition = null,
@@ -156,7 +156,7 @@ class PinEntryFieldTest {
         val digitCount = 6
 
         composeTestRule.activity.setContentUsingUseIdTheme {
-            PinEntryField(
+            NumberEntryTextField(
                 digitCount = digitCount,
                 obfuscation = false,
                 spacerPosition = null,
