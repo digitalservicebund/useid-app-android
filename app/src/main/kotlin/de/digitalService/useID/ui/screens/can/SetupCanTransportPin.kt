@@ -26,6 +26,7 @@ fun SetupCanTransportPin(
 ) {
     StandardNumberEntryScreen(
         title = stringResource(id = R.string.firstTimeUser_transportPIN_title),
+        body = stringResource(id = R.string.firstTimeUser_transportPIN_body),
         attempts = 1,
         navigationButton = NavigationButton(
             icon = NavigationIcon.Back,
