@@ -2,6 +2,7 @@ package de.digitalService.useID.viewModel
 
 import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
 import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPinNavArgs
@@ -24,6 +25,9 @@ class SetupTransportPinViewModelTest {
     lateinit var mockPinManagementCoordinator: PinManagementCoordinator
 
     @MockK(relaxUnitFun = true)
+    lateinit var mockSetupCoordinator: SetupCoordinator
+
+    @MockK(relaxUnitFun = true)
     lateinit var mockSaveStateHandle: SavedStateHandle
 
     @Test
@@ -35,6 +39,7 @@ class SetupTransportPinViewModelTest {
 
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockSaveStateHandle
         )
 
@@ -50,6 +55,7 @@ class SetupTransportPinViewModelTest {
 
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockSaveStateHandle
         )
 
@@ -68,6 +74,7 @@ class SetupTransportPinViewModelTest {
 
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockSaveStateHandle
         )
 
@@ -88,6 +95,7 @@ class SetupTransportPinViewModelTest {
 
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockSaveStateHandle
         )
 
