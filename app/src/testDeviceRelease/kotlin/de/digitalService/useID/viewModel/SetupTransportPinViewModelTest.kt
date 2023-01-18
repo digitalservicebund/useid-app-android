@@ -76,7 +76,7 @@ class SetupTransportPinViewModelTest {
 
         viewModel.onNavigationButtonClicked()
         verify(exactly = 1) { mockPinManagementCoordinator.onBack() }
-        verify(exactly = 0) { mockPinManagementCoordinator.cancelIdCardManagerTasks() }
+        verify(exactly = 0) { mockPinManagementCoordinator.cancelPinManagement() }
     }
 
     @Test
@@ -96,6 +96,6 @@ class SetupTransportPinViewModelTest {
 
         viewModel.onNavigationButtonClicked()
         verify(exactly = 0) { mockPinManagementCoordinator.onBack() }
-        verify(exactly = 1) { mockPinManagementCoordinator.cancelIdCardManagerTasks() }
+        verify(exactly = 1) { mockPinManagementCoordinator.cancelPinManagement() }
     }
 }

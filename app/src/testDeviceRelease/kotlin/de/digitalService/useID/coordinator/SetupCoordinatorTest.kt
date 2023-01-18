@@ -133,7 +133,7 @@ class SetupCoordinatorTest {
 
         setupCoordinator.setupWithoutPinLetter()
 
-        verify(exactly = 1) { mockNavigator.navigate(SetupResetPersonalPinDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(ResetPersonalPinDestination) }
     }
 
     @Test
@@ -159,7 +159,7 @@ class SetupCoordinatorTest {
 
         every { mockCoroutineContextProvider.Default } returns dispatcher
 
-        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Idle)
+        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Finished)
         every { mockIdentificationCoordinator.stateFlow } returns identificationCoordinatorFlow
 
         val setupCoordinator = SetupCoordinator(
@@ -224,7 +224,7 @@ class SetupCoordinatorTest {
     fun skipSetup() {
         every { mockCoroutineContextProvider.Default } returns dispatcher
 
-        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Idle)
+        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Finished)
         every { mockIdentificationCoordinator.stateFlow } returns identificationCoordinatorFlow
 
         val setupCoordinator = SetupCoordinator(

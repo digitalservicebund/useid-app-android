@@ -9,6 +9,7 @@ import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.idCardInterface.*
+import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.coordinators.SubCoordinatorState
 import de.digitalService.useID.ui.navigation.Navigator
@@ -34,6 +35,9 @@ class IdentificationCoordinatorTest {
 
     @MockK(relaxUnitFun = true)
     lateinit var mockContext: Context
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockCanCoordinator: CanCoordinator
 
     @MockK(relaxUnitFun = true)
     lateinit var mockNavigator: Navigator
@@ -112,6 +116,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -200,7 +205,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { pinCallback(pin) }
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -235,6 +240,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -323,7 +329,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { pinCallback(pin) }
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -358,6 +364,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -446,7 +453,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { pinCallback(pin) }
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -491,6 +498,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -581,7 +589,7 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -608,7 +616,7 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 2) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 2) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -639,6 +647,7 @@ class IdentificationCoordinatorTest {
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -728,7 +737,7 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -754,7 +763,7 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 2) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 2) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -796,6 +805,7 @@ class IdentificationCoordinatorTest {
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -885,7 +895,7 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -893,7 +903,7 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // PIN WAS WRONG, PUK NEEDED
-        idCardManagerFlow.value = EidInteractionEvent.RequestPUK {}
+        idCardManagerFlow.value = EidInteractionEvent.RequestPuk{}
         advanceUntilIdle()
         Assertions.assertFalse(scanInProgress)
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
@@ -927,6 +937,7 @@ class IdentificationCoordinatorTest {
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -979,6 +990,7 @@ class IdentificationCoordinatorTest {
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1064,6 +1076,7 @@ class IdentificationCoordinatorTest {
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1161,6 +1174,7 @@ class IdentificationCoordinatorTest {
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1245,7 +1259,7 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // CANCEL IDENTIFICATION
         identificationCoordinator.cancelIdentification()
@@ -1275,6 +1289,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1363,7 +1378,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { pinCallback(pin) }
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -1406,6 +1421,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1494,7 +1510,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { pinCallback(pin) }
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -1536,6 +1552,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1624,7 +1641,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { pinCallback(pin) }
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -1677,6 +1694,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1765,7 +1783,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { pinCallback(pin) }
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // PROCESS FAILED
         idCardManagerFlow.value = EidInteractionEvent.Error(
@@ -1811,6 +1829,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -1939,6 +1958,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -2069,6 +2089,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -2199,6 +2220,7 @@ class IdentificationCoordinatorTest {
         every { anyConstructed<Intent>().addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) } returns mockIntent
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,
@@ -2288,7 +2310,7 @@ class IdentificationCoordinatorTest {
 
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 1) { mockNavigator.navigatePopping(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(IdentificationScanDestination) }
 
         // PROCESS FAILED
         idCardManagerFlow.value =
@@ -2330,6 +2352,7 @@ class IdentificationCoordinatorTest {
         }
 
         val identificationCoordinator = IdentificationCoordinator(
+            canCoordinator = mockCanCoordinator,
             context = mockContext,
             navigator = mockNavigator,
             idCardManager = mockIdCardManager,

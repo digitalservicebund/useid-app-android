@@ -1,7 +1,9 @@
 package de.digitalService.useID.viewModel
 
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -20,6 +22,9 @@ import org.junit.jupiter.api.extension.ExtendWith
 class SetupScanViewModelTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockPinManagementCoordinator: PinManagementCoordinator
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockSetupCoordinator: SetupCoordinator
 
     @MockK(relaxUnitFun = true)
     lateinit var mockTrackerManager: TrackerManagerType
@@ -44,6 +49,7 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockTrackerManager
         )
 
@@ -63,6 +69,7 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockTrackerManager
         )
 
@@ -78,6 +85,7 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockTrackerManager
         )
 
@@ -87,17 +95,24 @@ class SetupScanViewModelTest {
     }
 
     @Test
-    fun testOnCancelConfirm() = runTest {
+    fun testOnNavigationButtonClicked() = runTest {
 
         every { mockPinManagementCoordinator.scanInProgress } returns mockk()
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
+            mockSetupCoordinator,
             mockTrackerManager
         )
 
-        viewModel.onCancelConfirm()
+        every { mockPinManagementCoordinator.backAllowed } returnsMany listOf(true, false)
+
+        viewModel.onNavigationButtonClicked()
 
         verify(exactly = 1) { mockPinManagementCoordinator.onBack() }
+
+        viewModel.onNavigationButtonClicked()
+
+        verify(exactly = 1) { mockPinManagementCoordinator.cancelPinManagement() }
     }
 }

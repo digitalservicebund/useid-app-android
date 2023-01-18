@@ -108,7 +108,7 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestPUK { _ -> })
+            idCardManager.injectEvent(EidInteractionEvent.RequestPuk { _ -> })
         }
         trackerManager.trackScreen("firstTimeUser/cardBlocked")
     }
