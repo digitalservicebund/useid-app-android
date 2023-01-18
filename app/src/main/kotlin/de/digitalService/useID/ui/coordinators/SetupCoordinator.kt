@@ -70,7 +70,6 @@ class SetupCoordinator @Inject constructor(
         logger.debug("Handling successful pin management step.")
 
         subFlowCoroutineScope?.cancel()
-        storageManager.setIsNotFirstTimeUser()
         navigator.navigate(SetupFinishDestination)
     }
 
@@ -79,6 +78,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun finishSetup() {
+        storageManager.setIsNotFirstTimeUser()
         finishSetup(false)
     }
 
