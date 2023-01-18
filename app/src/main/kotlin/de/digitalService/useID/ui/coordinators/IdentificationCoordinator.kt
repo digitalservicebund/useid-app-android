@@ -194,6 +194,7 @@ class IdentificationCoordinator @Inject constructor(
                     }
                     is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
                         logger.debug("Process completed successfully.")
+                        _scanInProgress.value = false
                         finishIdentification(event.redirectURL)
                     }
                     is EidInteractionEvent.RequestPinAndCan -> {
