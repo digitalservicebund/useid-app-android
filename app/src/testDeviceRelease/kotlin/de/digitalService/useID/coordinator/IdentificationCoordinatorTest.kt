@@ -616,7 +616,7 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 2) { mockNavigator.navigate(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.popUpTo(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
@@ -638,7 +638,7 @@ class IdentificationCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun failedIdentificationPinWrongTwice() = runTest {
+    fun identificationPinWrongTwiceStartsCanFlow() = runTest {
 
         // SETUP
         every { mockCoroutineContextProvider.IO } returns dispatcher
@@ -763,33 +763,20 @@ class IdentificationCoordinatorTest {
         // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-        verify(exactly = 2) { mockNavigator.navigate(IdentificationScanDestination) }
+        verify(exactly = 1) { mockNavigator.popUpTo(IdentificationScanDestination) }
 
         // RECOGNIZE CARD
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
         Assertions.assertTrue(scanInProgress)
 
-        // CARD IS SUSPENDED
+        // CAN FLOW IS STARTED
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
         idCardManagerFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
         Assertions.assertFalse(scanInProgress)
-        verify(exactly = 1) { mockNavigator.navigate(IdentificationCardSuspendedDestination) }
-        verify(exactly = 2) { mockIdCardManager.cancelTask() }
-        Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
-            identificationCoordinator.stateFlow.value
-        )
-
-        // CANCEL IDENTIFICATION
-        identificationCoordinator.cancelIdentification()
-        verify(exactly = 3) { mockIdCardManager.cancelTask() }
-        verify(exactly = 1) { mockNavigator.popToRoot() }
-        advanceUntilIdle()
-        Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
-            identificationCoordinator.stateFlow.value
-        )
+        verify(exactly = 1) { mockCanCoordinator.startIdentCanFlow() }
 
         scanJob.cancel()
     }
