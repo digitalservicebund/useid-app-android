@@ -1,18 +1,8 @@
 package de.digitalService.useID.ui.screens.setup
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -23,13 +13,12 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
-import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @Destination(navArgsDelegate = SetupTransportPinNavArgs::class)
@@ -56,7 +45,7 @@ fun SetupTransportPin(
         navigationButton = NavigationButton(
             icon = icon,
             onClick = viewModel::onNavigationButtonClicked,
-            confirmation = Flow.Setup.takeIf { viewModel.retry },
+            confirmation = (if (viewModel.identificationPending) Flow.Identification else Flow.Setup).takeIf { viewModel.retry },
             contentDescription = titleString
         ),
         inputType = InputType.TransportPin,
@@ -70,6 +59,7 @@ data class SetupTransportPinNavArgs(
 
 interface SetupTransportPinViewModelInterface {
     val retry: Boolean
+    val identificationPending: Boolean
 
     fun onDoneClicked(pin: String)
     fun onNavigationButtonClicked()
@@ -77,31 +67,35 @@ interface SetupTransportPinViewModelInterface {
 
 @HiltViewModel
 class SetupTransportPinViewModel @Inject constructor(
-    private val coordinator: PinManagementCoordinator,
+    private val pinManagementCoordinator: PinManagementCoordinator,
+    private val setupCoordinator: SetupCoordinator,
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupTransportPinViewModelInterface {
     override val retry: Boolean
+    override val identificationPending: Boolean
+        get() = setupCoordinator.identificationPending
 
     init {
         retry = SetupTransportPinDestination.argsFrom(savedStateHandle).retry
     }
 
     override fun onDoneClicked(pin: String) {
-        coordinator.setOldPin(pin)
+        pinManagementCoordinator.setOldPin(pin)
     }
 
     override fun onNavigationButtonClicked() {
         if (retry) {
-            coordinator.cancelPinManagement()
+            pinManagementCoordinator.cancelPinManagement()
         } else {
-            coordinator.onBack()
+            pinManagementCoordinator.onBack()
         }
     }
 }
 
 private class PreviewSetupTransportPinViewModel(
-    override val retry: Boolean
+    override val retry: Boolean,
+    override val identificationPending: Boolean
 ) : SetupTransportPinViewModelInterface {
     override fun onDoneClicked(pin: String) {}
     override fun onNavigationButtonClicked() {}
@@ -111,7 +105,7 @@ private class PreviewSetupTransportPinViewModel(
 @Composable
 private fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false, false))
     }
 }
 
@@ -119,7 +113,7 @@ private fun PreviewSetupTransportPinWithoutAttemptsNarrowDevice() {
 @Composable
 private fun PreviewSetupTransportPinWithoutAttempts() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(false, false))
     }
 }
 
@@ -127,6 +121,6 @@ private fun PreviewSetupTransportPinWithoutAttempts() {
 @Composable
 private fun PreviewSetupTransportPinRetry() {
     UseIdTheme {
-        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(true))
+        SetupTransportPin(viewModel = PreviewSetupTransportPinViewModel(true, false))
     }
 }
