@@ -202,7 +202,7 @@ class PinManagementCoordinator @Inject constructor(
                             logger.debug("Old and new PIN requested for a second time. The old PIN seems to be incorrect.")
                             _scanInProgress.value = false
                             navigator.navigate(SetupTransportPinDestination(true))
-                            cancelIdCardManagerTasks()
+                            idCardManager.cancelTask()
                             firstOldPinRequest = true
                         }
                     }

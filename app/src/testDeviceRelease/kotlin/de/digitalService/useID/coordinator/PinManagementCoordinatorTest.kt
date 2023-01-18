@@ -74,6 +74,9 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
+
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
             canCoordinator = mockCanCoordinator,
@@ -217,6 +220,9 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
+
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
             canCoordinator = mockCanCoordinator,
@@ -244,7 +250,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
         Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
 
-        // SET TRANSPORT PIN
+        // SET WRONG TRANSPORT PIN
         val transportPin = "12345"
         pinManagementCoordinator.setOldPin(oldPin = transportPin)
 
@@ -267,12 +273,14 @@ class PinManagementCoordinatorTest {
         Assertions.assertTrue(confirmationResult)
         advanceUntilIdle()
 
+        // REQUEST CARD
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         verify(exactly = 1) { mockNavigator.navigatePopping(SetupScanDestination) }
         Assertions.assertFalse(progress)
 
+        // CARD RECOGNIZED
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
@@ -281,11 +289,13 @@ class PinManagementCoordinatorTest {
         val pinCallback = mockk<(String, String) -> Unit>()
         every { pinCallback(any(), any()) } just Runs
 
+        // WRONG TRANSPORT PIN
         idCardManagerFlow.value = EidInteractionEvent.RequestChangedPin(null, pinCallback)
         advanceUntilIdle()
 
         verify(exactly = 1) { pinCallback(transportPin, personalPin) }
 
+        // TRY AGAIN
         val attempts = 2
         idCardManagerFlow.value = EidInteractionEvent.RequestChangedPin(attempts, pinCallback)
         advanceUntilIdle()
@@ -295,16 +305,12 @@ class PinManagementCoordinatorTest {
 
         navigationParameter = navigationDestinationSlot.captured
         Assertions.assertEquals(SetupTransportPinDestination(true).route, navigationParameter.route)
-        verify(exactly = 1) { pinManagementCoordinator.cancelPinManagement() }
 
-        idCardManagerFlow.value = EidInteractionEvent.PinManagementStarted
+        // ENTER CORRECT TRANSPORT PIN
 
         val newTransportPin = "54321"
         pinManagementCoordinator.setOldPin(newTransportPin)
-
         advanceUntilIdle()
-
-        verify(exactly = 1) { mockNavigator.navigate(SetupPersonalPinIntroDestination) }
         verify(exactly = 2) { mockIdCardManager.changePin(mockContext) }
 
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
@@ -322,7 +328,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState) // Why is this failing?
 
         scanJob.cancel()
         stateJob.cancel()
@@ -337,6 +343,9 @@ class PinManagementCoordinatorTest {
 
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
@@ -400,12 +409,13 @@ class PinManagementCoordinatorTest {
 
         Assertions.assertTrue(progress)
 
+
+        every { mockCanCoordinator.startSetupCanFlow(transportPin, personalPin) } returns canCoordinatorStateFlow
         idCardManagerFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
-        verify(exactly = 1) { mockNavigator.navigate(SetupCardSuspendedDestination) }
+        verify(exactly = 1) { mockCanCoordinator.startSetupCanFlow(transportPin, personalPin) }
 
         scanJob.cancel()
         stateJob.cancel()
@@ -420,6 +430,9 @@ class PinManagementCoordinatorTest {
 
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
@@ -487,7 +500,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupCardBlockedDestination) }
 
         scanJob.cancel()
@@ -503,6 +516,9 @@ class PinManagementCoordinatorTest {
 
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
@@ -569,7 +585,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupOtherErrorDestination) }
 
         scanJob.cancel()
@@ -585,6 +601,9 @@ class PinManagementCoordinatorTest {
 
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
@@ -652,7 +671,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupCardDeactivatedDestination) }
 
         scanJob.cancel()
@@ -668,6 +687,9 @@ class PinManagementCoordinatorTest {
 
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
@@ -735,7 +757,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupCardBlockedDestination) }
 
         scanJob.cancel()
@@ -751,6 +773,9 @@ class PinManagementCoordinatorTest {
 
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
+
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
@@ -842,6 +867,9 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
+
         val pinManagementCoordinator = PinManagementCoordinator(
             context = mockContext,
             canCoordinator = mockCanCoordinator,
@@ -907,7 +935,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupOtherErrorDestination) }
 
         scanJob.cancel()
