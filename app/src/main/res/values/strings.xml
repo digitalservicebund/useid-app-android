@@ -79,9 +79,7 @@
     <string name="firstTimeUser_intro_startSetup">Jetzt Online-Ausweis einrichten</string>
     <string name="firstTimeUser_intro_title">Haben Sie Ihren Online‑Ausweis bereits eingerichtet\?</string>
     <string name="firstTimeUser_intro_skipSetup">Bereits eingerichtet</string>
-    <string name="firstTimeUser_missingPINLetter_body">Wir arbeiten noch an dieser Funktion.
-\n
-\nWeitere Informationen über den PIN‑Rücksetzbrief finden Sie unter:
+    <string name="firstTimeUser_missingPINLetter_body">Sie brauchen eine neue PIN\? Bestellen Sie einen PIN-Rücksetzbrief:
 \n
 \n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
     <string name="firstTimeUser_missingPINLetter_title">PIN-Rücksetzbrief bestellen.</string>
@@ -102,7 +100,7 @@
     <string name="firstTimeUser_pinLetter_requestLetter">Nein, PIN-Rücksetzbrief bestellen</string>
     <string name="firstTimeUser_pinLetter_title">Haben Sie Ihren PIN‑Brief noch\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Ja, PIN-Brief vorhanden</string>
-    <string name="firstTimeUser_scan_body">Die App nutzt nicht die Kamera, sondern die NFC‑Sensoren in Smartphone und Ausweis, um Ihre neue PIN auf den Ausweis zu übertragen. Deswegen müssen sich Ausweis und Smartphone während der PIN‑Übertragung direkt berühren.</string>
+    <string name="firstTimeUser_scan_body">Probieren Sie verschiedene Stellen aus. Achten Sie darauf, dass Ihr Ausweis das Gerät direkt berührt.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">Diese Funktion wird derzeit nicht unterstützt. Bitte die AusweisApp2 benutzen.</string>
     <string name="firstTimeUser_scan_error_text_unknown">Ein unerwarteter Fehler ist aufgetreten. Bitte in die Logs schauen.</string>
@@ -145,8 +143,8 @@
     <string name="identification_personalPIN_error_tryAgain">Versuchen Sie es erneut.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
     <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
-    <string name="identification_scan_body">Die App nutzt die NFC‑Sensoren in Smartphone und Ausweis, um Ihre PIN zu überprüfen und die benötigten Daten abzurufen.</string>
-    <string name="identification_scan_title">Berühren Sie Ihren Ausweis mit der oberen Rückseite des Smartphones.</string>
+    <string name="identification_scan_body">Probieren Sie verschiedene Stellen aus. Achten Sie darauf, dass Ihr Ausweis das Gerät direkt berührt.</string>
+    <string name="identification_scan_title">Berühren Sie Ihren Ausweis mit der Rückseite des Smartphones.</string>
     <string name="imprint_text">## Kontakt
 \n
 \nSchicken Sie uns Ihre Fragen und Verbesserungsvorschläge an:\\
@@ -466,7 +464,7 @@
     <string name="identification_confirmEnd_confirm">Beenden</string>
     <string name="identification_confirmEnd_deny">Abbrechen</string>
     <string name="identification_can_pinForgotten_title">Haben Sie Ihre persönliche Ausweis-PIN vielleicht vergessen?</string>
-    <string name="identification_can_pinForgotten_body">Sie haben ihre PIN zweimal falsch eingegeben.</string>
+    <string name="identification_can_pinForgotten_body">Sie haben Ihre PIN zweimal falsch eingegeben.</string>
     <string name="identification_can_pinForgotten_orderNewPin">Ja, ich möchte eine neue PIN</string>
     <string name="identification_can_pinForgotten_retry">Nein, erneut versuchen</string>
     <string name="identification_can_intro_title">Geben Sie die 6-stellige Nummer von Ihrem Ausweis ein.</string>
@@ -481,7 +479,9 @@
     <string name="firstTimeUser_can_confirmTransportPIN_confirmInput">Ja, meine Eingabe war korrekt</string>
     <string name="firstTimeUser_can_confirmTransportPIN_incorrectInput">Nein, Transport-PIN korrigieren</string>
     <string name="firstTimeUser_can_alreadySetup_title">Anscheinend ist Ihr Online-Ausweis bereits eingerichtet.</string>
-    <string name="firstTimeUser_can_alreadySetup_body_setup">Bei der Einrichtung haben Sie Ihre persönliche 6-stellige Ausweis-PIN festgelegt. Sie brauchen diese, um die Online-Ausweisfunktion zu nutzen.</string>
-    <string name="firstTimeUser_can_alreadySetup_body_ident">Bei der Einrichtung haben Sie Ihre persönliche 6-stellige Ausweis-PIN festgelegt. Mit dieser PIN können Sie sich jetzt ausweisen. </string>
+    <string name="firstTimeUser_can_alreadySetup_body_setup">Sie müssen Ihren Ausweis insgesamt nur einmal einrichten. Falls Sie schon über eine 6-stellige persönliche PIN verfügen, ist Ihr Ausweis bereits eingerichtet.</string>
+    <string name="firstTimeUser_can_alreadySetup_body_ident">Sie müssen Ihren Ausweis insgesamt nur einmal einrichten. Falls Sie schon über eine 6-stellige persönliche PIN verfügen, ist Ihr Ausweis bereits eingerichtet. 
+\n
+\nMit dieser PIN können Sie sich jetzt ausweisen.</string>
     <string name="firstTimeUser_can_alreadySetup_personalPINNotAvailable">Persönliche PIN nicht vorhanden?</string>
 </resources>
