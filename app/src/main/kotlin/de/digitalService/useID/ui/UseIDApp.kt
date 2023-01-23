@@ -42,7 +42,7 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerMa
 
         val trackerRoute = when (destination.route) {
             HomeScreenDestination.route -> "/"
-            ResetPersonalPinDestination.route -> firstTimeUserRoute("missingPINLetter")
+            ResetPersonalPinDestination.route -> "missingPINLetter"
 
             SetupIntroDestination.route -> firstTimeUserRoute("intro")
             SetupPinLetterDestination.route -> firstTimeUserRoute("PINLetter")
@@ -58,10 +58,19 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerMa
             SetupCardBlockedDestination.route -> firstTimeUserRoute("cardBlocked")
             SetupCardUnreadableDestination.route -> firstTimeUserRoute("cardUnreadable")
 
+            SetupCanConfirmTransportPinDestination.route -> "confirmTransportPIN"
+            SetupCanAlreadySetupDestination.route -> "alreadySetup"
+            SetupCanTransportPinDestination.route -> "transportPIN"
+
             IdentificationFetchMetadataDestination.route -> identificationRoute("fetchMetadata")
             IdentificationAttributeConsentDestination.route -> identificationRoute("attributes")
             IdentificationPersonalPinDestination.route -> identificationRoute("personalPIN")
             IdentificationScanDestination.route -> identificationRoute("scan")
+            IdentificationCanPinForgottenDestination.route -> "canPINForgotten"
+
+            SetupCanIntroDestination.route, IdentificationCanIntroDestination.route -> "canIntro"
+            CanInputDestination.route -> "canInput"
+            IdentificationCanPinInputDestination.route -> "personalPIN"
 
             ImprintScreenDestination.route -> "imprint"
             AccessibilityScreenDestination.route -> "accessibility"
