@@ -42,7 +42,7 @@ fun SetupTransportPin(
     StandardNumberEntryScreen(
         title = titleString,
         body = stringResource(id = R.string.firstTimeUser_transportPIN_body),
-        attempts = if (viewModel.retry) 2 else null,
+        attempts = null,
         navigationButton = NavigationButton(
             icon = icon,
             onClick = viewModel::onNavigationButtonClicked,
