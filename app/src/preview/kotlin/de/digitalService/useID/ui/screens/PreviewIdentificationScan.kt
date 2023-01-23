@@ -50,7 +50,7 @@ fun PreviewIdentificationScan(
             item { Button(onClick = { viewModel.simulateIncorrectPin() }) { Text("PIN") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithRedirect() }) { Text("❌➰") } }
             item { Button(onClick = { viewModel.simulateReadingErrorWithoutRedirect() }) { Text("❌") } }
-            item { Button(onClick = { viewModel.simulateCanRequired() }) { Text("Can") } }
+            item { Button(onClick = { viewModel.simulateCanRequired() }) { Text("CAN") } }
             item { Button(onClick = { viewModel.simulatePUKRequired() }) { Text("PUK") } }
             item { Button(onClick = { viewModel.simulateCardDeactivated() }) { Text("📵") } }
         }

@@ -79,7 +79,7 @@ class CanCoordinatorTest {
 
         Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
 
-        canCoordinator.startIdentCanFlow()
+        canCoordinator.startIdentCanFlow(true)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -89,7 +89,7 @@ class CanCoordinatorTest {
 
         canCoordinator.proceedWithThirdAttempt()
 
-        verify { mockAppNavigator.navigate(IdentificationCanIntroDestination) }
+        Assertions.assertEquals(IdentificationCanIntroDestination(true).route, destinationSlot.captured.route)
 
         canCoordinator.finishIntro()
 
@@ -127,7 +127,7 @@ class CanCoordinatorTest {
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
         val incorrectCan = "999999"
-        canCoordinator.startIdentCanFlow()
+        canCoordinator.startIdentCanFlow(true)
         advanceUntilIdle()
         canCoordinator.proceedWithThirdAttempt()
         canCoordinator.finishIntro()
@@ -141,7 +141,6 @@ class CanCoordinatorTest {
         advanceUntilIdle()
 
         verify(exactly = 2) { mockAppNavigator.navigate(IdentificationCanPinForgottenDestination) }
-        verify(exactly = 2) { mockAppNavigator.navigate(IdentificationCanIntroDestination) }
         Assertions.assertEquals(CanInputDestination(true).route, destinationSlot.captured.route)
 
         canCoordinator.onCanEntered(can)
@@ -169,7 +168,7 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        canCoordinator.startIdentCanFlow()
+        canCoordinator.startIdentCanFlow(true)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -191,7 +190,7 @@ class CanCoordinatorTest {
 
         Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
 
-        canCoordinator.startSetupCanFlow(pin, newPin)
+        canCoordinator.startSetupCanFlow(true, pin, newPin)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -239,7 +238,7 @@ class CanCoordinatorTest {
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
         val incorrectCan = "999999"
-        canCoordinator.startSetupCanFlow(pin, newPin)
+        canCoordinator.startSetupCanFlow(true, pin, newPin)
         advanceUntilIdle()
         canCoordinator.proceedWithThirdAttempt()
         canCoordinator.finishIntro()
@@ -267,7 +266,7 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        canCoordinator.startSetupCanFlow(pin, newPin)
+        canCoordinator.startSetupCanFlow(true, pin, newPin)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -308,7 +307,7 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        canCoordinator.startIdentCanFlow()
+        canCoordinator.startIdentCanFlow(true)
         canCoordinator.cancelCanFlow()
 
         Assertions.assertEquals(SubCoordinatorState.Cancelled, canCoordinator.stateFlow.value)

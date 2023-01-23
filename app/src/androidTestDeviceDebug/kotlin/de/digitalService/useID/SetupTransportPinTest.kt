@@ -66,13 +66,6 @@ class SetupTransportPinTest {
             SetupTransportPin(viewModel = mockViewModel)
         }
 
-        val quantityAttemptsString = composeTestRule.activity.resources.getQuantityString(
-            R.plurals.firstTimeUser_transportPIN_remainingAttempts,
-            2,
-            2
-        )
-        composeTestRule.onNodeWithText(quantityAttemptsString).assertIsDisplayed()
-
         val errorMessage = composeTestRule.activity.getString(R.string.firstTimeUser_incorrectTransportPIN_title)
         composeTestRule.onNodeWithText(errorMessage).assertIsDisplayed()
 

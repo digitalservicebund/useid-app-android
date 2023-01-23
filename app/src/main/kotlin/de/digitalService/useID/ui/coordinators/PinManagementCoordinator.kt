@@ -42,6 +42,7 @@ class PinManagementCoordinator @Inject constructor(
 
     private var firstOldPinRequest = true
     private var reachedScanState = false
+    private var startedWithThreeAttempts = false
     var backAllowed = true
         private set
 
@@ -203,6 +204,7 @@ class PinManagementCoordinator @Inject constructor(
                             navigator.navigate(SetupTransportPinDestination(true))
                             idCardManager.cancelTask()
                             firstOldPinRequest = true
+                            startedWithThreeAttempts = true
                         }
                     }
                     is EidInteractionEvent.RequestCanAndChangedPin -> {
@@ -221,7 +223,7 @@ class PinManagementCoordinator @Inject constructor(
 
                         if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
                             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-                                canCoordinator.startSetupCanFlow(oldPin, newPin).collect { state ->
+                                canCoordinator.startSetupCanFlow(intro = startedWithThreeAttempts, oldPin, newPin).collect { state ->
                                     when (state) {
                                         SubCoordinatorState.Cancelled -> cancelPinManagementAndNavigate(null)
                                         SubCoordinatorState.Finished -> finishPinManagementFlow()

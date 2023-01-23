@@ -44,6 +44,7 @@ class IdentificationCoordinator @Inject constructor(
     private var pinCallback: ((String) -> Unit)? = null
 
     private var reachedScanState = false
+    private var startedWithThreeAttempts = false
 
     private var setupSkipped by Delegates.notNull<Boolean>()
     private lateinit var identificationUrl: String
@@ -76,6 +77,7 @@ class IdentificationCoordinator @Inject constructor(
         canEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
         reachedScanState = false
+        startedWithThreeAttempts = false
         requestAuthenticationEvent = null
         pinCallback = null
 
@@ -170,6 +172,7 @@ class IdentificationCoordinator @Inject constructor(
                         } else {
                             logger.debug("PIN request with ${event.attempts} attempts.")
                             _scanInProgress.value = false
+                            startedWithThreeAttempts = true
                             navigator.navigate(IdentificationPersonalPinDestination(true))
                         }
                     }
@@ -203,7 +206,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
                             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-                                canCoordinator.startIdentCanFlow().collect { state ->
+                                canCoordinator.startIdentCanFlow(intro = startedWithThreeAttempts).collect { state ->
                                     when (state) {
                                         SubCoordinatorState.Cancelled -> cancelIdentification()
                                         else -> logger.debug("Ignoring sub flow event: $event")
