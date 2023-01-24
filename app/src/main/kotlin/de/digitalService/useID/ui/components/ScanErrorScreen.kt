@@ -79,7 +79,6 @@ fun ScanErrorScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = UseIdTheme.spaces.m, top = 12.dp)
-                    .height(50.dp)
             )
         }
     }
