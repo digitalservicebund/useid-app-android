@@ -1,24 +1,21 @@
 package de.digitalService.useID
 
-import android.app.Activity
-import android.app.PendingIntent
 import android.content.Intent
 import android.nfc.NfcAdapter
 import android.nfc.Tag
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.idCardInterface.IdCardManager
-import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.util.NfcAdapterUtil
+import de.digitalService.useID.util.NfcInterfaceManagerType
 import io.sentry.Sentry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,13 +42,11 @@ class MainActivity : ComponentActivity() {
     lateinit var trackerManager: TrackerManagerType
 
     @Inject
-    lateinit var nfcAdapterUtil: NfcAdapterUtil
+    lateinit var nfcInterfaceManager: NfcInterfaceManagerType
 
     @Inject
     @Named(ConfigModule.SENTRY_DSN)
     lateinit var sentryDsn: String
-
-    private var nfcAdapter: NfcAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -71,29 +66,21 @@ class MainActivity : ComponentActivity() {
         handleNewIntent(intent)
 
         setContent {
-            UseIDApp(appCoordinator, appNavigator, trackerManager)
+            val nfcAvailability = nfcInterfaceManager.nfcAvailability.collectAsState()
+            UseIDApp(nfcAvailability.value, appNavigator, trackerManager)
         }
     }
 
     override fun onResume() {
         super.onResume()
 
-        this.nfcAdapter = nfcAdapterUtil.getNfcAdapter()
-        nfcAdapter?.let {
-            foregroundDispatch(this)
-            if (it.isEnabled) {
-                appCoordinator.setNfcAvailability(NfcAvailability.Available)
-            } else {
-                appCoordinator.setNfcAvailability(NfcAvailability.Deactivated)
-            }
-        } ?: run {
-            appCoordinator.setNfcAvailability(NfcAvailability.NoNfc)
-        }
+        nfcInterfaceManager.refreshNfcAvailability()
+        nfcInterfaceManager.enableForegroundDispatch(this)
     }
 
     override fun onPause() {
         super.onPause()
-        nfcAdapter?.disableForegroundDispatch(this)
+        nfcInterfaceManager.disableForegroundDispatch(this)
         trackerManager.dispatch()
     }
 
@@ -102,18 +89,9 @@ class MainActivity : ComponentActivity() {
         handleNewIntent(intent)
     }
 
-    private fun foregroundDispatch(activity: Activity) {
-        val intent = Intent(
-            activity.applicationContext,
-            activity.javaClass
-        ).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        val flag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
-
-        val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, flag)
-        nfcAdapter?.enableForegroundDispatch(activity, nfcPendingIntent, null, null)
-    }
-
     private fun handleNewIntent(intent: Intent) {
+        nfcInterfaceManager.refreshNfcAvailability()
+
         when (intent.action) {
             NfcAdapter.ACTION_TAG_DISCOVERED -> {
                 intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)?.let {

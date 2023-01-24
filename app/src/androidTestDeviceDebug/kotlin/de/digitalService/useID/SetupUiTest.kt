@@ -1,34 +1,17 @@
 package de.digitalService.useID
 
-import androidx.activity.compose.setContent
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.analytics.TrackerManager
-import de.digitalService.useID.models.ScanError
-import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.screens.destinations.SetupFinishDestination
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
-import de.digitalService.useID.util.MockNfcAdapterUtil
-import de.digitalService.useID.util.NfcAdapterUtil
-import de.digitalService.useID.util.setContentUsingUseIdTheme
-import io.mockk.every
+import de.digitalService.useID.util.NfcInterfaceManager
 import io.mockk.mockk
-import io.mockk.verify
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
 import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 import javax.inject.Inject
 
 @HiltAndroidTest
@@ -44,7 +27,7 @@ class SetupUiTest {
     lateinit var appCoordinator: AppCoordinator
 
     @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = MockNfcAdapterUtil()
+    val mockNfcInterfaceManager: NfcInterfaceManager = mockk(relaxed = true)
 
     @BindValue
     val mockSetupScanViewModel: SetupScanViewModel = mockk(relaxed = true)

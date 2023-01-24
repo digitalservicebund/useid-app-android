@@ -1,10 +1,7 @@
 package de.digitalService.useID.ui
 
-import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Devices
@@ -16,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.NfcAvailability
-import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.destinations.*
@@ -26,7 +22,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 import io.sentry.compose.withSentryObservableEffect
 
 @Composable
-fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerManager: TrackerManagerType) {
+fun UseIDApp(nfcAvailability: NfcAvailability, navigator: Navigator, trackerManager: TrackerManagerType) {
     val navController = rememberNavController().withSentryObservableEffect()
 
     navigator.setNavController(navController)
@@ -83,7 +79,7 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerMa
     }
 
     UseIdTheme {
-        if (appCoordinator.nfcAvailability.value == NfcAvailability.NoNfc) {
+        if (nfcAvailability == NfcAvailability.NoNfc) {
             NoNfcScreen()
             return@UseIdTheme
         }
@@ -94,7 +90,7 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerMa
                 .fillMaxWidth()
         )
 
-        if (appCoordinator.nfcAvailability.value == NfcAvailability.Deactivated) {
+        if (nfcAvailability == NfcAvailability.Deactivated) {
             Dialog(
                 onDismissRequest = {},
                 properties = DialogProperties(
@@ -106,16 +102,6 @@ fun UseIDApp(appCoordinator: AppCoordinatorType, navigator: Navigator, trackerMa
             }
         }
     }
-}
-
-private class PreviewAppCoordinator(
-    override val nfcAvailability: State<NfcAvailability>,
-    override val currentlyHandlingNfcTags: Boolean
-) : AppCoordinatorType {
-    override fun offerIdSetup(tcTokenUrl: String?) {}
-    override fun homeScreenLaunched() {}
-    override fun setNfcAvailability(availability: NfcAvailability) {}
-    override fun handleDeepLink(uri: Uri) {}
 }
 
 private class PreviewAppNavigator : Navigator {
@@ -133,7 +119,7 @@ private class PreviewAppNavigator : Navigator {
 @Composable
 private fun PreviewNfc() {
     UseIDApp(
-        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Available), false),
+        NfcAvailability.Available,
         PreviewAppNavigator(),
         PreviewTrackerManager()
     )
@@ -143,7 +129,11 @@ private fun PreviewNfc() {
 @Preview(name = "Large", showSystemUi = true, device = Devices.PIXEL_4_XL)
 @Composable
 private fun PreviewNoNfc() {
-    UseIDApp(appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.NoNfc), false), PreviewAppNavigator(), PreviewTrackerManager())
+    UseIDApp(
+        NfcAvailability.Available,
+        PreviewAppNavigator(),
+        PreviewTrackerManager()
+    )
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)
@@ -151,7 +141,7 @@ private fun PreviewNoNfc() {
 @Composable
 private fun PreviewNfcDeactivated() {
     UseIDApp(
-        appCoordinator = PreviewAppCoordinator(rememberUpdatedState(newValue = NfcAvailability.Deactivated), false),
+        NfcAvailability.Available,
         PreviewAppNavigator(),
         PreviewTrackerManager()
     )

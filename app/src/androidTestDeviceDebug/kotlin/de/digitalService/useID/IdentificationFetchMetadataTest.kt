@@ -5,14 +5,11 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadata
 import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataViewModelInterface
-import de.digitalService.useID.util.MockNfcAdapterUtil
-import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk

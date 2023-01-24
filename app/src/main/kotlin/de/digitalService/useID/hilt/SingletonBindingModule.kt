@@ -14,16 +14,16 @@ import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.AppNavigator
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.util.CoroutineContextProvider
-import de.digitalService.useID.util.CoroutineContextProviderType
-import de.digitalService.useID.util.CurrentTimeProvider
-import de.digitalService.useID.util.CurrentTimeProviderInterface
+import de.digitalService.useID.util.*
 
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class SingletonBindingModule {
     @Binds
     abstract fun bindAppCoordinator(appCoordinator: AppCoordinator): AppCoordinatorType
+
+    @Binds
+    abstract fun bindNfcInterfaceManager(nfcInterfaceManager: NfcInterfaceManager): NfcInterfaceManagerType
 
     @Binds
     abstract fun bindNavigator(appNavigator: AppNavigator): Navigator

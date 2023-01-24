@@ -11,20 +11,16 @@ import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
-import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.util.NfcAdapterUtil
 import de.digitalService.useID.util.setContentUsingUseIdTheme
-import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 
 @HiltAndroidTest
-class NfcChangeDialogsTest {
+class NfcAvailabilityTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -33,18 +29,10 @@ class NfcChangeDialogsTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @BindValue
-    val mockNfcAdapterUtil: NfcAdapterUtil = mockk(relaxUnitFun = true) {
-        every { getNfcAdapter() } returns null
-    }
-
-    @BindValue
     val mockTrackerManager: TrackerManager = mockk(relaxed = true)
 
     @Inject
     lateinit var mockNavigator: Navigator
-
-    @Inject
-    lateinit var appCoordinator: AppCoordinator
 
     @Before
     fun before() {
@@ -52,31 +40,35 @@ class NfcChangeDialogsTest {
     }
 
     @Test
-    fun NfcChangeDialogsTest() {
+    fun nfcAvailable() {
         composeTestRule.activity.setContentUsingUseIdTheme {
-            UseIDApp(appCoordinator, mockNavigator, mockTrackerManager)
+            UseIDApp(NfcAvailability.Available, mockNavigator, mockTrackerManager)
         }
 
         val nfcDialogTitle1 = composeTestRule.activity.getString(R.string.noNfc_info_title)
-        composeTestRule.onNodeWithText(nfcDialogTitle1).assertIsDisplayed()
+        composeTestRule.onNodeWithText(nfcDialogTitle1).assertDoesNotExist()
 
         val nfcDialogTitle2 = composeTestRule.activity.getString(R.string.nfcDeactivated_info_title)
         composeTestRule.onNodeWithText(nfcDialogTitle2).assertDoesNotExist()
+    }
 
-        Assert.assertEquals(NfcAvailability.NoNfc, appCoordinator.nfcAvailability.value)
+    @Test
+    fun nfcNotAvailable() {
+        composeTestRule.activity.setContentUsingUseIdTheme {
+            UseIDApp(NfcAvailability.NoNfc, mockNavigator, mockTrackerManager)
+        }
 
-        appCoordinator.setNfcAvailability(NfcAvailability.Deactivated)
+        val nfcDialogTitle = composeTestRule.activity.getString(R.string.noNfc_info_title)
+        composeTestRule.onNodeWithText(nfcDialogTitle).assertIsDisplayed()
+    }
 
-        composeTestRule.onNodeWithText(nfcDialogTitle1).assertDoesNotExist()
-        composeTestRule.onNodeWithText(nfcDialogTitle2).assertIsDisplayed()
+    @Test
+    fun nfcDeactivated() {
+        composeTestRule.activity.setContentUsingUseIdTheme {
+            UseIDApp(NfcAvailability.Deactivated, mockNavigator, mockTrackerManager)
+        }
 
-        Assert.assertEquals(NfcAvailability.Deactivated, appCoordinator.nfcAvailability.value)
-
-        appCoordinator.setNfcAvailability(NfcAvailability.Available)
-
-        composeTestRule.onNodeWithText(nfcDialogTitle1).assertDoesNotExist()
-        composeTestRule.onNodeWithText(nfcDialogTitle2).assertDoesNotExist()
-
-        Assert.assertEquals(NfcAvailability.Available, appCoordinator.nfcAvailability.value)
+        val nfcDialogTitle = composeTestRule.activity.getString(R.string.nfcDeactivated_info_title)
+        composeTestRule.onNodeWithText(nfcDialogTitle).assertIsDisplayed()
     }
 }
