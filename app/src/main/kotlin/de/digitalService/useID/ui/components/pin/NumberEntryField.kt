@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,13 +26,13 @@ fun NumberEntryField(
         InputType.TransportPin ->
             Box(
                 modifier = Modifier
-                    .padding(horizontal = 20.dp)
                     .aspectRatio(2f)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.transport_pin),
                     contentDescription = null,
                     alignment = Alignment.Center,
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -43,10 +44,8 @@ fun NumberEntryField(
                     onDone = onDone,
                     modifier = modifier
                         .align(Alignment.Center)
-                        .aspectRatio(5f)
                         .padding(horizontal = 25.dp)
                         .clip(UseIdTheme.shapes.roundedMedium)
-                        .fillMaxSize()
                 )
             }
 
@@ -62,7 +61,6 @@ fun NumberEntryField(
                     .height(56.dp)
                     .clip(UseIdTheme.shapes.roundedMedium)
                     .fillMaxWidth(),
-                digitsModifier = Modifier.padding(horizontal = 30.dp)
             )
     }
 }

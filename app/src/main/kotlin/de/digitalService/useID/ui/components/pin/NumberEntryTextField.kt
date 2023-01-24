@@ -1,6 +1,8 @@
 package de.digitalService.useID.ui.components.pin
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -33,7 +35,6 @@ fun NumberEntryTextField(
     focusRequester: FocusRequester,
     modifier: Modifier = Modifier,
     backgroundColor: Color = UseIdTheme.colors.neutrals100,
-    digitsModifier: Modifier = Modifier,
     onDone: (String) -> Unit
 ) {
     var number: String by remember { mutableStateOf("") }
@@ -66,12 +67,13 @@ fun NumberEntryTextField(
             cursorBrush = SolidColor(Color.Transparent),
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
-                .fillMaxWidth()
                 .clip(UseIdTheme.shapes.roundedSmall)
                 .focusRequester(focusRequester)
                 .clipToBounds()
                 .testTag("PINEntryField")
                 .focusable(false)
+                .align(Alignment.Center)
+                .defaultMinSize(minWidth = (digitCount * 40).dp, minHeight = 50.dp)
         )
 
         PinDigitRow(
@@ -80,9 +82,10 @@ fun NumberEntryTextField(
             obfuscation = obfuscation,
             placeholder = false,
             spacerPosition = spacerPosition,
-            modifier = digitsModifier
-                .align(Alignment.Center)
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
                 .focusable(false)
+                .padding(vertical = 10.dp, horizontal = 10.dp)
         )
     }
 }

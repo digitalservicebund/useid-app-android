@@ -22,9 +22,8 @@ fun PinDigitRow(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.Center,
         modifier = modifier
-            .fillMaxWidth()
             .background(color = Color.Transparent)
     ) {
         for (position in 0 until digitCount) {
@@ -43,7 +42,9 @@ fun PinDigitRow(
                 input = char,
                 obfuscation = obfuscation,
                 placeholder = placeholder,
-                modifier = Modifier.padding(horizontal = UseIdTheme.spaces.xxs)
+                modifier = Modifier
+                    .padding(horizontal = UseIdTheme.spaces.xxs)
+                    .align(Alignment.Bottom)
             )
         }
     }
