@@ -107,7 +107,7 @@
     <string name="firstTimeUser_scan_error_title_id_deactivated">Online-Ausweisfunktion deaktiviert</string>
     <string name="firstTimeUser_scan_error_title_pin_blocked">PIN blockiert</string>
     <string name="firstTimeUser_scan_error_title_pin_suspended">PIN suspendiert</string>
-    <string name="firstTimeUser_scan_title">Berühren Sie Ihren Ausweis mit der Rückseite des Smartphones.</string>
+    <string name="firstTimeUser_scan_title_android">Berühren Sie Ihren Ausweis mit der Rückseite des Smartphones.</string>
     <string name="firstTimeUser_transportPIN_body">Die 5‑stellige Transport‑PIN finden Sie in Ihrem PIN‑Brief.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport‑PIN ein.</string>
@@ -144,7 +144,7 @@
     <string name="identification_personalPIN_PINTextFieldDescription">Eingabefeld PIN</string>
     <string name="identification_personalPIN_title">Geben Sie Ihre persönliche Ausweis–PIN ein.</string>
     <string name="identification_scan_body">Probieren Sie verschiedene Stellen aus. Achten Sie darauf, dass Ihr Ausweis das Gerät direkt berührt.</string>
-    <string name="identification_scan_title">Berühren Sie Ihren Ausweis mit der Rückseite des Smartphones.</string>
+    <string name="identification_scan_title_android">Berühren Sie Ihren Ausweis mit der Rückseite des Smartphones.</string>
     <string name="imprint_text">## Kontakt
 \n
 \nSchicken Sie uns Ihre Fragen und Verbesserungsvorschläge an:\\

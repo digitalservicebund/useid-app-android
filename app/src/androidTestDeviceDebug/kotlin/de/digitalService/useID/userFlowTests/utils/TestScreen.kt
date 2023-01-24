@@ -80,7 +80,7 @@ sealed class TestScreen {
             return this
         }
 
-        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_title)
+        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_title_android)
         private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_body)
         private val progressIndicator = TestElement.Tag(testRule, progressIndicatorTag)
 

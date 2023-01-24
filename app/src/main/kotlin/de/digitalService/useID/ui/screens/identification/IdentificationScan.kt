@@ -41,7 +41,7 @@ fun IdentificationScan(
         )
     ) { topPadding ->
         ScanScreen(
-            title = stringResource(id = R.string.identification_scan_title),
+            title = stringResource(id = R.string.identification_scan_title_android),
             body = stringResource(id = R.string.identification_scan_body),
             onHelpDialogShown = viewModel::onHelpButtonClicked,
             onNfcDialogShown = viewModel::onNfcButtonClicked,

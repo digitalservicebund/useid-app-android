@@ -40,7 +40,7 @@ fun SetupScan(
         )
     ) { topPadding ->
         ScanScreen(
-            title = stringResource(id = R.string.firstTimeUser_scan_title),
+            title = stringResource(id = R.string.firstTimeUser_scan_title_android),
             body = stringResource(id = R.string.firstTimeUser_scan_body),
             onHelpDialogShown = viewModel::onHelpButtonClicked,
             onNfcDialogShown = viewModel::onNfcButtonClicked,
