@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -39,11 +40,12 @@ fun BundButton(type: ButtonType, onClick: () -> Unit, label: String, modifier: M
             contentColor = contentColor
         ),
         shape = UseIdTheme.shapes.roundedMedium,
-        modifier = modifier.fillMaxWidth().height(56.dp)
+        modifier = modifier.fillMaxWidth()
     ) {
         Text(
             text = label,
-            style = UseIdTheme.typography.bodyLBold
+            style = UseIdTheme.typography.bodyLBold,
+            modifier = Modifier.padding(vertical = 10.dp)
         )
     }
 }
