@@ -130,7 +130,7 @@ private fun PreviewNfc() {
 @Composable
 private fun PreviewNoNfc() {
     UseIDApp(
-        NfcAvailability.Available,
+        NfcAvailability.NoNfc,
         PreviewAppNavigator(),
         PreviewTrackerManager()
     )
@@ -141,7 +141,7 @@ private fun PreviewNoNfc() {
 @Composable
 private fun PreviewNfcDeactivated() {
     UseIDApp(
-        NfcAvailability.Available,
+        NfcAvailability.Deactivated,
         PreviewAppNavigator(),
         PreviewTrackerManager()
     )
