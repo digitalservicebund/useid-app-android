@@ -1,8 +1,6 @@
 package de.digitalService.useID.ui.components.pin
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.outlined.Circle
@@ -14,12 +12,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.ui.theme.UseIdTheme
+import kotlin.math.absoluteValue
 
 @Composable
 fun PinDigitField(
@@ -30,7 +31,7 @@ fun PinDigitField(
 ) {
     Box(
         modifier = modifier
-            .defaultMinSize(minWidth = 30.dp, minHeight = 50.dp)
+            .defaultMinSize(minWidth = 30.dp, minHeight = (15 + (LocalDensity.current.fontScale * 30)).dp)
             .drawBehind {
                 drawLine(
                     color = Color.Black,

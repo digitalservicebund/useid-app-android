@@ -34,6 +34,7 @@ fun NumberEntryField(
                     alignment = Alignment.Center,
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
+                        .align(Alignment.Center)
                         .fillMaxWidth()
                 )
                 NumberEntryTextField(
