@@ -121,7 +121,8 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestPuk({}))
+            idCardManager.injectEvent(EidInteractionEvent.CardInteractionComplete)
+            idCardManager.injectException(IdCardInteractionException.CardBlocked)
         }
         trackerManager.trackScreen("identification/cardBlocked")
     }

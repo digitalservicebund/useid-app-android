@@ -36,14 +36,14 @@ class IdCardManager {
     }
 
     fun cancelTask() {
-        _eidFlow.value = EidInteractionEvent.Idle
+        CoroutineScope(Dispatchers.IO).launch { _eidFlow.emit(EidInteractionEvent.Idle) }
     }
 
     suspend fun injectEvent(event: EidInteractionEvent) {
-        _eidFlow.emit(event)
+        CoroutineScope(Dispatchers.IO).launch { _eidFlow.emit(event) }
     }
 
     suspend fun injectException(exception: IdCardInteractionException) {
-        _eidFlow.emit(EidInteractionEvent.Error(exception))
+        CoroutineScope(Dispatchers.IO).launch { _eidFlow.emit(EidInteractionEvent.Error(exception)) }
     }
 }

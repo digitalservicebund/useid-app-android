@@ -226,7 +226,7 @@ class CanCoordinator @Inject constructor(
                         }
                     }
                     is EidInteractionEvent.AuthenticationSuccessful, EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult, is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> finishCanFlow()
-                    is EidInteractionEvent.Error -> cancelCanFlow()
+                    is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")
                 }
             }

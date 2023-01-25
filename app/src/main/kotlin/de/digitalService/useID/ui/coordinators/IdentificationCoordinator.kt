@@ -218,7 +218,7 @@ class IdentificationCoordinator @Inject constructor(
                                 canCoordinator.startIdentCanFlow(pin.takeIf { !startedWithThreeAttempts }).collect { state ->
                                     when (state) {
                                         SubCoordinatorState.Cancelled -> cancelIdentification()
-                                        else -> logger.debug("Ignoring sub flow event: $event")
+                                        else -> logger.debug("Ignoring sub flow event: $state")
                                     }
                                 }
                             }
