@@ -5,9 +5,7 @@ import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.ui.screens.destinations.Destination
 import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -43,6 +41,10 @@ class AppNavigator @Inject constructor() : Navigator {
     }
 
     override fun popToRoot() {
-        CoroutineScope(Dispatchers.Main).launch { navController.popBackStack(route = HomeScreenDestination.route, inclusive = false) }
+        CoroutineScope(Dispatchers.Main).launch {
+            if (navController.currentBackStackEntry != null) {
+                navController.popBackStack(route = HomeScreenDestination.route, inclusive = false)
+            }
+        }
     }
 }

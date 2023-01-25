@@ -10,6 +10,8 @@ import de.digitalService.useID.util.NfcInterfaceManagerType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,12 +28,14 @@ class AppCoordinator @Inject constructor(
     private val setupCoordinator: SetupCoordinator,
     private val identificationCoordinator: IdentificationCoordinator,
     private val storageManager: StorageManagerType,
-    coroutineContextProvider: CoroutineContextProvider
+    private val coroutineContextProvider: CoroutineContextProvider
 ) : AppCoordinatorType {
     private val logger by getLogger()
 
     private var cachedTcTokenUrl: String? = null
     private var coldLaunch: Boolean = true
+
+    private val launchedBarrier = Mutex(true)
 
     private val nfcAvailabilityScope: Job
 
@@ -62,13 +66,26 @@ class AppCoordinator @Inject constructor(
         }
 
         coldLaunch = false
+
+        if (launchedBarrier.isLocked) {
+            launchedBarrier.unlock(null)
+        }
     }
 
     override fun handleDeepLink(uri: Uri) {
-        logger.debug("Handling deep link.")
-
         Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")?.let { url ->
-            handleTcTokenUrl(url)
+            if (launchedBarrier.isLocked) {
+                logger.debug("Wait for app launch to be completed.")
+                CoroutineScope(coroutineContextProvider.Default).launch {
+                    launchedBarrier.withLock {
+                        logger.debug("Handling deep link after waiting.")
+                        handleTcTokenUrl(url)
+                    }
+                }
+            } else {
+                logger.debug("Handling deep link immediately.")
+                handleTcTokenUrl(url)
+            }
         } ?: run {
             logger.info("URL does not contain tcTokenUrl parameter.")
         }
