@@ -475,14 +475,14 @@
     <string name="identification_can_input_body">The number is at the bottom right of the front of your ID card.</string>
     <string name="identification_can_input_canInputLabel">CAN input, six digits</string>
     <string name="identification_can_incorrectInput_error_incorrect_body">Incorrect 6-digit number</string>
-    <string name="firstTimeUser_can_confirmTransportPIN_title">[Translation missing]</string>
-    <string name="firstTimeUser_can_confirmTransportPIN_body">[Translation missing]</string>
-    <string name="firstTimeUser_can_confirmTransportPIN_confirmInput">[Translation missing]</string>
-    <string name="firstTimeUser_can_confirmTransportPIN_incorrectInput">[Translation missing]</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_title">Is %1s really your transport PIN\?</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_body">You have entered %1s as your transport PIN. Please confirm that this is the transport PIN specified in your PIN letter.</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_confirmInput">Yes, this is my transport PIN</string>
+    <string name="firstTimeUser_can_confirmTransportPIN_incorrectInput">No, enter Transport-PIN again</string>
     <string name="firstTimeUser_can_alreadySetup_title">[Translation missing]</string>
     <string name="firstTimeUser_can_alreadySetup_body_setup">You only need to set up your ID card once in total. If you already have a 6-digit personal PIN, your ID card has been set up already.</string>
     <string name="firstTimeUser_can_alreadySetup_body_ident">You only need to set up your ID card once in total. If you already have a 6-digit personal PIN, your ID card has been set up already.
 \n
 \nWith this PIN, you can now identify yourself.</string>
-    <string name="firstTimeUser_can_alreadySetup_personalPINNotAvailable">[Translation missing]</string>
+    <string name="firstTimeUser_can_alreadySetup_personalPINNotAvailable">Don\'t have a personal PIN\?</string>
 </resources>
