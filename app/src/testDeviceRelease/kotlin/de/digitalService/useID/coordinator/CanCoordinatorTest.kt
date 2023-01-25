@@ -68,7 +68,7 @@ class CanCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun identFlowOneAttempt() = runTest {
+    fun identFlowLongOneCanAttempt() = runTest {
         val mockedPinCallback = mockk<(String, String) -> Unit>(relaxed = true)
 
         val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestPinAndCan(mockedPinCallback))
@@ -79,7 +79,7 @@ class CanCoordinatorTest {
 
         Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
 
-        canCoordinator.startIdentCanFlow(true)
+        canCoordinator.startIdentCanFlow(null)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -117,7 +117,7 @@ class CanCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun identFlowSecondAttempt() = runTest {
+    fun identFlowLongTwoCanAttempts() = runTest {
         val mockedPinCallback = mockk<(String, String) -> Unit>(relaxed = true)
 
         val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestPinAndCan(mockedPinCallback))
@@ -127,7 +127,7 @@ class CanCoordinatorTest {
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
         val incorrectCan = "999999"
-        canCoordinator.startIdentCanFlow(true)
+        canCoordinator.startIdentCanFlow(null)
         advanceUntilIdle()
         canCoordinator.proceedWithThirdAttempt()
         canCoordinator.finishIntro()
@@ -168,7 +168,7 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        canCoordinator.startIdentCanFlow(true)
+        canCoordinator.startIdentCanFlow(null)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -179,7 +179,7 @@ class CanCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupFlowOneAttempt() = runTest {
+    fun setupFlowLongOneCanAttempt() = runTest {
         val mockedPinCallback = mockk<(String, String, String) -> Unit>(relaxed = true)
 
         val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestCanAndChangedPin(mockedPinCallback))
@@ -190,7 +190,7 @@ class CanCoordinatorTest {
 
         Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
 
-        canCoordinator.startSetupCanFlow(true, pin, newPin)
+        canCoordinator.startPinManagementCanFlow(false, pin, newPin)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -228,7 +228,7 @@ class CanCoordinatorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupFlowSecondAttempt() = runTest {
+    fun setupFlowLongTwoCanAttempts() = runTest {
         val mockedPinCallback = mockk<(String, String, String) -> Unit>(relaxed = true)
 
         val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestCanAndChangedPin(mockedPinCallback))
@@ -238,7 +238,7 @@ class CanCoordinatorTest {
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
         val incorrectCan = "999999"
-        canCoordinator.startSetupCanFlow(true, pin, newPin)
+        canCoordinator.startPinManagementCanFlow(false, pin, newPin)
         advanceUntilIdle()
         canCoordinator.proceedWithThirdAttempt()
         canCoordinator.finishIntro()
@@ -266,7 +266,7 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        canCoordinator.startSetupCanFlow(true, pin, newPin)
+        canCoordinator.startPinManagementCanFlow(true, pin, newPin)
 
         Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
 
@@ -307,7 +307,7 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        canCoordinator.startIdentCanFlow(true)
+        canCoordinator.startIdentCanFlow(null)
         canCoordinator.cancelCanFlow()
 
         Assertions.assertEquals(SubCoordinatorState.Cancelled, canCoordinator.stateFlow.value)

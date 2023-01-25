@@ -776,7 +776,7 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
         Assertions.assertFalse(scanInProgress)
-        verify(exactly = 1) { mockCanCoordinator.startIdentCanFlow(true) }
+        verify(exactly = 1) { mockCanCoordinator.startIdentCanFlow(null) }
 
         scanJob.cancel()
     }
@@ -895,7 +895,7 @@ class IdentificationCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
         Assertions.assertFalse(scanInProgress)
-        verify(exactly = 1) { mockCanCoordinator.startIdentCanFlow(false) }
+        verify(exactly = 1) { mockCanCoordinator.startIdentCanFlow(pin) }
 
         scanJob.cancel()
     }

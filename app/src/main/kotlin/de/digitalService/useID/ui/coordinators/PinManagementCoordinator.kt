@@ -223,7 +223,7 @@ class PinManagementCoordinator @Inject constructor(
 
                         if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
                             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-                                canCoordinator.startSetupCanFlow(intro = startedWithThreeAttempts, oldPin, newPin).collect { state ->
+                                canCoordinator.startPinManagementCanFlow(shortFlow = !startedWithThreeAttempts, oldPin, newPin).collect { state ->
                                     when (state) {
                                         SubCoordinatorState.Cancelled -> cancelPinManagementAndNavigate(null)
                                         SubCoordinatorState.Finished -> finishPinManagementFlow()

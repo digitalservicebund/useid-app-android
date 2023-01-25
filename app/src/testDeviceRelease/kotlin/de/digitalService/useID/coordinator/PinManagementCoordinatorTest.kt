@@ -409,12 +409,12 @@ class PinManagementCoordinatorTest {
 
         Assertions.assertTrue(progress)
 
-        every { mockCanCoordinator.startSetupCanFlow(false, transportPin, personalPin) } returns canCoordinatorStateFlow
+        every { mockCanCoordinator.startPinManagementCanFlow(true, transportPin, personalPin) } returns canCoordinatorStateFlow
         idCardManagerFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        verify(exactly = 1) { mockCanCoordinator.startSetupCanFlow(false, transportPin, personalPin) }
+        verify(exactly = 1) { mockCanCoordinator.startPinManagementCanFlow(true, transportPin, personalPin) }
 
         scanJob.cancel()
         stateJob.cancel()
@@ -522,12 +522,12 @@ class PinManagementCoordinatorTest {
         Assertions.assertTrue(progress)
 
         // CAN
-        every { mockCanCoordinator.startSetupCanFlow(true, transportPin, personalPin) } returns canCoordinatorStateFlow
+        every { mockCanCoordinator.startPinManagementCanFlow(false, transportPin, personalPin) } returns canCoordinatorStateFlow
         idCardManagerFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        verify(exactly = 1) { mockCanCoordinator.startSetupCanFlow(true, transportPin, personalPin) }
+        verify(exactly = 1) { mockCanCoordinator.startPinManagementCanFlow(false, transportPin, personalPin) }
 
         scanJob.cancel()
         stateJob.cancel()

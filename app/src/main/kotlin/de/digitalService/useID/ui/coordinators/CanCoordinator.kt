@@ -29,27 +29,27 @@ class CanCoordinator @Inject constructor(
 
     private sealed class CanFlowState {
         object Invalid : CanFlowState()
-        class InitializedForSetup(val intro: Boolean, val oldPin: String, private val newPin: String) : CanFlowState() {
-            fun advance(callback: ChangePinCallback): CanFlowState = RequestedCanAndPinForSetup(newPin, callback)
+        class InitializedForPinManagement(val shortFlow: Boolean, val oldPin: String, private val newPin: String) : CanFlowState() {
+            fun advance(callback: ChangePinCallback): CanFlowState = RequestedCanAndPinForPinManagement(oldPin.takeIf { shortFlow }, newPin, callback)
         }
-        class InitializedForIdent(val intro: Boolean) : CanFlowState() {
-            fun advance(callback: PinCallback): CanFlowState = RequestedCanAndPinForIdent(callback)
+        class InitializedForIdent(val pin: String?) : CanFlowState() {
+            fun advance(callback: PinCallback): CanFlowState = RequestedCanAndPinForIdent(pin, callback)
         }
-        class RequestedCanAndPinForSetup(private val newPin: String, private val callback: ChangePinCallback) : CanFlowState() {
-            fun advance(can: String): CanFlowState = CanEnteredForSetup(can, newPin, callback)
+        class RequestedCanAndPinForPinManagement(val oldPin: String?, private val newPin: String, private val callback: ChangePinCallback) : CanFlowState() {
+            fun advance(can: String): CanFlowState = if (oldPin != null) CanAndPinEnteredForPinManagement(can, oldPin, newPin, callback) else CanEnteredForPinManagement(can, newPin, callback)
         }
-        class RequestedCanAndPinForIdent(private val callback: PinCallback) : CanFlowState() {
-            fun advance(can: String): CanFlowState = CanEnteredForIdent(can, callback)
+        class RequestedCanAndPinForIdent(val pin: String?, private val callback: PinCallback) : CanFlowState() {
+            fun advance(can: String): CanFlowState = if (pin != null) CanAndPinEnteredForIdent(can, pin, callback) else CanEnteredForIdent(can, callback)
         }
-        class CanEnteredForSetup(private val can: String, private val newPin: String, private val callback: ChangePinCallback) : CanFlowState(), CanEntered {
-            override fun back(): CanFlowState = RequestedCanAndPinForSetup(newPin, callback)
-            override fun advance(pin: String): CanFlowState = CanAndPinEnteredForSetup(can, pin, newPin, callback)
+        class CanEnteredForPinManagement(private val can: String, private val newPin: String, private val callback: ChangePinCallback) : CanFlowState(), CanEntered {
+            override fun back(): CanFlowState = RequestedCanAndPinForPinManagement(null, newPin, callback)
+            override fun advance(pin: String): CanFlowState = CanAndPinEnteredForPinManagement(can, pin, newPin, callback)
         }
         class CanEnteredForIdent(private val can: String, private val callback: PinCallback) : CanFlowState(), CanEntered {
-            override fun back(): CanFlowState = RequestedCanAndPinForIdent(callback)
+            override fun back(): CanFlowState = RequestedCanAndPinForIdent(null, callback)
             override fun advance(pin: String): CanFlowState = CanAndPinEnteredForIdent(can, pin, callback)
         }
-        class CanAndPinEnteredForSetup(private var can: String, private val pin: String, private val newPin: String, private var callback: ChangePinCallback) : CanFlowState(), CanAndPinEntered {
+        class CanAndPinEnteredForPinManagement(private var can: String, private val pin: String, private val newPin: String, private var callback: ChangePinCallback) : CanFlowState(), CanAndPinEntered {
             fun setNewCallback(callback: ChangePinCallback) { this.callback = callback }
             override fun setNewCan(can: String) { this.can = can }
             override fun executeCanStep() = callback(pin, can, newPin)
@@ -78,13 +78,13 @@ class CanCoordinator @Inject constructor(
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
 
-    fun startIdentCanFlow(intro: Boolean): Flow<SubCoordinatorState> {
-        state = CanFlowState.InitializedForIdent(intro)
+    fun startIdentCanFlow(pin: String?): Flow<SubCoordinatorState> {
+        state = CanFlowState.InitializedForIdent(pin)
         return startCanFlow()
     }
 
-    fun startSetupCanFlow(intro: Boolean, oldPin: String, newPin: String): Flow<SubCoordinatorState> {
-        state = CanFlowState.InitializedForSetup(intro, oldPin, newPin)
+    fun startPinManagementCanFlow(shortFlow: Boolean, oldPin: String, newPin: String): Flow<SubCoordinatorState> {
+        state = CanFlowState.InitializedForPinManagement(shortFlow, oldPin, newPin)
         return startCanFlow()
     }
 
@@ -105,7 +105,7 @@ class CanCoordinator @Inject constructor(
 
     fun proceedWithThirdAttempt() {
         when (state) {
-            is CanFlowState.RequestedCanAndPinForSetup -> navigator.navigate(SetupCanIntroDestination(true))
+            is CanFlowState.RequestedCanAndPinForPinManagement -> navigator.navigate(SetupCanIntroDestination(true))
             is CanFlowState.RequestedCanAndPinForIdent, is CanFlowState.CanAndPinEnteredForIdent -> navigator.navigate(IdentificationCanIntroDestination(true))
             else -> logger.error("Requested to proceed with third PIN attempt unexpected in state $state")
         }
@@ -117,13 +117,21 @@ class CanCoordinator @Inject constructor(
 
     fun onCanEntered(can: String) {
         when (val currentState = state) {
-            is CanFlowState.RequestedCanAndPinForSetup -> {
+            is CanFlowState.RequestedCanAndPinForPinManagement -> {
                 state = currentState.advance(can)
-                navigator.navigate(SetupCanTransportPinDestination)
+                if (state is CanFlowState.CanAndPinEnteredForPinManagement) {
+                    executeCanStep()
+                } else {
+                    navigator.navigate(SetupCanTransportPinDestination)
+                }
             }
             is CanFlowState.RequestedCanAndPinForIdent -> {
                 state = currentState.advance(can)
-                navigator.navigate(IdentificationCanPinInputDestination)
+                if (state is CanFlowState.CanAndPinEnteredForIdent) {
+                    executeCanStep()
+                } else {
+                    navigator.navigate(IdentificationCanPinInputDestination)
+                }
             }
             is CanFlowState.CanAndPinEntered -> {
                 currentState.setNewCan(can)
@@ -183,7 +191,7 @@ class CanCoordinator @Inject constructor(
                             is CanFlowState.InitializedForIdent -> {
                                 state = currentState.advance(event.pinCanCallback)
 
-                                if (currentState.intro) {
+                                if (currentState.pin == null) {
                                     navigator.navigate(IdentificationCanPinForgottenDestination)
                                 } else {
                                     navigator.navigate(IdentificationCanIntroDestination(false))
@@ -200,16 +208,16 @@ class CanCoordinator @Inject constructor(
                     }
                     is EidInteractionEvent.RequestCanAndChangedPin -> {
                         when (val currentState = state) {
-                            is CanFlowState.InitializedForSetup -> {
+                            is CanFlowState.InitializedForPinManagement -> {
                                 state = currentState.advance(event.pinCallback)
 
-                                if (currentState.intro) {
-                                    navigator.navigate(SetupCanConfirmTransportPinDestination(currentState.oldPin))
-                                } else {
+                                if (currentState.shortFlow) {
                                     navigator.navigate(SetupCanIntroDestination(false))
+                                } else {
+                                    navigator.navigate(SetupCanConfirmTransportPinDestination(currentState.oldPin))
                                 }
                             }
-                            is CanFlowState.CanAndPinEnteredForSetup -> {
+                            is CanFlowState.CanAndPinEnteredForPinManagement -> {
                                 currentState.setNewCallback(event.pinCallback)
                                 navigator.navigate(SetupCanIntroDestination(false))
                                 navigator.navigate(CanInputDestination(true))
