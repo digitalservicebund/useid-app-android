@@ -79,9 +79,7 @@
     <string name="firstTimeUser_intro_startSetup">Set up online ID card now</string>
     <string name="firstTimeUser_intro_title">Have you already set up your online ID card\?</string>
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
-    <string name="firstTimeUser_missingPINLetter_body">We are still working on this feature.
-\n
-\nFor more information about the PIN reset letter, please visit:
+    <string name="firstTimeUser_missingPINLetter_body">Do you need a new PIN\? Order a PIN reset letter:
 \n
 \n**[www.pin-ruecksetzbrief-bestellen.de ↗](https://www.pin-ruecksetzbrief-bestellen.de)**</string>
     <string name="firstTimeUser_missingPINLetter_title">Order PIN reset letter.</string>
@@ -143,8 +141,8 @@
     <string name="identification_personalPIN_error_tryAgain">Try again.</string>
     <string name="identification_personalPIN_PINTextFieldDescription">PIN input field</string>
     <string name="identification_personalPIN_title">Enter your personal ID PIN.</string>
-    <string name="identification_scan_body">The app uses the NFC sensors in the smartphone and ID card to check your PIN and retrieve the required data.</string>
-    <string name="identification_scan_title">Retrieve the data from your ID card.</string>
+    <string name="identification_scan_body">Try out different positions. Make sure that your ID is in direct contact with the device.</string>
+    <string name="identification_scan_title">Place your ID card on the back of your smartphone.</string>
     <string name="imprint_text">## Contact
 \n
 \nSend us your questions and feedback to:\\
@@ -482,7 +480,9 @@
     <string name="firstTimeUser_can_confirmTransportPIN_confirmInput">[Translation missing]</string>
     <string name="firstTimeUser_can_confirmTransportPIN_incorrectInput">[Translation missing]</string>
     <string name="firstTimeUser_can_alreadySetup_title">[Translation missing]</string>
-    <string name="firstTimeUser_can_alreadySetup_body_setup">[Translation missing]</string>
-    <string name="firstTimeUser_can_alreadySetup_body_ident">[Translation missing]</string>
+    <string name="firstTimeUser_can_alreadySetup_body_setup">You only need to set up your ID card once in total. If you already have a 6-digit personal PIN, your ID card has been set up already.</string>
+    <string name="firstTimeUser_can_alreadySetup_body_ident">You only need to set up your ID card once in total. If you already have a 6-digit personal PIN, your ID card has been set up already.
+\n
+\nWith this PIN, you can now identify yourself.</string>
     <string name="firstTimeUser_can_alreadySetup_personalPINNotAvailable">[Translation missing]</string>
 </resources>
