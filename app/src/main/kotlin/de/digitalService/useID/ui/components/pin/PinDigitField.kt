@@ -16,11 +16,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.testTag
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.ui.theme.UseIdTheme
-import kotlin.math.absoluteValue
 
 @Composable
 fun PinDigitField(

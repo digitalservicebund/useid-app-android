@@ -61,7 +61,7 @@ fun NumberEntryField(
                 modifier = modifier
                     .height(56.dp)
                     .clip(UseIdTheme.shapes.roundedMedium)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
             )
     }
 }
