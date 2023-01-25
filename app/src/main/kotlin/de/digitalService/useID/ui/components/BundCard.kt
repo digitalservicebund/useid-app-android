@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import de.digitalService.useID.ui.theme.UseIdTheme
 
 enum class BundCardType {
@@ -50,7 +51,11 @@ fun BundCard(type: BundCardType, title: String, body: String) {
         colors = CardDefaults.cardColors(containerColor = containerColor),
         shape = UseIdTheme.shapes.roundedMedium
     ) {
-        ConstraintLayout(modifier = Modifier.padding(12.dp)) {
+        ConstraintLayout(
+            modifier = Modifier
+                .padding(12.dp)
+                .fillMaxWidth()
+        ) {
             val (iconRef, titleRef, bodyRef) = createRefs()
 
             Icon(
@@ -60,6 +65,7 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                     .size(30.dp)
                     .padding(end = UseIdTheme.spaces.xs)
                     .constrainAs(iconRef) {
+                        centerVerticallyTo(titleRef)
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     },
@@ -74,6 +80,8 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                     .constrainAs(titleRef) {
                         centerVerticallyTo(iconRef)
                         start.linkTo(iconRef.end)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
                     }
             )
 
@@ -85,7 +93,9 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                     .padding(top = UseIdTheme.spaces.xxs)
                     .constrainAs(bodyRef) {
                         top.linkTo(titleRef.bottom)
-                        start.linkTo(titleRef.start)
+                        start.linkTo(iconRef.end)
+                        end.linkTo(parent.end)
+                        width = Dimension.fillToConstraints
                     }
             )
         }
@@ -121,5 +131,21 @@ private fun PreviewErrorCard() {
 private fun PreviewSuccessCard() {
     UseIdTheme {
         BundCard(type = BundCardType.SUCCESS, title = "Success message", body = "Body text describing alert.")
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewInfoCardNarrow() {
+    UseIdTheme {
+        Box(
+            modifier = Modifier.width(200.dp)
+        ) {
+            BundCard(
+                type = BundCardType.INFO,
+                title = "Very Long Informational message",
+                body = "Body text describing alert. This is not actually a description but just a very long text."
+            )
+        }
     }
 }

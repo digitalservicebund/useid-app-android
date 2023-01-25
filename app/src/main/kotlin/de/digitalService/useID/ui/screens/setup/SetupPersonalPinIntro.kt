@@ -38,10 +38,11 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                 action = viewModel::onContinue
             ),
             modifier = Modifier.padding(top = topPadding)
-        ) {
+        ) { bottomPadding ->
             Column(
                 modifier = Modifier
                     .padding(horizontal = UseIdTheme.spaces.m)
+                    .padding(bottom = bottomPadding)
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
