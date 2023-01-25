@@ -29,6 +29,8 @@ fun PinDigitField(
 ) {
     Box(
         modifier = modifier
+            // To prevent the box from resizing after a first digit is entered, calulcate a suitable height
+            // with respect to the current system font scaling
             .defaultMinSize(minWidth = 30.dp, minHeight = (15 + (LocalDensity.current.fontScale * 30)).dp)
             .drawBehind {
                 drawLine(
