@@ -513,7 +513,8 @@ class PinManagementCoordinatorTest {
         idCardManagerFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        verify(exactly = 2) { mockNavigator.navigatePopping(SetupScanDestination) }
+        verify(exactly = 1) { mockNavigator.navigatePopping(SetupScanDestination) }
+        verify(exactly = 1) { mockNavigator.popUpTo(SetupScanDestination) }
         Assertions.assertFalse(progress)
 
         idCardManagerFlow.value = EidInteractionEvent.CardRecognized

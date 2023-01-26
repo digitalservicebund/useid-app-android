@@ -114,6 +114,7 @@ class PinManagementCoordinator @Inject constructor(
 
     fun onBack() {
         navigator.pop()
+        reachedScanState = false
         cancelIdCardManagerTasks()
     }
 
@@ -149,6 +150,7 @@ class PinManagementCoordinator @Inject constructor(
         newPin = null
         firstOldPinRequest = true
         backAllowed = true
+        reachedScanState = false
         eIdEventFlowCoroutineScope?.cancel()
         canEventFlowCoroutineScope?.cancel()
     }
@@ -162,16 +164,16 @@ class PinManagementCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-                        if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
-                            logger.debug("Requested card insertion without subflow active. Pushing scan screen.")
-                            navigator.navigatePopping(SetupScanDestination)
-                        } else {
-                            logger.debug("Requested card insertion with active subflow. Popping to scan screen.")
+
+                        if (reachedScanState) {
+                            logger.debug("Popping to scan screen.")
                             backAllowed = false
                             navigator.popUpTo(SetupScanDestination)
+                        } else {
+                            logger.debug("Pushing scan screen.")
+                            navigator.navigatePopping(SetupScanDestination)
+                            reachedScanState = true
                         }
-
-                        reachedScanState = true
                     }
                     EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
                     EidInteractionEvent.CardRecognized -> {
