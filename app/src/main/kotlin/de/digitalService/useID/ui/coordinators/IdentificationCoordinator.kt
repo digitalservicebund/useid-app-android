@@ -53,7 +53,7 @@ class IdentificationCoordinator @Inject constructor(
     private var eIdEventFlowCoroutineScope: Job? = null
     private var canEventFlowCoroutineScope: Job? = null
 
-    val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Finished)
+    val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
 
     fun startIdentificationProcess(tcTokenUrl: String, setupSkipped: Boolean) {
         this.setupSkipped = setupSkipped
@@ -72,7 +72,7 @@ class IdentificationCoordinator @Inject constructor(
     private fun executeIdentification() {
         logger.debug("Start identification process.")
 
-        stateFlow.value = SubCoordinatorState.Active
+        stateFlow.value = SubCoordinatorState.ACTIVE
 
         eIdEventFlowCoroutineScope?.cancel()
         canEventFlowCoroutineScope?.cancel()
@@ -130,7 +130,7 @@ class IdentificationCoordinator @Inject constructor(
 
         navigator.popToRoot()
 
-        stateFlow.value = SubCoordinatorState.Cancelled
+        stateFlow.value = SubCoordinatorState.CANCELLED
     }
 
     private fun finishIdentification(redirectUrl: String) {
@@ -145,7 +145,7 @@ class IdentificationCoordinator @Inject constructor(
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         ContextCompat.startActivity(context, intent, null)
 
-        stateFlow.value = SubCoordinatorState.Finished
+        stateFlow.value = SubCoordinatorState.FINISHED
     }
 
     private fun collectEidEvents() {
@@ -213,11 +213,11 @@ class IdentificationCoordinator @Inject constructor(
                             return@collect
                         }
 
-                        if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
+                        if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
                             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
                                 canCoordinator.startIdentCanFlow(pin.takeIf { !startedWithThreeAttempts }).collect { state ->
                                     when (state) {
-                                        SubCoordinatorState.Cancelled -> cancelIdentification()
+                                        SubCoordinatorState.CANCELLED -> cancelIdentification()
                                         else -> logger.debug("Ignoring sub flow event: $state")
                                     }
                                 }
@@ -231,7 +231,7 @@ class IdentificationCoordinator @Inject constructor(
                         _scanInProgress.value = false
                         navigator.navigate(IdentificationCardBlockedDestination)
                         idCardManager.cancelTask()
-                        stateFlow.value = SubCoordinatorState.Cancelled
+                        stateFlow.value = SubCoordinatorState.CANCELLED
                         cancel()
                     }
                     is EidInteractionEvent.Error -> {

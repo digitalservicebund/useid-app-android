@@ -77,11 +77,11 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
 
         canCoordinator.startIdentCanFlow(null)
 
-        Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
 
         advanceUntilIdle()
 
@@ -112,7 +112,7 @@ class CanCoordinatorTest {
 
         advanceUntilIdle()
 
-        Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -157,7 +157,7 @@ class CanCoordinatorTest {
 
         advanceUntilIdle()
 
-        Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -170,7 +170,7 @@ class CanCoordinatorTest {
 
         canCoordinator.startIdentCanFlow(null)
 
-        Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
 
         advanceUntilIdle()
 
@@ -188,11 +188,11 @@ class CanCoordinatorTest {
 
         val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
 
-        Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
 
         canCoordinator.startPinManagementCanFlow(false, pin, newPin)
 
-        Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
 
         advanceUntilIdle()
 
@@ -223,7 +223,7 @@ class CanCoordinatorTest {
 
         advanceUntilIdle()
 
-        Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -255,7 +255,7 @@ class CanCoordinatorTest {
 
         advanceUntilIdle()
 
-        Assertions.assertEquals(SubCoordinatorState.Finished, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -268,7 +268,7 @@ class CanCoordinatorTest {
 
         canCoordinator.startPinManagementCanFlow(true, pin, newPin)
 
-        Assertions.assertEquals(SubCoordinatorState.Active, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
 
         advanceUntilIdle()
 
@@ -310,7 +310,7 @@ class CanCoordinatorTest {
         canCoordinator.startIdentCanFlow(null)
         canCoordinator.cancelCanFlow()
 
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, canCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, canCoordinator.stateFlow.value)
     }
 
     class EidInteractionEventTypeFactory: DefaultTypeFactory() {

@@ -74,7 +74,7 @@ class CanCoordinator @Inject constructor(
 
     private var eIdEventFlowCoroutineScope: Job? = null
 
-    private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Finished)
+    private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
 
@@ -91,7 +91,7 @@ class CanCoordinator @Inject constructor(
     private fun startCanFlow(): Flow<SubCoordinatorState> {
         collectEidEvents()
 
-        _stateFlow.value = SubCoordinatorState.Active
+        _stateFlow.value = SubCoordinatorState.ACTIVE
         return stateFlow
     }
 
@@ -165,12 +165,17 @@ class CanCoordinator @Inject constructor(
     }
 
     fun cancelCanFlow() {
-        _stateFlow.value = SubCoordinatorState.Cancelled
+        _stateFlow.value = SubCoordinatorState.CANCELLED
         resetCoordinatorState()
     }
 
-    private fun finishCanFlow() {
-        _stateFlow.value = SubCoordinatorState.Finished
+    fun finishCanFlow() {
+        _stateFlow.value = SubCoordinatorState.FINISHED
+        resetCoordinatorState()
+    }
+
+    fun skipCanFlow() {
+        _stateFlow.value = SubCoordinatorState.SKIPPED
         resetCoordinatorState()
     }
 

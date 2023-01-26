@@ -58,8 +58,8 @@ class AppCoordinator @Inject constructor(
 
     override fun homeScreenLaunched() {
         if (coldLaunch &&
-            setupCoordinator.stateFlow.value != SubCoordinatorState.Active &&
-            identificationCoordinator.stateFlow.value != SubCoordinatorState.Active &&
+            setupCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE &&
+            identificationCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE &&
             storageManager.firstTimeUser
         ) {
             offerIdSetup(null)

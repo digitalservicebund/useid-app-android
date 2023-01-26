@@ -106,7 +106,7 @@ class SetupCanAlreadySetupViewModel @Inject constructor(
     }
 
     override fun onFinish() {
-        setupCoordinator.finishSetup()
+        canCoordinator.skipCanFlow()
     }
 }
 

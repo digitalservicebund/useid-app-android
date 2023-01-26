@@ -74,7 +74,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -93,7 +93,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -103,7 +103,7 @@ class PinManagementCoordinatorTest {
 
         advanceUntilIdle()
 
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET CORRECT TRANSPORT PIN
         val transportPin = "12345"
@@ -152,7 +152,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, pinManagementState)
 
         scanJob.cancel()
         stateJob.cancel()
@@ -220,7 +220,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -239,7 +239,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -248,7 +248,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET WRONG TRANSPORT PIN
         val transportPin = "12345"
@@ -301,7 +301,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         navigationParameter = navigationDestinationSlot.captured
         Assertions.assertEquals(SetupTransportPinDestination(true).route, navigationParameter.route)
@@ -328,7 +328,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Finished, pinManagementState) // Why is this failing?
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, pinManagementState) // Why is this failing?
 
         scanJob.cancel()
         stateJob.cancel()
@@ -344,7 +344,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -363,7 +363,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -372,7 +372,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(pinManagementState, SubCoordinatorState.Active)
+        Assertions.assertEquals(pinManagementState, SubCoordinatorState.ACTIVE)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -430,7 +430,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -449,7 +449,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -458,7 +458,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(pinManagementState, SubCoordinatorState.Active)
+        Assertions.assertEquals(pinManagementState, SubCoordinatorState.ACTIVE)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -543,7 +543,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -562,7 +562,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -571,7 +571,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -612,7 +612,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupCardBlockedDestination) }
 
         scanJob.cancel()
@@ -629,7 +629,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -648,7 +648,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -657,7 +657,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -697,7 +697,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupOtherErrorDestination) }
 
         scanJob.cancel()
@@ -714,7 +714,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -733,7 +733,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -742,7 +742,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -783,7 +783,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupCardDeactivatedDestination) }
 
         scanJob.cancel()
@@ -800,7 +800,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -819,7 +819,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -828,7 +828,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -869,7 +869,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupCardBlockedDestination) }
 
         scanJob.cancel()
@@ -886,7 +886,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -905,7 +905,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -914,7 +914,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -955,14 +955,14 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
         navigationParameter = navigationDestinationSlot.captured
         Assertions.assertEquals(SetupCardUnreadableDestination(false).route, navigationParameter.route)
 
         pinManagementCoordinator.retryPinManagement()
         advanceUntilIdle()
 
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
         verify(exactly = 2) { mockIdCardManager.changePin(mockContext) }
 
         scanJob.cancel()
@@ -979,7 +979,7 @@ class PinManagementCoordinatorTest {
         val idCardManagerFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.PinManagementStarted)
         every { mockIdCardManager.eidFlow } returns idCardManagerFlow
 
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
 
         val pinManagementCoordinator = PinManagementCoordinator(
@@ -998,7 +998,7 @@ class PinManagementCoordinatorTest {
 
         // START PIN MANAGEMENT
         val pinManagementStateFlow = pinManagementCoordinator.startPinManagement(pinStatus = PinStatus.TransportPin)
-        var pinManagementState = SubCoordinatorState.Finished
+        var pinManagementState = SubCoordinatorState.FINISHED
         val stateJob = pinManagementStateFlow
             .onEach { pinManagementState = it }
             .launchIn(CoroutineScope(dispatcher))
@@ -1007,7 +1007,7 @@ class PinManagementCoordinatorTest {
         Assertions.assertEquals(SetupTransportPinDestination(false).route, navigationParameter.route)
 
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Active, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementState)
 
         // SET TRANSPORT PIN
         val transportPin = "12345"
@@ -1047,7 +1047,7 @@ class PinManagementCoordinatorTest {
         advanceUntilIdle()
 
         Assertions.assertFalse(progress)
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, pinManagementState)
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementState)
         verify(exactly = 1) { mockNavigator.navigate(SetupOtherErrorDestination) }
 
         scanJob.cancel()

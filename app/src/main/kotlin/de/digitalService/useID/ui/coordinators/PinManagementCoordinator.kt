@@ -53,7 +53,7 @@ class PinManagementCoordinator @Inject constructor(
     val scanInProgress: Flow<Boolean>
         get() = _scanInProgress
 
-    private val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.Finished)
+    private val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
 
     fun startPinManagement(pinStatus: PinStatus): Flow<SubCoordinatorState> {
         resetCoordinatorState()
@@ -65,7 +65,7 @@ class PinManagementCoordinator @Inject constructor(
             PinStatus.PersonalPin -> throw NotImplementedError("Pin Management for personal PIN not implemented yet.")
         }
 
-        stateFlow.value = SubCoordinatorState.Active
+        stateFlow.value = SubCoordinatorState.ACTIVE
         return stateFlow
     }
 
@@ -123,7 +123,7 @@ class PinManagementCoordinator @Inject constructor(
 
     private fun cancelPinManagementAndNavigate(destination: Direction?) {
         _scanInProgress.value = false
-        stateFlow.value = SubCoordinatorState.Cancelled
+        stateFlow.value = SubCoordinatorState.CANCELLED
         resetCoordinatorState()
         cancelIdCardManagerTasks()
         destination?.let { navigator.navigate(destination) }
@@ -135,7 +135,12 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     private fun finishPinManagementFlow() {
-        stateFlow.value = SubCoordinatorState.Finished
+        stateFlow.value = SubCoordinatorState.FINISHED
+        resetCoordinatorState()
+    }
+
+    private fun skipPinManagementFlow() {
+        stateFlow.value = SubCoordinatorState.SKIPPED
         resetCoordinatorState()
     }
 
@@ -157,7 +162,7 @@ class PinManagementCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-                        if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
+                        if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
                             logger.debug("Requested card insertion without subflow active. Pushing scan screen.")
                             navigator.navigatePopping(SetupScanDestination)
                         } else {
@@ -180,7 +185,7 @@ class PinManagementCoordinator @Inject constructor(
                     EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
                         logger.debug("Process completed successfully.")
                         _scanInProgress.value = false
-                        stateFlow.emit(SubCoordinatorState.Finished)
+                        stateFlow.emit(SubCoordinatorState.FINISHED)
                     }
                     is EidInteractionEvent.RequestChangedPin -> {
                         if (firstOldPinRequest) {
@@ -221,12 +226,13 @@ class PinManagementCoordinator @Inject constructor(
                             return@collect
                         }
 
-                        if (canCoordinator.stateFlow.value != SubCoordinatorState.Active) {
+                        if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
                             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
                                 canCoordinator.startPinManagementCanFlow(shortFlow = !startedWithThreeAttempts, oldPin, newPin).collect { state ->
                                     when (state) {
-                                        SubCoordinatorState.Cancelled -> cancelPinManagementAndNavigate(null)
-                                        SubCoordinatorState.Finished -> finishPinManagementFlow()
+                                        SubCoordinatorState.CANCELLED -> cancelPinManagementAndNavigate(null)
+                                        SubCoordinatorState.FINISHED -> finishPinManagementFlow()
+                                        SubCoordinatorState.SKIPPED -> skipPinManagementFlow()
                                         else -> logger.debug("Ignoring sub flow state: $state")
                                     }
                                 }

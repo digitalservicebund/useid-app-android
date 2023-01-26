@@ -160,7 +160,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -218,7 +218,7 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
         verify(exactly = 1) { mockNavigator.popToRoot() }
         Assertions.assertEquals(
-            SubCoordinatorState.Finished,
+            SubCoordinatorState.FINISHED,
             identificationCoordinator.stateFlow.value
         )
 
@@ -284,7 +284,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -342,7 +342,7 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
         verify(exactly = 1) { mockNavigator.popToRoot() }
         Assertions.assertEquals(
-            SubCoordinatorState.Finished,
+            SubCoordinatorState.FINISHED,
             identificationCoordinator.stateFlow.value
         )
 
@@ -408,7 +408,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -476,7 +476,7 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
         verify(exactly = 1) { mockNavigator.popToRoot() }
         Assertions.assertEquals(
-            SubCoordinatorState.Finished,
+            SubCoordinatorState.FINISHED,
             identificationCoordinator.stateFlow.value
         )
 
@@ -542,7 +542,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -629,7 +629,7 @@ class IdentificationCoordinatorTest {
         advanceUntilIdle()
         verify(exactly = 1) { mockNavigator.popToRoot() }
         Assertions.assertEquals(
-            SubCoordinatorState.Finished,
+            SubCoordinatorState.FINISHED,
             identificationCoordinator.stateFlow.value
         )
 
@@ -690,7 +690,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -771,7 +771,7 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // CAN FLOW IS STARTED
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
         idCardManagerFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
@@ -835,7 +835,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -890,7 +890,7 @@ class IdentificationCoordinatorTest {
         Assertions.assertTrue(scanInProgress)
 
         // CAN FLOW IS STARTED
-        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.Cancelled)
+        val canCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canCoordinatorStateFlow
         idCardManagerFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
@@ -954,7 +954,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1015,7 +1015,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 2) { mockIdCardManager.cancelTask() }
         verify(exactly = 1) { mockNavigator.navigate(IdentificationCardBlockedDestination) }
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
 
@@ -1025,7 +1025,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
 
@@ -1058,7 +1058,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1080,7 +1080,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
     }
@@ -1132,7 +1132,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1166,7 +1166,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
     }
@@ -1220,7 +1220,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1264,7 +1264,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
     }
@@ -1318,7 +1318,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1373,7 +1373,7 @@ class IdentificationCoordinatorTest {
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
     }
@@ -1439,7 +1439,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1503,7 +1503,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -1571,7 +1571,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1634,7 +1634,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -1702,7 +1702,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1776,7 +1776,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -1844,7 +1844,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -1911,7 +1911,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -1979,7 +1979,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -2040,7 +2040,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -2108,7 +2108,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -2171,7 +2171,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -2239,7 +2239,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -2302,7 +2302,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -2370,7 +2370,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockIdCardManager.cancelTask() }
@@ -2437,7 +2437,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -2478,7 +2478,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.startIdentificationProcess(testTokenURL, setupSkipped)
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Active,
+            SubCoordinatorState.ACTIVE,
             identificationCoordinator.stateFlow.value
         )
 
@@ -2489,7 +2489,7 @@ class IdentificationCoordinatorTest {
         identificationCoordinator.cancelIdentification()
         advanceUntilIdle()
         Assertions.assertEquals(
-            SubCoordinatorState.Cancelled,
+            SubCoordinatorState.CANCELLED,
             identificationCoordinator.stateFlow.value
         )
         verify(exactly = 1) { mockNavigator.popToRoot() }

@@ -1,5 +1,5 @@
 package de.digitalService.useID.ui.coordinators
 
 enum class SubCoordinatorState {
-    Active, Finished, Cancelled
+    ACTIVE, FINISHED, CANCELLED, SKIPPED
 }

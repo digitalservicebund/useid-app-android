@@ -75,7 +75,7 @@ class SetupCoordinatorTest {
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
-        val pinManagementFlow = MutableStateFlow(SubCoordinatorState.Active)
+        val pinManagementFlow = MutableStateFlow(SubCoordinatorState.ACTIVE)
         every { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) } returns pinManagementFlow
 
         val setupCoordinator = SetupCoordinator(
@@ -90,7 +90,7 @@ class SetupCoordinatorTest {
         advanceUntilIdle()
         verify(exactly = 1) { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) }
 
-        pinManagementFlow.value = SubCoordinatorState.Cancelled
+        pinManagementFlow.value = SubCoordinatorState.CANCELLED
         advanceUntilIdle()
         verify(exactly = 1) { setupCoordinator.cancelSetup() }
         verify(exactly = 1) { mockNavigator.popToRoot() }
@@ -101,7 +101,7 @@ class SetupCoordinatorTest {
 
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
-        val pinManagementFlow = MutableStateFlow(SubCoordinatorState.Active)
+        val pinManagementFlow = MutableStateFlow(SubCoordinatorState.ACTIVE)
         every { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) } returns pinManagementFlow
 
         val setupCoordinator = SetupCoordinator(
@@ -116,7 +116,7 @@ class SetupCoordinatorTest {
         advanceUntilIdle()
         verify(exactly = 1) { mockPinManagementCoordinator.startPinManagement(PinStatus.TransportPin) }
 
-        pinManagementFlow.value = SubCoordinatorState.Finished
+        pinManagementFlow.value = SubCoordinatorState.FINISHED
         advanceUntilIdle()
         verify(exactly = 1) { mockNavigator.navigate(SetupFinishDestination) }
     }
@@ -147,11 +147,11 @@ class SetupCoordinatorTest {
         )
 
         setupCoordinator.showSetupIntro(null)
-        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, setupCoordinator.stateFlow.value)
         setupCoordinator.finishSetup()
 
         verify(exactly = 1) { mockNavigator.popToRoot() }
-        Assertions.assertEquals(SubCoordinatorState.Finished, setupCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.FINISHED, setupCoordinator.stateFlow.value)
     }
 
     @Test
@@ -159,7 +159,7 @@ class SetupCoordinatorTest {
 
         every { mockCoroutineContextProvider.Default } returns dispatcher
 
-        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Finished)
+        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.FINISHED)
         every { mockIdentificationCoordinator.stateFlow } returns identificationCoordinatorFlow
 
         val setupCoordinator = SetupCoordinator(
@@ -173,13 +173,13 @@ class SetupCoordinatorTest {
         val testUrl = "tokenUrl"
 
         setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
-        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, setupCoordinator.stateFlow.value)
         setupCoordinator.finishSetup()
 
         verify(exactly = 0) { mockNavigator.popToRoot() }
         verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, false) }
 
-        identificationCoordinatorFlow.value = SubCoordinatorState.Finished
+        identificationCoordinatorFlow.value = SubCoordinatorState.FINISHED
         advanceUntilIdle()
         Assertions.assertEquals(false, setupCoordinator.identificationPending)
     }
@@ -212,19 +212,19 @@ class SetupCoordinatorTest {
         val testUrl = "tokenUrl"
 
         setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
-        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, setupCoordinator.stateFlow.value)
         setupCoordinator.cancelSetup()
 
         verify(exactly = 1) { mockNavigator.popToRoot() }
         advanceUntilIdle()
-        Assertions.assertEquals(SubCoordinatorState.Cancelled, setupCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, setupCoordinator.stateFlow.value)
     }
 
     @Test
     fun skipSetup() {
         every { mockCoroutineContextProvider.Default } returns dispatcher
 
-        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.Finished)
+        val identificationCoordinatorFlow = MutableStateFlow(SubCoordinatorState.FINISHED)
         every { mockIdentificationCoordinator.stateFlow } returns identificationCoordinatorFlow
 
         val setupCoordinator = SetupCoordinator(
@@ -238,13 +238,13 @@ class SetupCoordinatorTest {
         val testUrl = "tokenUrl"
 
         setupCoordinator.showSetupIntro(tcTokenUrl = testUrl)
-        Assertions.assertEquals(SubCoordinatorState.Active, setupCoordinator.stateFlow.value)
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, setupCoordinator.stateFlow.value)
         setupCoordinator.skipSetup()
 
         verify(exactly = 0) { mockNavigator.popToRoot() }
         verify(exactly = 1) { mockIdentificationCoordinator.startIdentificationProcess(testUrl, true) }
 
-        identificationCoordinatorFlow.value = SubCoordinatorState.Finished
+        identificationCoordinatorFlow.value = SubCoordinatorState.FINISHED
     }
 
     @Test
