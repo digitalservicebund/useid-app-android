@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -134,18 +135,46 @@ private fun CardBox(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
+fun SetupIdBoxLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+        val idCardImage = measurables[0]
+        val setupButton = measurables[1]
+
+        val imagePlaceable = idCardImage.measure(constraints)
+        val buttonPlaceable = setupButton.measure(constraints)
+
+        val overlapFactor = 0.9
+
+        layout(
+            width = constraints.maxWidth,
+            height = (imagePlaceable.height * overlapFactor).toInt() + buttonPlaceable.height
+        ) {
+            imagePlaceable.placeRelative(0,0)
+            buttonPlaceable.placeRelative(
+                x = 0,
+                y = (imagePlaceable.height * overlapFactor).toInt()
+            )
+        }
+    }
+}
+
+@Composable
 private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
     CardBox {
-        Box(modifier = Modifier.fillMaxSize()) {
+        SetupIdBoxLayout(modifier = Modifier.fillMaxWidth()) {
             Image(
                 painter = painterResource(id = R.drawable.eid_3),
                 contentScale = ContentScale.FillWidth,
                 contentDescription = "",
                 modifier = Modifier
-                    .padding(bottom = 62.dp)
                     .padding(top = UseIdTheme.spaces.s)
                     .padding(horizontal = UseIdTheme.spaces.l)
-                    .align(Alignment.TopCenter)
                     .fillMaxWidth()
             )
 
@@ -156,7 +185,6 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
                 modifier = Modifier
                     .padding(horizontal = 20.dp)
                     .padding(bottom = UseIdTheme.spaces.s)
-                    .align(Alignment.BottomCenter)
             )
         }
     }
