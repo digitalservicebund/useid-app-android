@@ -29,9 +29,6 @@ abstract class SingletonBindingModule {
     abstract fun bindNavigator(appNavigator: AppNavigator): Navigator
 
     @Binds
-    abstract fun bindCoroutineContextProvider(coroutineContextProvider: CoroutineContextProvider): CoroutineContextProviderType
-
-    @Binds
     abstract fun bindStorageManager(storageManager: StorageManager): StorageManagerType
 
     @Binds
@@ -42,4 +39,11 @@ abstract class SingletonBindingModule {
 
     @Binds
     abstract fun bindCurrentTimeProvider(currentTimeProvider: CurrentTimeProvider): CurrentTimeProviderInterface
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class CoroutineContextProviderModule {
+    @Binds
+    abstract fun bindCoroutineContextProvider(coroutineContextProvider: CoroutineContextProvider): CoroutineContextProviderType
 }

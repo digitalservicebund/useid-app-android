@@ -13,6 +13,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,7 +54,9 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
                 painter = painterResource(id = R.drawable.abstract_widget_phone),
                 contentDescription = "",
                 contentScale = ContentScale.FillWidth,
-                modifier = Modifier.padding(start = 50.dp, end = 50.dp, top = 60.dp, bottom = 16.dp)
+                modifier = Modifier
+                    .padding(start = 50.dp, end = 50.dp, top = 60.dp, bottom = 16.dp)
+                    .semantics { testTag = R.drawable.abstract_widget_phone.toString() }
             )
 
             Text(
@@ -176,6 +180,7 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
                     .padding(top = UseIdTheme.spaces.s)
                     .padding(horizontal = UseIdTheme.spaces.l)
                     .fillMaxWidth()
+                    .semantics { testTag = R.drawable.eid_3.toString() }
             )
 
             BundButton(

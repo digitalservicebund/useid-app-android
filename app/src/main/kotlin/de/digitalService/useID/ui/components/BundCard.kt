@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -68,7 +70,8 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                         centerVerticallyTo(titleRef)
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
-                    },
+                    }
+                    .semantics { testTag = icon.name },
                 tint = iconTint
             )
 

@@ -24,6 +24,8 @@ android {
         versionName "1.6.0"
 
         testInstrumentationRunner "de.digitalService.useID.util.HiltTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+
         vectorDrawables {
             useSupportLibrary true
         }
@@ -37,11 +39,14 @@ android {
     }
 
     testOptions {
+        animationsDisabled = true
         packagingOptions {
             jniLibs {
                 useLegacyPackaging true
             }
         }
+
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
 
         managedDevices {
             devices {
@@ -187,6 +192,9 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.2"
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
+
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestUtil 'androidx.test:orchestrator:1.4.2'
 
     testImplementation "io.mockk:mockk:$mockk_version"
     testImplementation "io.mockk:mockk-agent-jvm:$mockk_version"

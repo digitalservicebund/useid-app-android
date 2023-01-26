@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -60,11 +62,16 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
 
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
+                val imageId = R.drawable.eid_3_pin
                 Image(
-                    painter = painterResource(id = R.drawable.eid_3_pin),
+                    painter = painterResource(id = imageId),
                     contentScale = ContentScale.Inside,
                     contentDescription = "",
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .semantics {
+                            testTag = imageId.toString()
+                        }
                 )
             }
         }
