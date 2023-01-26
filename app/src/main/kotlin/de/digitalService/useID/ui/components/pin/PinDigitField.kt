@@ -27,20 +27,13 @@ fun PinDigitField(
     placeholder: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Box(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Bottom,
         modifier = modifier
             // To prevent the box from resizing after a first digit is entered, calulcate a suitable height
             // with respect to the current system font scaling
-            .defaultMinSize(minWidth = 30.dp, minHeight = (15 + (LocalDensity.current.fontScale * 30)).dp)
-            .drawBehind {
-                drawLine(
-                    color = Color.Black,
-                    start = Offset(size.width * 0.1f, size.height),
-                    end = Offset(size.width * 0.9f, size.height),
-                    strokeWidth = 2f
-                )
-            }
-            .testTag("PINDigitField")
+            .defaultMinSize(minWidth = 30.dp, minHeight = if (!obfuscation && !placeholder) (15 + (LocalDensity.current.fontScale * 30)).dp else 30.dp)
     ) {
         if (input != null) {
             if (obfuscation) {
@@ -48,16 +41,15 @@ fun PinDigitField(
                     imageVector = Icons.Filled.Circle,
                     contentDescription = "",
                     modifier = Modifier
-                        .align(Alignment.Center)
                         .size(16.dp)
                         .clearAndSetSemantics { testTag = "Obfuscation" }
                 )
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
             } else {
                 Text(
                     text = input.toString(),
                     style = UseIdTheme.typography.headingXl,
                     modifier = Modifier
-                        .align(Alignment.Center)
                         .clearAndSetSemantics { testTag = "PINEntry" }
                 )
             }
@@ -66,11 +58,25 @@ fun PinDigitField(
                 imageVector = Icons.Outlined.Circle,
                 contentDescription = "",
                 modifier = Modifier
-                    .align(Alignment.Center)
                     .size(10.dp)
                     .clearAndSetSemantics { testTag = "Placeholder" }
             )
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
         }
+
+        Box(
+            modifier = modifier
+                .size(width = 30.dp, height = 1.dp)
+                .drawBehind {
+                    drawLine(
+                        color = Color.Black,
+                        start = Offset(size.width * 0.1f, size.height),
+                        end = Offset(size.width * 0.9f, size.height),
+                        strokeWidth = 2f
+                    )
+                }
+                .testTag("PINDigitField")
+        )
     }
 }
 

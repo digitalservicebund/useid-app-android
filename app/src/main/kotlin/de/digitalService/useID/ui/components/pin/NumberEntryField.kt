@@ -59,7 +59,7 @@ fun NumberEntryField(
                 focusRequester = focusRequester,
                 backgroundColor = UseIdTheme.colors.neutrals100,
                 modifier = modifier
-                    .height(56.dp)
+                    .defaultMinSize(minHeight = 56.dp)
                     .clip(UseIdTheme.shapes.roundedMedium)
                     .fillMaxWidth()
             )

@@ -43,7 +43,7 @@ fun PinDigitRow(
                 obfuscation = obfuscation,
                 placeholder = placeholder,
                 modifier = Modifier
-                    .padding(horizontal = UseIdTheme.spaces.xxs)
+                    .padding(horizontal = 2.dp)
                     .align(Alignment.Bottom)
             )
         }
