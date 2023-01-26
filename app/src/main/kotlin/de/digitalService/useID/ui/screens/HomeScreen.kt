@@ -155,7 +155,7 @@ fun SetupIdBoxLayout(
             width = constraints.maxWidth,
             height = (imagePlaceable.height * overlapFactor).toInt() + buttonPlaceable.height
         ) {
-            imagePlaceable.placeRelative(0,0)
+            imagePlaceable.placeRelative(0, 0)
             buttonPlaceable.placeRelative(
                 x = 0,
                 y = (imagePlaceable.height * overlapFactor).toInt()
