@@ -387,7 +387,7 @@
 \nIn the meantime, you can unlock your ID card using your 6‑digit CAN in combination with your personal ID PIN in the AusweisApp2. You can find your 6‑digit CAN on the front of your ID card.
 \n
 \nAlternatively, you can reassign your personal ID PIN at the Bürgeramt if you have forgotten it.</string>
-    <string name="scanError_cardSuspended_title">Your ID card is blocked.</string>
+    <string name="scanError_cardSuspended_title">Your ID card is suspended.</string>
     <string name="scanError_cardUnreadable_body">The following documents offer the function: German identity card, electronic residence permit, eID card for citizens of the European Union and the European Economic Area.
 \n
 \n
