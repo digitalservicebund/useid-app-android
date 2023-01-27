@@ -132,6 +132,7 @@ class PinManagementCoordinator @Inject constructor(
 
     private fun executePinManagement() {
         collectEidEvents()
+        idCardManager.cancelTask()
         idCardManager.changePin(context)
     }
 
@@ -142,6 +143,7 @@ class PinManagementCoordinator @Inject constructor(
 
     private fun skipPinManagementFlow() {
         stateFlow.value = SubCoordinatorState.SKIPPED
+        idCardManager.cancelTask()
         resetCoordinatorState()
     }
 
@@ -151,6 +153,7 @@ class PinManagementCoordinator @Inject constructor(
         firstOldPinRequest = true
         backAllowed = true
         reachedScanState = false
+        startedWithThreeAttempts = false
         eIdEventFlowCoroutineScope?.cancel()
         canEventFlowCoroutineScope?.cancel()
     }
