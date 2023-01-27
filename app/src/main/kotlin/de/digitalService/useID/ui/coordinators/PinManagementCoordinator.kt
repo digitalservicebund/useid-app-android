@@ -245,7 +245,6 @@ class PinManagementCoordinator @Inject constructor(
                     }
 
                     is EidInteractionEvent.RequestPuk -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
-                    is EidInteractionEvent.AuthenticationSuccessful -> cancelPinManagementAndNavigate(SetupOtherErrorDestination)
                     is EidInteractionEvent.Error -> handleEidInteractionEventError(event.exception)
                     else -> logger.debug("Ignoring event: $event")
                 }
