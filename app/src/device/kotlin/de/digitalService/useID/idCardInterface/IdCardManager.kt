@@ -37,6 +37,8 @@ class IdCardManager {
     fun changePin(context: Context) = executeTask(context, Task.PinManagement)
 
     private class ControllerCallbackHandler(private val eidFlow: MutableStateFlow<EidInteractionEvent>, private val completion: () -> Unit) : ControllerCallback {
+        private val logger by getLogger()
+
         private val logTag = javaClass.canonicalName!!
 
         override fun onStarted() {
@@ -65,9 +67,13 @@ class IdCardManager {
                             eidFlow.emit(EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(p0.redirectUrl))
                         }
                     }
+                    ActivationResultCode.INTERRUPTED -> {
+                        logger.debug("INTERRUPTED. Process has probably been cancelled. Resetting to idle state.")
+                        eidFlow.emit(EidInteractionEvent.Idle)
+                    }
                     else -> eidFlow.emit(EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(p0.resultCode, p0.redirectUrl, p0.processResultMinor)))
                 }
-                
+
                 completion()
             }
         }
