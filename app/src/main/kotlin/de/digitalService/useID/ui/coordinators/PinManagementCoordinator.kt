@@ -142,8 +142,8 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     private fun skipPinManagementFlow() {
-        stateFlow.value = SubCoordinatorState.SKIPPED
         idCardManager.cancelTask()
+        stateFlow.value = SubCoordinatorState.SKIPPED
         resetCoordinatorState()
     }
 
