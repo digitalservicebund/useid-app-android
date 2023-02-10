@@ -213,7 +213,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.36'
     implementation 'com.github.tony19:logback-android:2.0.0'
 
-    implementation 'io.sentry:sentry-android:6.4.2'
+    implementation 'io.sentry:sentry-android:6.13.1'
     implementation 'io.sentry:sentry-compose-android:6.4.2'
 
     implementation "com.airbnb.android:lottie-compose:5.2.0"
