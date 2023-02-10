@@ -210,7 +210,7 @@ dependencies {
 
     implementation 'xerces:xercesImpl:2.12.0'
 
-    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-api:2.0.6'
     implementation 'com.github.tony19:logback-android:2.0.0'
 
     implementation 'io.sentry:sentry-android:6.4.2'
