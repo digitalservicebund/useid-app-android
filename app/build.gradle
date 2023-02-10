@@ -199,8 +199,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
     androidTestImplementation 'com.google.dagger:hilt-android-testing:2.38.1'
-    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.38.1'
-    androidTestAnnotationProcessor 'com.google.dagger:hilt-android-compiler:2.38.1'
+    kaptAndroidTest 'com.google.dagger:hilt-android-compiler:2.45'
+    androidTestAnnotationProcessor 'com.google.dagger:hilt-android-compiler:2.45'
 
     implementation 'com.github.jeziellago:compose-markdown:0.3.0'
 
