@@ -1,6 +1,5 @@
 package de.digitalService.useID.userFlowTests.setupFlows
 
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -15,7 +14,10 @@ import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.util.*
+import de.digitalService.useID.util.CoroutineContextProviderType
+import de.digitalService.useID.util.performPinInput
+import de.digitalService.useID.util.pressReturn
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +33,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
+class SetupSuccessfulFirstTimeUserPinsDontMatchTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -60,7 +62,7 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupSuccessfulFirstTimeUserTransportPinIncorrect() = runTest {
+    fun setupSuccessfulFirstTimeUserPinsDontMatch() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -76,6 +78,7 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
 
         val transportPin = "12345"
         val personalPin = "123456"
+        val wrongPersonalPin = "000000"
 
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
@@ -113,6 +116,22 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
 
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(wrongPersonalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(wrongPersonalPin.length)
+        composeTestRule.pressReturn()
+        setupPersonalPinConfirm.pinsDontMatchDialog.assertIsDisplayed()
+        setupPersonalPinConfirm.pinsDontMatchDialog.dismiss()
+
+        advanceUntilIdle()
+
+        setupPersonalPinInput.assertIsDisplayed()
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        setupPersonalPinConfirm.assertIsDisplayed()
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
         composeTestRule.performPinInput(personalPin)
         setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
@@ -126,28 +145,6 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
         advanceUntilIdle()
 
         setupScan.progress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
-        setupTransportPin.retry(true).assertIsDisplayed()
-        setupTransportPin.transportPinField.assertLength(0)
-        composeTestRule.performPinInput(transportPin)
-        setupTransportPin.transportPinField.assertLength(transportPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.backAllowed(false).progress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.backAllowed(false).progress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()

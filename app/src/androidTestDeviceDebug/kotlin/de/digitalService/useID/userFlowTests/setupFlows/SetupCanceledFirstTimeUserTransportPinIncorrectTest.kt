@@ -31,7 +31,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
+class SetupCanceledFirstTimeUserTransportPinIncorrectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -60,7 +60,7 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupSuccessfulFirstTimeUserTransportPinIncorrect() = runTest {
+    fun setupCanceledFirstTimeUserTransportPinIncorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -134,29 +134,14 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
         advanceUntilIdle()
 
         setupTransportPin.retry(true).assertIsDisplayed()
-        setupTransportPin.transportPinField.assertLength(0)
-        composeTestRule.performPinInput(transportPin)
-        setupTransportPin.transportPinField.assertLength(transportPin.length)
-        composeTestRule.pressReturn()
+        setupTransportPin.navigationIcon.click()
+        setupTransportPin.navigationConfirmDialog.assertIsDisplayed()
+        setupTransportPin.navigationConfirmDialog.dismiss()
+        setupTransportPin.assertIsDisplayed()
+        setupTransportPin.navigationIcon.click()
+        setupTransportPin.navigationConfirmDialog.confirm()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-
-        setupScan.backAllowed(false).progress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.backAllowed(false).progress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-        advanceUntilIdle()
-
-        setupFinish.assertIsDisplayed()
-        setupFinish.finishSetupBtn.click()
 
         home.assertIsDisplayed()
     }
