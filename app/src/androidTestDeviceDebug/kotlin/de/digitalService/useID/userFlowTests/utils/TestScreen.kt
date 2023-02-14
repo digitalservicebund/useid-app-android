@@ -1,6 +1,7 @@
 package de.digitalService.useID.userFlowTests.setupFlows
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material.icons.filled.Info
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationIcon
@@ -395,6 +396,55 @@ sealed class TestScreen {
                 return arrayOf(
                     TestElement.Tag(testRule, NavigationIcon.Back.name)
                 )
+            }
+    }
+
+    data class ErrorCardUnreadable(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private var identPending = false
+        fun identPending(value: Boolean) : ErrorCardUnreadable {
+            identPending = value
+            return this
+        }
+
+        private var redirectUrlPresent = false
+        fun redirectUrlPresent(value: Boolean) : ErrorCardUnreadable {
+            redirectUrlPresent = value
+            return this
+        }
+
+        val title = TestElement.Text(testRule, R.string.scanError_cardUnreadable_title)
+        //        val body = TestElement.Text(R.string.scanError_cardUnreadable_body) TODO: reenable when markdown is matchable in UI tests
+        val errorCard = TestElement.BundCard(
+            testRule,
+            titleResId = R.string.scanError_box_title,
+            bodyResId = R.string.scanError_box_body,
+            iconTag = Icons.Filled.Dangerous.name
+        )
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+
+        val closeBtn: TestElement.Text
+            get() {
+                return TestElement.Text(testRule,
+                    if (redirectUrlPresent)
+                        R.string.scanError_redirect
+                    else
+                        R.string.scanError_close
+                )
+            }
+
+        override val expectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    title, cancel, closeBtn
+                ).plus(arrayOf(errorCard).takeIf { identPending } ?: arrayOf())
+            }
+
+        override val unexpectedElements: Array<TestElement>
+            get() {
+                return arrayOf<TestElement>(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name)
+                ).plus(arrayOf(errorCard).takeIf { !identPending } ?: arrayOf())
             }
     }
 }
