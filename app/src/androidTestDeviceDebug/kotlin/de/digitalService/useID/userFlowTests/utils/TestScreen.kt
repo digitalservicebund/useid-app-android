@@ -2,7 +2,6 @@ package de.digitalService.useID.userFlowTests.setupFlows
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.ui.test.*
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.userFlowTests.utils.TestElement
@@ -59,6 +58,8 @@ sealed class TestScreen {
                 )
             }
     }
+
+    // SETUP SCREENS
 
     data class SetupIntro(override val testRule: ComposeTestRule) : TestScreen() {
 
@@ -166,9 +167,12 @@ sealed class TestScreen {
     data class SetupPersonalPinIntro(override val testRule: ComposeTestRule) : TestScreen() {
 
         val title = TestElement.Text(testRule, R.string.firstTimeUser_personalPINIntro_title)
-        val cardTitle = TestElement.Text(testRule, R.string.firstTimeUser_personalPINIntro_info_title)
-        val cardBody = TestElement.Text(testRule, R.string.firstTimeUser_personalPINIntro_info_body)
-        val cardIcon = TestElement.Tag(testRule, Icons.Filled.Info.name)
+        val card = TestElement.BundCard(
+            testRule,
+            titleResId = R.string.firstTimeUser_personalPINIntro_info_title,
+            bodyResId = R.string.firstTimeUser_personalPINIntro_info_body,
+            iconTag = Icons.Filled.Info.name
+        )
         val idsImage = TestElement.Tag(testRule, R.drawable.eid_3_pin.toString())
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val continueBtn = TestElement.Text(testRule, R.string.firstTimeUser_personalPINIntro_continue)
@@ -176,7 +180,7 @@ sealed class TestScreen {
         override val expectedElements: Array<TestElement>
             get() {
                 return arrayOf(
-                    title, cardTitle, cardBody, cardIcon, idsImage, back, continueBtn
+                    title, card, idsImage, back, continueBtn
                 )
             }
 
@@ -366,6 +370,30 @@ sealed class TestScreen {
             get() {
                 return arrayOf(
                     TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+                )
+            }
+    }
+
+    // ERROR SCREENS
+
+    data class ErrorCardDeactivated(override val testRule: ComposeTestRule) : TestScreen() {
+
+        val title = TestElement.Text(testRule, R.string.scanError_cardDeactivated_title)
+        //        val body = TestElement.Text(R.string.scanError_cardDeactivated_body) TODO: reenable when markdown is matchable in UI tests
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+        val closeBtn = TestElement.Text(testRule, R.string.scanError_close)
+
+        override val expectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    title, cancel, closeBtn
+                )
+            }
+
+        override val unexpectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name)
                 )
             }
     }

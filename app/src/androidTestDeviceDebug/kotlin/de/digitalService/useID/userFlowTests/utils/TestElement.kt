@@ -53,6 +53,25 @@ sealed class TestElement {
         }
     }
 
+    data class BundCard(
+        override val testRule: ComposeTestRule,
+        val titleResId: Int,
+        val bodyResId: Int,
+        val iconTag: String
+    ) : TestElement() {
+        override fun assertIsDisplayed() {
+            testRule.onNodeWithText(testRule.activity.getString(titleResId)).assertIsDisplayed()
+            testRule.onNodeWithText(testRule.activity.getString(bodyResId)).assertIsDisplayed()
+            testRule.onNodeWithTag(iconTag).assertIsDisplayedDetailed(iconTag)
+        }
+
+        override fun assertIsNotDisplayed() {
+            testRule.onNodeWithText(testRule.activity.getString(titleResId)).safeAssertIsNotDisplayed()
+            testRule.onNodeWithText(testRule.activity.getString(bodyResId)).safeAssertIsNotDisplayed()
+            testRule.onNodeWithTag(iconTag).safeAssertIsNotDisplayed()
+        }
+    }
+
     data class NavigationConfirmDialog(
         override val testRule: ComposeTestRule,
         val identPending: Boolean
