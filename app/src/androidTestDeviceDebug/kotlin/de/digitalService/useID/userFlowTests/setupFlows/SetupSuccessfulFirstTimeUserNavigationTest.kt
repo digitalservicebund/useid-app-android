@@ -74,6 +74,9 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
             )
         }
 
+        val transportPin = "12345"
+        val personalPin = "123456"
+
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
@@ -115,7 +118,9 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         advanceUntilIdle()
 
         setupTransportPin.assertIsDisplayed()
-        composeTestRule.performPinInput("12345")
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
         setupTransportPin.navigationIcon.click()
 
         setupPinLetter.assertIsDisplayed()
@@ -124,45 +129,53 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         advanceUntilIdle()
 
         setupTransportPin.assertIsDisplayed()
-        composeTestRule.assertPinFieldContains("")
-        composeTestRule.performPinInput("12345")
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
         composeTestRule.pressReturn()
 
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.back.click()
 
         setupTransportPin.assertIsDisplayed()
-//        composeTestRule.assertPinFieldContains("12345") // TODO: This should work, needs to be adapted in the app
-        composeTestRule.performPinInput("12345") // TODO: Remove when above is fixed
+//        setupTransportPin.transportPinField.assertLength(transportPin.length) // TODO: This should work, needs to be adapted in the app
+        composeTestRule.performPinInput(transportPin) // TODO: Remove when above is fixed
         composeTestRule.pressReturn()
 
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
 
         setupPersonalPinInput.assertIsDisplayed()
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         setupPersonalPinInput.back.click()
 
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
 
         setupPersonalPinInput.assertIsDisplayed()
-        composeTestRule.assertPinFieldContains("")
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         setupPersonalPinConfirm.assertIsDisplayed()
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         setupPersonalPinConfirm.back.click()
 
         setupPersonalPinInput.assertIsDisplayed()
-        composeTestRule.assertPinFieldContains("")
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         setupPersonalPinConfirm.assertIsDisplayed()
-        composeTestRule.assertPinFieldContains("")
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
@@ -173,13 +186,15 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         setupScan.navigationIcon.click()
 
         setupPersonalPinInput.assertIsDisplayed()
-        composeTestRule.assertPinFieldContains("")
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         setupPersonalPinConfirm.assertIsDisplayed()
-        composeTestRule.assertPinFieldContains("")
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
@@ -188,19 +203,13 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         setupScan.assertIsDisplayed()
 
         setupScan.nfcHelpBtn.click()
-
         setupScan.nfcDialog.assertIsDisplayed()
-
         setupScan.nfcDialog.dismiss()
-
         setupScan.assertIsDisplayed()
 
         setupScan.scanHelpBtn.click()
-
         setupScan.helpDialog.assertIsDisplayed()
-
         setupScan.helpDialog.dismiss()
-
         setupScan.assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized

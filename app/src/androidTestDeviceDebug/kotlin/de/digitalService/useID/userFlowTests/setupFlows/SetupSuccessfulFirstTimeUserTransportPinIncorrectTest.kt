@@ -74,6 +74,9 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
             )
         }
 
+        val transportPin = "12345"
+        val personalPin = "123456"
+
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
@@ -94,18 +97,24 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
         advanceUntilIdle()
 
         setupTransportPin.assertIsDisplayed()
-        composeTestRule.performPinInput("12345")
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
         composeTestRule.pressReturn()
 
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
 
         setupPersonalPinInput.assertIsDisplayed()
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         setupPersonalPinConfirm.assertIsDisplayed()
-        composeTestRule.performPinInput("123456")
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
@@ -125,7 +134,9 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
         advanceUntilIdle()
 
         setupTransportPin.retry(true).assertIsDisplayed()
-        composeTestRule.performPinInput("12345")
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion

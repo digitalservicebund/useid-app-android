@@ -5,9 +5,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.ui.test.*
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationIcon
-import de.digitalService.useID.util.ComposeTestRule
-import de.digitalService.useID.util.assertIsDisplayedDetailed
-import de.digitalService.useID.util.safeAssertIsNotDisplayed
+import de.digitalService.useID.util.*
 import org.junit.Assert
 
 sealed class TestScreen {
@@ -129,6 +127,7 @@ sealed class TestScreen {
             }
 
         val body = TestElement.Text(testRule, R.string.firstTimeUser_transportPIN_body)
+        val transportPinField = TestElement.TransportPin(testRule)
 //        val pin_letter_image = TestElement.Tag(R.drawable.pin_letter.toString())
         val navigationIcon: TestElement.Tag
             get() {
@@ -143,7 +142,7 @@ sealed class TestScreen {
         override val expectedElements: Array<TestElement>
             get() {
                 return arrayOf(
-                    title, body, navigationIcon
+                    title, body, transportPinField, navigationIcon
                 )
             }
 
@@ -183,11 +182,12 @@ sealed class TestScreen {
         val title = TestElement.Text(testRule, R.string.firstTimeUser_personalPIN_title)
         val body = TestElement.Text(testRule, R.string.firstTimeUser_personalPIN_body)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
+        val personalPinField = TestElement.PersonalPin(testRule)
 
         override val expectedElements: Array<TestElement>
             get() {
                 return arrayOf(
-                    title, body, back,
+                    title, body, personalPinField, back,
                 )
             }
 
@@ -212,11 +212,12 @@ sealed class TestScreen {
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val errorMsg = TestElement.Text(testRule, R.string.firstTimeUser_personalPIN_error_mismatch_title)
         val tryAgainBtn = TestElement.Text(testRule, R.string.identification_fetchMetadataError_retry)
+        val personalPinField = TestElement.PersonalPin(testRule)
 
         override val expectedElements: Array<TestElement>
             get() {
                 return arrayOf(
-                    title, body, back
+                    title, body, personalPinField, back
                 ).plus(arrayOf(errorMsg, tryAgainBtn).takeIf { error } ?: arrayOf())
             }
 
@@ -368,6 +369,12 @@ sealed class TestScreen {
 
 sealed class TestElement {
 
+    val pinEntryFieldTestTag = "PINEntryField" // Hidden textfield used for entry
+    val underscoreTestTag = "PINDigitField" // Underscore
+    val obfuscationTestTag = "Obfuscation" // Obfuscation dot
+    val digitTestTag = "PINEntry" // Cleartext digit
+    val spacerTestTag = "PINDigitRowSpacer"
+
     abstract val testRule: ComposeTestRule
     abstract fun assertIsDisplayed()
     abstract fun assertIsNotDisplayed()
@@ -453,6 +460,47 @@ sealed class TestElement {
 
         fun dismiss() {
             testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).performClick()
+        }
+    }
+
+    data class TransportPin(
+        override val testRule: ComposeTestRule
+    ) : TestElement() {
+        override fun assertIsDisplayed() {
+            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
+            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(5)
+        }
+
+        override fun assertIsNotDisplayed() {
+            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
+            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(0)
+        }
+
+        fun assertLength(len: Int) {
+            assertIsDisplayed()
+            testRule.onAllNodesWithTag(digitTestTag).assertCountEquals(len)
+            testRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(0)
+        }
+    }
+
+    data class PersonalPin(
+        override val testRule: ComposeTestRule
+    ) : TestElement() {
+        override fun assertIsDisplayed() {
+            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
+            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(6)
+            testRule.onAllNodesWithTag(spacerTestTag).assertCountEquals(1)
+        }
+
+        override fun assertIsNotDisplayed() {
+            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
+            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(0)
+        }
+
+        fun assertLength(len: Int) {
+            assertIsDisplayed()
+            testRule.onAllNodesWithTag(digitTestTag).assertCountEquals(0)
+            testRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(len)
         }
     }
 }
