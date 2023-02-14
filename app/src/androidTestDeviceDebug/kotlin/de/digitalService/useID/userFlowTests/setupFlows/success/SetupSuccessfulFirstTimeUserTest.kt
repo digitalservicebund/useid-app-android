@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows
+package de.digitalService.useID.userFlowTests.setupFlows.success
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -15,6 +15,7 @@ import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
+import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk

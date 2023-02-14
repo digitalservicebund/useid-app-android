@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows
+package de.digitalService.useID.userFlowTests.setupFlows.success
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -15,6 +15,7 @@ import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
+import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -138,7 +139,7 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         setupPersonalPinIntro.back.click()
 
         setupTransportPin.assertIsDisplayed()
-//        setupTransportPin.transportPinField.assertLength(transportPin.length) // TODO: This should work, needs to be adapted in the app
+//        setupTransportPin.transportPinField.assertLength(transportPin.length) // TODO: BUG DISCOVERED This should work, needs to be adapted in the app
         composeTestRule.performPinInput(transportPin) // TODO: Remove when above is fixed
         composeTestRule.pressReturn()
 
