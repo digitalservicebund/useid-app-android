@@ -5,8 +5,8 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.ui.test.*
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.userFlowTests.utils.TestElement
 import de.digitalService.useID.util.*
-import org.junit.Assert
 
 sealed class TestScreen {
     val progressIndicatorTag = "ProgressIndicator"
@@ -46,7 +46,7 @@ sealed class TestScreen {
             get() {
                 return arrayOf(
                     titleImage, headerTitle, headerBody, title, idsImage, setupIdBtn,
-                    //            Not displayed as they are outside of the screen area
+//                                Not displayed as they are outside of the screen area
                     //            privacyBtn, licensesBtn, accessibilityBtn, termsAndConditionsBtn, imprintBtn
                 )
             }
@@ -116,6 +116,12 @@ sealed class TestScreen {
             return this
         }
 
+        private var identPending = false
+        fun identPending(value: Boolean) : SetupTransportPin {
+            identPending = value
+            return this
+        }
+
         val title: TestElement.Text
             get() {
                 return TestElement.Text(testRule, if (retry) {
@@ -139,6 +145,11 @@ sealed class TestScreen {
                 )
             }
 
+        val navigationConfirmDialog: TestElement.NavigationConfirmDialog
+            get() {
+                return TestElement.NavigationConfirmDialog(testRule, identPending)
+            }
+
         override val expectedElements: Array<TestElement>
             get() {
                 return arrayOf(
@@ -148,7 +159,7 @@ sealed class TestScreen {
 
         override val unexpectedElements: Array<TestElement>
             get() {
-                return arrayOf()
+                return arrayOf(navigationConfirmDialog)
             }
     }
 
@@ -213,6 +224,11 @@ sealed class TestScreen {
         val errorMsg = TestElement.Text(testRule, R.string.firstTimeUser_personalPIN_error_mismatch_title)
         val tryAgainBtn = TestElement.Text(testRule, R.string.identification_fetchMetadataError_retry)
         val personalPinField = TestElement.PersonalPin(testRule)
+        val pinsDontMatchDialog = TestElement.StandardDialog(
+            testRule,
+            titleResId = R.string.firstTimeUser_personalPIN_error_mismatch_title,
+            dismissBtnId = R.string.identification_fetchMetadataError_retry
+        )
 
         override val expectedElements: Array<TestElement>
             get() {
@@ -224,7 +240,8 @@ sealed class TestScreen {
         override val unexpectedElements: Array<TestElement>
             get()  {
                 return arrayOf<TestElement>(
-                    TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+                    TestElement.Tag(testRule, NavigationIcon.Cancel.name),
+                    pinsDontMatchDialog
                 ).plus(arrayOf(errorMsg, tryAgainBtn).takeIf { !error } ?: arrayOf())
             }
     }
@@ -263,15 +280,9 @@ sealed class TestScreen {
         val progressIndicator = TestElement.Tag(testRule, progressIndicatorTag)
         val nfcHelpBtn = TestElement.Text(testRule, R.string.scan_helpNFC)
         val scanHelpBtn = TestElement.Text(testRule, R.string.scan_helpScanning)
-        val confirmationDialog:  TestElement.NavigationConfirmDialog
+        val navigationConfirmaDialog:  TestElement.NavigationConfirmDialog
             get() {
-                return TestElement.NavigationConfirmDialog(
-                    testRule,
-                    titleResId = if (identPending) R.string.identification_confirmEnd_title else R.string.firstTimeUser_confirmEnd_title,
-                    messageResId = if (identPending) R.string.firstTimeUser_confirmEnd_message else R.string.identification_confirmEnd_message,
-                    confirmBtnId = if (identPending) R.string.identification_confirmEnd_confirm else R.string.firstTimeUser_confirmEnd_confirm,
-                    dismissBtnId = if (identPending) R.string.identification_confirmEnd_deny else R.string.firstTimeUser_confirmEnd_deny
-                )
+                return TestElement.NavigationConfirmDialog(testRule, identPending)
             }
 
         val nfcDialog = TestElement.StandardDialog(
@@ -296,7 +307,7 @@ sealed class TestScreen {
         override val unexpectedElements: Array<TestElement>
             get() {
                 return arrayOf<TestElement>(
-                    confirmationDialog, nfcDialog, helpDialog
+                    navigationConfirmaDialog, nfcDialog, helpDialog
                 ).plus(arrayOf<TestElement>(progressIndicator).takeIf { !progress } ?: arrayOf())
             }
     }
@@ -317,15 +328,9 @@ sealed class TestScreen {
                 return TestElement.Text(testRule, if (identPending) R.string.firstTimeUser_done_identify else R.string.firstTimeUser_done_close)
             }
 
-        val confirmationDialog: TestElement.NavigationConfirmDialog
+        val navigationConfirmDialog: TestElement.NavigationConfirmDialog
             get() {
-                return TestElement.NavigationConfirmDialog(
-                    testRule,
-                    titleResId = if (identPending) R.string.identification_confirmEnd_title else R.string.firstTimeUser_confirmEnd_title,
-                    messageResId = if (identPending) R.string.firstTimeUser_confirmEnd_message else R.string.identification_confirmEnd_message,
-                    confirmBtnId = if (identPending) R.string.identification_confirmEnd_confirm else R.string.firstTimeUser_confirmEnd_confirm,
-                    dismissBtnId = if (identPending) R.string.identification_confirmEnd_deny else R.string.firstTimeUser_confirmEnd_deny
-                )
+                return TestElement.NavigationConfirmDialog(testRule, identPending)
             }
 
         override val expectedElements: Array<TestElement>
@@ -338,7 +343,7 @@ sealed class TestScreen {
         override val unexpectedElements: Array<TestElement>
             get() {
                 return arrayOf(
-                    TestElement.Tag(testRule, NavigationIcon.Back.name), confirmationDialog
+                    TestElement.Tag(testRule, NavigationIcon.Back.name), navigationConfirmDialog
                 )
             }
     }
@@ -363,144 +368,5 @@ sealed class TestScreen {
                     TestElement.Tag(testRule, NavigationIcon.Cancel.name)
                 )
             }
-    }
-}
-
-
-sealed class TestElement {
-
-    val pinEntryFieldTestTag = "PINEntryField" // Hidden textfield used for entry
-    val underscoreTestTag = "PINDigitField" // Underscore
-    val obfuscationTestTag = "Obfuscation" // Obfuscation dot
-    val digitTestTag = "PINEntry" // Cleartext digit
-    val spacerTestTag = "PINDigitRowSpacer"
-
-    abstract val testRule: ComposeTestRule
-    abstract fun assertIsDisplayed()
-    abstract fun assertIsNotDisplayed()
-    open fun click() {
-        Assert.fail("click() not implemented for $this")
-    }
-
-    data class Text(override val testRule: ComposeTestRule, val resourceId: Int) : TestElement() {
-        override fun assertIsDisplayed() {
-            val string = testRule.activity.getString(resourceId)
-            testRule.onNodeWithText(string).assertIsDisplayedDetailed(string)
-        }
-
-        override fun assertIsNotDisplayed() {
-            val string = testRule.activity.getString(resourceId)
-            testRule.onNodeWithText(string).safeAssertIsNotDisplayed()
-        }
-
-        override fun click() {
-            val string = testRule.activity.getString(resourceId)
-            testRule.onNodeWithText(string).performClick()
-        }
-    }
-
-    data class Tag(override val testRule: ComposeTestRule, val tag: String) : TestElement() {
-        override fun assertIsDisplayed() {
-            testRule.onNodeWithTag(tag).assertIsDisplayedDetailed(tag)
-        }
-
-        override fun assertIsNotDisplayed() {
-            testRule.onNodeWithTag(tag).safeAssertIsNotDisplayed()
-        }
-
-        override fun click() {
-            testRule.onNodeWithTag(tag).performClick()
-        }
-    }
-
-    data class NavigationConfirmDialog(
-        override val testRule: ComposeTestRule,
-        val titleResId: Int,
-        val messageResId: Int,
-        val confirmBtnId: Int,
-        val dismissBtnId: Int
-    ) : TestElement() {
-        override fun assertIsDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(messageResId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(confirmBtnId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).assertIsDisplayed()
-        }
-
-        override fun assertIsNotDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(messageResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(confirmBtnId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).safeAssertIsNotDisplayed()
-        }
-
-        fun confirm() {
-            testRule.onNodeWithText(testRule.activity.getString(confirmBtnId)).performClick()
-        }
-
-        fun dismiss() {
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).performClick()
-        }
-    }
-
-    data class StandardDialog(
-        override val testRule: ComposeTestRule,
-        val titleResId: Int,
-        val dismissBtnId: Int
-    ) : TestElement() {
-        override fun assertIsDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).assertIsDisplayed()
-        }
-
-        override fun assertIsNotDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).safeAssertIsNotDisplayed()
-        }
-
-        fun dismiss() {
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).performClick()
-        }
-    }
-
-    data class TransportPin(
-        override val testRule: ComposeTestRule
-    ) : TestElement() {
-        override fun assertIsDisplayed() {
-            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
-            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(5)
-        }
-
-        override fun assertIsNotDisplayed() {
-            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
-            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(0)
-        }
-
-        fun assertLength(len: Int) {
-            assertIsDisplayed()
-            testRule.onAllNodesWithTag(digitTestTag).assertCountEquals(len)
-            testRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(0)
-        }
-    }
-
-    data class PersonalPin(
-        override val testRule: ComposeTestRule
-    ) : TestElement() {
-        override fun assertIsDisplayed() {
-            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
-            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(6)
-            testRule.onAllNodesWithTag(spacerTestTag).assertCountEquals(1)
-        }
-
-        override fun assertIsNotDisplayed() {
-            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
-            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(0)
-        }
-
-        fun assertLength(len: Int) {
-            assertIsDisplayed()
-            testRule.onAllNodesWithTag(digitTestTag).assertCountEquals(0)
-            testRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(len)
-        }
     }
 }
