@@ -125,7 +125,7 @@ class SetupCanceledFirstTimeUserTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
@@ -133,7 +133,7 @@ class SetupCanceledFirstTimeUserTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
 
-        setupTransportPin.retry(true).assertIsDisplayed()
+        setupTransportPin.setRetry(true).assertIsDisplayed()
         setupTransportPin.navigationIcon.click()
         setupTransportPin.navigationConfirmDialog.assertIsDisplayed()
         setupTransportPin.navigationConfirmDialog.dismiss()

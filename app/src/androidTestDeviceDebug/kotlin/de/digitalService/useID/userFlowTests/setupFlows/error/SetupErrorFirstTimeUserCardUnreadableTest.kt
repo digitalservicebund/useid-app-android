@@ -130,7 +130,7 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
@@ -151,12 +151,12 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        setupScan.progress(false).backAllowed(false).assertIsDisplayed()
+        setupScan.setProgress(false).setBackAllowed(true).assertIsDisplayed() // TODO: BUG DISCOVERED, navigating back should be possible here
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
@@ -177,12 +177,12 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        setupScan.progress(false).assertIsDisplayed()
+        setupScan.setProgress(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
@@ -203,12 +203,30 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        setupScan.progress(false).assertIsDisplayed()
+        setupScan.setProgress(false).assertIsDisplayed()
+        setupScan.navigationIcon.click()
+
+        setupPersonalPinInput.assertIsDisplayed()
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        setupPersonalPinConfirm.assertIsDisplayed()
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        setupScan.setProgress(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()

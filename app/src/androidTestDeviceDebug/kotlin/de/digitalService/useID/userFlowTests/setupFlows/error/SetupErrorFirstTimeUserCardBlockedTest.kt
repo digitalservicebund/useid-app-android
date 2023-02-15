@@ -1,5 +1,6 @@
-package de.digitalService.useID.userFlowTests.setupFlows.success
+package de.digitalService.useID.userFlowTests.setupFlows.error
 
+import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -10,15 +11,13 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
+import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.util.CoroutineContextProviderType
-import de.digitalService.useID.util.performPinInput
-import de.digitalService.useID.util.pressReturn
-import de.digitalService.useID.util.setContentUsingUseIdTheme
+import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +33,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulFirstTimeUserPinsDontMatchTest {
+class SetupErrorFirstTimeUserCardBlockedTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -63,7 +62,7 @@ class SetupSuccessfulFirstTimeUserPinsDontMatchTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupSuccessfulFirstTimeUserPinsDontMatch() = runTest {
+    fun setupErrorFirstTimeUserCardBlocked() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -79,7 +78,6 @@ class SetupSuccessfulFirstTimeUserPinsDontMatchTest {
 
         val transportPin = "12345"
         val personalPin = "123456"
-        val wrongPersonalPin = "000000"
 
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
@@ -89,8 +87,9 @@ class SetupSuccessfulFirstTimeUserPinsDontMatchTest {
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.SetupScan(composeTestRule)
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+        val errorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
+
 
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
@@ -117,22 +116,6 @@ class SetupSuccessfulFirstTimeUserPinsDontMatchTest {
 
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        setupPersonalPinConfirm.personalPinField.assertLength(wrongPersonalPin.length)
-        composeTestRule.pressReturn()
-        setupPersonalPinConfirm.pinsDontMatchDialog.assertIsDisplayed()
-        setupPersonalPinConfirm.pinsDontMatchDialog.dismiss()
-
-        advanceUntilIdle()
-
-        setupPersonalPinInput.assertIsDisplayed()
-        setupPersonalPinInput.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
-        composeTestRule.pressReturn()
-
-        setupPersonalPinConfirm.assertIsDisplayed()
-        setupPersonalPinConfirm.personalPinField.assertLength(0)
         composeTestRule.performPinInput(personalPin)
         setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
@@ -147,14 +130,12 @@ class SetupSuccessfulFirstTimeUserPinsDontMatchTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
         advanceUntilIdle()
+        composeTestRule.waitForIdle()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-        advanceUntilIdle()
-
-        setupFinish.assertIsDisplayed()
-        setupFinish.finishSetupBtn.click()
+        errorCardBlocked.assertIsDisplayed() // TODO: BUG DISCOVERED This should be displayed
+        errorCardBlocked.closeBtn.click()
 
         home.assertIsDisplayed()
     }

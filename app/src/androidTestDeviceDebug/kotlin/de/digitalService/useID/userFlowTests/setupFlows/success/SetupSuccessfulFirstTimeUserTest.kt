@@ -127,7 +127,7 @@ class SetupSuccessfulFirstTimeUserTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()

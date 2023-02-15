@@ -113,13 +113,13 @@ sealed class TestScreen {
     data class SetupTransportPin(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var retry = false
-        fun retry(value: Boolean) : SetupTransportPin {
+        fun setRetry(value: Boolean) : SetupTransportPin {
             retry = value
             return this
         }
 
         private var identPending = false
-        fun identPending(value: Boolean) : SetupTransportPin {
+        fun setIdentPending(value: Boolean) : SetupTransportPin {
             identPending = value
             return this
         }
@@ -218,7 +218,7 @@ sealed class TestScreen {
     data class SetupPersonalPinConfirm(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var error = false
-        fun error(value: Boolean) : SetupPersonalPinConfirm {
+        fun setError(value: Boolean) : SetupPersonalPinConfirm {
             error = value
             return this
         }
@@ -254,19 +254,19 @@ sealed class TestScreen {
     data class SetupScan(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var backAllowed = true
-        fun backAllowed(value: Boolean) : SetupScan {
+        fun setBackAllowed(value: Boolean) : SetupScan {
             backAllowed = value
             return this
         }
 
         private var identPending = false
-        fun identPending(value: Boolean) : SetupScan {
+        fun setIdentPending(value: Boolean) : SetupScan {
             identPending = value
             return this
         }
 
         private var progress = false
-        fun progress(value: Boolean) : SetupScan {
+        fun setProgress(value: Boolean) : SetupScan {
             progress = value
             return this
         }
@@ -320,7 +320,7 @@ sealed class TestScreen {
     data class SetupFinish(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var identPending = false
-        fun identPending(value: Boolean) : SetupFinish {
+        fun setIdentPending(value: Boolean) : SetupFinish {
             identPending = value
             return this
         }
@@ -402,13 +402,13 @@ sealed class TestScreen {
     data class ErrorCardUnreadable(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var identPending = false
-        fun identPending(value: Boolean) : ErrorCardUnreadable {
+        fun setIdentPending(value: Boolean) : ErrorCardUnreadable {
             identPending = value
             return this
         }
 
         private var redirectUrlPresent = false
-        fun redirectUrlPresent(value: Boolean) : ErrorCardUnreadable {
+        fun setRedirectUrlPresent(value: Boolean) : ErrorCardUnreadable {
             redirectUrlPresent = value
             return this
         }
@@ -445,6 +445,70 @@ sealed class TestScreen {
                 return arrayOf<TestElement>(
                     TestElement.Tag(testRule, NavigationIcon.Back.name)
                 ).plus(arrayOf(errorCard).takeIf { !identPending } ?: arrayOf())
+            }
+    }
+
+    data class ErrorGenericError(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private var identPending = false
+        fun setIdentPending(value: Boolean) : ErrorGenericError {
+            identPending = value
+            return this
+        }
+
+        val title = TestElement.Text(testRule, R.string.scanError_unknown_title)
+        //        val body = TestElement.Text(R.string.scanError_unknown_body) TODO: reenable when markdown is matchable in UI tests
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+        val confirmationDialog: TestElement.NavigationConfirmDialog
+            get() {
+                return TestElement.NavigationConfirmDialog(testRule, identPending)
+            }
+
+        val closeBtn: TestElement.Text
+            get() {
+                return TestElement.Text(testRule,
+                    if (identPending)
+                        R.string.identification_fetchMetadataError_retry
+                    else
+                        R.string.scanError_close
+                )
+            }
+
+        override val expectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    title, cancel, closeBtn
+                )
+            }
+
+        override val unexpectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name),
+                    confirmationDialog
+                )
+            }
+    }
+
+    data class ErrorCardBlocked(override val testRule: ComposeTestRule) : TestScreen() {
+
+        val title = TestElement.Text(testRule, R.string.scanError_cardBlocked_title)
+        //        val body = TestElement.Text(R.string.scanError_cardBlocked_body) TODO: reenable when markdown is matchable in UI tests
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+        val closeBtn = TestElement.Text(testRule, R.string.scanError_close)
+
+        override val expectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    title, cancel, closeBtn
+                )
+            }
+
+        override val unexpectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name)
+                )
             }
     }
 }

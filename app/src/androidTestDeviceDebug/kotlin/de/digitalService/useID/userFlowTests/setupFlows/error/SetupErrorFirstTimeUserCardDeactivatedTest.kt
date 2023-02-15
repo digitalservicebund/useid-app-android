@@ -128,7 +128,7 @@ class SetupErrorFirstTimeUserCardDeactivatedTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
         advanceUntilIdle()

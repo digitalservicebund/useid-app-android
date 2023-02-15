@@ -126,7 +126,7 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.progress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
@@ -134,7 +134,7 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
 
-        setupTransportPin.retry(true).assertIsDisplayed()
+        setupTransportPin.setRetry(true).assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(transportPin)
         setupTransportPin.transportPinField.assertLength(transportPin.length)
@@ -143,12 +143,12 @@ class SetupSuccessfulFirstTimeUserTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        setupScan.backAllowed(false).progress(false).assertIsDisplayed()
+        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.backAllowed(false).progress(true).assertIsDisplayed()
+        setupScan.setBackAllowed(false).setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
