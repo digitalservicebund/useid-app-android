@@ -87,7 +87,7 @@ class SetupSuccessfulTransportPinIncorrectTest {
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
-        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
+        val setupTransportPin = TestScreen.TransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
@@ -143,7 +143,7 @@ class SetupSuccessfulTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
 
-        setupTransportPin.setRetry(true).assertIsDisplayed()
+        setupTransportPin.setAttemptsLeft(2).assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(transportPin)
         setupTransportPin.transportPinField.assertLength(transportPin.length)

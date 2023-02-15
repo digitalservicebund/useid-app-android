@@ -22,19 +22,22 @@ sealed class TestElement {
         Assert.fail("click() not implemented for $this")
     }
 
-    data class Text(override val testRule: ComposeTestRule, val resourceId: Int) : TestElement() {
+    data class Text(override val testRule: ComposeTestRule, val resourceId: Int, val formatArg: String? = null, val quantity: Int? = null) : TestElement() {
+        val string = if (quantity != null) {
+            testRule.activity.resources.getQuantityString(resourceId, quantity, formatArg?.toInt())
+        } else {
+            testRule.activity.getString(resourceId, formatArg)
+        }
+
         override fun assertIsDisplayed() {
-            val string = testRule.activity.getString(resourceId)
             testRule.onNodeWithText(string).assertIsDisplayedDetailed(string)
         }
 
         override fun assertIsNotDisplayed() {
-            val string = testRule.activity.getString(resourceId)
             testRule.onNodeWithText(string).safeAssertIsNotDisplayed()
         }
 
         override fun click() {
-            val string = testRule.activity.getString(resourceId)
             testRule.onNodeWithText(string).performClick()
         }
     }
@@ -163,6 +166,27 @@ sealed class TestElement {
             assertIsDisplayed()
             testRule.onAllNodesWithTag(digitTestTag).assertCountEquals(0)
             testRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(len)
+        }
+    }
+
+    data class Can(
+        override val testRule: ComposeTestRule
+    ) : TestElement() {
+        override fun assertIsDisplayed() {
+            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
+            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(6)
+            testRule.onAllNodesWithTag(spacerTestTag).assertCountEquals(1)
+        }
+
+        override fun assertIsNotDisplayed() {
+            testRule.onNodeWithTag(pinEntryFieldTestTag).assertIsDisplayed()
+            testRule.onAllNodesWithTag(underscoreTestTag).assertCountEquals(0)
+        }
+
+        fun assertLength(len: Int) {
+            assertIsDisplayed()
+            testRule.onAllNodesWithTag(digitTestTag).assertCountEquals(len)
+            testRule.onAllNodesWithTag(obfuscationTestTag).assertCountEquals(0)
         }
     }
 }

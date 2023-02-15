@@ -110,23 +110,23 @@ sealed class TestScreen {
             }
     }
 
-    data class SetupTransportPin(override val testRule: ComposeTestRule) : TestScreen() {
+    data class TransportPin(override val testRule: ComposeTestRule) : TestScreen() {
 
-        private var retry = false
-        fun setRetry(value: Boolean) : SetupTransportPin {
-            retry = value
+        private var attemptsLeft = 3
+        fun setAttemptsLeft(value: Int) : TransportPin {
+            attemptsLeft = value
             return this
         }
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : SetupTransportPin {
+        fun setIdentPending(value: Boolean) : TransportPin {
             identPending = value
             return this
         }
 
         val title: TestElement.Text
             get() {
-                return TestElement.Text(testRule, if (retry) {
+                return TestElement.Text(testRule, if (attemptsLeft == 2) {
                         R.string.firstTimeUser_incorrectTransportPIN_title
                     } else {
                         R.string.firstTimeUser_transportPIN_title
@@ -135,11 +135,13 @@ sealed class TestScreen {
             }
 
         val body = TestElement.Text(testRule, R.string.firstTimeUser_transportPIN_body)
+        private val twoAttemptsLeftMessage = TestElement.Text(testRule, R.plurals.firstTimeUser_transportPIN_remainingAttempts, formatArg = "2", quantity = 2)
+        private val oneAttemptLeftMessage = TestElement.Text(testRule, R.plurals.firstTimeUser_transportPIN_remainingAttempts, quantity = 1)
+
         val transportPinField = TestElement.TransportPin(testRule)
-//        val pin_letter_image = TestElement.Tag(R.drawable.pin_letter.toString())
         val navigationIcon: TestElement.Tag
             get() {
-                return TestElement.Tag(testRule, if (retry) {
+                return TestElement.Tag(testRule, if (attemptsLeft == 2) {
                         NavigationIcon.Cancel.name
                     } else {
                         NavigationIcon.Back.name
@@ -154,14 +156,16 @@ sealed class TestScreen {
 
         override val expectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    title, body, transportPinField, navigationIcon
-                )
+                return arrayOf(title, body, transportPinField, navigationIcon)
+                    .plus(arrayOf(oneAttemptLeftMessage).takeIf { attemptsLeft == 1 } ?: arrayOf())
+                    .plus(arrayOf(twoAttemptsLeftMessage).takeIf { attemptsLeft == 2 } ?: arrayOf())
             }
 
         override val unexpectedElements: Array<TestElement>
             get() {
-                return arrayOf(navigationConfirmDialog)
+                return arrayOf<TestElement>(navigationConfirmDialog)
+                    .plus(arrayOf(oneAttemptLeftMessage).takeIf { attemptsLeft != 1 } ?: arrayOf())
+                    .plus(arrayOf(twoAttemptsLeftMessage).takeIf { attemptsLeft != 2 } ?: arrayOf())
             }
     }
 
@@ -372,6 +376,130 @@ sealed class TestScreen {
                 return arrayOf(
                     TestElement.Tag(testRule, NavigationIcon.Cancel.name)
                 )
+            }
+    }
+
+    data class SetupCanConfirmTransportPin(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private var transportPin = ""
+        fun setTransportPin(value: String) : SetupCanConfirmTransportPin {
+            transportPin = value
+            return this
+        }
+
+        private var identPending = false
+        fun setIdentPending(value: Boolean) : SetupCanConfirmTransportPin {
+            identPending = value
+            return this
+        }
+
+        val title: TestElement
+            get() {
+                return TestElement.Text(testRule, R.string.firstTimeUser_can_confirmTransportPIN_title, transportPin)
+            }
+
+//        val body: TestElement TODO: reenable when markdown is matchable in UI tests
+//            get() {
+//                return TestElement.Text(testRule, R.string.firstTimeUser_can_confirmTransportPIN_body, transportPin)
+//            }
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+        val inputCorrectBtn = TestElement.Text(testRule, R.string.firstTimeUser_can_confirmTransportPIN_confirmInput)
+        val retryInputBtn = TestElement.Text(testRule, R.string.firstTimeUser_can_confirmTransportPIN_incorrectInput)
+        val navigationConfirmDialog: TestElement.NavigationConfirmDialog
+            get() {
+                return TestElement.NavigationConfirmDialog(testRule, identPending)
+            }
+
+        override val expectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    title, cancel, inputCorrectBtn, retryInputBtn
+                )
+            }
+
+        override val unexpectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name),
+                    navigationConfirmDialog
+                )
+            }
+    }
+
+    data class SetupCanIntro(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private var backAllowed = false
+        fun setBackAllowed(value: Boolean) : SetupCanIntro {
+            backAllowed = value
+            return this
+        }
+
+        private var identPending = false
+        fun setIdentPending(value: Boolean) : SetupCanIntro {
+            identPending = value
+            return this
+        }
+
+        val title = TestElement.Text(testRule, R.string.identification_can_intro_title)
+//        val body = TestElement.Text(testRule, R.string.identification_can_intro_body) TODO: reenable when markdown is matchable in UI tests
+        val enterCanNowBtn = TestElement.Text(testRule, R.string.identification_can_intro_continue)
+        val canImage = TestElement.Tag(testRule, R.drawable.illustration_id_can.toString())
+
+        val navigationIcon: TestElement.Tag
+            get() {
+                return TestElement.Tag(testRule, if (backAllowed) {
+                        NavigationIcon.Back.name
+                    } else {
+                        NavigationIcon.Cancel.name
+                    }
+                )
+            }
+
+        val navigationConfirmDialog: TestElement.NavigationConfirmDialog
+            get() {
+                return TestElement.NavigationConfirmDialog(testRule, identPending)
+            }
+
+        override val expectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    title, navigationIcon, canImage, enterCanNowBtn
+                )
+            }
+
+        override val unexpectedElements: Array<TestElement>
+            get() {
+                return arrayOf(
+                    navigationConfirmDialog
+                )
+            }
+    }
+
+    data class SetupCanInput(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private var retry = false
+        fun setRetry(value: Boolean) : SetupCanInput {
+            retry = value
+            return this
+        }
+
+        val title = TestElement.Text(testRule, R.string.identification_can_input_title)
+        val body = TestElement.Text(testRule, R.string.identification_can_input_body)
+        val errorMessage = TestElement.Text(testRule, R.string.identification_can_incorrectInput_error_incorrect_body)
+        val retryMessage = TestElement.Text(testRule, R.string.identification_personalPIN_error_tryAgain)
+        val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
+        val canEntryField = TestElement.Can(testRule)
+
+        override val expectedElements: Array<TestElement>
+            get() {
+                return arrayOf(title, body, back, canEntryField)
+                    .plus(arrayOf(retryMessage, errorMessage).takeIf { retry } ?: arrayOf())
+            }
+
+        override val unexpectedElements: Array<TestElement>
+            get() {
+                return arrayOf<TestElement>(TestElement.Tag(testRule, NavigationIcon.Cancel.name))
+                    .plus(arrayOf(retryMessage, errorMessage).takeIf { !retry } ?: arrayOf())
             }
     }
 
