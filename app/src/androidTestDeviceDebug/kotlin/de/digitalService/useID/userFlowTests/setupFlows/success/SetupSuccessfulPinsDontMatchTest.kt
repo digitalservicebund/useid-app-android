@@ -1,23 +1,25 @@
-package de.digitalService.useID.userFlowTests.setupFlows.error
+package de.digitalService.useID.userFlowTests.setupFlows.success
 
-import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.digitalService.useID.MainActivity
+import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.util.*
+import de.digitalService.useID.util.CoroutineContextProviderType
+import de.digitalService.useID.util.performPinInput
+import de.digitalService.useID.util.pressReturn
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -29,12 +31,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupErrorFirstTimeUserCardUnreadableTest {
+class SetupSuccessfulPinsDontMatchTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -52,6 +53,11 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
     val mockIdCardManager: IdCardManager = mockk(relaxed = true)
 
     @BindValue
+    val mockStorageManager: StorageManager = mockk(relaxed = true) {
+        every { firstTimeUser } returns false
+    }
+
+    @BindValue
     val mockCoroutineContextProvider: CoroutineContextProviderType = mockk {
         every { Main } returns Dispatchers.Main
     }
@@ -63,7 +69,7 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupErrorFirstTimeUserCardUnreadable() = runTest {
+    fun testSetupSuccessfulPinsDontMatch() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -79,6 +85,7 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
 
         val transportPin = "12345"
         val personalPin = "123456"
+        val wrongPersonalPin = "000000"
 
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
@@ -88,10 +95,11 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.SetupScan(composeTestRule)
-        val errorCardUnreadable = TestScreen.ErrorCardUnreadable(composeTestRule)
         val setupFinish = TestScreen.SetupFinish(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
 
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
@@ -118,93 +126,13 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
 
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
+        composeTestRule.performPinInput(wrongPersonalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(wrongPersonalPin.length)
         composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.Error(
-            IdCardInteractionException.ProcessFailed(
-                resultCode = ActivationResultCode.CLIENT_ERROR,
-                redirectUrl = null,
-                resultMinor = null
-            )
-        )
+        setupPersonalPinConfirm.pinsDontMatchDialog.assertIsDisplayed()
+        setupPersonalPinConfirm.pinsDontMatchDialog.dismiss()
 
         advanceUntilIdle()
-
-        errorCardUnreadable.assertIsDisplayed()
-        errorCardUnreadable.closeBtn.click()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).setBackAllowed(true).assertIsDisplayed() // TODO: BUG DISCOVERED, navigating back should be possible here
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.Error(
-            IdCardInteractionException.ProcessFailed(
-                resultCode = ActivationResultCode.INTERNAL_ERROR,
-                redirectUrl = null,
-                resultMinor = null
-            )
-        )
-
-        advanceUntilIdle()
-
-        errorCardUnreadable.assertIsDisplayed()
-        errorCardUnreadable.cancel.click()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.Error(
-            IdCardInteractionException.ProcessFailed(
-                resultCode = ActivationResultCode.BAD_REQUEST,
-                redirectUrl = null,
-                resultMinor = null
-            )
-        )
-
-        advanceUntilIdle()
-
-        errorCardUnreadable.assertIsDisplayed()
-        errorCardUnreadable.closeBtn.click()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).assertIsDisplayed()
-        setupScan.navigationIcon.click()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)
@@ -221,7 +149,7 @@ class SetupErrorFirstTimeUserCardUnreadableTest {
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        setupScan.setProgress(false).assertIsDisplayed()
+        setupScan.assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()

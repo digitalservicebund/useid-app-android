@@ -7,6 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.digitalService.useID.MainActivity
+import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
@@ -29,12 +30,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupErrorFirstTimeUserGenericErrorTest {
+class SetupErrorCardBlockedTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -52,6 +52,11 @@ class SetupErrorFirstTimeUserGenericErrorTest {
     val mockIdCardManager: IdCardManager = mockk(relaxed = true)
 
     @BindValue
+    val mockStorageManager: StorageManager = mockk(relaxed = true) {
+        every { firstTimeUser } returns false
+    }
+
+    @BindValue
     val mockCoroutineContextProvider: CoroutineContextProviderType = mockk {
         every { Main } returns Dispatchers.Main
     }
@@ -63,7 +68,7 @@ class SetupErrorFirstTimeUserGenericErrorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupErrorFirstTimeUserGenericError() = runTest {
+    fun testSetupErrorCardBlocked() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -88,10 +93,11 @@ class SetupErrorFirstTimeUserGenericErrorTest {
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.SetupScan(composeTestRule)
-        val errorGenericError = TestScreen.ErrorGenericError(composeTestRule)
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+        val errorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
 
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
@@ -132,46 +138,12 @@ class SetupErrorFirstTimeUserGenericErrorTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError())
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
         advanceUntilIdle()
+        composeTestRule.waitForIdle()
 
-        errorGenericError.assertIsDisplayed() // TODO: BUG DISCOVERED This should be displayed
-        errorGenericError.closeBtn.click()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).setBackAllowed(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.UnexpectedReadAttribute())
-        advanceUntilIdle()
-
-        errorGenericError.assertIsDisplayed()
-        errorGenericError.cancel.click()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-        advanceUntilIdle()
-
-        setupFinish.assertIsDisplayed()
-        setupFinish.finishSetupBtn.click()
+        errorCardBlocked.assertIsDisplayed() // TODO: BUG DISCOVERED This should be displayed
+        errorCardBlocked.closeBtn.click()
 
         home.assertIsDisplayed()
     }

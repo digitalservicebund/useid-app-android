@@ -7,6 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.digitalService.useID.MainActivity
+import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
@@ -32,7 +33,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulFirstTimeUserNavigationTest {
+class SetupSuccessfulTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -50,6 +51,11 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
     val mockIdCardManager: IdCardManager = mockk(relaxed = true)
 
     @BindValue
+    val mockStorageManager: StorageManager = mockk(relaxed = true) {
+        every { firstTimeUser } returns false
+    }
+
+    @BindValue
     val mockCoroutineContextProvider: CoroutineContextProviderType = mockk {
         every { Main } returns Dispatchers.Main
     }
@@ -61,7 +67,7 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupSuccessfulFirstTimeUserNavigation() = runTest {
+    fun testSetupSuccessful() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -88,41 +94,12 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         val setupScan = TestScreen.SetupScan(composeTestRule)
         val setupFinish = TestScreen.SetupFinish(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
-        val resetPersonalPin = TestScreen.ResetPersonalPin(composeTestRule)
+
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
 
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
-
-        setupPinLetter.assertIsDisplayed()
-        setupPinLetter.back.click()
-
-        setupIntro.assertIsDisplayed()
-        setupIntro.setupIdBtn.click()
-
-        setupPinLetter.assertIsDisplayed()
-        setupPinLetter.noLetterBtn.click()
-
-        resetPersonalPin.assertIsDisplayed()
-        resetPersonalPin.back.click()
-
-        setupPinLetter.assertIsDisplayed()
-        setupPinLetter.letterPresentBtn.click()
-
-        advanceUntilIdle()
-
-        setupTransportPin.assertIsDisplayed()
-        setupTransportPin.navigationIcon.click()
-
-        setupPinLetter.assertIsDisplayed()
-        setupPinLetter.letterPresentBtn.click()
-
-        advanceUntilIdle()
-
-        setupTransportPin.assertIsDisplayed()
-        setupTransportPin.transportPinField.assertLength(0)
-        composeTestRule.performPinInput(transportPin)
-        setupTransportPin.transportPinField.assertLength(transportPin.length)
-        setupTransportPin.navigationIcon.click()
 
         setupPinLetter.assertIsDisplayed()
         setupPinLetter.letterPresentBtn.click()
@@ -136,36 +113,7 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         composeTestRule.pressReturn()
 
         setupPersonalPinIntro.assertIsDisplayed()
-        setupPersonalPinIntro.back.click()
-
-        setupTransportPin.assertIsDisplayed()
-//        setupTransportPin.transportPinField.assertLength(transportPin.length) // TODO: BUG DISCOVERED This should work, needs to be adapted in the app
-        composeTestRule.performPinInput(transportPin) // TODO: Remove when above is fixed
-        composeTestRule.pressReturn()
-
-        setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
-
-        setupPersonalPinInput.assertIsDisplayed()
-        setupPersonalPinInput.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
-        setupPersonalPinInput.back.click()
-
-        setupPersonalPinIntro.assertIsDisplayed()
-        setupPersonalPinIntro.continueBtn.click()
-
-        setupPersonalPinInput.assertIsDisplayed()
-        setupPersonalPinInput.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
-        composeTestRule.pressReturn()
-
-        setupPersonalPinConfirm.assertIsDisplayed()
-        setupPersonalPinConfirm.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
-        setupPersonalPinConfirm.back.click()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)
@@ -182,35 +130,6 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        setupScan.assertIsDisplayed()
-
-        setupScan.navigationIcon.click()
-
-        setupPersonalPinInput.assertIsDisplayed()
-        setupPersonalPinInput.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
-        composeTestRule.pressReturn()
-
-        setupPersonalPinConfirm.assertIsDisplayed()
-        setupPersonalPinConfirm.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.assertIsDisplayed()
-
-        setupScan.nfcHelpBtn.click()
-        setupScan.nfcDialog.assertIsDisplayed()
-        setupScan.nfcDialog.dismiss()
-        setupScan.assertIsDisplayed()
-
-        setupScan.scanHelpBtn.click()
-        setupScan.helpDialog.assertIsDisplayed()
-        setupScan.helpDialog.dismiss()
         setupScan.assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
@@ -225,7 +144,7 @@ class SetupSuccessfulFirstTimeUserNavigationTest {
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
-        setupFinish.cancel.click()
+        setupFinish.finishSetupBtn.click()
 
         home.assertIsDisplayed()
     }

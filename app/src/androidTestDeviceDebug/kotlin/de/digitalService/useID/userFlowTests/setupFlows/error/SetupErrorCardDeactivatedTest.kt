@@ -7,6 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.digitalService.useID.MainActivity
+import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
@@ -33,7 +34,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupErrorFirstTimeUserCardDeactivatedTest {
+class SetupErrorCardDeactivatedTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -51,6 +52,11 @@ class SetupErrorFirstTimeUserCardDeactivatedTest {
     val mockIdCardManager: IdCardManager = mockk(relaxed = true)
 
     @BindValue
+    val mockStorageManager: StorageManager = mockk(relaxed = true) {
+        every { firstTimeUser } returns false
+    }
+
+    @BindValue
     val mockCoroutineContextProvider: CoroutineContextProviderType = mockk {
         every { Main } returns Dispatchers.Main
     }
@@ -62,7 +68,7 @@ class SetupErrorFirstTimeUserCardDeactivatedTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupErrorFirstTimeUserCardDeactivated() = runTest {
+    fun testSetupErrorCardDeactivated() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -90,6 +96,8 @@ class SetupErrorFirstTimeUserCardDeactivatedTest {
         val errorCardDeactivated = TestScreen.ErrorCardDeactivated(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
 
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()

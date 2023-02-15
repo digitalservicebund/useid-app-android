@@ -7,6 +7,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.digitalService.useID.MainActivity
+import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
@@ -31,7 +32,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupCanceledFirstTimeUserTransportPinIncorrectTest {
+class SetupCanceledTransportPinIncorrectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -49,6 +50,11 @@ class SetupCanceledFirstTimeUserTransportPinIncorrectTest {
     val mockIdCardManager: IdCardManager = mockk(relaxed = true)
 
     @BindValue
+    val mockStorageManager: StorageManager = mockk(relaxed = true) {
+        every { firstTimeUser } returns false
+    }
+
+    @BindValue
     val mockCoroutineContextProvider: CoroutineContextProviderType = mockk {
         every { Main } returns Dispatchers.Main
     }
@@ -60,7 +66,7 @@ class SetupCanceledFirstTimeUserTransportPinIncorrectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun setupCanceledFirstTimeUserTransportPinIncorrect() = runTest {
+    fun testSetupCanceledTransportPinIncorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -85,8 +91,10 @@ class SetupCanceledFirstTimeUserTransportPinIncorrectTest {
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.SetupScan(composeTestRule)
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
+
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
 
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
