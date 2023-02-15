@@ -138,9 +138,8 @@ class SetupErrorCardBlockedTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
+        eidFlow.value = EidInteractionEvent.RequestPuk {}
         advanceUntilIdle()
-        composeTestRule.waitForIdle()
 
         errorCardBlocked.assertIsDisplayed() // TODO: BUG DISCOVERED This should be displayed
         errorCardBlocked.closeBtn.click()
