@@ -44,12 +44,6 @@ fun SetupCanAlreadySetup(viewModel: SetupCanAlreadySetupViewModelInterface = hil
             onClick = viewModel::onBack
         )
     ) { topPadding ->
-        StandardStaticComposition(
-            title = stringResource(id = R.string.firstTimeUser_can_alreadySetup_title),
-            body = bodyString,
-            primaryButton = BundButtonConfig(title = buttonLabelString, viewModel::onFinish),
-            modifier = Modifier.padding(top = topPadding)
-        )
         StandardButtonScreen(
             primaryButton = BundButtonConfig(title = buttonLabelString, viewModel::onFinish),
             modifier = Modifier.padding(top = topPadding)
