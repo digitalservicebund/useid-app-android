@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows.success
+package de.digitalService.useID.userFlowTests.setupFlows.can
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -17,6 +17,7 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.TestElement
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -33,7 +34,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulThirdAttemptTest {
+class SetupAlreadyDoneTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -67,7 +68,7 @@ class SetupSuccessfulThirdAttemptTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupSuccessfulThirdAttempt() = runTest {
+    fun testSetupAlreadyDone() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -95,9 +96,8 @@ class SetupSuccessfulThirdAttemptTest {
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.SetupScan(composeTestRule)
         val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
-        val setupCanIntro = TestScreen.SetupCanIntro(composeTestRule)
-        val setupCanInput = TestScreen.SetupCanInput(composeTestRule)
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+        val setupCanAlreadySetup = TestScreen.SetupCanAlreadySetup(composeTestRule)
+        val setupResetPersonalPin = TestScreen.ResetPersonalPin(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
@@ -171,48 +171,23 @@ class SetupSuccessfulThirdAttemptTest {
         advanceUntilIdle()
 
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
-        setupCanConfirmTransportPin.retryInputBtn.click()
+        setupCanConfirmTransportPin.inputCorrectBtn.click()
 
-        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
-        setupCanIntro.back.click()
+        setupCanAlreadySetup.assertIsDisplayed()
+        setupCanAlreadySetup.personalPinNotAvailableBtn.click()
+
+        setupResetPersonalPin.assertIsDisplayed()
+        setupResetPersonalPin.back.click()
+
+        setupCanAlreadySetup.assertIsDisplayed()
+        setupCanAlreadySetup.back.click()
 
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
-        setupCanConfirmTransportPin.retryInputBtn.click()
+        setupCanConfirmTransportPin.inputCorrectBtn.click()
 
-        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
-        setupCanIntro.enterCanNowBtn.click()
+        setupCanAlreadySetup.assertIsDisplayed()
+        setupCanAlreadySetup.finishSetupBtn.click()
 
-        setupCanInput.assertIsDisplayed()
-        setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(can)
-        setupCanInput.canEntryField.assertLength(can.length)
-        composeTestRule.pressReturn()
-
-        setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
-        setupTransportPin.transportPinField.assertLength(0)
-        composeTestRule.performPinInput(transportPin)
-        setupTransportPin.transportPinField.assertLength(transportPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-        advanceUntilIdle()
-
-        setupFinish.assertIsDisplayed()
-        setupFinish.finishSetupBtn.click()
-
-        home.assertIsDisplayed()
+        home.assertIsDisplayed() // TODO: Homescreen should be displayed here
     }
 }
