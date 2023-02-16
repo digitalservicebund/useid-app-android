@@ -503,23 +503,19 @@ sealed class TestScreen {
 
     data class ErrorCardDeactivated(override val testRule: ComposeTestRule) : TestScreen() {
 
-        val title = TestElement.Text(testRule, R.string.scanError_cardDeactivated_title)
+        private val title = TestElement.Text(testRule, R.string.scanError_cardDeactivated_title)
         //        val body = TestElement.Text(R.string.scanError_cardDeactivated_body) TODO: reenable when markdown is matchable in UI tests
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val closeBtn = TestElement.Text(testRule, R.string.scanError_close)
 
         override val expectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    title, cancel, closeBtn
-                )
+                return arrayOf(title, cancel, closeBtn)
             }
 
         override val unexpectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    TestElement.Tag(testRule, NavigationIcon.Back.name)
-                )
+                return arrayOf(TestElement.Tag(testRule, NavigationIcon.Back.name))
             }
     }
 
@@ -537,38 +533,33 @@ sealed class TestScreen {
             return this
         }
 
-        val title = TestElement.Text(testRule, R.string.scanError_cardUnreadable_title)
+        private val title = TestElement.Text(testRule, R.string.scanError_cardUnreadable_title)
         //        val body = TestElement.Text(R.string.scanError_cardUnreadable_body) TODO: reenable when markdown is matchable in UI tests
-        val errorCard = TestElement.BundCard(
+        private val errorCard = TestElement.BundCard(
             testRule,
             titleResId = R.string.scanError_box_title,
             bodyResId = R.string.scanError_box_body,
             iconTag = Icons.Filled.Dangerous.name
         )
-        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
 
-        val closeBtn: TestElement.Text
-            get() {
-                return TestElement.Text(testRule,
-                    if (redirectUrlPresent)
-                        R.string.scanError_redirect
-                    else
-                        R.string.scanError_close
-                )
-            }
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+        val backToServiceProviderBtn = TestElement.Text(testRule, R.string.scanError_redirect)
+        val closeBtn = TestElement.Text(testRule, R.string.scanError_close)
 
         override val expectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    title, cancel, closeBtn
-                ).plus(arrayOf(errorCard).takeIf { identPending } ?: arrayOf())
+                return arrayOf(title, cancel)
+                    .plus(arrayOf(errorCard).takeIf { identPending } ?: arrayOf())
+                    .plus(arrayOf(backToServiceProviderBtn).takeIf { redirectUrlPresent } ?: arrayOf())
+                    .plus(arrayOf(closeBtn).takeIf { !redirectUrlPresent } ?: arrayOf())
             }
 
         override val unexpectedElements: Array<TestElement>
             get() {
-                return arrayOf<TestElement>(
-                    TestElement.Tag(testRule, NavigationIcon.Back.name)
-                ).plus(arrayOf(errorCard).takeIf { !identPending } ?: arrayOf())
+                return arrayOf<TestElement>(TestElement.Tag(testRule, NavigationIcon.Back.name))
+                    .plus(arrayOf(errorCard).takeIf { !identPending } ?: arrayOf())
+                    .plus(arrayOf(backToServiceProviderBtn).takeIf { !redirectUrlPresent } ?: arrayOf())
+                    .plus(arrayOf(closeBtn).takeIf { redirectUrlPresent } ?: arrayOf())
             }
     }
 
@@ -580,7 +571,7 @@ sealed class TestScreen {
             return this
         }
 
-        val title = TestElement.Text(testRule, R.string.scanError_unknown_title)
+        private val title = TestElement.Text(testRule, R.string.scanError_unknown_title)
         //        val body = TestElement.Text(R.string.scanError_unknown_body) TODO: reenable when markdown is matchable in UI tests
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val confirmationDialog: TestElement.NavigationConfirmDialog
@@ -588,51 +579,39 @@ sealed class TestScreen {
                 return TestElement.NavigationConfirmDialog(testRule, identPending)
             }
 
-        val closeBtn: TestElement.Text
-            get() {
-                return TestElement.Text(testRule,
-                    if (identPending)
-                        R.string.identification_fetchMetadataError_retry
-                    else
-                        R.string.scanError_close
-                )
-            }
+        val tryAgainBtn = TestElement.Text(testRule, R.string.identification_fetchMetadataError_retry)
+        val closeBtn = TestElement.Text(testRule, R.string.scanError_close)
 
         override val expectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    title, cancel, closeBtn
-                )
+                return arrayOf(title, cancel)
+                    .plus(arrayOf(tryAgainBtn).takeIf { identPending } ?: arrayOf())
+                    .plus(arrayOf(closeBtn).takeIf { !identPending } ?: arrayOf())
             }
 
         override val unexpectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    TestElement.Tag(testRule, NavigationIcon.Back.name),
-                    confirmationDialog
-                )
+                return arrayOf(TestElement.Tag(testRule, NavigationIcon.Back.name), confirmationDialog)
+                    .plus(arrayOf(tryAgainBtn).takeIf { !identPending } ?: arrayOf())
+                    .plus(arrayOf(closeBtn).takeIf { identPending } ?: arrayOf())
             }
     }
 
     data class ErrorCardBlocked(override val testRule: ComposeTestRule) : TestScreen() {
 
-        val title = TestElement.Text(testRule, R.string.scanError_cardBlocked_title)
+        private val title = TestElement.Text(testRule, R.string.scanError_cardBlocked_title)
         //        val body = TestElement.Text(R.string.scanError_cardBlocked_body) TODO: reenable when markdown is matchable in UI tests
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val closeBtn = TestElement.Text(testRule, R.string.scanError_close)
 
         override val expectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    title, cancel, closeBtn
-                )
+                return arrayOf(title, cancel, closeBtn)
             }
 
         override val unexpectedElements: Array<TestElement>
             get() {
-                return arrayOf(
-                    TestElement.Tag(testRule, NavigationIcon.Back.name)
-                )
+                return arrayOf(TestElement.Tag(testRule, NavigationIcon.Back.name))
             }
     }
 }
