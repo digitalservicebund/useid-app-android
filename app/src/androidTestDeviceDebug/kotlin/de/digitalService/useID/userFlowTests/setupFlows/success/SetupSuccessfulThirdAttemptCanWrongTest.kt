@@ -90,7 +90,7 @@ class SetupSuccessfulThirdAttemptCanWrongTest {
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
-        val setupTransportPin = TestScreen.TransportPin(composeTestRule)
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
@@ -112,6 +112,7 @@ class SetupSuccessfulThirdAttemptCanWrongTest {
 
         advanceUntilIdle()
 
+        // ENTER WRONG TRANSPORT PIN TIME
         setupTransportPin.assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(wrongTransportPin)
@@ -149,7 +150,8 @@ class SetupSuccessfulThirdAttemptCanWrongTest {
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
 
-//        setupTransportPin.setAttemptsLeft(2).assertIsDisplayed() TODO: this should display TWO attempts left
+        // ENTER WRONG TRANSPORT PIN A SECOND TIME
+        setupTransportPin.setAttemptsLeft(2).assertIsDisplayed() // TODO: this should display TWO attempts left
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(wrongTransportPin)
         setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
@@ -171,11 +173,12 @@ class SetupSuccessfulThirdAttemptCanWrongTest {
         eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
+        // CAN FLOW
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
 
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
-        setupCanIntro.navigationIcon.click()
+        setupCanIntro.back.click()
 
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
@@ -183,12 +186,14 @@ class SetupSuccessfulThirdAttemptCanWrongTest {
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
 
+        // ENTER WRONG CAN
         setupCanInput.assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(wrongCan)
         setupCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
 
+        // ENTER CORRECT TRANSPORT PIN
         setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(transportPin)
@@ -211,6 +216,30 @@ class SetupSuccessfulThirdAttemptCanWrongTest {
         eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
+        // ENTER WRONG CAN AGAIN
+        setupCanInput.setRetry(true).assertIsDisplayed()
+        setupCanInput.canEntryField.assertLength(0)
+        composeTestRule.performPinInput(wrongCan)
+        setupCanInput.canEntryField.assertLength(wrongCan.length)
+        composeTestRule.pressReturn()
+
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        setupScan.setProgress(false).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        setupScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
+        advanceUntilIdle()
+
+        // ENTER CORRECT CAN
         setupCanInput.setRetry(true).assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)

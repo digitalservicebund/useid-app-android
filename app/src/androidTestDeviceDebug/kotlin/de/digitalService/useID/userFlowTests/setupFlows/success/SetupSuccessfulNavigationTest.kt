@@ -87,7 +87,7 @@ class SetupSuccessfulNavigationTest {
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
-        val setupTransportPin = TestScreen.TransportPin(composeTestRule)
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
@@ -120,7 +120,7 @@ class SetupSuccessfulNavigationTest {
         advanceUntilIdle()
 
         setupTransportPin.assertIsDisplayed()
-        setupTransportPin.navigationIcon.click()
+        setupTransportPin.back.click()
 
         setupPinLetter.assertIsDisplayed()
         setupPinLetter.letterPresentBtn.click()
@@ -131,7 +131,7 @@ class SetupSuccessfulNavigationTest {
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(transportPin)
         setupTransportPin.transportPinField.assertLength(transportPin.length)
-        setupTransportPin.navigationIcon.click()
+        setupTransportPin.back.click()
 
         setupPinLetter.assertIsDisplayed()
         setupPinLetter.letterPresentBtn.click()
@@ -193,7 +193,7 @@ class SetupSuccessfulNavigationTest {
 
         setupScan.assertIsDisplayed()
 
-        setupScan.navigationIcon.click()
+        setupScan.back.click()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)

@@ -89,7 +89,7 @@ class SetupSuccessfulThirdAttemptTest {
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
-        val setupTransportPin = TestScreen.TransportPin(composeTestRule)
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
@@ -174,7 +174,7 @@ class SetupSuccessfulThirdAttemptTest {
         setupCanConfirmTransportPin.retryInputBtn.click()
 
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
-        setupCanIntro.navigationIcon.click()
+        setupCanIntro.back.click()
 
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()

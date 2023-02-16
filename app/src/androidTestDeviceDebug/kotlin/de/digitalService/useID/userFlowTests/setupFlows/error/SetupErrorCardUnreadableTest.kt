@@ -89,7 +89,7 @@ class SetupErrorCardUnreadableTest {
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
-        val setupTransportPin = TestScreen.TransportPin(composeTestRule)
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
@@ -212,7 +212,7 @@ class SetupErrorCardUnreadableTest {
         advanceUntilIdle()
 
         setupScan.setProgress(false).assertIsDisplayed()
-        setupScan.navigationIcon.click()
+        setupScan.back.click()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)

@@ -86,7 +86,7 @@ class SetupCanceledTransportPinIncorrectTest {
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
-        val setupTransportPin = TestScreen.TransportPin(composeTestRule)
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
@@ -142,11 +142,11 @@ class SetupCanceledTransportPinIncorrectTest {
         advanceUntilIdle()
 
         setupTransportPin.setAttemptsLeft(2).assertIsDisplayed()
-        setupTransportPin.navigationIcon.click()
+        setupTransportPin.cancel.click()
         setupTransportPin.navigationConfirmDialog.assertIsDisplayed()
         setupTransportPin.navigationConfirmDialog.dismiss()
         setupTransportPin.assertIsDisplayed()
-        setupTransportPin.navigationIcon.click()
+        setupTransportPin.cancel.click()
         setupTransportPin.navigationConfirmDialog.confirm()
 
         advanceUntilIdle()
