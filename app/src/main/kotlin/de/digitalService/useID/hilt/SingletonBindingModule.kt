@@ -23,9 +23,6 @@ abstract class SingletonBindingModule {
     abstract fun bindAppCoordinator(appCoordinator: AppCoordinator): AppCoordinatorType
 
     @Binds
-    abstract fun bindNfcInterfaceManager(nfcInterfaceManager: NfcInterfaceManager): NfcInterfaceManagerType
-
-    @Binds
     abstract fun bindNavigator(appNavigator: AppNavigator): Navigator
 
     @Binds
@@ -46,4 +43,11 @@ abstract class SingletonBindingModule {
 abstract class CoroutineContextProviderModule {
     @Binds
     abstract fun bindCoroutineContextProvider(coroutineContextProvider: CoroutineContextProvider): CoroutineContextProviderType
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class NfcInterfaceMangerModule {
+    @Binds
+    abstract fun bindNfcInterfaceManager(nfcInterfaceManager: NfcInterfaceManager): NfcInterfaceManagerType
 }

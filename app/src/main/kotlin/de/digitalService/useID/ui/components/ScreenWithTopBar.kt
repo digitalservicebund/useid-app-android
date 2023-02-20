@@ -49,7 +49,8 @@ data class NavigationButton(
     val icon: NavigationIcon,
     val onClick: () -> Unit,
     val confirmation: Flow?,
-    val contentDescription: String? = null
+    val contentDescription: String? = null,
+    val testTag: String? = null
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +72,7 @@ fun ScreenWithTopBar(
                         IconButton(
                             modifier = Modifier
                                 .semantics {
-                                    testTag = navigationButton.icon.name
+                                    testTag = navigationButton.testTag ?: navigationButton.icon.name
                                     navigationButton.contentDescription?.let {
                                         this.contentDescription = it
                                     }

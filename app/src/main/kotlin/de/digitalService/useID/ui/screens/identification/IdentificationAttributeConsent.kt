@@ -16,6 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -136,7 +138,8 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
             navigationButton = NavigationButton(
                 icon = NavigationIcon.Cancel,
                 onClick = onDismissalRequest,
-                confirmation = null
+                confirmation = null,
+                testTag = "infoDialogCancel"
             ),
             modifier = Modifier.height(500.dp)
         ) { topPadding ->
@@ -149,10 +152,15 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                         rememberScrollState()
                     )
             ) {
-                Text(content.subject, style = UseIdTheme.typography.headingXl)
+                Text(
+                    content.subject,
+                    style = UseIdTheme.typography.headingXl,
+                    modifier = Modifier.semantics { testTag = "subjectTitle" }
+                )
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
-                    style = UseIdTheme.typography.headingMBold
+                    style = UseIdTheme.typography.headingMBold,
+                    modifier = Modifier.semantics { testTag = "providerInfoTitle" }
                 )
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_provider),
@@ -161,11 +169,13 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                 Column {
                     Text(
                         content.subject,
-                        style = UseIdTheme.typography.bodyLRegular
+                        style = UseIdTheme.typography.bodyLRegular,
+                        modifier = Modifier.semantics { testTag = "subjectName" }
                     )
                     Text(
                         content.subjectURL,
-                        style = UseIdTheme.typography.bodyLRegular
+                        style = UseIdTheme.typography.bodyLRegular,
+                        modifier = Modifier.semantics { testTag = "subjectURL" }
                     )
                 }
                 Text(
@@ -175,20 +185,24 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                 Column {
                     Text(
                         content.issuer,
-                        style = UseIdTheme.typography.bodyLRegular
+                        style = UseIdTheme.typography.bodyLRegular,
+                        modifier = Modifier.semantics { testTag = "issuerName" }
                     )
                     Text(
                         content.issuerURL,
-                        style = UseIdTheme.typography.bodyLRegular
+                        style = UseIdTheme.typography.bodyLRegular,
+                        modifier = Modifier.semantics { testTag = "issuerURL" }
                     )
                 }
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
-                    style = UseIdTheme.typography.bodyLBold
+                    style = UseIdTheme.typography.bodyLBold,
+                    modifier = Modifier.semantics { testTag = "providerInfoSubtitle" }
                 )
                 Text(
                     content.terms,
-                    style = UseIdTheme.typography.bodyLRegular
+                    style = UseIdTheme.typography.bodyLRegular,
+                    modifier = Modifier.semantics { testTag = "terms" }
                 )
             }
         }

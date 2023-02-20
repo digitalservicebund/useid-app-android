@@ -5,6 +5,7 @@ import de.digitalService.useID.util.ComposeTestRule
 import de.digitalService.useID.util.assertIsDisplayedDetailed
 import de.digitalService.useID.util.safeAssertIsNotDisplayed
 import de.digitalService.useID.R
+import de.digitalService.useID.util.assertIsDisplayedWithScrolling
 import org.junit.Assert
 
 sealed class TestElement {
@@ -18,19 +19,42 @@ sealed class TestElement {
     abstract val testRule: ComposeTestRule
     abstract fun assertIsDisplayed()
     abstract fun assertIsNotDisplayed()
+
     open fun click() {
         Assert.fail("click() not implemented for $this")
     }
 
-    data class Text(override val testRule: ComposeTestRule, val resourceId: Int, val formatArg: String? = null, val quantity: Int? = null) : TestElement() {
-        val string = if (quantity != null) {
-            testRule.activity.resources.getQuantityString(resourceId, quantity, formatArg?.toInt())
-        } else {
-            testRule.activity.getString(resourceId, formatArg)
+    open fun scrollToAndClick() {
+        Assert.fail("scrollToAndClick() not implemented for $this")
+    }
+
+    data class Text(
+        override val testRule: ComposeTestRule,
+        val text: String? = null,
+        val resourceId: Int? = null,
+        val formatArg: String? = null,
+        val quantity: Int? = null
+    ) : TestElement() {
+
+        private fun getStringToTestAgainst(): String {
+            return if (resourceId == null && text != null) {
+                text
+            } else if (resourceId != null && text == null) {
+                if (quantity != null) {
+                    testRule.activity.resources.getQuantityString(resourceId, quantity, formatArg?.toInt())
+                } else {
+                    testRule.activity.getString(resourceId, formatArg)
+                }
+            } else {
+                Assert.fail("String/ResourceId to test against either not provided or abigious")
+                ""
+            }
         }
 
+        val string = getStringToTestAgainst()
+
         override fun assertIsDisplayed() {
-            testRule.onNodeWithText(string).assertIsDisplayedDetailed(string)
+            testRule.onNodeWithText(string).assertIsDisplayedWithScrolling(string)
         }
 
         override fun assertIsNotDisplayed() {
@@ -40,11 +64,16 @@ sealed class TestElement {
         override fun click() {
             testRule.onNodeWithText(string).performClick()
         }
+
+        override fun scrollToAndClick() {
+            testRule.onNodeWithText(string).performScrollTo().performClick()
+        }
     }
 
     data class Tag(override val testRule: ComposeTestRule, val tag: String) : TestElement() {
+
         override fun assertIsDisplayed() {
-            testRule.onNodeWithTag(tag).assertIsDisplayedDetailed(tag)
+            testRule.onNodeWithTag(tag).assertIsDisplayedWithScrolling(tag)
         }
 
         override fun assertIsNotDisplayed() {
@@ -54,7 +83,27 @@ sealed class TestElement {
         override fun click() {
             testRule.onNodeWithTag(tag).performClick()
         }
+
+        override fun scrollToAndClick() {
+            testRule.onNodeWithTag(tag).performScrollTo().performClick()
+        }
     }
+
+    data class Group(override val testRule: ComposeTestRule, val elements: List<TestElement>) : TestElement() {
+
+        override fun assertIsDisplayed() {
+            elements.forEach {
+                it.assertIsDisplayed()
+            }
+        }
+
+        override fun assertIsNotDisplayed() {
+            elements.forEach {
+                it.assertIsNotDisplayed()
+            }
+        }
+    }
+
 
     data class BundCard(
         override val testRule: ComposeTestRule,
@@ -63,9 +112,11 @@ sealed class TestElement {
         val iconTag: String
     ) : TestElement() {
         override fun assertIsDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(bodyResId)).assertIsDisplayed()
-            testRule.onNodeWithTag(iconTag).assertIsDisplayedDetailed(iconTag)
+            val title = testRule.activity.getString(titleResId)
+            testRule.onNodeWithText(title).assertIsDisplayedWithScrolling(title)
+            val body = testRule.activity.getString(bodyResId)
+            testRule.onNodeWithText(body).assertIsDisplayedWithScrolling(body)
+            testRule.onNodeWithTag(iconTag).assertIsDisplayedWithScrolling(iconTag)
         }
 
         override fun assertIsNotDisplayed() {
