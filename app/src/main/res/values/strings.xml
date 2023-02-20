@@ -130,7 +130,7 @@
     <string name="identification_attributeConsentInfo_issuer">Aussteller des Berechtigungszertifikats</string>
     <string name="identification_attributeConsentInfo_provider">Anbieter</string>
     <string name="identification_attributeConsentInfo_providerInfo">Anbieterinformationen</string>
-    <string name="identification_attributeConsentInfo_terms">Terms</string>
+    <string name="identification_attributeConsentInfo_terms">Benutzungsbedigungen</string>
     <string name="identification_done_body">Machen Sie weiter bei »%1s«.</string>
     <string name="identification_done_continue">Weiter zum Diensteanbieter</string>
     <string name="identification_done_title">Sie haben sich erfolgreich ausgewiesen.</string>
