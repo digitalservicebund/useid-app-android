@@ -128,7 +128,7 @@
     <string name="identification_attributeConsentInfo_issuer">Issuer of the authorization certificate</string>
     <string name="identification_attributeConsentInfo_provider">Provider</string>
     <string name="identification_attributeConsentInfo_providerInfo">Provider information</string>
-    <string name="identification_attributeConsentInfo_terms">Terms</string>
+    <string name="identification_attributeConsentInfo_terms">Terms of usage</string>
     <string name="identification_done_body">Continue at “%1s”.</string>
     <string name="identification_done_continue">Continue to the provider</string>
     <string name="identification_done_title">You have successfully identified yourself.</string>
