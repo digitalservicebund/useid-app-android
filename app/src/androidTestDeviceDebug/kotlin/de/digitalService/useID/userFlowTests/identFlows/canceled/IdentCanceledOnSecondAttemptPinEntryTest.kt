@@ -1,14 +1,9 @@
 package de.digitalService.useID.userFlowTests.identFlows.canceled
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -34,7 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -162,12 +156,12 @@ class IdentCanceledOnSecondAttemptPinEntryTest {
         eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
         advanceUntilIdle()
 
-        identificationPersonalPin.setRetry(true).assertIsDisplayed()
+        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
         identificationPersonalPin.cancel.click()
         identificationPersonalPin.navigationConfirmDialog.assertIsDisplayed()
         identificationPersonalPin.navigationConfirmDialog.dismiss()
 
-        identificationPersonalPin.setRetry(true).assertIsDisplayed()
+        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
         identificationPersonalPin.cancel.click()
         identificationPersonalPin.navigationConfirmDialog.assertIsDisplayed()
         identificationPersonalPin.navigationConfirmDialog.confirm()

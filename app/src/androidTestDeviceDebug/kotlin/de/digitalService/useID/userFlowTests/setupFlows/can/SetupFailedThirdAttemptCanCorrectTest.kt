@@ -95,8 +95,8 @@ class SetupFailedThirdAttemptCanCorrectTest {
         val setupScan = TestScreen.Scan(composeTestRule)
         val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
         val setupCanAlreadySetup = TestScreen.SetupCanAlreadySetup(composeTestRule)
-        val setupCanIntro = TestScreen.SetupCanIntro(composeTestRule)
-        val setupCanInput = TestScreen.SetupCanInput(composeTestRule)
+        val setupCanIntro = TestScreen.CanIntro(composeTestRule)
+        val setupCanInput = TestScreen.CanInput(composeTestRule)
         val setupErrorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 

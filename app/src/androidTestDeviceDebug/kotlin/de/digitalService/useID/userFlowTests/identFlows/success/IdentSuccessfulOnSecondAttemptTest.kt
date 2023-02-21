@@ -167,7 +167,7 @@ class IdentSuccessfulOnSecondAttemptTest {
         eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
         advanceUntilIdle()
 
-        identificationPersonalPin.setRetry(true).assertIsDisplayed()
+        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
         identificationPersonalPin.personalPinField.assertLength(0)
         composeTestRule.performPinInput(personalPin)
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
