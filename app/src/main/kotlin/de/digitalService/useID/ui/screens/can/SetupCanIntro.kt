@@ -14,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupCanIntroDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
@@ -44,7 +43,8 @@ fun SetupCanIntro(viewModel: SetupCanIntroViewModelInterface = hiltViewModel<Set
 }
 
 data class SetupCanIntroNavArgs(
-    val backAllowed: Boolean
+    val backAllowed: Boolean,
+    val identificationPending: Boolean
 )
 
 interface SetupCanIntroViewModelInterface {
@@ -58,15 +58,15 @@ interface SetupCanIntroViewModelInterface {
 @HiltViewModel
 class SetupCanIntroViewModel @Inject constructor(
     private val canCoordinator: CanCoordinator,
-    private val setupCoordinator: SetupCoordinator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), SetupCanIntroViewModelInterface {
     override val backAllowed: Boolean
     override val identificationPending: Boolean
-        get() = false //setupCoordinator.identificationPending
 
     init {
-        backAllowed = SetupCanIntroDestination.argsFrom(savedStateHandle).backAllowed
+        val args = SetupCanIntroDestination.argsFrom(savedStateHandle)
+        backAllowed = args.backAllowed
+        identificationPending = args.identificationPending
     }
 
     override fun onNavigationButtonClicked() {

@@ -9,14 +9,14 @@ class CanPinManagementStateFactory: DefaultTypeFactory() {
         return when (what) {
             CanStateMachine.State.Invalid::class -> CanStateMachine.State.Invalid
 
-            CanStateMachine.State.PinManagement.Intro::class -> CanStateMachine.State.PinManagement.Intro({ _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.IdAlreadySetup::class -> CanStateMachine.State.PinManagement.IdAlreadySetup({ _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.PinReset::class -> CanStateMachine.State.PinManagement.PinReset({ _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.CanIntro::class -> CanStateMachine.State.PinManagement.CanIntro({ _, _, _ -> }, "", "", false)
-            CanStateMachine.State.PinManagement.CanInput::class -> CanStateMachine.State.PinManagement.CanInput({ _, _, _ -> }, "", "", false)
-            CanStateMachine.State.PinManagement.CanInputRetry::class -> CanStateMachine.State.PinManagement.CanInputRetry({ _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.PinInput::class -> CanStateMachine.State.PinManagement.PinInput({ _, _, _ -> }, "", "", "")
-            CanStateMachine.State.PinManagement.CanAndPinEntered::class -> CanStateMachine.State.PinManagement.CanAndPinEntered({ _, _, _ -> }, "", "", "")
+            CanStateMachine.State.PinManagement.Intro::class -> CanStateMachine.State.PinManagement.Intro(false, { _, _, _ -> }, "", "")
+            CanStateMachine.State.PinManagement.IdAlreadySetup::class -> CanStateMachine.State.PinManagement.IdAlreadySetup(false, { _, _, _ -> }, "", "")
+            CanStateMachine.State.PinManagement.PinReset::class -> CanStateMachine.State.PinManagement.PinReset(false, { _, _, _ -> }, "", "")
+            CanStateMachine.State.PinManagement.CanIntro::class -> CanStateMachine.State.PinManagement.CanIntro(false, { _, _, _ -> }, "", "", false)
+            CanStateMachine.State.PinManagement.CanInput::class -> CanStateMachine.State.PinManagement.CanInput(false, { _, _, _ -> }, "", "", false)
+            CanStateMachine.State.PinManagement.CanInputRetry::class -> CanStateMachine.State.PinManagement.CanInputRetry(false, { _, _, _ -> }, "", "")
+            CanStateMachine.State.PinManagement.PinInput::class -> CanStateMachine.State.PinManagement.PinInput(false, { _, _, _ -> }, "", "", "")
+            CanStateMachine.State.PinManagement.CanAndPinEntered::class -> CanStateMachine.State.PinManagement.CanAndPinEntered(false, { _, _, _ -> }, "", "", "")
 
             else -> throw IllegalArgumentException()
         }

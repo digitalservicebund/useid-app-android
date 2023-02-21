@@ -1,7 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.flows.PinManagementStateMachine
 import de.digitalService.useID.flows.SetupStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.navigation.Navigator
@@ -52,7 +51,7 @@ class SetupCoordinator @Inject constructor(
 
                             SetupStateMachine.State.Invalid -> logger.debug("Ignoring transition to state INVALID.")
                         }
-                        }
+                    }
                 }
             }
         }
@@ -74,7 +73,7 @@ class SetupCoordinator @Inject constructor(
     private fun startPinManagement(identificationPending: Boolean) {
         subFlowCoroutineScope?.cancel()
         subFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-            pinManagementCoordinator.startPinManagement(identificationPending,true).collect { event ->
+            pinManagementCoordinator.startPinManagement(identificationPending, true).collect { event ->
                 when (event) {
                     SubCoordinatorState.CANCELLED -> cancelSetup()
                     SubCoordinatorState.BACKED_DOWN -> flowStateMachine.transition(SetupStateMachine.Event.SubsequentFlowBackedDown)

@@ -5,13 +5,11 @@ import androidx.navigation.NavDestination
 import com.ramcosta.composedestinations.navigation.navigate
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.ui.screens.destinations.Destination
 import de.digitalService.useID.ui.screens.destinations.HomeScreenDestination
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.truncate
 
 @Singleton
 class AppNavigator @Inject constructor(private val coroutineContextProvider: CoroutineContextProviderType) : Navigator {

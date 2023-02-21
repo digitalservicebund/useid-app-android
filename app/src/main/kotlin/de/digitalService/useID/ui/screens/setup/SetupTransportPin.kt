@@ -16,7 +16,6 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject

@@ -6,7 +6,6 @@ import android.net.Uri
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.StorageManagerType
-import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.flows.CanStateMachine
 import de.digitalService.useID.flows.IdentificationStateMachine

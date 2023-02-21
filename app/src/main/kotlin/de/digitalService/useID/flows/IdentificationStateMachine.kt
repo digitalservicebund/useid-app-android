@@ -14,52 +14,56 @@ typealias PinCallback = (String) -> Unit
 
 @Singleton
 class IdentificationStateMachine(initialState: State) {
-    @Inject constructor(): this(State.Invalid)
+    @Inject constructor() : this(State.Invalid)
 
     private val logger by getLogger()
 
-    private val _state: MutableStateFlow<Pair<Event, State>> = MutableStateFlow(Pair(
-        Event.Invalidate, initialState))
+    private val _state: MutableStateFlow<Pair<Event, State>> = MutableStateFlow(
+        Pair(
+            Event.Invalidate,
+            initialState
+        )
+    )
     val state: StateFlow<Pair<Event, State>>
         get() = _state
 
     sealed class State {
-        class StartIdentification(val backingDownAllowed: Boolean, val tcTokenUrl: String): State()
-        class FetchingMetadata(val backingDownAllowed: Boolean, val tcTokenUrl: String): State()
-        class FetchingMetadataFailed(val backingDownAllowed: Boolean, val tcTokenUrl: String): State()
-        class RequestAttributeConfirmation(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback): State()
-        class SubmitAttributeConfirmation(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback): State()
-        class RevisitAttributes(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val pinCallback: PinCallback): State()
-        class PinInput(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val callback: PinCallback): State()
-        class PinInputRetry(val callback: PinCallback): State()
-        class PinEntered(val pin: String, val secondTime: Boolean, val callback: PinCallback): State()
-        class CanRequested(val pin: String?): State()
-        class WaitingForCardAttachment(val pin: String?): State()
-        class Finished(val redirectUrl: String): State()
+        class StartIdentification(val backingDownAllowed: Boolean, val tcTokenUrl: String) : State()
+        class FetchingMetadata(val backingDownAllowed: Boolean, val tcTokenUrl: String) : State()
+        class FetchingMetadataFailed(val backingDownAllowed: Boolean, val tcTokenUrl: String) : State()
+        class RequestAttributeConfirmation(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback) : State()
+        class SubmitAttributeConfirmation(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback) : State()
+        class RevisitAttributes(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val pinCallback: PinCallback) : State()
+        class PinInput(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val callback: PinCallback) : State()
+        class PinInputRetry(val callback: PinCallback) : State()
+        class PinEntered(val pin: String, val secondTime: Boolean, val callback: PinCallback) : State()
+        class CanRequested(val pin: String?) : State()
+        class WaitingForCardAttachment(val pin: String?) : State()
+        class Finished(val redirectUrl: String) : State()
 
-        object CardDeactivated: State()
-        object CardBlocked: State()
-        class CardUnreadable(val redirectUrl: String?): State()
+        object CardDeactivated : State()
+        object CardBlocked : State()
+        class CardUnreadable(val redirectUrl: String?) : State()
 
-        object Invalid: State()
+        object Invalid : State()
     }
 
     sealed class Event {
-        data class Initialize(val backingDownAllowed: Boolean, val tcTokenUrl: String): Event()
-        object StartedFetchingMetadata: Event()
-        data class FrameworkRequestsAttributeConfirmation(val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback): Event()
-        object ConfirmAttributes: Event()
-        data class FrameworkRequestsPin(val callback: PinCallback): Event()
-        data class EnterPin(val pin: String): Event()
-        object FrameworkRequestsCan: Event()
-        object RequestCardInsertion: Event()
-        object RetryAfterError: Event()
-        data class Finish(val redirectUrl: String): Event()
+        data class Initialize(val backingDownAllowed: Boolean, val tcTokenUrl: String) : Event()
+        object StartedFetchingMetadata : Event()
+        data class FrameworkRequestsAttributeConfirmation(val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback) : Event()
+        object ConfirmAttributes : Event()
+        data class FrameworkRequestsPin(val callback: PinCallback) : Event()
+        data class EnterPin(val pin: String) : Event()
+        object FrameworkRequestsCan : Event()
+        object RequestCardInsertion : Event()
+        object RetryAfterError : Event()
+        data class Finish(val redirectUrl: String) : Event()
 
-        data class Error(val exception: IdCardInteractionException): Event()
+        data class Error(val exception: IdCardInteractionException) : Event()
 
-        object Back: Event()
-        object Invalidate: Event()
+        object Back : Event()
+        object Invalidate : Event()
     }
 
     fun transition(event: Event) {

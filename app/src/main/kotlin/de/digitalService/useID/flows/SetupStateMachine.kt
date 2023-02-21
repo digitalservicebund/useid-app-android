@@ -12,34 +12,38 @@ class SetupStateMachine(initialState: State) {
 
     private val logger by getLogger()
 
-    private val _state: MutableStateFlow<Pair<Event, State>> = MutableStateFlow(Pair(
-        Event.Invalidate, initialState))
+    private val _state: MutableStateFlow<Pair<Event, State>> = MutableStateFlow(
+        Pair(
+            Event.Invalidate,
+            initialState
+        )
+    )
     val state: StateFlow<Pair<Event, State>>
-    get() = _state
+        get() = _state
 
     sealed class State {
-        object Invalid: State()
+        object Invalid : State()
 
-        class Intro(val tcTokenUrl: String?): State()
-        class SkippingToIdentRequested(val tcTokenUrl: String): State()
-        class StartSetup(val tcTokenUrl: String?): State()
-        class PinReset(val tcTokenUrl: String?): State()
-        class PinManagement(val tcTokenUrl: String?): State()
-        class PinManagementFinished(val tcTokenUrl: String?): State()
-        class IdentAfterFinishedSetupRequested(val tcTokenUrl: String): State()
-        object SetupFinished: State()
+        class Intro(val tcTokenUrl: String?) : State()
+        class SkippingToIdentRequested(val tcTokenUrl: String) : State()
+        class StartSetup(val tcTokenUrl: String?) : State()
+        class PinReset(val tcTokenUrl: String?) : State()
+        class PinManagement(val tcTokenUrl: String?) : State()
+        class PinManagementFinished(val tcTokenUrl: String?) : State()
+        class IdentAfterFinishedSetupRequested(val tcTokenUrl: String) : State()
+        object SetupFinished : State()
     }
 
     sealed class Event {
-        data class OfferSetup(val tcTokenUrl: String?): Event()
-        object SkipSetup: Event()
-        object StartSetup: Event()
-        object ResetPin: Event()
-        object StartPinManagement: Event()
-        object FinishPinManagement: Event()
-        object ConfirmFinish: Event()
+        data class OfferSetup(val tcTokenUrl: String?) : Event()
+        object SkipSetup : Event()
+        object StartSetup : Event()
+        object ResetPin : Event()
+        object StartPinManagement : Event()
+        object FinishPinManagement : Event()
+        object ConfirmFinish : Event()
 
-        object SubsequentFlowBackedDown: Event()
+        object SubsequentFlowBackedDown : Event()
         object Back : Event()
         object Invalidate : Event()
     }

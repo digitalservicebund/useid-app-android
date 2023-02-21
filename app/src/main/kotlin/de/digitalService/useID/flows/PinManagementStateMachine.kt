@@ -15,56 +15,60 @@ class PinManagementStateMachine(initialState: State) {
 
     private val logger by getLogger()
 
-    private val _state: MutableStateFlow<Pair<Event, State>> = MutableStateFlow(Pair(
-        Event.Invalidate, initialState))
+    private val _state: MutableStateFlow<Pair<Event, State>> = MutableStateFlow(
+        Pair(
+            Event.Invalidate,
+            initialState
+        )
+    )
     val state: StateFlow<Pair<Event, State>>
         get() = _state
 
     sealed class State {
         object Invalid : State()
 
-        class OldTransportPinInput(val identificationPending: Boolean): State()
-        object OldPersonalPinInput: State()
-        class NewPinIntro(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String): State()
-        class NewPinInput(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String): State()
-        class NewPinConfirmation(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String): State()
-        class ReadyForScan(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String): State()
-        class WaitingForFirstCardAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String): State()
-        class WaitingForCardReAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String): State()
-        class FrameworkReadyForPinManagement(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val callback: PinManagementCallback): State()
-        class CanRequested(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean): State()
-        object Finished: State()
-        object Cancelled: State()
-        class OldTransportPinRetry(val identificationPending: Boolean, val newPin: String, val callback: PinManagementCallback): State()
-        class OldPersonalPinRetry(val newPin: String, val callback: PinManagementCallback): State()
+        class OldTransportPinInput(val identificationPending: Boolean) : State()
+        object OldPersonalPinInput : State()
+        class NewPinIntro(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String) : State()
+        class NewPinInput(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String) : State()
+        class NewPinConfirmation(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
+        class ReadyForScan(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
+        class WaitingForFirstCardAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
+        class WaitingForCardReAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
+        class FrameworkReadyForPinManagement(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val callback: PinManagementCallback) : State()
+        class CanRequested(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : State()
+        object Finished : State()
+        object Cancelled : State()
+        class OldTransportPinRetry(val identificationPending: Boolean, val newPin: String, val callback: PinManagementCallback) : State()
+        class OldPersonalPinRetry(val newPin: String, val callback: PinManagementCallback) : State()
 
-        object CardDeactivated: State()
-        object CardBlocked: State()
-        data class ProcessFailed(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val firstScan: Boolean): State()
-        object UnknownError: State()
+        object CardDeactivated : State()
+        object CardBlocked : State()
+        data class ProcessFailed(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val firstScan: Boolean) : State()
+        object UnknownError : State()
     }
 
     sealed class Event {
-        data class StartPinManagement(val identificationPending: Boolean, val transportPin: Boolean): Event()
-        data class EnterOldPin(val oldPin: String): Event()
-        object ConfirmNewPinIntro: Event()
-        data class EnterNewPin(val newPin: String): Event()
-        data class ConfirmNewPin(val newPin: String): Event()
-        object RetryNewPinConfirmation: Event()
-        object RequestCardInsertion: Event()
-        data class FrameworkRequestsChangedPin(val pinManagementCallback: PinManagementCallback): Event()
-        object FrameworkRequestsCan: Event()
-        object Finish: Event()
+        data class StartPinManagement(val identificationPending: Boolean, val transportPin: Boolean) : Event()
+        data class EnterOldPin(val oldPin: String) : Event()
+        object ConfirmNewPinIntro : Event()
+        data class EnterNewPin(val newPin: String) : Event()
+        data class ConfirmNewPin(val newPin: String) : Event()
+        object RetryNewPinConfirmation : Event()
+        object RequestCardInsertion : Event()
+        data class FrameworkRequestsChangedPin(val pinManagementCallback: PinManagementCallback) : Event()
+        object FrameworkRequestsCan : Event()
+        object Finish : Event()
 
-        data class Error(val exception: IdCardInteractionException): Event()
-        object ProceedAfterError: Event()
+        data class Error(val exception: IdCardInteractionException) : Event()
+        object ProceedAfterError : Event()
 
-        object Back: Event()
+        object Back : Event()
         object Invalidate : Event()
     }
 
-    sealed class Error: kotlin.Error() {
-        object PinConfirmationFailed: Error()
+    sealed class Error : kotlin.Error() {
+        object PinConfirmationFailed : Error()
     }
 
     fun transition(event: Event) {
@@ -84,8 +88,8 @@ class PinManagementStateMachine(initialState: State) {
 
             is Event.EnterOldPin -> {
                 when (val currentState = state.value.second) {
-                    is State.OldTransportPinInput -> State.NewPinIntro(currentState.identificationPending,true, event.oldPin)
-                    is State.OldPersonalPinInput -> State.NewPinIntro(false,false, event.oldPin)
+                    is State.OldTransportPinInput -> State.NewPinIntro(currentState.identificationPending, true, event.oldPin)
+                    is State.OldPersonalPinInput -> State.NewPinIntro(false, false, event.oldPin)
                     is State.OldTransportPinRetry -> State.FrameworkReadyForPinManagement(currentState.identificationPending, true, event.oldPin, currentState.newPin, currentState.callback)
                     is State.OldPersonalPinRetry -> State.FrameworkReadyForPinManagement(false, false, event.oldPin, currentState.newPin, currentState.callback)
                     else -> throw IllegalArgumentException()

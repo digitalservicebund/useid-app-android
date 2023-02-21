@@ -39,7 +39,8 @@ fun SetupCanConfirmTransportPin(viewModel: SetupCanConfirmTransportPinViewModelI
 }
 
 data class SetupCanConfirmTransportPinNavArgs(
-    val transportPin: String
+    val transportPin: String,
+    val identificationPending: Boolean
 )
 
 interface SetupCanConfirmTransportPinViewModelInterface {
@@ -59,11 +60,11 @@ class SetupCanConfirmTransportPinViewModel @Inject constructor(
 ) : ViewModel(), SetupCanConfirmTransportPinViewModelInterface {
     override val transportPin: String
     override val identificationPending: Boolean
-        get() = false //setupCoordinator.identificationPending
 
     init {
         val args = SetupCanConfirmTransportPinDestination.argsFrom(savedStateHandle)
         transportPin = args.transportPin
+        identificationPending = args.identificationPending
     }
 
     override fun onConfirm() {

@@ -238,7 +238,7 @@ class PinManagementCoordinatorTest {
             testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify { mockCanCoordinator.startPinManagementCanFlow(oldPin, newPin, true) }
+            verify { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, true) }
         }
 
         @ParameterizedTest
@@ -253,7 +253,7 @@ class PinManagementCoordinatorTest {
             testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify { mockCanCoordinator.startPinManagementCanFlow(oldPin, newPin, false) }
+            verify { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, false) }
         }
 
         @ParameterizedTest
@@ -268,7 +268,7 @@ class PinManagementCoordinatorTest {
             testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify(exactly = 0) { mockCanCoordinator.startPinManagementCanFlow(oldPin, newPin, true) }
+            verify(exactly = 0) { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, true) }
         }
 
         @ParameterizedTest
@@ -283,7 +283,7 @@ class PinManagementCoordinatorTest {
             testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify(exactly = 0) { mockCanCoordinator.startPinManagementCanFlow(oldPin, newPin, false) }
+            verify(exactly = 0) { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, false) }
         }
 
         @ParameterizedTest
@@ -748,7 +748,7 @@ class PinManagementCoordinatorTest {
             val newPin = "000000"
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
-            every { mockCanCoordinator.startPinManagementCanFlow(oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.CANCELLED)
+            every { mockCanCoordinator.startPinManagementCanFlow(false, oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.CANCELLED)
 
             val state = PinManagementStateMachine.State.CanRequested(false, true, oldPin, newPin, shortFlow)
             stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)
@@ -776,7 +776,7 @@ class PinManagementCoordinatorTest {
             val newPin = "000000"
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
-            every { mockCanCoordinator.startPinManagementCanFlow(oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.SKIPPED)
+            every { mockCanCoordinator.startPinManagementCanFlow(false, oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.SKIPPED)
 
             val state = PinManagementStateMachine.State.CanRequested(false, true, oldPin, newPin, shortFlow)
             stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)

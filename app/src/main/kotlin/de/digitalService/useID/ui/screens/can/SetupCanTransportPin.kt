@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,11 +15,11 @@ import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
 import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.destinations.SetupCanTransportPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
-@Destination
+@Destination(navArgsDelegate = SetupCanTransportPinNavArgs::class)
 @Composable
 fun SetupCanTransportPin(
     modifier: Modifier = Modifier,
@@ -39,6 +40,10 @@ fun SetupCanTransportPin(
     )
 }
 
+data class SetupCanTransportPinNavArgs(
+    val identificationPending: Boolean
+)
+
 interface SetupCanTransportPinViewModelInterface {
     val identificationPending: Boolean
 
@@ -49,12 +54,15 @@ interface SetupCanTransportPinViewModelInterface {
 @HiltViewModel
 class SetupCanTransportPinViewModel @Inject constructor(
     private val canCoordinator: CanCoordinator,
-    private val setupCoordinator: SetupCoordinator
+    savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupCanTransportPinViewModelInterface {
 
     override val identificationPending: Boolean
-        get() = false //setupCoordinator.identificationPending
+
+    init {
+        identificationPending = SetupCanTransportPinDestination.argsFrom(savedStateHandle).identificationPending
+    }
 
     override fun onDoneClicked(pin: String) {
         canCoordinator.onPinEntered(pin)

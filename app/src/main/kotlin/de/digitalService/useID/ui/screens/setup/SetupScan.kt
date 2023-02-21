@@ -19,7 +19,6 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.screens.destinations.SetupScanDestination
 import de.digitalService.useID.ui.theme.UseIdTheme

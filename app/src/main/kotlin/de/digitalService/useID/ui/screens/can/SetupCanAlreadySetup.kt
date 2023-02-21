@@ -14,17 +14,18 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.destinations.SetupCanAlreadySetupDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
-@Destination
+@Destination(navArgsDelegate = SetupCanAlreadySetupNavArgs::class)
 @Composable
 fun SetupCanAlreadySetup(viewModel: SetupCanAlreadySetupViewModelInterface = hiltViewModel<SetupCanAlreadySetupViewModel>()) {
     val bodyString = if (viewModel.identificationPending) {
@@ -78,6 +79,10 @@ fun SetupCanAlreadySetup(viewModel: SetupCanAlreadySetupViewModelInterface = hil
     }
 }
 
+data class SetupCanAlreadySetupNavArgs(
+    val identificationPending: Boolean
+)
+
 interface SetupCanAlreadySetupViewModelInterface {
     val identificationPending: Boolean
 
@@ -89,10 +94,13 @@ interface SetupCanAlreadySetupViewModelInterface {
 @HiltViewModel
 class SetupCanAlreadySetupViewModel @Inject constructor(
     private val canCoordinator: CanCoordinator,
-    private val setupCoordinator: SetupCoordinator
+    savedStateHandle: SavedStateHandle
 ) : ViewModel(), SetupCanAlreadySetupViewModelInterface {
     override val identificationPending: Boolean
-        get() = false //setupCoordinator.identificationPending
+
+    init {
+        identificationPending = SetupCanAlreadySetupDestination.argsFrom(savedStateHandle).identificationPending
+    }
 
     override fun onBack() {
         canCoordinator.onBack()

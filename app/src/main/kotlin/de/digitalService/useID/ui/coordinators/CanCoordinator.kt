@@ -1,7 +1,6 @@
 package de.digitalService.useID.ui.coordinators
 
 import de.digitalService.useID.flows.CanStateMachine
-import de.digitalService.useID.flows.IdentificationStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardManager
@@ -40,16 +39,16 @@ class CanCoordinator @Inject constructor(
                     navigator.pop()
                 } else {
                     when (val state = eventAndPair.second) {
-                        is CanStateMachine.State.PinManagement.Intro -> navigator.navigate(SetupCanConfirmTransportPinDestination(state.oldPin))
-                        is CanStateMachine.State.PinManagement.IdAlreadySetup -> navigator.navigate(SetupCanAlreadySetupDestination)
+                        is CanStateMachine.State.PinManagement.Intro -> navigator.navigate(SetupCanConfirmTransportPinDestination(state.oldPin, state.identificationPending))
+                        is CanStateMachine.State.PinManagement.IdAlreadySetup -> navigator.navigate(SetupCanAlreadySetupDestination(state.identificationPending))
                         is CanStateMachine.State.PinManagement.PinReset, is CanStateMachine.State.Ident.PinReset -> navigator.navigate(CanResetPersonalPinDestination)
-                        is CanStateMachine.State.PinManagement.CanIntro -> navigator.navigate(SetupCanIntroDestination(!state.shortFlow))
+                        is CanStateMachine.State.PinManagement.CanIntro -> navigator.navigate(SetupCanIntroDestination(!state.shortFlow, state.identificationPending))
                         is CanStateMachine.State.PinManagement.CanInput -> navigator.navigate(CanInputDestination(false))
                         is CanStateMachine.State.PinManagement.CanInputRetry -> {
-                            navigator.navigate(SetupCanIntroDestination(false))
+                            navigator.navigate(SetupCanIntroDestination(false, state.identificationPending))
                             navigator.navigate(CanInputDestination(true))
                         }
-                        is CanStateMachine.State.PinManagement.PinInput -> navigator.navigate(SetupCanTransportPinDestination)
+                        is CanStateMachine.State.PinManagement.PinInput -> navigator.navigate(SetupCanTransportPinDestination(state.identificationPending))
                         is CanStateMachine.State.PinManagement.CanAndPinEntered -> state.callback(state.oldPin, state.can, state.newPin)
 
                         is CanStateMachine.State.Ident.Intro -> navigator.navigate(IdentificationCanPinForgottenDestination)
@@ -71,9 +70,9 @@ class CanCoordinator @Inject constructor(
         }
     }
 
-    fun startPinManagementCanFlow(oldPin: String, newPin: String, shortFlow: Boolean): Flow<SubCoordinatorState> {
+    fun startPinManagementCanFlow(identificationPending: Boolean, oldPin: String, newPin: String, shortFlow: Boolean): Flow<SubCoordinatorState> {
         _stateFlow.value = SubCoordinatorState.ACTIVE
-        handleEidEventsForPinManagement(oldPin, newPin, shortFlow)
+        handleEidEventsForPinManagement(identificationPending, oldPin, newPin, shortFlow)
         return stateFlow
     }
 
@@ -149,7 +148,7 @@ class CanCoordinator @Inject constructor(
         }
     }
 
-    private fun handleEidEventsForPinManagement(pin: String, newPin: String, shortFlow: Boolean) {
+    private fun handleEidEventsForPinManagement(identificationPending: Boolean, pin: String, newPin: String, shortFlow: Boolean) {
         eIdEventFlowCoroutineScope?.cancel()
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             idCardManager.eidFlow.catch { exception ->
@@ -157,7 +156,7 @@ class CanCoordinator @Inject constructor(
             }.collect { event ->
                 when (event) {
                     is EidInteractionEvent.RequestCanAndChangedPin -> {
-                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForPinManagement(pin, newPin, shortFlow, event.pinCallback))
+                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForPinManagement(identificationPending, pin, newPin, shortFlow, event.pinCallback))
                     }
                     is EidInteractionEvent.AuthenticationSuccessful, EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult, is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()

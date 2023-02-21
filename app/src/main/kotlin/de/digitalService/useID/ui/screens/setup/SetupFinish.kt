@@ -15,7 +15,6 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupFinishDestination
-import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataNavArgs
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
