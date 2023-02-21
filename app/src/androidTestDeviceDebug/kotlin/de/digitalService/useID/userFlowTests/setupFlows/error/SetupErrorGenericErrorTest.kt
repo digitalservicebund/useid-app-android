@@ -92,7 +92,7 @@ class SetupErrorGenericErrorTest {
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
-        val setupScan = TestScreen.SetupScan(composeTestRule)
+        val setupScan = TestScreen.Scan(composeTestRule)
         val errorGenericError = TestScreen.ErrorGenericError(composeTestRule)
         val setupFinish = TestScreen.SetupFinish(composeTestRule)
         val home = TestScreen.Home(composeTestRule)

@@ -17,7 +17,6 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.userFlowTests.utils.TestElement
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -94,7 +93,7 @@ class SetupAlreadyDoneTest {
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
-        val setupScan = TestScreen.SetupScan(composeTestRule)
+        val setupScan = TestScreen.Scan(composeTestRule)
         val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
         val setupCanAlreadySetup = TestScreen.SetupCanAlreadySetup(composeTestRule)
         val setupResetPersonalPin = TestScreen.ResetPersonalPin(composeTestRule)

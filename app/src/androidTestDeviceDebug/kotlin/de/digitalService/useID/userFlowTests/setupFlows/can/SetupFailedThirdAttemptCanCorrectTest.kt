@@ -92,7 +92,7 @@ class SetupFailedThirdAttemptCanCorrectTest {
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
-        val setupScan = TestScreen.SetupScan(composeTestRule)
+        val setupScan = TestScreen.Scan(composeTestRule)
         val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
         val setupCanAlreadySetup = TestScreen.SetupCanAlreadySetup(composeTestRule)
         val setupCanIntro = TestScreen.SetupCanIntro(composeTestRule)

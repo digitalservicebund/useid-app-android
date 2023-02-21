@@ -3,7 +3,6 @@ package de.digitalService.useID.userFlowTests.setupFlows
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.ui.res.stringResource
 import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.IdCardAttribute
 import de.digitalService.useID.ui.components.NavigationIcon
@@ -58,6 +57,69 @@ sealed class TestScreen {
                     TestElement.Tag(testRule, NavigationIcon.Back.name),
                     TestElement.Tag(testRule, NavigationIcon.Cancel.name),
                 )
+            }
+    }
+
+    data class Scan(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private var backAllowed = true
+        fun setBackAllowed(value: Boolean) : Scan {
+            backAllowed = value
+            return this
+        }
+
+        private var identPending = false
+        fun setIdentPending(value: Boolean) : Scan {
+            identPending = value
+            return this
+        }
+
+        private var progress = false
+        fun setProgress(value: Boolean) : Scan {
+            progress = value
+            return this
+        }
+
+        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_title)
+        private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_body)
+        private val progressIndicator = TestElement.Tag(testRule, progressIndicatorTag)
+
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+        val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
+        val navigationConfirmaDialog:  TestElement.NavigationConfirmDialog
+            get() {
+                return TestElement.NavigationConfirmDialog(testRule, identPending)
+            }
+
+        val nfcHelpBtn = TestElement.Text(testRule, resourceId = R.string.scan_helpNFC)
+        val scanHelpBtn = TestElement.Text(testRule, resourceId = R.string.scan_helpScanning)
+
+        val nfcDialog = TestElement.StandardDialog(
+            testRule,
+            titleResId = R.string.helpNFC_title,
+            dismissBtnId = R.string.scanError_close
+        )
+
+        val helpDialog = TestElement.StandardDialog(
+            testRule,
+            titleResId = R.string.scanError_cardUnreadable_title,
+            dismissBtnId = R.string.scanError_close
+        )
+
+        override val expectedElements: List<TestElement>
+            get() {
+                return listOf<TestElement>(title, body, nfcHelpBtn, scanHelpBtn)
+                    .plus(listOf(progressIndicator).takeIf { progress } ?: listOf())
+                    .plus(listOf(back).takeIf { backAllowed } ?: listOf())
+                    .plus(listOf(cancel).takeIf { !backAllowed } ?: listOf())
+            }
+
+        override val unexpectedElements: List<TestElement>
+            get() {
+                return listOf<TestElement>(navigationConfirmaDialog, nfcDialog, helpDialog)
+                    .plus(listOf<TestElement>(progressIndicator).takeIf { !progress } ?: listOf())
+                    .plus(listOf(back).takeIf { !backAllowed } ?: listOf())
+                    .plus(listOf(cancel).takeIf { backAllowed } ?: listOf())
             }
     }
 
@@ -230,69 +292,6 @@ sealed class TestScreen {
                     TestElement.Tag(testRule, NavigationIcon.Cancel.name),
                     pinsDontMatchDialog
                 )
-            }
-    }
-
-    data class SetupScan(override val testRule: ComposeTestRule) : TestScreen() {
-
-        private var backAllowed = true
-        fun setBackAllowed(value: Boolean) : SetupScan {
-            backAllowed = value
-            return this
-        }
-
-        private var identPending = false
-        fun setIdentPending(value: Boolean) : SetupScan {
-            identPending = value
-            return this
-        }
-
-        private var progress = false
-        fun setProgress(value: Boolean) : SetupScan {
-            progress = value
-            return this
-        }
-
-        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_title)
-        private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_body)
-        private val progressIndicator = TestElement.Tag(testRule, progressIndicatorTag)
-
-        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
-        val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
-        val navigationConfirmaDialog:  TestElement.NavigationConfirmDialog
-            get() {
-                return TestElement.NavigationConfirmDialog(testRule, identPending)
-            }
-
-        val nfcHelpBtn = TestElement.Text(testRule, resourceId = R.string.scan_helpNFC)
-        val scanHelpBtn = TestElement.Text(testRule, resourceId = R.string.scan_helpScanning)
-
-        val nfcDialog = TestElement.StandardDialog(
-            testRule,
-            titleResId = R.string.helpNFC_title,
-            dismissBtnId = R.string.scanError_close
-        )
-
-        val helpDialog = TestElement.StandardDialog(
-            testRule,
-            titleResId = R.string.scanError_cardUnreadable_title,
-            dismissBtnId = R.string.scanError_close
-        )
-
-        override val expectedElements: List<TestElement>
-            get() {
-                return listOf<TestElement>(title, body, nfcHelpBtn, scanHelpBtn)
-                    .plus(listOf(progressIndicator).takeIf { progress } ?: listOf())
-                    .plus(listOf(back).takeIf { backAllowed } ?: listOf())
-                    .plus(listOf(cancel).takeIf { !backAllowed } ?: listOf())
-            }
-
-        override val unexpectedElements: List<TestElement>
-            get() {
-                return listOf<TestElement>(navigationConfirmaDialog, nfcDialog, helpDialog)
-                    .plus(listOf<TestElement>(progressIndicator).takeIf { !progress } ?: listOf())
-                    .plus(listOf(back).takeIf { !backAllowed } ?: listOf())
-                    .plus(listOf(cancel).takeIf { backAllowed } ?: listOf())
             }
     }
 

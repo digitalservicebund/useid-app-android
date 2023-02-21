@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
 import android.net.Uri
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.espresso.intent.Intents.intended
@@ -87,13 +86,6 @@ class IdentSuccessfulTest {
     @Before
     fun before() {
         hiltRule.inject()
-
-        intending(not(isInternal())).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                null
-            )
-        )
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -113,20 +105,20 @@ class IdentSuccessfulTest {
             )
         }
 
-        val tcTokenUrl = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
-        val redirectUrl = "some.url.com" // TODO: what to use here?
+        val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val redirectUrl = "test.url.com"
         val personalPin = "123456"
 
         // Define screens to be tested
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
         val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
         val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
-        val identificationScan = TestScreen.SetupScan(composeTestRule) // TODO: rename test screen? Remove "setup"?
+        val identificationScan = TestScreen.Scan(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
 
-        appCoordinator.handleDeepLink(tcTokenUrl)
+        appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.AuthenticationStarted
@@ -178,13 +170,18 @@ class IdentSuccessfulTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
-        advanceUntilIdle()
-
-        intended(allOf(
+        intending(allOf(
             hasAction(Intent.ACTION_VIEW),
             hasData(redirectUrl),
             hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK)
-        ))
+        )).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
+
+        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+        advanceUntilIdle()
     }
 }

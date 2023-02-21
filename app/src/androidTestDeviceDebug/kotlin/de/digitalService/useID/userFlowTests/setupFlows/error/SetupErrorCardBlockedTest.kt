@@ -91,7 +91,7 @@ class SetupErrorCardBlockedTest {
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
         val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
-        val setupScan = TestScreen.SetupScan(composeTestRule)
+        val setupScan = TestScreen.Scan(composeTestRule)
         val errorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
