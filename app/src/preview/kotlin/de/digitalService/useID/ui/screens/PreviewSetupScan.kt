@@ -5,6 +5,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +29,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
+import javax.inject.Singleton
 
 @Composable
 fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: SetupScanViewModelInterface) {
@@ -54,27 +58,37 @@ fun PreviewSetupScan(viewModel: PreviewSetupScanViewModel, viewModelInner: Setup
     }
 }
 
+@Singleton
+class SetupPreviewHelper @Inject constructor() {
+    var firstTry: Boolean = true
+}
+
 @HiltViewModel
 class PreviewSetupScanViewModel @Inject constructor(
     private val trackerManager: TrackerManagerType,
-    private val idCardManager: IdCardManager
+    private val idCardManager: IdCardManager,
+    private val setupPreviewHelper: SetupPreviewHelper
 ) : ViewModel() {
     fun simulateSuccess() {
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(null) {_, _ ->
+            fun success() {
                 CoroutineScope(Dispatchers.Main).launch {
-                    delay(1000L)
-                    idCardManager.injectEvent(EidInteractionEvent.CardInteractionComplete)
-                    delay(1000L)
-                    idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
-                    delay(1000L)
                     idCardManager.injectEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
                     delay(100L)
                     idCardManager.injectEvent(EidInteractionEvent.Idle)
                 }
-            })
+            }
+
+            if (setupPreviewHelper.firstTry) {
+                idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(null) { _, _ ->
+                    success()
+                })
+            } else {
+                success()
+                setupPreviewHelper.firstTry = true
+            }
         }
     }
 
@@ -82,11 +96,24 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2) { _, _ ->
+            fun requestChangedPin() {
                 viewModelScope.launch {
-                    idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2, { _, _ -> }))
+                    idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2) { _, _ ->
+                        CoroutineScope(Dispatchers.Main).launch {
+                            idCardManager.injectEvent(EidInteractionEvent.RequestCardInsertion)
+                        }
+                    })
                 }
-            })
+            }
+
+            if (setupPreviewHelper.firstTry) {
+                idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(2) { _, _ ->
+                    requestChangedPin()
+                })
+                setupPreviewHelper.firstTry = false
+            } else {
+                requestChangedPin()
+            }
         }
         trackerManager.trackScreen("firstTimeUser/incorrectTransportPIN")
     }
@@ -96,6 +123,7 @@ class PreviewSetupScanViewModel @Inject constructor(
             simulateWaiting()
 
             idCardManager.injectException(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
+            setupPreviewHelper.firstTry = true
         }
         trackerManager.trackScreen("firstTimeUser/cardUnreadable")
     }
@@ -109,6 +137,8 @@ class PreviewSetupScanViewModel @Inject constructor(
                     idCardManager.injectEvent(EidInteractionEvent.RequestCardInsertion)
                 }
             }))
+
+            setupPreviewHelper.firstTry = false
         }
         trackerManager.trackScreen("firstTimeUser/cardSuspended")
     }
@@ -118,6 +148,7 @@ class PreviewSetupScanViewModel @Inject constructor(
             simulateWaiting()
 
             idCardManager.injectEvent(EidInteractionEvent.RequestPuk { _ -> })
+            setupPreviewHelper.firstTry = true
         }
         trackerManager.trackScreen("firstTimeUser/cardBlocked")
     }
@@ -127,14 +158,16 @@ class PreviewSetupScanViewModel @Inject constructor(
             simulateWaiting()
 
             idCardManager.injectException(IdCardInteractionException.CardDeactivated)
+            setupPreviewHelper.firstTry = true
         }
         trackerManager.trackScreen("firstTimeUser/cardDeactivated")
     }
 
     private suspend fun simulateWaiting() {
         idCardManager.injectEvent(EidInteractionEvent.CardRecognized)
-        delay(3000L)
-//        idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
+        delay(2000L)
+        idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
+        delay(100L)
     }
 }
 
@@ -143,7 +176,7 @@ class PreviewSetupScanViewModel @Inject constructor(
 fun PreviewPreviewSetupScan() {
     UseIdTheme {
         PreviewSetupScan(
-            PreviewSetupScanViewModel(PreviewTrackerManager(), IdCardManager()),
+            PreviewSetupScanViewModel(PreviewTrackerManager(), IdCardManager(), SetupPreviewHelper()),
             object : SetupScanViewModelInterface {
                 override val backAllowed: Boolean = false
                 override val identificationPending: Boolean = false

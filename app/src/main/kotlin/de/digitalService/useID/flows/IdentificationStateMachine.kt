@@ -72,10 +72,6 @@ class IdentificationStateMachine(initialState: State) {
     private fun nextState(event: Event): State {
         return when (event) {
             is Event.Initialize -> {
-//                when (state.value.second) {
-//                    is State.Invalid -> State.StartIdentification(event.backingDownAllowed, event.tcTokenUrl)
-//                    else -> throw IllegalArgumentException()
-//                }
                 State.StartIdentification(event.backingDownAllowed, event.tcTokenUrl)
             }
 
