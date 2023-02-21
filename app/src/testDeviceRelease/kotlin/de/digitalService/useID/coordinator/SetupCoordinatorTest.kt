@@ -133,7 +133,7 @@ class SetupCoordinatorTest {
 
         setupCoordinator.setupWithoutPinLetter()
 
-        verify(exactly = 1) { mockNavigator.navigate(ResetPersonalPinDestination) }
+        verify(exactly = 1) { mockNavigator.navigate(SetupResetPersonalPinDestination) }
     }
 
     @Test

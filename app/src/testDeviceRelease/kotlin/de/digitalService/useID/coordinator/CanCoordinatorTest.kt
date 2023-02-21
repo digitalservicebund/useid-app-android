@@ -2,7 +2,11 @@ package de.digitalService.useID.coordinator
 
 import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
+import de.digitalService.useID.flows.CanStateMachine
+import de.digitalService.useID.flows.PinCallback
+import de.digitalService.useID.flows.PinManagementCallback
 import de.digitalService.useID.idCardInterface.*
+import de.digitalService.useID.stateMachines.CanStateMachineTest
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.SubCoordinatorState
@@ -10,6 +14,7 @@ import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.can.IdentificationCanPinForgotten
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProvider
+import de.digitalService.useID.util.EidInteractionEventTypeFactory
 import de.jodamob.junit5.DefaultTypeFactory
 import de.jodamob.junit5.SealedClassesSource
 import io.mockk.*
@@ -18,19 +23,20 @@ import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import org.openecard.common.sal.Assert
 import kotlin.reflect.KClass
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MockKExtension::class)
 class CanCoordinatorTest {
 
@@ -41,23 +47,25 @@ class CanCoordinatorTest {
     lateinit var mockIdCardManager: IdCardManager
 
     @MockK(relaxUnitFun = true)
+    lateinit var mockCanStateMachine: CanStateMachine
+
+    @MockK(relaxUnitFun = true)
     lateinit var mockCoroutineContextProvider: CoroutineContextProvider
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
 
-    private val destinationSlot = slot<Direction>()
-
-    private val can = "123456"
-    private val pin = "000000"
-    private val newPin = "000000"
+    private val navigationDestinationSlots = mutableListOf<Direction>()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(dispatcher)
 
-        every { mockAppNavigator.navigate(capture(destinationSlot)) } returns Unit
+        navigationDestinationSlots.clear()
+        every { mockAppNavigator.navigate(capture(navigationDestinationSlots)) } returns Unit
+
+        every { mockCoroutineContextProvider.Default } returns dispatcher
         every { mockCoroutineContextProvider.IO } returns dispatcher
 
         // For supporting destinations with String nav arguments
@@ -66,276 +74,523 @@ class CanCoordinatorTest {
         every { Uri.decode(any()) } answers { value }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @Nested
+    inner class CanStateChangeHandling {
+        private fun testTransition(event: CanStateMachine.Event, state: CanStateMachine.State, testScope: TestScope) {
+            val stateFlow: MutableStateFlow<Pair<CanStateMachine.Event, CanStateMachine.State>> = MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
+            every { mockCanStateMachine.state } returns stateFlow
+
+            val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+
+            stateFlow.value = Pair(event, state)
+            testScope.advanceUntilIdle()
+        }
+
+        @Nested
+        inner class PinManagement {
+            @ParameterizedTest
+            @SealedClassesSource(names = [] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = CanStateMachineTest.CanPinManagementStateFactory::class)
+            fun back(state: CanStateMachine.State.PinManagement) = runTest {
+                testTransition(CanStateMachine.Event.Back, state, this)
+
+                verify { mockAppNavigator.pop() }
+            }
+
+            @Test
+            fun intro() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.Intro(oldPin, {_, _, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+
+                Assertions.assertEquals(SetupCanConfirmTransportPinDestination(oldPin).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `ID already setup`() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.IdAlreadySetup(oldPin, {_, _, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(SetupCanAlreadySetupDestination) }
+            }
+
+            @Test
+            fun `PIN Reset`() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.PinReset(oldPin, {_, _, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(CanResetPersonalPinDestination) }
+            }
+
+            @Test
+            fun `CAN intro without PIN`() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.CanIntro(oldPin, {_, _, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+
+                Assertions.assertEquals(SetupCanIntroDestination(true).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `CAN intro with PIN`() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.CanIntro(oldPin, {_, _, _ -> }, "000000")
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+
+                Assertions.assertEquals(SetupCanIntroDestination(false).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `CAN input`() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.CanInput(oldPin, {_, _, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+
+                Assertions.assertEquals(CanInputDestination(false).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `CAN input retrying`() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.CanInputRetry(oldPin, {_, _, _ -> }, "000000")
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify(exactly = 2) { mockAppNavigator.navigate(any()) }
+
+                Assertions.assertEquals(SetupCanIntroDestination(false).route, navigationDestinationSlots.first().route)
+                Assertions.assertEquals(CanInputDestination(true).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `PIN input`() = runTest {
+                val oldPin = "123456"
+                val newState = CanStateMachine.State.PinManagement.PinInput(oldPin, {_, _, _ -> }, "654321")
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(SetupCanTransportPinDestination) }
+            }
+
+            @Test
+            fun `CAN and PIN entered`() = runTest {
+                val oldPin = "123456"
+                val newPin = "000000"
+                val can = "654321"
+                val callback: PinManagementCallback = mockk()
+
+                val newState = CanStateMachine.State.PinManagement.CanAndPinEntered(oldPin, callback, can, newPin)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { callback(oldPin, can, newPin) }
+            }
+        }
+
+
+        @Nested
+        inner class Ident {
+            @ParameterizedTest
+            @SealedClassesSource(names = [] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = CanStateMachineTest.CanIdentStateFactory::class)
+            fun back(state: CanStateMachine.State.Ident) = runTest {
+                testTransition(CanStateMachine.Event.Back, state, this)
+
+                verify { mockAppNavigator.pop() }
+            }
+
+            @Test
+            fun intro() = runTest {
+                val newState = CanStateMachine.State.Ident.Intro({_, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(IdentificationCanPinForgottenDestination) }
+            }
+
+            @Test
+            fun `CAN intro without PIN`() = runTest {
+                val newState = CanStateMachine.State.Ident.CanIntro({_, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+                Assertions.assertEquals(IdentificationCanIntroDestination(true).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `CAN intro with PIN`() = runTest {
+                val newState = CanStateMachine.State.Ident.CanIntro({_, _ -> }, "123456")
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+                Assertions.assertEquals(IdentificationCanIntroDestination(false).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `CAN intro short flow`() = runTest {
+                val newState = CanStateMachine.State.Ident.CanIntroWithoutFlowIntro({_, _ -> }, "123456")
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+                Assertions.assertEquals(IdentificationCanIntroDestination(false).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `CAN input`() = runTest {
+                val newState = CanStateMachine.State.Ident.CanInput({_, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+                Assertions.assertEquals(CanInputDestination(false).route, navigationDestinationSlots.last().route)
+            }
+
+            @Test
+            fun `PIN Reset`() = runTest {
+                val newState = CanStateMachine.State.Ident.PinReset({_, _ -> }, null)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(CanResetPersonalPinDestination) }
+            }
+
+            @Test
+            fun `CAN input retrying`() = runTest {
+                val newState = CanStateMachine.State.Ident.CanInputRetry({_, _ -> }, "123456")
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(any()) }
+                Assertions.assertEquals(IdentificationCanPinForgottenDestination.route, navigationDestinationSlots[0].route)
+                Assertions.assertEquals(IdentificationCanIntroDestination(true).route, navigationDestinationSlots[1].route)
+                Assertions.assertEquals(CanInputDestination(true).route, navigationDestinationSlots[2].route)
+            }
+
+            @Test
+            fun `PIN input`() = runTest {
+                val newState = CanStateMachine.State.Ident.PinInput({_, _ -> }, "654321")
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { mockAppNavigator.navigate(IdentificationCanPinInputDestination) }
+            }
+
+            @Test
+            fun `CAN and PIN entered`() = runTest {
+                val pin = "123456"
+                val can = "654321"
+                val callback: PinCallback = mockk()
+
+                val newState = CanStateMachine.State.Ident.CanAndPinEntered(callback, can, pin)
+
+                testTransition(CanStateMachine.Event.Invalidate, newState, this)
+
+                verify { callback(pin, can) }
+            }
+        }
+    }
+
     @Test
-    fun identFlowLongOneCanAttempt() = runTest {
-        val mockedPinCallback = mockk<(String, String) -> Unit>(relaxed = true)
+    fun `start flow in PIN management`() = runTest {
+        every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
+        every { mockIdCardManager.eidFlow } returns flowOf()
 
-        val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestPinAndCan(mockedPinCallback))
-
-        every { mockIdCardManager.eidFlow } returns eIdFlow
-
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        advanceUntilIdle()
 
         Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
 
-        canCoordinator.startIdentCanFlow(null)
+        val oldPin = "123456"
+        val returnedStateFlow = canCoordinator.startPinManagementCanFlow(oldPin, null)
 
+        Assertions.assertEquals(returnedStateFlow, canCoordinator.stateFlow)
         Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
 
         advanceUntilIdle()
 
-        verify { mockAppNavigator.navigate(IdentificationCanPinForgottenDestination) }
-
-        canCoordinator.proceedWithThirdAttempt()
-
-        Assertions.assertEquals(IdentificationCanIntroDestination(true).route, destinationSlot.captured.route)
-
-        canCoordinator.finishIntro()
-
-        Assertions.assertEquals(CanInputDestination(false).route, destinationSlot.captured.route)
-
-        canCoordinator.onCanEntered(can)
-
-        verify { mockAppNavigator.navigate(IdentificationCanPinInputDestination) }
-        verify(exactly = 0) { mockedPinCallback(any(), any()) }
-
-        canCoordinator.onPinEntered(pin)
-
-        verify(exactly = 1) { mockedPinCallback(pin, can) }
-
-        eIdFlow.value = EidInteractionEvent.RequestCardInsertion
-
-        advanceUntilIdle()
-
-        eIdFlow.value = EidInteractionEvent.AuthenticationSuccessful
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
+        verify { mockIdCardManager.eidFlow }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    @Nested
+    inner class PinManagementEidEvents {
+        @Test
+        fun `handling requesting CAN and PIN in long flow`() = runTest {
+            every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockIdCardManager.eidFlow } returns eIdFlow
+
+            val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            val oldPin = "123456"
+            canCoordinator.startPinManagementCanFlow(oldPin, null)
+            advanceUntilIdle()
+
+            val pinManagementCallback: PinManagementCallback = mockk()
+            eIdFlow.value = EidInteractionEvent.RequestCanAndChangedPin(pinManagementCallback)
+            advanceUntilIdle()
+
+            verify { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForPinManagement(oldPin, null, pinManagementCallback)) }
+
+            eIdFlow.value = EidInteractionEvent.RequestCanAndChangedPin(pinManagementCallback)
+            advanceUntilIdle()
+
+            verify(exactly = 2) { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForPinManagement(oldPin, null, pinManagementCallback)) }
+        }
+
+        @Test
+        fun `handling requesting CAN and PIN in short flow`() = runTest {
+            every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockIdCardManager.eidFlow } returns eIdFlow
+
+            val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            val oldPin = "123456"
+            val newPin = "000000"
+            canCoordinator.startPinManagementCanFlow(oldPin, newPin)
+            advanceUntilIdle()
+
+            val pinManagementCallback: PinManagementCallback = mockk()
+            eIdFlow.value = EidInteractionEvent.RequestCanAndChangedPin(pinManagementCallback)
+            advanceUntilIdle()
+
+            verify { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForPinManagement(oldPin, newPin, pinManagementCallback)) }
+
+            eIdFlow.value = EidInteractionEvent.RequestCanAndChangedPin(pinManagementCallback)
+            advanceUntilIdle()
+
+            verify(exactly = 2) { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForPinManagement(oldPin, newPin, pinManagementCallback)) }
+        }
+
+        @ParameterizedTest
+        @SealedClassesSource(names = ["AuthenticationSuccessful", "ProcessCompletedSuccessfullyWithoutResult", "ProcessCompletedSuccessfullyWithRedirect", "Error"], factoryClass = EidInteractionEventTypeFactory::class)
+        fun `handling finishing events`(event: EidInteractionEvent) = runTest {
+            every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockIdCardManager.eidFlow } returns eIdFlow
+
+            val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            canCoordinator.startPinManagementCanFlow("123456", null)
+            advanceUntilIdle()
+
+            Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
+
+            eIdFlow.value = event
+            advanceUntilIdle()
+
+            verify { mockCanStateMachine.transition(CanStateMachine.Event.Invalidate) }
+            Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
+        }
+    }
+
     @Test
-    fun identFlowLongTwoCanAttempts() = runTest {
-        val mockedPinCallback = mockk<(String, String) -> Unit>(relaxed = true)
+    fun `start flow in ident`() = runTest {
+        every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
+        every { mockIdCardManager.eidFlow } returns flowOf()
 
-        val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestPinAndCan(mockedPinCallback))
-
-        every { mockIdCardManager.eidFlow } returns eIdFlow
-
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
-
-        val incorrectCan = "999999"
-        canCoordinator.startIdentCanFlow(null)
-        advanceUntilIdle()
-        canCoordinator.proceedWithThirdAttempt()
-        canCoordinator.finishIntro()
-        canCoordinator.onCanEntered(incorrectCan)
-        canCoordinator.onPinEntered(pin)
-
-        verify(exactly = 1) { mockedPinCallback(pin, incorrectCan) }
-
-        eIdFlow.value =  EidInteractionEvent.RequestPinAndCan(mockedPinCallback)
-
-        advanceUntilIdle()
-
-        verify(exactly = 2) { mockAppNavigator.navigate(IdentificationCanPinForgottenDestination) }
-        Assertions.assertEquals(CanInputDestination(true).route, destinationSlot.captured.route)
-
-        canCoordinator.onCanEntered(can)
-
-        advanceUntilIdle()
-
-        verify(exactly = 1) { mockedPinCallback(pin, can) }
-
-        eIdFlow.value = EidInteractionEvent.RequestCardInsertion
-
-        advanceUntilIdle()
-
-        eIdFlow.value = EidInteractionEvent.AuthenticationSuccessful
-
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
         advanceUntilIdle()
 
         Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
-    }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @ParameterizedTest
-    @SealedClassesSource(names = ["RequestPinAndCan"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = EidInteractionEventTypeFactory::class)
-    fun initializeIdentFlowWithUnexpectedEidEvent(event: EidInteractionEvent) = runTest {
-        every { mockIdCardManager.eidFlow } returns flowOf(event)
+        val returnedStateFlow = canCoordinator.startIdentCanFlow(null)
 
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
-
-        canCoordinator.startIdentCanFlow(null)
-
+        Assertions.assertEquals(returnedStateFlow, canCoordinator.stateFlow)
         Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
 
         advanceUntilIdle()
 
-        verify(exactly = 0) { mockAppNavigator.navigate(any()) }
+        verify { mockIdCardManager.eidFlow }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun setupFlowLongOneCanAttempt() = runTest {
-        val mockedPinCallback = mockk<(String, String, String) -> Unit>(relaxed = true)
+    @Nested
+    inner class IdentEidEvents {
+        @Test
+        fun `handling requesting CAN in long flow`() = runTest {
+            every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
 
-        val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestCanAndChangedPin(mockedPinCallback))
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockIdCardManager.eidFlow } returns eIdFlow
 
-        every { mockIdCardManager.eidFlow } returns eIdFlow
+            val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
 
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
+            canCoordinator.startIdentCanFlow(null)
+            advanceUntilIdle()
 
-        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
+            val pinCallback: PinCallback = mockk()
+            eIdFlow.value = EidInteractionEvent.RequestPinAndCan(pinCallback)
+            advanceUntilIdle()
 
-        canCoordinator.startPinManagementCanFlow(false, pin, newPin)
+            verify { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForIdent(null, pinCallback)) }
 
-        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
+            eIdFlow.value = EidInteractionEvent.RequestPinAndCan(pinCallback)
+            advanceUntilIdle()
 
-        advanceUntilIdle()
+            verify(exactly = 2) { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForIdent(null, pinCallback)) }
+        }
 
-        Assertions.assertEquals(SetupCanConfirmTransportPinDestination(pin).route, destinationSlot.captured.route)
+        @Test
+        fun `handling requesting CAN in short flow`() = runTest {
+            every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
 
-        canCoordinator.proceedWithThirdAttempt()
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockIdCardManager.eidFlow } returns eIdFlow
 
-        Assertions.assertEquals(SetupCanIntroDestination(true).route, destinationSlot.captured.route)
+            val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
 
-        canCoordinator.finishIntro()
+            val pin = "123456"
+            canCoordinator.startIdentCanFlow(pin)
+            advanceUntilIdle()
 
-        Assertions.assertEquals(CanInputDestination(false).route, destinationSlot.captured.route)
+            val pinCallback: PinCallback = mockk()
+            eIdFlow.value = EidInteractionEvent.RequestPinAndCan(pinCallback)
+            advanceUntilIdle()
 
-        canCoordinator.onCanEntered(can)
+            verify { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForIdent(pin, pinCallback)) }
 
-        verify { mockAppNavigator.navigate(SetupCanTransportPinDestination) }
-        verify(exactly = 0) { mockedPinCallback(any(), any(), any()) }
+            eIdFlow.value = EidInteractionEvent.RequestPinAndCan(pinCallback)
+            advanceUntilIdle()
 
-        canCoordinator.onPinEntered(pin)
+            verify(exactly = 2) { mockCanStateMachine.transition(CanStateMachine.Event.InitializeCanForIdent(pin, pinCallback)) }
+        }
 
-        verify(exactly = 1) { mockedPinCallback(pin, can, newPin) }
+        @ParameterizedTest
+        @SealedClassesSource(names = ["AuthenticationSuccessful", "ProcessCompletedSuccessfullyWithoutResult", "ProcessCompletedSuccessfullyWithRedirect", "Error"], factoryClass = EidInteractionEventTypeFactory::class)
+        fun `handling finishing events`(event: EidInteractionEvent) = runTest {
+            every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
 
-        eIdFlow.value = EidInteractionEvent.RequestCardInsertion
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockIdCardManager.eidFlow } returns eIdFlow
 
-        advanceUntilIdle()
+            val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
 
-        eIdFlow.value = EidInteractionEvent.AuthenticationSuccessful
+            canCoordinator.startIdentCanFlow(null)
+            advanceUntilIdle()
 
-        advanceUntilIdle()
+            Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
 
-        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
-    }
+            eIdFlow.value = event
+            advanceUntilIdle()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun setupFlowLongTwoCanAttempts() = runTest {
-        val mockedPinCallback = mockk<(String, String, String) -> Unit>(relaxed = true)
-
-        val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestCanAndChangedPin(mockedPinCallback))
-
-        every { mockIdCardManager.eidFlow } returns eIdFlow
-
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
-
-        val incorrectCan = "999999"
-        canCoordinator.startPinManagementCanFlow(false, pin, newPin)
-        advanceUntilIdle()
-        canCoordinator.proceedWithThirdAttempt()
-        canCoordinator.finishIntro()
-        canCoordinator.onCanEntered(incorrectCan)
-        canCoordinator.onPinEntered(pin)
-
-        verify(exactly = 1) { mockedPinCallback(pin, incorrectCan, newPin) }
-
-        eIdFlow.value = EidInteractionEvent.RequestCardInsertion
-
-        advanceUntilIdle()
-
-        eIdFlow.value = EidInteractionEvent.AuthenticationSuccessful
-
-        advanceUntilIdle()
-
-        Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @ParameterizedTest
-    @SealedClassesSource(names = ["RequestCanAndChangedPin"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = EidInteractionEventTypeFactory::class)
-    fun initializeSetupFlowWithUnexpectedEidEvent(event: EidInteractionEvent) = runTest {
-        every { mockIdCardManager.eidFlow } returns flowOf(event)
-
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
-
-        canCoordinator.startPinManagementCanFlow(true, pin, newPin)
-
-        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
-
-        advanceUntilIdle()
-
-        verify(exactly = 0) { mockAppNavigator.navigate(any()) }
+            verify { mockCanStateMachine.transition(CanStateMachine.Event.Invalidate) }
+            Assertions.assertEquals(SubCoordinatorState.FINISHED, canCoordinator.stateFlow.value)
+        }
     }
 
     @Test
-    fun resetPin() {
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
+    fun onResetPin() {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
         canCoordinator.onResetPin()
-        verify { mockAppNavigator.navigate(ResetPersonalPinDestination) }
+
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.ResetPin) }
     }
 
     @Test
-    fun confirmPin() {
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
-        canCoordinator.confirmPinInput()
-        verify { mockAppNavigator.navigate(SetupCanAlreadySetupDestination) }
+    fun onConfirmedPinInput() {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        canCoordinator.onConfirmedPinInput()
+
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.DenyThirdAttempt) }
+    }
+
+    @Test
+    fun proceedWithThirdAttempt() {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        canCoordinator.proceedWithThirdAttempt()
+
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.AgreeToThirdAttempt) }
     }
 
     @Test
     fun finishIntro() {
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
         canCoordinator.finishIntro()
-        Assertions.assertEquals(CanInputDestination(false).route, destinationSlot.captured.route)
+
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.ConfirmCanIntro) }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun cancelCanFlow() = runTest {
-        val mockedPinCallback = mockk<(String, String, String) -> Unit>(relaxed = true)
+    fun onCanEntered() {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        val can = "654321"
+        canCoordinator.onCanEntered(can)
 
-        val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.RequestCanAndChangedPin(mockedPinCallback))
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.EnterCan(can)) }
+    }
 
-        every { mockIdCardManager.eidFlow } returns eIdFlow
+    @Test
+    fun onPinEntered() {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        val pin = "123456"
+        canCoordinator.onPinEntered(pin)
 
-        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCoroutineContextProvider)
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.EnterPin(pin)) }
+    }
 
-        canCoordinator.startIdentCanFlow(null)
+    @Test
+    fun onBack() {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        canCoordinator.onBack()
+
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.Back) }
+    }
+
+    @Test
+    fun cancelFlow() = runTest {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        advanceUntilIdle()
+
+        canCoordinator.startPinManagementCanFlow("123456", null)
+        advanceUntilIdle()
+
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
+
         canCoordinator.cancelCanFlow()
 
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.Invalidate) }
         Assertions.assertEquals(SubCoordinatorState.CANCELLED, canCoordinator.stateFlow.value)
     }
 
-    class EidInteractionEventTypeFactory: DefaultTypeFactory() {
-        override fun create(what: KClass<*>): EidInteractionEvent {
-            return when (what) {
-                EidInteractionEvent.Idle::class -> EidInteractionEvent.Idle
-                EidInteractionEvent.Error::class -> EidInteractionEvent.Error(exception = IdCardInteractionException.CardDeactivated)
-                EidInteractionEvent.RequestCardInsertion::class -> EidInteractionEvent.RequestCardInsertion
-                EidInteractionEvent.CardInteractionComplete::class -> EidInteractionEvent.CardInteractionComplete
-                EidInteractionEvent.CardRecognized::class -> EidInteractionEvent.CardRecognized
-                EidInteractionEvent.CardRemoved::class -> EidInteractionEvent.CardRemoved
-                EidInteractionEvent.RequestCan::class -> EidInteractionEvent.RequestCan { }
-                EidInteractionEvent.RequestPin::class -> EidInteractionEvent.RequestPin(null) { }
-                EidInteractionEvent.RequestPinAndCan::class -> EidInteractionEvent.RequestPinAndCan { _, _ -> }
-                EidInteractionEvent.RequestPuk::class -> EidInteractionEvent.RequestPuk { }
-                EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult::class -> EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-                EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect::class -> EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect("")
-                EidInteractionEvent.AuthenticationStarted::class -> EidInteractionEvent.AuthenticationStarted
-                EidInteractionEvent.RequestAuthenticationRequestConfirmation::class -> EidInteractionEvent.RequestAuthenticationRequestConfirmation(EidAuthenticationRequest("", "", "", "", "", AuthenticationTerms.Text(""), null, mapOf()), { })
-                EidInteractionEvent.AuthenticationSuccessful::class -> EidInteractionEvent.AuthenticationSuccessful
-                EidInteractionEvent.PinManagementStarted::class -> EidInteractionEvent.PinManagementStarted
-                EidInteractionEvent.RequestChangedPin::class -> EidInteractionEvent.RequestChangedPin(null) { _, _ -> }
-                EidInteractionEvent.RequestCanAndChangedPin::class -> EidInteractionEvent.RequestCanAndChangedPin {_, _, _ -> }
-                else -> throw IllegalArgumentException()
-            }
-        }
+    @Test
+    fun skipFlow() = runTest {
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+        advanceUntilIdle()
+
+        canCoordinator.startPinManagementCanFlow("123456", null)
+        advanceUntilIdle()
+
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, canCoordinator.stateFlow.value)
+
+        canCoordinator.skipCanFlow()
+
+        verify { mockCanStateMachine.transition(CanStateMachine.Event.Invalidate) }
+        Assertions.assertEquals(SubCoordinatorState.SKIPPED, canCoordinator.stateFlow.value)
     }
 }
