@@ -155,13 +155,13 @@ class IdentCanceledOnScanningTest {
 
         identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
         identificationScan.cancel.click()
-        identificationScan.navigationConfirmaDialog.assertIsDisplayed()
-        identificationScan.navigationConfirmaDialog.dismiss()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.dismiss()
 
         identificationScan.assertIsDisplayed()
         identificationScan.cancel.click()
-        identificationScan.navigationConfirmaDialog.assertIsDisplayed()
-        identificationScan.navigationConfirmaDialog.confirm()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.confirm()
 
         home.assertIsDisplayed()
     }

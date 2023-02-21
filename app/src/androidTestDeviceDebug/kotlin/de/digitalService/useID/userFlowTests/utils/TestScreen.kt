@@ -86,7 +86,7 @@ sealed class TestScreen {
 
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
-        val navigationConfirmaDialog:  TestElement.NavigationConfirmDialog
+        val navigationConfirmDialog:  TestElement.NavigationConfirmDialog
             get() {
                 return TestElement.NavigationConfirmDialog(testRule, identPending)
             }
@@ -116,7 +116,7 @@ sealed class TestScreen {
 
         override val unexpectedElements: List<TestElement>
             get() {
-                return listOf<TestElement>(navigationConfirmaDialog, nfcDialog, helpDialog)
+                return listOf<TestElement>(navigationConfirmDialog, nfcDialog, helpDialog)
                     .plus(listOf<TestElement>(progressIndicator).takeIf { !progress } ?: listOf())
                     .plus(listOf(back).takeIf { !backAllowed } ?: listOf())
                     .plus(listOf(cancel).takeIf { backAllowed } ?: listOf())
