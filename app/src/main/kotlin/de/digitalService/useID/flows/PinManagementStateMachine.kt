@@ -52,7 +52,7 @@ class PinManagementStateMachine(initialState: State) {
         data class ConfirmNewPin(val newPin: String): Event()
         object RetryNewPinConfirmation: Event()
         object RequestCardInsertion: Event()
-        class FrameworkRequestsChangedPin(val pinManagementCallback: PinManagementCallback): Event()
+        data class FrameworkRequestsChangedPin(val pinManagementCallback: PinManagementCallback): Event()
         object FrameworkRequestsCan: Event()
         object Finish: Event()
 

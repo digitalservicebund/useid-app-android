@@ -1,9 +1,12 @@
 package de.digitalService.useID.viewModel
 
+import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.destinations.SetupScanDestination
+import de.digitalService.useID.ui.screens.setup.SetupScanNavArgs
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -17,17 +20,23 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MockKExtension::class)
 class SetupScanViewModelTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockPinManagementCoordinator: PinManagementCoordinator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockSetupCoordinator: SetupCoordinator
+    lateinit var mockTrackerManager: TrackerManagerType
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockTrackerManager: TrackerManagerType
+    lateinit var mockSaveStateHandle: SavedStateHandle
+
+    @MockK
+    lateinit var mockNavArgs: SetupScanNavArgs
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
@@ -35,11 +44,32 @@ class SetupScanViewModelTest {
     @BeforeEach
     fun setup() {
         Dispatchers.setMain(dispatcher)
+
+        mockkObject(SetupScanDestination)
+        every { SetupScanDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
+        every { mockNavArgs.identificationPending } returns true
+        every { mockNavArgs.backAllowed } returns true
     }
 
     @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun testNavArgsAssignedOnInit(flag: Boolean) = runTest {
+        every { mockNavArgs.identificationPending } returns flag
+        every { mockNavArgs.backAllowed } returns flag
+
+        val viewModel = SetupScanViewModel(
+            mockPinManagementCoordinator,
+            mockTrackerManager,
+            mockSaveStateHandle
+        )
+
+        Assertions.assertEquals(flag, viewModel.identificationPending)
+        Assertions.assertEquals(flag, viewModel.backAllowed)
     }
 
     @Test
@@ -49,8 +79,8 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
-            mockTrackerManager
+            mockTrackerManager,
+            mockSaveStateHandle
         )
 
         scanInProgressFlow.value = true
@@ -69,8 +99,8 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
-            mockTrackerManager
+            mockTrackerManager,
+            mockSaveStateHandle
         )
 
         viewModel.onHelpButtonClicked()
@@ -85,8 +115,8 @@ class SetupScanViewModelTest {
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
-            mockTrackerManager
+            mockTrackerManager,
+            mockSaveStateHandle
         )
 
         viewModel.onNfcButtonClicked()
@@ -95,24 +125,36 @@ class SetupScanViewModelTest {
     }
 
     @Test
-    fun testOnNavigationButtonClicked() = runTest {
+    fun testOnNavigationButtonClickedBackAllowed() = runTest {
 
         every { mockPinManagementCoordinator.scanInProgress } returns mockk()
+        every { mockNavArgs.backAllowed } returns true
 
         val viewModel = SetupScanViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
-            mockTrackerManager
+            mockTrackerManager,
+            mockSaveStateHandle
         )
 
-        every { mockPinManagementCoordinator.backAllowed } returnsMany listOf(true, false)
+        viewModel.onNavigationButtonClicked()
+
+        verify { mockPinManagementCoordinator.onBack() }
+    }
+
+    @Test
+    fun testOnNavigationButtonClickedBackNotAllowed() = runTest {
+
+        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
+        every { mockNavArgs.backAllowed } returns false
+
+        val viewModel = SetupScanViewModel(
+            mockPinManagementCoordinator,
+            mockTrackerManager,
+            mockSaveStateHandle
+        )
 
         viewModel.onNavigationButtonClicked()
 
-        verify(exactly = 1) { mockPinManagementCoordinator.onBack() }
-
-        viewModel.onNavigationButtonClicked()
-
-        verify(exactly = 1) { mockPinManagementCoordinator.cancelPinManagement() }
+        verify { mockPinManagementCoordinator.cancelPinManagement() }
     }
 }

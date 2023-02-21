@@ -16,6 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,10 +38,12 @@ class PinManagementCoordinator @Inject constructor(
     private var canEventFlowCoroutineScope: Job? = null
 
     private val _scanInProgress: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val scanInProgress: Flow<Boolean>
+    val scanInProgress: StateFlow<Boolean>
         get() = _scanInProgress
 
-    private val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
+    private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
+    val stateFlow: StateFlow<SubCoordinatorState>
+        get() = _stateFlow
 
     init {
         CoroutineScope(coroutineContextProvider.Default).launch {
@@ -56,7 +59,7 @@ class PinManagementCoordinator @Inject constructor(
                     // Backing down
                     if (eventAndPair.second is PinManagementStateMachine.State.Invalid) {
                         resetCoordinatorState()
-                        stateFlow.value = SubCoordinatorState.BACKED_DOWN
+                        _stateFlow.value = SubCoordinatorState.BACKED_DOWN
                     }
                 } else {
                     when (val state = eventAndPair.second) {
@@ -69,7 +72,7 @@ class PinManagementCoordinator @Inject constructor(
                         is PinManagementStateMachine.State.WaitingForFirstCardAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
                         is PinManagementStateMachine.State.WaitingForCardReAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
                         is PinManagementStateMachine.State.FrameworkReadyForPinManagement -> state.callback(state.oldPin, state.newPin)
-                        is PinManagementStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin, state.shortFlow)
+                        is PinManagementStateMachine.State.CanRequested -> startCanFlow(state.oldPin, state.newPin, state.shortFlow)
                         is PinManagementStateMachine.State.OldTransportPinRetry -> navigator.navigate(SetupTransportPinDestination(true, state.identificationPending))
                         is PinManagementStateMachine.State.OldPersonalPinRetry -> throw NotImplementedError()
                         PinManagementStateMachine.State.Finished -> finishPinManagement()
@@ -88,7 +91,7 @@ class PinManagementCoordinator @Inject constructor(
     fun startPinManagement(identificationPending: Boolean, transportPin: Boolean): Flow<SubCoordinatorState> {
         canStateMachine.transition(CanStateMachine.Event.Invalidate)
         flowStateMachine.transition(PinManagementStateMachine.Event.StartPinManagement(identificationPending, transportPin))
-        stateFlow.value = SubCoordinatorState.ACTIVE
+        _stateFlow.value = SubCoordinatorState.ACTIVE
         return stateFlow
     }
 
@@ -122,7 +125,7 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     fun cancelPinManagement() {
-        stateFlow.value = SubCoordinatorState.CANCELLED
+        _stateFlow.value = SubCoordinatorState.CANCELLED
         flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }
@@ -131,7 +134,7 @@ class PinManagementCoordinator @Inject constructor(
         flowStateMachine.transition(PinManagementStateMachine.Event.ProceedAfterError)
     }
 
-    private fun startCanFlow(identificationPending: Boolean, oldPin: String, newPin: String, shortFlow: Boolean) {
+    private fun startCanFlow(oldPin: String, newPin: String, shortFlow: Boolean) {
         if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
                 canCoordinator.startPinManagementCanFlow(oldPin, newPin, shortFlow).collect { state ->
@@ -148,13 +151,13 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     private fun skipPinManagement() {
-        stateFlow.value = SubCoordinatorState.SKIPPED
+        _stateFlow.value = SubCoordinatorState.SKIPPED
         flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }
 
     private fun finishPinManagement() {
-        stateFlow.value = SubCoordinatorState.FINISHED
+        _stateFlow.value = SubCoordinatorState.FINISHED
         flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }

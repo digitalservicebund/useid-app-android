@@ -1,8 +1,8 @@
 package de.digitalService.useID.stateMachines
 
-import de.digitalService.useID.flows.CanStateMachine
-import de.digitalService.useID.flows.PinCallback
-import de.digitalService.useID.flows.PinManagementCallback
+import de.digitalService.useID.flows.*
+import de.digitalService.useID.util.CanIdentStateFactory
+import de.digitalService.useID.util.CanPinManagementStateFactory
 import de.jodamob.junit5.DefaultTypeFactory
 import de.jodamob.junit5.SealedClassesSource
 import io.mockk.mockk
@@ -15,12 +15,13 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CanStateMachineTest {
-    private val pinManagementCallback: PinManagementCallback = mockk()
-    private val pinCallback: PinCallback = mockk()
+    private val pinManagementCallback: PinManagementCanCallback = mockk()
+    private val pinCallback: PinCanCallback = mockk()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private inline fun <reified NewState: CanStateMachine.State> transition(initialState: CanStateMachine.State, event: CanStateMachine.Event, testScope: TestScope): NewState {
@@ -40,12 +41,13 @@ class CanStateMachineTest {
         @Test
         fun `initialize with long flow from invalid state`() = runTest {
             val oldPin = "12345"
-            val event = CanStateMachine.Event.InitializeCanForPinManagement(oldPin, null, pinManagementCallback)
+            val newPin = "000000"
+            val event = CanStateMachine.Event.FrameworkRequestsCanForPinManagement(oldPin, newPin, false, pinManagementCallback)
 
             val newState: CanStateMachine.State.PinManagement.Intro = transition(CanStateMachine.State.Invalid, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
-            Assertions.assertNull(newState.newPin)
+            Assertions.assertEquals(newState.newPin, newPin)
             Assertions.assertEquals(newState.callback, pinManagementCallback)
         }
 
@@ -53,7 +55,7 @@ class CanStateMachineTest {
         fun `initialize with short flow from invalid state`() = runTest {
             val oldPin = "12345"
             val newPin = "000000"
-            val event = CanStateMachine.Event.InitializeCanForPinManagement(oldPin, newPin, pinManagementCallback)
+            val event = CanStateMachine.Event.FrameworkRequestsCanForPinManagement(oldPin, newPin, true, pinManagementCallback)
 
             val newState: CanStateMachine.State.PinManagement.CanIntro = transition(CanStateMachine.State.Invalid, event, this)
 
@@ -67,10 +69,10 @@ class CanStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val newCallback: PinManagementCallback = mockk()
-            val event = CanStateMachine.Event.InitializeCanForPinManagement("999999", "888888", newCallback)
+            val newCallback: PinManagementCanCallback = mockk()
+            val event = CanStateMachine.Event.FrameworkRequestsCanForPinManagement("999999", "888888", false, newCallback)
 
-            val oldState = CanStateMachine.State.PinManagement.CanAndPinEntered(oldPin, pinManagementCallback, "654321", newPin)
+            val oldState = CanStateMachine.State.PinManagement.CanAndPinEntered(pinManagementCallback, oldPin, "654321", newPin)
             val newState: CanStateMachine.State.PinManagement.CanInputRetry = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
@@ -84,7 +86,7 @@ class CanStateMachineTest {
 
             val oldPin = "12345"
             val newPin = "000000"
-            val oldState = CanStateMachine.State.PinManagement.Intro(oldPin, pinManagementCallback, newPin)
+            val oldState = CanStateMachine.State.PinManagement.Intro(pinManagementCallback, oldPin, newPin)
             val newState: CanStateMachine.State.PinManagement.CanIntro = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
@@ -98,7 +100,7 @@ class CanStateMachineTest {
 
             val oldPin = "12345"
             val newPin = "000000"
-            val oldState = CanStateMachine.State.PinManagement.Intro(oldPin, pinManagementCallback, newPin)
+            val oldState = CanStateMachine.State.PinManagement.Intro(pinManagementCallback, oldPin, newPin)
             val newState: CanStateMachine.State.PinManagement.IdAlreadySetup = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
@@ -112,7 +114,7 @@ class CanStateMachineTest {
 
             val oldPin = "12345"
             val newPin = "000000"
-            val oldState = CanStateMachine.State.PinManagement.IdAlreadySetup(oldPin, pinManagementCallback, newPin)
+            val oldState = CanStateMachine.State.PinManagement.IdAlreadySetup(pinManagementCallback, oldPin, newPin)
             val newState: CanStateMachine.State.PinManagement.PinReset = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
@@ -120,28 +122,30 @@ class CanStateMachineTest {
             Assertions.assertEquals(newState.callback, pinManagementCallback)
         }
 
-        @Test
-        fun `confirm CAN intro`() = runTest {
+        @ParameterizedTest
+        @ValueSource(booleans = [true, false])
+        fun `confirm CAN intro`(shortFlow: Boolean) = runTest {
             val event = CanStateMachine.Event.ConfirmCanIntro
 
             val oldPin = "12345"
             val newPin = "000000"
-            val oldState = CanStateMachine.State.PinManagement.CanIntro(oldPin, pinManagementCallback, newPin)
+            val oldState = CanStateMachine.State.PinManagement.CanIntro(pinManagementCallback, oldPin, newPin, shortFlow)
             val newState: CanStateMachine.State.PinManagement.CanInput = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
             Assertions.assertEquals(newState.newPin, newPin)
+            Assertions.assertEquals(newState.shortFlow, shortFlow)
             Assertions.assertEquals(newState.callback, pinManagementCallback)
         }
 
         @Test
-        fun `from CAN input having new PIN`() = runTest {
+        fun `from CAN input in short flow`() = runTest {
             val can = "654321"
             val event = CanStateMachine.Event.EnterCan(can)
 
             val oldPin = "12345"
             val newPin = "000000"
-            val oldState = CanStateMachine.State.PinManagement.CanInput(oldPin, pinManagementCallback, newPin)
+            val oldState = CanStateMachine.State.PinManagement.CanInput(pinManagementCallback, oldPin, newPin, true)
             val newState: CanStateMachine.State.PinManagement.CanAndPinEntered = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
@@ -151,16 +155,18 @@ class CanStateMachineTest {
         }
 
         @Test
-        fun `from CAN input not having new PIN`() = runTest {
+        fun `from CAN input in long flow`() = runTest {
             val can = "654321"
             val event = CanStateMachine.Event.EnterCan(can)
 
             val oldPin = "12345"
-            val oldState = CanStateMachine.State.PinManagement.CanInput(oldPin, pinManagementCallback, null)
+            val newPin = "000000"
+            val oldState = CanStateMachine.State.PinManagement.CanInput(pinManagementCallback, oldPin, newPin, false)
             val newState: CanStateMachine.State.PinManagement.PinInput = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
             Assertions.assertEquals(newState.can, can)
+            Assertions.assertEquals(newState.newPin, newPin)
             Assertions.assertEquals(newState.callback, pinManagementCallback)
         }
 
@@ -171,7 +177,7 @@ class CanStateMachineTest {
 
             val oldPin = "12345"
             val newPin = "000000"
-            val oldState = CanStateMachine.State.PinManagement.CanInputRetry(oldPin, pinManagementCallback, newPin)
+            val oldState = CanStateMachine.State.PinManagement.CanInputRetry(pinManagementCallback, oldPin, newPin)
             val newState: CanStateMachine.State.PinManagement.CanAndPinEntered = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
@@ -182,12 +188,12 @@ class CanStateMachineTest {
 
         @Test
         fun `from PIN input`() = runTest {
-            val newPin = "000000"
-            val event = CanStateMachine.Event.EnterPin(newPin)
-
             val oldPin = "12345"
+            val event = CanStateMachine.Event.EnterPin(oldPin)
+
+            val newPin = "000000"
             val can = "654321"
-            val oldState = CanStateMachine.State.PinManagement.PinInput(oldPin, pinManagementCallback, can)
+            val oldState = CanStateMachine.State.PinManagement.PinInput(pinManagementCallback, oldPin, can, newPin)
             val newState: CanStateMachine.State.PinManagement.CanAndPinEntered = transition(oldState, event, this)
 
             Assertions.assertEquals(newState.oldPin, oldPin)
@@ -204,7 +210,7 @@ class CanStateMachineTest {
 
                 val oldPin = "12345"
                 val newPin = "000000"
-                val oldState = CanStateMachine.State.PinManagement.IdAlreadySetup(oldPin, pinManagementCallback, newPin)
+                val oldState = CanStateMachine.State.PinManagement.IdAlreadySetup(pinManagementCallback, oldPin, newPin)
                 val newState: CanStateMachine.State.PinManagement.Intro = transition(oldState, event, this)
 
                 Assertions.assertEquals(newState.oldPin, oldPin)
@@ -218,7 +224,7 @@ class CanStateMachineTest {
 
                 val oldPin = "12345"
                 val newPin = "000000"
-                val oldState = CanStateMachine.State.PinManagement.PinReset(oldPin, pinManagementCallback, newPin)
+                val oldState = CanStateMachine.State.PinManagement.PinReset(pinManagementCallback, oldPin, newPin)
                 val newState: CanStateMachine.State.PinManagement.IdAlreadySetup = transition(oldState, event, this)
 
                 Assertions.assertEquals(newState.oldPin, oldPin)
@@ -227,41 +233,44 @@ class CanStateMachineTest {
             }
 
             @Test
-            fun `from CAN intro without new PIN`() = runTest {
-                val event = CanStateMachine.Event.Back
-
-                val oldPin = "12345"
-                val oldState = CanStateMachine.State.PinManagement.CanIntro(oldPin, pinManagementCallback, null)
-                val newState: CanStateMachine.State.PinManagement.Intro = transition(oldState, event, this)
-
-                Assertions.assertEquals(newState.oldPin, oldPin)
-                Assertions.assertNull(newState.newPin)
-                Assertions.assertEquals(newState.callback, pinManagementCallback)
-            }
-
-            @Test
-            fun `invalid transition from CAN intro with new PIN`() = runTest {
+            fun `from CAN intro with long flow`() = runTest {
                 val event = CanStateMachine.Event.Back
 
                 val oldPin = "12345"
                 val newPin = "000000"
-                val oldState = CanStateMachine.State.PinManagement.CanIntro(oldPin, pinManagementCallback, newPin)
+                val oldState = CanStateMachine.State.PinManagement.CanIntro(pinManagementCallback, oldPin, newPin, false)
+                val newState: CanStateMachine.State.PinManagement.Intro = transition(oldState, event, this)
+
+                Assertions.assertEquals(newState.newPin, newPin)
+                Assertions.assertEquals(newState.oldPin, oldPin)
+                Assertions.assertEquals(newState.callback, pinManagementCallback)
+            }
+
+            @Test
+            fun `invalid transition from CAN intro in short flow`() = runTest {
+                val event = CanStateMachine.Event.Back
+
+                val oldPin = "12345"
+                val newPin = "000000"
+                val oldState = CanStateMachine.State.PinManagement.CanIntro(pinManagementCallback, oldPin, newPin, true)
 
                 val stateMachine = CanStateMachine(oldState)
                 Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
             }
 
-            @Test
-            fun `from CAN input`() = runTest {
+            @ParameterizedTest
+            @ValueSource(booleans = [true, false])
+            fun `from CAN input`(shortFlow: Boolean) = runTest {
                 val event = CanStateMachine.Event.Back
 
                 val oldPin = "12345"
                 val newPin = "000000"
-                val oldState = CanStateMachine.State.PinManagement.CanInput(oldPin, pinManagementCallback, newPin)
+                val oldState = CanStateMachine.State.PinManagement.CanInput(pinManagementCallback, oldPin, newPin, shortFlow)
                 val newState: CanStateMachine.State.PinManagement.CanIntro = transition(oldState, event, this)
 
                 Assertions.assertEquals(newState.oldPin, oldPin)
                 Assertions.assertEquals(newState.newPin, newPin)
+                Assertions.assertEquals(newState.shortFlow, shortFlow)
                 Assertions.assertEquals(newState.callback, pinManagementCallback)
             }
 
@@ -271,11 +280,12 @@ class CanStateMachineTest {
 
                 val oldPin = "12345"
                 val newPin = "000000"
-                val oldState = CanStateMachine.State.PinManagement.CanInputRetry(oldPin, pinManagementCallback, newPin)
+                val oldState = CanStateMachine.State.PinManagement.CanInputRetry(pinManagementCallback, oldPin, newPin)
                 val newState: CanStateMachine.State.PinManagement.CanIntro = transition(oldState, event, this)
 
                 Assertions.assertEquals(newState.oldPin, oldPin)
                 Assertions.assertEquals(newState.newPin, newPin)
+                Assertions.assertTrue(newState.shortFlow)
                 Assertions.assertEquals(newState.callback, pinManagementCallback)
             }
 
@@ -285,11 +295,12 @@ class CanStateMachineTest {
 
                 val oldPin = "12345"
                 val newPin = "000000"
-                val oldState = CanStateMachine.State.PinManagement.PinInput(oldPin, pinManagementCallback, newPin)
+                val oldState = CanStateMachine.State.PinManagement.PinInput(pinManagementCallback, oldPin, "000000", newPin)
                 val newState: CanStateMachine.State.PinManagement.CanInput = transition(oldState, event, this)
 
                 Assertions.assertEquals(newState.oldPin, oldPin)
-                Assertions.assertNull(newState.newPin)
+                Assertions.assertEquals(newState.newPin, newPin)
+                Assertions.assertFalse(newState.shortFlow)
                 Assertions.assertEquals(newState.callback, pinManagementCallback)
             }
         }
@@ -302,7 +313,7 @@ class CanStateMachineTest {
         inner class Initialize {
             @Test
             fun `initialize with long flow from invalid state`() = runTest {
-                val event = CanStateMachine.Event.InitializeCanForIdent(null, pinCallback)
+                val event = CanStateMachine.Event.FrameworkRequestsCanForIdent(null, pinCallback)
 
                 val newState: CanStateMachine.State.Ident.Intro = transition(CanStateMachine.State.Invalid, event, this)
 
@@ -313,7 +324,7 @@ class CanStateMachineTest {
             @Test
             fun `initialize with short flow from invalid state`() = runTest {
                 val pin = "123456"
-                val event = CanStateMachine.Event.InitializeCanForIdent(pin, pinCallback)
+                val event = CanStateMachine.Event.FrameworkRequestsCanForIdent(pin, pinCallback)
 
                 val newState: CanStateMachine.State.Ident.CanIntro = transition(CanStateMachine.State.Invalid, event, this)
 
@@ -325,8 +336,8 @@ class CanStateMachineTest {
             fun `re-initialize from can-and-pin-entered state`() = runTest {
                 val pin = "123456"
 
-                val newPinCallback: PinCallback = mockk()
-                val event = CanStateMachine.Event.InitializeCanForIdent(pin, newPinCallback)
+                val newPinCallback: PinCanCallback = mockk()
+                val event = CanStateMachine.Event.FrameworkRequestsCanForIdent(pin, newPinCallback)
 
                 val oldState = CanStateMachine.State.Ident.CanAndPinEntered(pinCallback, "654321", pin)
                 val newState: CanStateMachine.State.Ident.CanInputRetry = transition(oldState, event, this)
@@ -454,7 +465,7 @@ class CanStateMachineTest {
                 @ParameterizedTest
                 @SealedClassesSource(names = ["Invalid", "CanAndPinEntered"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = CanPinManagementStateFactory::class)
                 fun `initialize with pin management callback`(oldState: CanStateMachine.State.PinManagement) = runTest {
-                    val event = CanStateMachine.Event.InitializeCanForPinManagement("999999", "888888", pinManagementCallback)
+                    val event = CanStateMachine.Event.FrameworkRequestsCanForPinManagement("999999", "888888", false, pinManagementCallback)
 
                     val stateMachine = CanStateMachine(oldState)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
@@ -465,7 +476,7 @@ class CanStateMachineTest {
                 @ParameterizedTest
                 @SealedClassesSource(names = ["Invalid"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = CanPinManagementStateFactory::class)
                 fun `initialize with pin callback`(oldState: CanStateMachine.State.PinManagement) = runTest {
-                    val event = CanStateMachine.Event.InitializeCanForIdent(null, pinCallback)
+                    val event = CanStateMachine.Event.FrameworkRequestsCanForIdent(null, pinCallback)
 
                     val stateMachine = CanStateMachine(oldState)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
@@ -546,7 +557,7 @@ class CanStateMachineTest {
                 @ParameterizedTest
                 @SealedClassesSource(names = ["Invalid"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = CanIdentStateFactory::class)
                 fun `initialize with pin management callback`(oldState: CanStateMachine.State.Ident) = runTest {
-                    val event = CanStateMachine.Event.InitializeCanForPinManagement("999999", "888888", pinManagementCallback)
+                    val event = CanStateMachine.Event.FrameworkRequestsCanForPinManagement("999999", "888888", false, pinManagementCallback)
 
                     val stateMachine = CanStateMachine(oldState)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
@@ -557,7 +568,7 @@ class CanStateMachineTest {
                 @ParameterizedTest
                 @SealedClassesSource(names = ["Invalid", "CanAndPinEntered"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = CanIdentStateFactory::class)
                 fun `initialize with pin callback`(oldState: CanStateMachine.State.Ident) = runTest {
-                    val event = CanStateMachine.Event.InitializeCanForIdent(null, pinCallback)
+                    val event = CanStateMachine.Event.FrameworkRequestsCanForIdent(null, pinCallback)
 
                     val stateMachine = CanStateMachine(oldState)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
@@ -666,44 +677,6 @@ class CanStateMachineTest {
 
             stateMachine.transition(event)
             Assertions.assertEquals(CanStateMachine.State.Invalid, stateMachine.state.value.second)
-        }
-    }
-
-    class CanPinManagementStateFactory: DefaultTypeFactory() {
-        override fun create(what: KClass<*>): CanStateMachine.State {
-            return when (what) {
-                CanStateMachine.State.Invalid::class -> CanStateMachine.State.Invalid
-
-                CanStateMachine.State.PinManagement.Intro::class -> CanStateMachine.State.PinManagement.Intro("", {_, _, _ -> }, null)
-                CanStateMachine.State.PinManagement.IdAlreadySetup::class -> CanStateMachine.State.PinManagement.IdAlreadySetup("", {_, _, _ -> }, null)
-                CanStateMachine.State.PinManagement.PinReset::class -> CanStateMachine.State.PinManagement.PinReset("", {_, _, _ -> }, null)
-                CanStateMachine.State.PinManagement.CanIntro::class -> CanStateMachine.State.PinManagement.CanIntro("", {_, _, _ -> }, null)
-                CanStateMachine.State.PinManagement.CanInput::class -> CanStateMachine.State.PinManagement.CanInput("", {_, _, _ -> }, null)
-                CanStateMachine.State.PinManagement.CanInputRetry::class -> CanStateMachine.State.PinManagement.CanInputRetry("", {_, _, _ -> }, "")
-                CanStateMachine.State.PinManagement.PinInput::class -> CanStateMachine.State.PinManagement.PinInput("", {_, _, _ -> }, "")
-                CanStateMachine.State.PinManagement.CanAndPinEntered::class -> CanStateMachine.State.PinManagement.CanAndPinEntered("", {_, _, _ -> }, "", "")
-
-                else -> throw IllegalArgumentException()
-            }
-        }
-    }
-
-    class CanIdentStateFactory: DefaultTypeFactory() {
-        override fun create(what: KClass<*>): CanStateMachine.State {
-            return when (what) {
-                CanStateMachine.State.Invalid::class -> CanStateMachine.State.Invalid
-
-                CanStateMachine.State.Ident.Intro::class -> CanStateMachine.State.Ident.Intro({_, _ -> }, null)
-                CanStateMachine.State.Ident.PinReset::class -> CanStateMachine.State.Ident.PinReset({_, _ -> }, null)
-                CanStateMachine.State.Ident.CanIntro::class -> CanStateMachine.State.Ident.CanIntro({_, _ -> }, null)
-                CanStateMachine.State.Ident.CanIntroWithoutFlowIntro::class -> CanStateMachine.State.Ident.CanIntroWithoutFlowIntro({_, _ -> }, null)
-                CanStateMachine.State.Ident.CanInput::class -> CanStateMachine.State.Ident.CanInput({_, _ -> }, null)
-                CanStateMachine.State.Ident.CanInputRetry::class -> CanStateMachine.State.Ident.CanInputRetry({_, _ -> }, "")
-                CanStateMachine.State.Ident.PinInput::class -> CanStateMachine.State.Ident.PinInput({_, _ -> }, "")
-                CanStateMachine.State.Ident.CanAndPinEntered::class -> CanStateMachine.State.Ident.CanAndPinEntered({_, _ -> }, "", "")
-
-                else -> throw IllegalArgumentException()
-            }
         }
     }
 }

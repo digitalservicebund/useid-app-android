@@ -15,8 +15,11 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 @ExtendWith(MockKExtension::class)
 class SetupTransportPinViewModelTest {
@@ -25,56 +28,53 @@ class SetupTransportPinViewModelTest {
     lateinit var mockPinManagementCoordinator: PinManagementCoordinator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockSetupCoordinator: SetupCoordinator
-
-    @MockK(relaxUnitFun = true)
     lateinit var mockSaveStateHandle: SavedStateHandle
 
-    @Test
-    fun testNavArgsAssignedOnInit() {
-        val mockNavArgs: SetupTransportPinNavArgs = mockk()
+    @MockK
+    lateinit var mockNavArgs: SetupTransportPinNavArgs
+
+    @BeforeEach
+    fun setup() {
         mockkObject(SetupTransportPinDestination)
         every { SetupTransportPinDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
         every { mockNavArgs.retry } returns true
+        every { mockNavArgs.identificationPending } returns true
+    }
+
+    @ParameterizedTest
+    @ValueSource(booleans = [true, false])
+    fun testNavArgsAssignedOnInit(flag: Boolean) {
+        every { mockNavArgs.retry } returns flag
+        every { mockNavArgs.identificationPending } returns flag
 
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
             mockSaveStateHandle
         )
 
-        Assertions.assertTrue(viewModel.retry)
+        Assertions.assertEquals(flag, viewModel.retry)
+        Assertions.assertEquals(flag, viewModel.identificationPending)
     }
 
     @Test
     fun testOnDone() {
-        val mockNavArgs: SetupTransportPinNavArgs = mockk()
-        mockkObject(SetupTransportPinDestination)
-        every { SetupTransportPinDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
-        every { mockNavArgs.retry } returns true
-
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
             mockSaveStateHandle
         )
 
         val pin = "111111"
         viewModel.onDoneClicked(pin)
 
-        verify(exactly = 1) { mockPinManagementCoordinator.setOldPin(pin) }
+        verify(exactly = 1) { mockPinManagementCoordinator.onOldPinEntered(pin) }
     }
 
     @Test
     fun testOnNavigationFirstAttempt() {
-        val mockNavArgs: SetupTransportPinNavArgs = mockk()
-        mockkObject(SetupTransportPinDestination)
-        every { SetupTransportPinDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
         every { mockNavArgs.retry } returns false
 
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
             mockSaveStateHandle
         )
 
@@ -88,14 +88,10 @@ class SetupTransportPinViewModelTest {
 
     @Test
     fun testOnNavigationRetry() {
-        val mockNavArgs: SetupTransportPinNavArgs = mockk()
-        mockkObject(SetupTransportPinDestination)
-        every { SetupTransportPinDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
         every { mockNavArgs.retry } returns true
 
         val viewModel = SetupTransportPinViewModel(
             mockPinManagementCoordinator,
-            mockSetupCoordinator,
             mockSaveStateHandle
         )
 

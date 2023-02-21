@@ -22,7 +22,7 @@ class SetupPersonalPinInputViewModelTest {
         val pin = "111111"
         viewModel.onDoneClicked(pin)
 
-        verify(exactly = 1) { mockPinManagementCoordinator.setNewPin(pin) }
+        verify(exactly = 1) { mockPinManagementCoordinator.onNewPinEntered(pin) }
     }
 
     @Test

@@ -55,6 +55,9 @@ class IdentificationCoordinator @Inject constructor(
             flowStateMachine.state.collect { eventAndPair ->
                 if (eventAndPair.first is IdentificationStateMachine.Event.Back) {
                     navigator.pop()
+                    if (eventAndPair.second == IdentificationStateMachine.State.Invalid) {
+                        resetCoordinatorState()
+                    }
                 } else {
                     when (val state = eventAndPair.second) {
                         is IdentificationStateMachine.State.StartIdentification -> executeIdentification(state.tcTokenUrl)
