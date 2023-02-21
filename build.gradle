@@ -16,3 +16,17 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+def isNonStable = { String version ->
+    def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { it -> version.toUpperCase().contains(it) }
+    def regex = /^[0-9,.v-]+(-r)?$/
+    return !stableKeyword && !(version ==~ regex)
+}
+
+tasks.named("dependencyUpdates").configure {
+    gradleReleaseChannel = "current"
+    revision = "release"
+    rejectVersionIf {
+        isNonStable(it.candidate.version)
+    }
+}
