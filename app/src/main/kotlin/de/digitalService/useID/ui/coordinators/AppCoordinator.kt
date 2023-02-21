@@ -33,7 +33,6 @@ class AppCoordinator @Inject constructor(
     private val logger by getLogger()
 
     private var cachedTcTokenUrl: String? = null
-    private var coldLaunch: Boolean = true
 
     private val launchedBarrier = Mutex(true)
 
@@ -57,16 +56,6 @@ class AppCoordinator @Inject constructor(
     }
 
     override fun homeScreenLaunched() {
-        if (coldLaunch &&
-            setupCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE &&
-            identificationCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE &&
-            storageManager.firstTimeUser
-        ) {
-            offerIdSetup(null)
-        }
-
-        coldLaunch = false
-
         if (launchedBarrier.isLocked) {
             launchedBarrier.unlock(null)
         }
@@ -109,6 +98,5 @@ class AppCoordinator @Inject constructor(
         }
 
         cachedTcTokenUrl = null
-        coldLaunch = false
     }
 }
