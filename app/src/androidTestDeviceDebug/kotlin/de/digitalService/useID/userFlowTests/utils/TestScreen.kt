@@ -638,6 +638,11 @@ sealed class TestScreen {
         private val retryMessage = TestElement.Text(testRule, resourceId = R.string.identification_personalPIN_error_tryAgain)
         private val twoAttemptsLeftMessage = TestElement.Text(testRule, resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts, formatArg = "2", quantity = 2)
 
+        val navigationConfirmDialog: TestElement.NavigationConfirmDialog
+            get() {
+                return TestElement.NavigationConfirmDialog(testRule, true)
+            }
+
         override val expectedElements: List<TestElement>
             get() {
                 return listOf(title, personalPinField)
@@ -647,7 +652,7 @@ sealed class TestScreen {
 
         override val unexpectedElements: List<TestElement>
             get() {
-                return listOf<TestElement>()
+                return listOf<TestElement>(navigationConfirmDialog)
                     .plus(listOf(back).takeIf { retry } ?: listOf())
                     .plus(listOf(cancel, errorMessage, retryMessage, twoAttemptsLeftMessage).takeIf { !retry } ?: listOf())
 

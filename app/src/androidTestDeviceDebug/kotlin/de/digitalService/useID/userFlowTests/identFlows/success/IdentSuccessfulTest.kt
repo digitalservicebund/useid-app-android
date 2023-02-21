@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows
+package de.digitalService.useID.userFlowTests.identFlows.success
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -36,7 +35,6 @@ import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -144,12 +142,7 @@ class IdentSuccessfulTest {
         advanceUntilIdle()
 
         identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.moreInformationBtn.scrollToAndClick()
-        identificationAttributeConsent.infoDialog.assertIsDisplayed()
-        identificationAttributeConsent.infoDialogCloseBtn.click()
-        identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
-        advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
