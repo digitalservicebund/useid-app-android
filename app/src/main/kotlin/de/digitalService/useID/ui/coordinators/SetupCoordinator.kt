@@ -58,7 +58,7 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun setupWithoutPinLetter() {
-        navigator.navigate(ResetPersonalPinDestination)
+        navigator.navigate(SetupResetPersonalPinDestination)
     }
 
     fun onBackClicked() {

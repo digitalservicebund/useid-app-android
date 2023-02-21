@@ -27,13 +27,13 @@ class AppNavigator @Inject constructor() : Navigator {
     override fun navigatePopping(route: Direction) {
         CoroutineScope(Dispatchers.Main).launch {
             navController.navigate(route) {
-                pop()
+                navController.popBackStack()
             }
         }
     }
 
     override fun pop() {
-        navController.popBackStack()
+        CoroutineScope(Dispatchers.Main).launch { navController.popBackStack() }
     }
 
     override fun popUpTo(direction: Destination) {

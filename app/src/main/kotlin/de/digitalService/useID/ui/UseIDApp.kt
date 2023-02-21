@@ -38,7 +38,7 @@ fun UseIDApp(nfcAvailability: NfcAvailability, navigator: Navigator, trackerMana
 
         val trackerRoute = when (destination.route) {
             HomeScreenDestination.route -> "/"
-            ResetPersonalPinDestination.route -> "missingPINLetter"
+            SetupResetPersonalPinDestination.route, CanResetPersonalPinDestination.route -> "missingPINLetter"
 
             SetupIntroDestination.route -> firstTimeUserRoute("intro")
             SetupPinLetterDestination.route -> firstTimeUserRoute("PINLetter")

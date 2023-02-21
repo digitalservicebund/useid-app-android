@@ -16,13 +16,10 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.components.StandardStaticComposition
 import de.digitalService.useID.ui.theme.UseIdTheme
 
-@Destination
 @Composable
-fun ResetPersonalPin(
-    navigator: DestinationsNavigator
-) {
+fun ResetPersonalPin(onBack: () -> Unit) {
     ScreenWithTopBar(
-        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = { navigator.navigateUp() }, confirmation = null)
+        navigationButton = NavigationButton(icon = NavigationIcon.Back, onClick = onBack, confirmation = null)
     ) { topPadding ->
         StandardStaticComposition(
             title = stringResource(R.string.firstTimeUser_missingPINLetter_title),
@@ -38,6 +35,6 @@ fun ResetPersonalPin(
 @Preview
 fun PinReSetupPersonalPin() {
     UseIdTheme {
-        ResetPersonalPin(EmptyDestinationsNavigator)
+        ResetPersonalPin {}
     }
 }
