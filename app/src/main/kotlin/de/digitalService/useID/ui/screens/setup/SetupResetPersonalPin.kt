@@ -17,6 +17,6 @@ fun SetupResetPersonalPin(viewModel: SetupResetPersonalPinViewModel = hiltViewMo
 @HiltViewModel
 class SetupResetPersonalPinViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
-): ViewModel() {
+) : ViewModel() {
     fun onBack() = setupCoordinator.onBackClicked()
 }

@@ -18,6 +18,6 @@ fun CanResetPersonalPin(viewModel: CanResetPersonalPinViewModel = hiltViewModel(
 @HiltViewModel
 class CanResetPersonalPinViewModel @Inject constructor(
     private val canCoordinator: CanCoordinator
-): ViewModel() {
+) : ViewModel() {
     fun onBack() = canCoordinator.onBack()
 }
