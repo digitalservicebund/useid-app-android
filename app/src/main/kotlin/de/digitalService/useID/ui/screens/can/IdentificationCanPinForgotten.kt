@@ -52,7 +52,7 @@ interface IdentificationCanPinForgottenViewModelInterface {
 
 @HiltViewModel
 class IdentificationCanPinForgottenViewModel @Inject constructor(
-    val coordinator: CanCoordinator
+    private val coordinator: CanCoordinator
 ) : ViewModel(), IdentificationCanPinForgottenViewModelInterface {
 
     override fun onCancelIdentification() {

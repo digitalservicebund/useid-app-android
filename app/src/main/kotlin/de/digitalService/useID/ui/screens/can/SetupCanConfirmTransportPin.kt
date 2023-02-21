@@ -67,7 +67,7 @@ class SetupCanConfirmTransportPinViewModel @Inject constructor(
     }
 
     override fun onConfirm() {
-        canCoordinator.confirmPinInput()
+        canCoordinator.onConfirmedPinInput()
     }
 
     override fun onReenterTransportPin() {
