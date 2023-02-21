@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows.canceled
+package de.digitalService.useID.userFlowTests.identFlows.error
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
@@ -34,16 +34,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnFetchMetaDataTest {
+class IdentErrorCardUnreadableTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -85,7 +86,7 @@ class IdentCanceledOnFetchMetaDataTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnFetchMetaData() = runTest {
+    fun testIdentErrorCardUnreadable() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -101,9 +102,14 @@ class IdentCanceledOnFetchMetaDataTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val personalPin = "123456"
 
         // Define screens to be tested
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
+        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
+        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
+        val identificationScan = TestScreen.Scan(composeTestRule)
+        val errorCardUnreadable= TestScreen.ErrorCardUnreadable(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
@@ -115,14 +121,57 @@ class IdentCanceledOnFetchMetaDataTest {
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.dismiss()
 
-        identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.confirm()
+        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+            EidAuthenticationRequest(
+                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
+                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.subject,
+                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.validity,
+                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
+                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
+                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+            )
+        ) {
+           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        }
+
+        advanceUntilIdle()
+
+        identificationAttributeConsent.assertIsDisplayed()
+        identificationAttributeConsent.continueBtn.click()
+
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
+        advanceUntilIdle()
+
+        identificationPersonalPin.assertIsDisplayed()
+        identificationPersonalPin.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        identificationScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.Error(
+            IdCardInteractionException.ProcessFailed(
+                resultCode = ActivationResultCode.INTERNAL_ERROR,
+                redirectUrl = null,
+                resultMinor = null
+            )
+        )
+        advanceUntilIdle()
+
+        errorCardUnreadable.setIdentPending(true).setRedirectUrlPresent(false).assertIsDisplayed()
+        errorCardUnreadable.closeBtn.click()
 
         home.assertIsDisplayed()
     }

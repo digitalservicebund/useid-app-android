@@ -49,9 +49,6 @@ class IdentCanceledOnAttributesConfirmTest {
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val intentsTestRule = IntentsTestRule(MainActivity::class.java)
-
-    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject

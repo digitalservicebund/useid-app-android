@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnFetchMetaDataTest {
+class IdentCanceledOnCardDeactivatedTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -85,7 +85,7 @@ class IdentCanceledOnFetchMetaDataTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnFetchMetaData() = runTest {
+    fun testIdentCanceledOnCardDeactivated() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -101,9 +101,15 @@ class IdentCanceledOnFetchMetaDataTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val redirectUrl = "test.url.com"
+        val personalPin = "123456"
 
         // Define screens to be tested
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
+        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
+        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
+        val identificationScan = TestScreen.Scan(composeTestRule)
+        val errorDeactivated = TestScreen.ErrorCardDeactivated(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
@@ -115,14 +121,51 @@ class IdentCanceledOnFetchMetaDataTest {
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.dismiss()
 
-        identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.confirm()
+        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+            EidAuthenticationRequest(
+                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
+                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.subject,
+                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.validity,
+                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
+                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
+                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+            )
+        ) {
+           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        }
+
+        advanceUntilIdle()
+
+        identificationAttributeConsent.assertIsDisplayed()
+        identificationAttributeConsent.continueBtn.click()
+
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
+        advanceUntilIdle()
+
+        identificationPersonalPin.assertIsDisplayed()
+        identificationPersonalPin.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        identificationScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
+        advanceUntilIdle()
+
+        errorDeactivated.assertIsDisplayed()
+        errorDeactivated.cancel.click()
 
         home.assertIsDisplayed()
     }

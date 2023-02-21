@@ -1,14 +1,9 @@
 package de.digitalService.useID.userFlowTests.identFlows.canceled
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -34,16 +29,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnFetchMetaDataTest {
+class IdentCanceledOnFetchMetaDataErrorTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -85,7 +80,7 @@ class IdentCanceledOnFetchMetaDataTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnFetchMetaData() = runTest {
+    fun testIdentCanceledOnFetchMetaDataError() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -101,9 +96,11 @@ class IdentCanceledOnFetchMetaDataTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val redirectUrl = "test.url.com"
 
         // Define screens to be tested
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
+        val errorGeneric = TestScreen.ErrorGenericError(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
@@ -115,14 +112,21 @@ class IdentCanceledOnFetchMetaDataTest {
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.dismiss()
 
-        identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.confirm()
+        eidFlow.value = EidInteractionEvent.Error(
+            IdCardInteractionException.ProcessFailed(
+                resultCode = ActivationResultCode.BAD_REQUEST,
+                redirectUrl = redirectUrl,
+                resultMinor = null
+            )
+        )
+
+        advanceUntilIdle()
+
+        errorGeneric.setIdentPending(true).assertIsDisplayed()
+        errorGeneric.cancel.click()
+        errorGeneric.confirmationDialog.assertIsDisplayed()
+        errorGeneric.confirmationDialog.confirm()
 
         home.assertIsDisplayed()
     }
