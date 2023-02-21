@@ -52,8 +52,8 @@ class CanStateMachine(initialState: State) {
         object ResetPin : Event()
         object ConfirmCanIntro : Event()
 
-        data class InitializeCanForPinManagement(val oldPin: String, val newPin: String, val shortFlow: Boolean, val callback: PinManagementCanCallback) : Event()
-        data class InitializeCanForIdent(val pin: String?, val callback: PinCanCallback) : Event()
+        data class FrameworkRequestsCanForPinManagement(val oldPin: String, val newPin: String, val shortFlow: Boolean, val callback: PinManagementCanCallback) : Event()
+        data class FrameworkRequestsCanForIdent(val pin: String?, val callback: PinCanCallback) : Event()
 
         data class EnterCan(val can: String) : Event()
         data class EnterPin(val pin: String) : Event()
@@ -70,7 +70,7 @@ class CanStateMachine(initialState: State) {
 
     private fun nextState(event: Event): State {
         return when (event) {
-            is Event.InitializeCanForPinManagement -> {
+            is Event.FrameworkRequestsCanForPinManagement -> {
                 when (val currentState = state.value.second) {
                     is State.Invalid -> if (event.shortFlow) State.PinManagement.CanIntro(event.callback, event.oldPin, event.newPin, true) else State.PinManagement.Intro(event.callback, event.oldPin, event.newPin)
                     is State.PinManagement.CanAndPinEntered -> State.PinManagement.CanInputRetry(event.callback, currentState.oldPin, currentState.newPin)
@@ -78,7 +78,7 @@ class CanStateMachine(initialState: State) {
                 }
             }
 
-            is Event.InitializeCanForIdent -> {
+            is Event.FrameworkRequestsCanForIdent -> {
                 when (val currentState = state.value.second) {
                     is State.Invalid -> if (event.pin != null) State.Ident.CanIntro(event.callback, event.pin) else State.Ident.Intro(event.callback, null)
                     is State.Ident.CanAndPinEntered -> State.Ident.CanInputRetry(event.callback, currentState.pin)

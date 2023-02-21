@@ -64,6 +64,11 @@ fun UseIDApp(nfcAvailability: NfcAvailability, navigator: Navigator, trackerMana
             IdentificationScanDestination.route -> identificationRoute("scan")
             IdentificationCanPinForgottenDestination.route -> "canPINForgotten"
 
+            IdentificationCardDeactivatedDestination.route -> identificationRoute("cardDeactivated")
+            IdentificationCardBlockedDestination.route -> identificationRoute("cardBlocked")
+            IdentificationCardUnreadableDestination.route -> identificationRoute("cardUnreadable")
+            IdentificationOtherErrorDestination.route -> identificationRoute("other")
+
             SetupCanIntroDestination.route, IdentificationCanIntroDestination.route -> "canIntro"
             CanInputDestination.route -> "canInput"
             IdentificationCanPinInputDestination.route -> "personalPIN"

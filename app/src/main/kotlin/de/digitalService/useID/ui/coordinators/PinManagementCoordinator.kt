@@ -3,6 +3,7 @@ package de.digitalService.useID.ui.coordinators
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.analytics.IssueTrackerManagerType
+import de.digitalService.useID.flows.CanStateMachine
 import de.digitalService.useID.flows.PinManagementStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
@@ -26,8 +27,8 @@ class PinManagementCoordinator @Inject constructor(
     private val canCoordinator: CanCoordinator,
     private val navigator: Navigator,
     private val idCardManager: IdCardManager,
-    private val issueTrackerManager: IssueTrackerManagerType,
     private val flowStateMachine: PinManagementStateMachine,
+    private val canStateMachine: CanStateMachine,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
@@ -52,6 +53,7 @@ class PinManagementCoordinator @Inject constructor(
                         resetCoordinatorState()
                     }
 
+                    // Backing down
                     if (eventAndPair.second is PinManagementStateMachine.State.Invalid) {
                         resetCoordinatorState()
                         stateFlow.value = SubCoordinatorState.BACKED_DOWN
@@ -84,6 +86,7 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     fun startPinManagement(identificationPending: Boolean, transportPin: Boolean): Flow<SubCoordinatorState> {
+        canStateMachine.transition(CanStateMachine.Event.Invalidate)
         flowStateMachine.transition(PinManagementStateMachine.Event.StartPinManagement(identificationPending, transportPin))
         stateFlow.value = SubCoordinatorState.ACTIVE
         return stateFlow
@@ -130,7 +133,6 @@ class PinManagementCoordinator @Inject constructor(
 
     private fun startCanFlow(identificationPending: Boolean, oldPin: String, newPin: String, shortFlow: Boolean) {
         if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
-            canEventFlowCoroutineScope?.cancel()
             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
                 canCoordinator.startPinManagementCanFlow(oldPin, newPin, shortFlow).collect { state ->
                     when (state) {

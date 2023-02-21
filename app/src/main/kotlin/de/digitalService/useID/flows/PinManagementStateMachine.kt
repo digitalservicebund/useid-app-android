@@ -68,7 +68,6 @@ class PinManagementStateMachine(initialState: State) {
     }
 
     fun transition(event: Event) {
-        logger.debug("${state.value.second::class.simpleName}  ====${event::class.simpleName}===>  ???")
         val nextState = nextState(event)
         logger.debug("${state.value.second::class.simpleName}  ====${event::class.simpleName}===>  ${nextState::class.simpleName}")
         _state.value = Pair(event, nextState)

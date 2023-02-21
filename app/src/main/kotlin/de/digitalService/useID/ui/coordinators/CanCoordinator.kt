@@ -1,6 +1,7 @@
 package de.digitalService.useID.ui.coordinators
 
 import de.digitalService.useID.flows.CanStateMachine
+import de.digitalService.useID.flows.IdentificationStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardManager
@@ -42,7 +43,7 @@ class CanCoordinator @Inject constructor(
                         is CanStateMachine.State.PinManagement.Intro -> navigator.navigate(SetupCanConfirmTransportPinDestination(state.oldPin))
                         is CanStateMachine.State.PinManagement.IdAlreadySetup -> navigator.navigate(SetupCanAlreadySetupDestination)
                         is CanStateMachine.State.PinManagement.PinReset, is CanStateMachine.State.Ident.PinReset -> navigator.navigate(CanResetPersonalPinDestination)
-                        is CanStateMachine.State.PinManagement.CanIntro -> navigator.navigate(SetupCanIntroDestination(state.oldPin == null))
+                        is CanStateMachine.State.PinManagement.CanIntro -> navigator.navigate(SetupCanIntroDestination(!state.shortFlow))
                         is CanStateMachine.State.PinManagement.CanInput -> navigator.navigate(CanInputDestination(false))
                         is CanStateMachine.State.PinManagement.CanInputRetry -> {
                             navigator.navigate(SetupCanIntroDestination(false))
@@ -50,7 +51,7 @@ class CanCoordinator @Inject constructor(
                         }
                         is CanStateMachine.State.PinManagement.PinInput -> navigator.navigate(SetupCanTransportPinDestination)
                         is CanStateMachine.State.PinManagement.CanAndPinEntered -> state.callback(state.oldPin, state.can, state.newPin)
-                        
+
                         is CanStateMachine.State.Ident.Intro -> navigator.navigate(IdentificationCanPinForgottenDestination)
                         is CanStateMachine.State.Ident.CanIntro -> navigator.navigate(IdentificationCanIntroDestination(state.pin == null))
                         is CanStateMachine.State.Ident.CanIntroWithoutFlowIntro -> navigator.navigate(IdentificationCanIntroDestination(false))
