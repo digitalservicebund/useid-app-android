@@ -25,11 +25,11 @@ fun SetupCardUnreadable(viewModel: SetupCardUnreadableViewModel = hiltViewModel(
 
 @HiltViewModel
 class SetupCardUnreadableViewModel @Inject constructor(
-    private val setupCoordinator: PinManagementCoordinator
+    private val pinManagementCoordinator: PinManagementCoordinator
 ) : ViewModel() {
 
     fun onRetryClicked() {
-        setupCoordinator.retryPinManagement()
+        pinManagementCoordinator.confirmCardUnreadableError()
     }
 }
 

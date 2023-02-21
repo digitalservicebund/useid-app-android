@@ -59,7 +59,7 @@ class SetupCanConfirmTransportPinViewModel @Inject constructor(
 ) : ViewModel(), SetupCanConfirmTransportPinViewModelInterface {
     override val transportPin: String
     override val identificationPending: Boolean
-        get() = setupCoordinator.identificationPending
+        get() = false //setupCoordinator.identificationPending
 
     init {
         val args = SetupCanConfirmTransportPinDestination.argsFrom(savedStateHandle)

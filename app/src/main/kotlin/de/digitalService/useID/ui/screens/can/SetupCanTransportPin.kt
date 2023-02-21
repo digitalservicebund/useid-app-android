@@ -54,7 +54,7 @@ class SetupCanTransportPinViewModel @Inject constructor(
     ViewModel(), SetupCanTransportPinViewModelInterface {
 
     override val identificationPending: Boolean
-        get() = setupCoordinator.identificationPending
+        get() = false //setupCoordinator.identificationPending
 
     override fun onDoneClicked(pin: String) {
         canCoordinator.onPinEntered(pin)

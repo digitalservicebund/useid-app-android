@@ -42,7 +42,7 @@ interface SetupPersonalPinInputViewModelInterface {
 class SetupPersonalPinInputViewModel @Inject constructor(
     private val pinManagementCoordinator: PinManagementCoordinator
 ) : ViewModel(), SetupPersonalPinInputViewModelInterface {
-    override fun onDoneClicked(pin: String) = pinManagementCoordinator.setNewPin(pin)
+    override fun onDoneClicked(pin: String) = pinManagementCoordinator.onNewPinEntered(pin)
     override fun onBack() = pinManagementCoordinator.onBack()
 }
 

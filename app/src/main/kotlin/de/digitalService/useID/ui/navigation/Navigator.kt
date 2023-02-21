@@ -2,7 +2,6 @@ package de.digitalService.useID.ui.navigation
 
 import androidx.navigation.NavController
 import com.ramcosta.composedestinations.spec.Direction
-import de.digitalService.useID.ui.screens.destinations.Destination
 
 interface Navigator {
     val isAtRoot: Boolean
@@ -11,7 +10,8 @@ interface Navigator {
 
     fun navigate(route: Direction)
     fun navigatePopping(route: Direction)
-    fun popUpTo(direction: Destination)
+    fun popUpTo(route: Direction)
+    fun popUpToOrNavigate(route: Direction, navigatePopping: Boolean)
     fun pop()
     fun popToRoot()
 }

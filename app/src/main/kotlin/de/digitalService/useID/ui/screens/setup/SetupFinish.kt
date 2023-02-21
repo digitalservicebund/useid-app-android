@@ -7,16 +7,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.screens.destinations.SetupFinishDestination
+import de.digitalService.useID.ui.screens.identification.IdentificationFetchMetadataNavArgs
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
-@Destination
+@Destination(navArgsDelegate = SetupFinishNavArgs::class)
 @Composable
 fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFinishViewModel>()) {
     val buttonLabelString = if (viewModel.identificationPending) {
@@ -45,6 +48,10 @@ fun SetupFinish(viewModel: SetupFinishViewModelInterface = hiltViewModel<SetupFi
     }
 }
 
+data class SetupFinishNavArgs(
+    val identificationPending: Boolean
+)
+
 interface SetupFinishViewModelInterface {
     val identificationPending: Boolean
     fun onButtonClicked()
@@ -52,13 +59,17 @@ interface SetupFinishViewModelInterface {
 
 @HiltViewModel
 class SetupFinishViewModel @Inject constructor(
-    private val setupCoordinator: SetupCoordinator
+    private val setupCoordinator: SetupCoordinator,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel(), SetupFinishViewModelInterface {
     override val identificationPending: Boolean
-        get() = setupCoordinator.identificationPending
+
+    init {
+        identificationPending = SetupFinishDestination.argsFrom(savedStateHandle).identificationPending
+    }
 
     override fun onButtonClicked() {
-        setupCoordinator.finishSetup()
+        setupCoordinator.onSetupFinishConfirmed()
     }
 }
 

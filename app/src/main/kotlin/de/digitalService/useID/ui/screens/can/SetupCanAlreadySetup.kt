@@ -92,7 +92,7 @@ class SetupCanAlreadySetupViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator
 ) : ViewModel(), SetupCanAlreadySetupViewModelInterface {
     override val identificationPending: Boolean
-        get() = setupCoordinator.identificationPending
+        get() = false //setupCoordinator.identificationPending
 
     override fun onBack() {
         canCoordinator.onBack()

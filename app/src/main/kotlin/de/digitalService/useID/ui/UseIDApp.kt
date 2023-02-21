@@ -111,7 +111,8 @@ private class PreviewAppNavigator : Navigator {
     override fun pop() {}
     override fun popToRoot() {}
     override fun navigatePopping(route: Direction) {}
-    override fun popUpTo(direction: Destination) {}
+    override fun popUpTo(route: Direction) {}
+    override fun popUpToOrNavigate(route: Direction, navigatePopping: Boolean) {}
 }
 
 @Preview(name = "Small", showSystemUi = true, device = Devices.NEXUS_5)

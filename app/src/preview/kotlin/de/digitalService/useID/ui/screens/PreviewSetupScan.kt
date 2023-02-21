@@ -63,9 +63,18 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
-            delay(100L)
-            idCardManager.injectEvent(EidInteractionEvent.Idle)
+            idCardManager.injectEvent(EidInteractionEvent.RequestChangedPin(null) {_, _ ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000L)
+                    idCardManager.injectEvent(EidInteractionEvent.CardInteractionComplete)
+                    delay(1000L)
+                    idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
+                    delay(1000L)
+                    idCardManager.injectEvent(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
+                    delay(100L)
+                    idCardManager.injectEvent(EidInteractionEvent.Idle)
+                }
+            })
         }
     }
 
@@ -125,7 +134,7 @@ class PreviewSetupScanViewModel @Inject constructor(
     private suspend fun simulateWaiting() {
         idCardManager.injectEvent(EidInteractionEvent.CardRecognized)
         delay(3000L)
-        idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
+//        idCardManager.injectEvent(EidInteractionEvent.CardRemoved)
     }
 }
 

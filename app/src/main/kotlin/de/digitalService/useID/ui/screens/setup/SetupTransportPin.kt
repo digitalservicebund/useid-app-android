@@ -56,7 +56,8 @@ fun SetupTransportPin(
 }
 
 data class SetupTransportPinNavArgs(
-    val retry: Boolean
+    val retry: Boolean,
+    val identificationPending: Boolean
 )
 
 interface SetupTransportPinViewModelInterface {
@@ -70,20 +71,19 @@ interface SetupTransportPinViewModelInterface {
 @HiltViewModel
 class SetupTransportPinViewModel @Inject constructor(
     private val pinManagementCoordinator: PinManagementCoordinator,
-    private val setupCoordinator: SetupCoordinator,
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupTransportPinViewModelInterface {
     override val retry: Boolean
     override val identificationPending: Boolean
-        get() = setupCoordinator.identificationPending
 
     init {
         retry = SetupTransportPinDestination.argsFrom(savedStateHandle).retry
+        identificationPending = SetupTransportPinDestination.argsFrom(savedStateHandle).identificationPending
     }
 
     override fun onDoneClicked(pin: String) {
-        pinManagementCoordinator.setOldPin(pin)
+        pinManagementCoordinator.onOldPinEntered(pin)
     }
 
     override fun onNavigationButtonClicked() {

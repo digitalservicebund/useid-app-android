@@ -63,7 +63,7 @@ class SetupCanIntroViewModel @Inject constructor(
 ) : ViewModel(), SetupCanIntroViewModelInterface {
     override val backAllowed: Boolean
     override val identificationPending: Boolean
-        get() = setupCoordinator.identificationPending
+        get() = false //setupCoordinator.identificationPending
 
     init {
         backAllowed = SetupCanIntroDestination.argsFrom(savedStateHandle).backAllowed

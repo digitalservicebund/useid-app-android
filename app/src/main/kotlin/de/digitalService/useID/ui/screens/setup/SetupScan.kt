@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.annotation.Destination
@@ -20,13 +21,14 @@ import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
+import de.digitalService.useID.ui.screens.destinations.SetupScanDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.annotation.Nullable
 import javax.inject.Inject
 
-@Destination
+@Destination(navArgsDelegate = SetupScanNavArgs::class)
 @Composable
 fun SetupScan(
     modifier: Modifier = Modifier,
@@ -50,6 +52,11 @@ fun SetupScan(
     }
 }
 
+data class SetupScanNavArgs(
+    val backAllowed: Boolean,
+    val identificationPending: Boolean
+)
+
 interface SetupScanViewModelInterface {
     val backAllowed: Boolean
     val identificationPending: Boolean
@@ -62,21 +69,22 @@ interface SetupScanViewModelInterface {
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
     private val pinManagementCoordinator: PinManagementCoordinator,
-    private val setupCoordinator: SetupCoordinator,
     private val trackerManager: TrackerManagerType,
+    savedStateHandle: SavedStateHandle,
     @Nullable coroutineScope: CoroutineScope? = null
 ) : ViewModel(), SetupScanViewModelInterface {
 
     private val viewModelCoroutineScope: CoroutineScope = coroutineScope ?: viewModelScope
 
     override val backAllowed: Boolean
-        get() = pinManagementCoordinator.backAllowed
     override val identificationPending: Boolean
-        get() = setupCoordinator.identificationPending
     override var shouldShowProgress: Boolean by mutableStateOf(false)
         private set
 
     init {
+        backAllowed = SetupScanDestination.argsFrom(savedStateHandle).backAllowed
+        identificationPending = SetupScanDestination.argsFrom(savedStateHandle).identificationPending
+
         viewModelCoroutineScope.launch {
             pinManagementCoordinator.scanInProgress.collect { shouldShowProgress = it }
         }

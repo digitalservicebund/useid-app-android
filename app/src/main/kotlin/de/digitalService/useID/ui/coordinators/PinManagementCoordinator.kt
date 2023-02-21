@@ -1,9 +1,9 @@
 package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
-import com.ramcosta.composedestinations.spec.Direction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.analytics.IssueTrackerManagerType
+import de.digitalService.useID.flows.PinManagementStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
@@ -13,17 +13,12 @@ import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
-
-enum class PinStatus {
-    TransportPin, PersonalPin
-}
 
 @Singleton
 class PinManagementCoordinator @Inject constructor(
@@ -32,19 +27,10 @@ class PinManagementCoordinator @Inject constructor(
     private val navigator: Navigator,
     private val idCardManager: IdCardManager,
     private val issueTrackerManager: IssueTrackerManagerType,
+    private val flowStateMachine: PinManagementStateMachine,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
     private val logger by getLogger()
-
-    private lateinit var pinStatus: PinStatus
-    private var oldPin: String? = null // TODO: Refactor to FSM
-    private var newPin: String? = null
-
-    private var firstOldPinRequest = true
-    private var reachedScanState = false
-    private var startedWithThreeAttempts = false
-    var backAllowed = true
-        private set
 
     private var eIdEventFlowCoroutineScope: Job? = null
     private var canEventFlowCoroutineScope: Job? = null
@@ -55,111 +41,133 @@ class PinManagementCoordinator @Inject constructor(
 
     private val stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
 
-    fun startPinManagement(pinStatus: PinStatus): Flow<SubCoordinatorState> {
-        resetCoordinatorState()
+    init {
+        CoroutineScope(coroutineContextProvider.Default).launch {
+            flowStateMachine.state.collect { eventAndPair ->
+                if (eventAndPair.first is PinManagementStateMachine.Event.Back) {
+                    navigator.pop()
 
-        this.pinStatus = pinStatus
+                    // From Scan screen
+                    if (eventAndPair.second is PinManagementStateMachine.State.NewPinInput) {
+                        resetCoordinatorState()
+                    }
 
-        when (pinStatus) {
-            PinStatus.TransportPin -> navigator.navigate(SetupTransportPinDestination(false))
-            PinStatus.PersonalPin -> throw NotImplementedError("Pin Management for personal PIN not implemented yet.")
+                    if (eventAndPair.second is PinManagementStateMachine.State.Invalid) {
+                        resetCoordinatorState()
+                        stateFlow.value = SubCoordinatorState.BACKED_DOWN
+                    }
+                } else {
+                    when (val state = eventAndPair.second) {
+                        is PinManagementStateMachine.State.OldTransportPinInput -> navigator.navigate(SetupTransportPinDestination(false, state.identificationPending))
+                        is PinManagementStateMachine.State.OldPersonalPinInput -> throw NotImplementedError()
+                        is PinManagementStateMachine.State.NewPinIntro -> navigator.navigate(SetupPersonalPinIntroDestination)
+                        is PinManagementStateMachine.State.NewPinInput -> if (eventAndPair.first is PinManagementStateMachine.Event.RetryNewPinConfirmation) navigator.pop() else navigator.navigate(SetupPersonalPinInputDestination)
+                        is PinManagementStateMachine.State.NewPinConfirmation -> navigator.navigate(SetupPersonalPinConfirmDestination)
+                        is PinManagementStateMachine.State.ReadyForScan -> executePinManagement()
+                        is PinManagementStateMachine.State.WaitingForFirstCardAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
+                        is PinManagementStateMachine.State.WaitingForCardReAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
+                        is PinManagementStateMachine.State.FrameworkReadyForPinManagement -> state.callback(state.oldPin, state.newPin)
+                        is PinManagementStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin)
+                        is PinManagementStateMachine.State.OldTransportPinRetry -> navigator.navigate(SetupTransportPinDestination(true, state.identificationPending))
+                        is PinManagementStateMachine.State.OldPersonalPinRetry -> throw NotImplementedError()
+                        PinManagementStateMachine.State.Finished -> finishPinManagement()
+                        PinManagementStateMachine.State.Cancelled -> cancelPinManagement()
+                        PinManagementStateMachine.State.CardDeactivated -> navigator.navigate(SetupCardDeactivatedDestination)
+                        PinManagementStateMachine.State.CardBlocked -> navigator.navigate(SetupCardBlockedDestination)
+                        is PinManagementStateMachine.State.ProcessFailed -> navigator.navigate(SetupCardUnreadableDestination(false))
+                        PinManagementStateMachine.State.UnknownError -> navigator.navigate(SetupOtherErrorDestination)
+                        PinManagementStateMachine.State.Invalid -> logger.debug("Ignoring transition to state INVALID.")
+                    }
+                }
+            }
         }
+    }
 
+    fun startPinManagement(identificationPending: Boolean, transportPin: Boolean): Flow<SubCoordinatorState> {
+        flowStateMachine.transition(PinManagementStateMachine.Event.StartPinManagement(identificationPending, transportPin))
         stateFlow.value = SubCoordinatorState.ACTIVE
         return stateFlow
     }
 
-    fun setOldPin(oldPin: String) {
-        this.oldPin = oldPin
-
-        if (newPin == null) {
-            navigator.navigate(SetupPersonalPinIntroDestination)
-        } else {
-            executePinManagement()
-        }
+    fun onOldPinEntered(oldPin: String) {
+        flowStateMachine.transition(PinManagementStateMachine.Event.EnterOldPin(oldPin))
     }
 
     fun onPersonalPinIntroFinished() {
-        navigator.navigate(SetupPersonalPinInputDestination)
+        flowStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPinIntro)
     }
 
-    fun setNewPin(newPin: String) {
-        this.newPin = newPin
-        navigator.navigate(SetupPersonalPinConfirmDestination)
+    fun onNewPinEntered(newPin: String) {
+        flowStateMachine.transition(PinManagementStateMachine.Event.EnterNewPin(newPin))
     }
 
     fun confirmNewPin(newPin: String): Boolean {
-        return if (newPin == this.newPin) {
-            executePinManagement()
+        return try {
+            flowStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPin(newPin))
             true
-        } else {
-            this.newPin = null
+        } catch (e: PinManagementStateMachine.Error.PinConfirmationFailed) {
             false
         }
     }
 
     fun onConfirmPinMismatchError() {
-        navigator.pop()
-    }
-
-    fun retryPinManagement() {
-        executePinManagement()
-    }
-
-    private fun cancelIdCardManagerTasks() {
-        eIdEventFlowCoroutineScope?.cancel()
-        canEventFlowCoroutineScope?.cancel()
-        idCardManager.cancelTask()
+        flowStateMachine.transition(PinManagementStateMachine.Event.RetryNewPinConfirmation)
     }
 
     fun onBack() {
-        navigator.pop()
-        reachedScanState = false
-        cancelIdCardManagerTasks()
+        flowStateMachine.transition(PinManagementStateMachine.Event.Back)
     }
 
     fun cancelPinManagement() {
-        cancelPinManagementAndNavigate(null)
-    }
-
-    private fun cancelPinManagementAndNavigate(destination: Direction?) {
-        _scanInProgress.value = false
         stateFlow.value = SubCoordinatorState.CANCELLED
-        resetCoordinatorState()
-        cancelIdCardManagerTasks()
-        destination?.let { navigator.navigate(destination) }
-    }
-
-    private fun executePinManagement() {
-        collectEidEvents()
-        idCardManager.cancelTask()
-        idCardManager.changePin(context)
-    }
-
-    private fun finishPinManagementFlow() {
-        stateFlow.value = SubCoordinatorState.FINISHED
+        flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }
 
-    private fun skipPinManagementFlow() {
-        idCardManager.cancelTask()
+    fun confirmCardUnreadableError() {
+        flowStateMachine.transition(PinManagementStateMachine.Event.ProceedAfterError)
+    }
+
+    private fun startCanFlow(identificationPending: Boolean, oldPin: String, newPin: String?) {
+        if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
+            canEventFlowCoroutineScope?.cancel()
+            canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
+                canCoordinator.startPinManagementCanFlow(oldPin, newPin).collect { state ->
+                    when (state) {
+                        SubCoordinatorState.CANCELLED -> cancelPinManagement()
+                        SubCoordinatorState.SKIPPED -> skipPinManagement()
+                        else -> logger.debug("Ignoring sub flow state: $state")
+                    }
+                }
+            }
+        } else {
+            logger.debug("Don't start CAN flow as it is already active.")
+        }
+    }
+
+    private fun skipPinManagement() {
         stateFlow.value = SubCoordinatorState.SKIPPED
+        flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
+        resetCoordinatorState()
+    }
+
+    private fun finishPinManagement() {
+        stateFlow.value = SubCoordinatorState.FINISHED
+        flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }
 
     private fun resetCoordinatorState() {
-        oldPin = null
-        newPin = null
-        firstOldPinRequest = true
-        backAllowed = true
-        reachedScanState = false
-        startedWithThreeAttempts = false
+        _scanInProgress.value = false
         eIdEventFlowCoroutineScope?.cancel()
         canEventFlowCoroutineScope?.cancel()
+        idCardManager.cancelTask()
     }
 
-    private fun collectEidEvents() {
+    private fun executePinManagement() {
         eIdEventFlowCoroutineScope?.cancel()
+        idCardManager.cancelTask()
+
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             idCardManager.eidFlow.catch { exception ->
                 logger.error("Error: $exception")
@@ -167,16 +175,7 @@ class PinManagementCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-
-                        if (reachedScanState) {
-                            logger.debug("Popping to scan screen.")
-                            backAllowed = false
-                            navigator.popUpTo(SetupScanDestination)
-                        } else {
-                            logger.debug("Pushing scan screen.")
-                            navigator.navigatePopping(SetupScanDestination)
-                            reachedScanState = true
-                        }
+                        flowStateMachine.transition(PinManagementStateMachine.Event.RequestCardInsertion)
                     }
                     EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
                     EidInteractionEvent.CardRecognized -> {
@@ -187,94 +186,34 @@ class PinManagementCoordinator @Inject constructor(
                         logger.debug("Card removed.")
                         _scanInProgress.value = false
                     }
+                    EidInteractionEvent.CardInteractionComplete -> {
+                        logger.debug("Card interaction complete.")
+                    }
                     EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
                         logger.debug("Process completed successfully.")
-                        _scanInProgress.value = false
-                        stateFlow.emit(SubCoordinatorState.FINISHED)
+                        flowStateMachine.transition(PinManagementStateMachine.Event.Finish)
                     }
                     is EidInteractionEvent.RequestChangedPin -> {
-                        if (firstOldPinRequest) {
-                            logger.debug("Changed PIN requested for the first time. Entering old PIN and new PIN")
-                            firstOldPinRequest = false
-
-                            val oldPin = oldPin
-                            val newPin = newPin
-
-                            if (oldPin == null || newPin == null) {
-                                logger.error("Required PIN values not available for PIN management.")
-                                idCardManager.cancelTask()
-                                cancel()
-                                return@collect
-                            }
-
-                            event.pinCallback(oldPin, newPin)
-                        } else {
-                            logger.debug("Old and new PIN requested for a second time. The old PIN seems to be incorrect.")
-                            _scanInProgress.value = false
-                            navigator.navigate(SetupTransportPinDestination(true))
-                            idCardManager.cancelTask()
-                            firstOldPinRequest = true
-                            startedWithThreeAttempts = true
-                        }
+                        logger.debug("Request changed PIN.")
+                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsChangedPin(event.pinCallback))
                     }
                     is EidInteractionEvent.RequestCanAndChangedPin -> {
                         logger.debug("PIN and CAN requested.")
-                        _scanInProgress.value = false
-
-                        val oldPin = oldPin
-                        val newPin = newPin
-
-                        if (oldPin == null || newPin == null) {
-                            logger.error("Required PIN values not available for PIN management.")
-                            idCardManager.cancelTask()
-                            cancel()
-                            return@collect
-                        }
-
-                        if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
-                            canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-                                canCoordinator.startPinManagementCanFlow(oldPin, newPin.takeIf { !startedWithThreeAttempts }).collect { state ->
-                                    when (state) {
-                                        SubCoordinatorState.CANCELLED -> cancelPinManagementAndNavigate(null)
-                                        SubCoordinatorState.FINISHED -> finishPinManagementFlow()
-                                        SubCoordinatorState.SKIPPED -> skipPinManagementFlow()
-                                        else -> logger.debug("Ignoring sub flow state: $state")
-                                    }
-                                }
-                            }
-                        } else {
-                            logger.debug("Ignoring PIN and CAN request because CAN flow is already active.")
-                        }
+                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsCan)
                     }
-
-                    is EidInteractionEvent.RequestPuk -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
-                    is EidInteractionEvent.Error -> handleEidInteractionEventError(event.exception)
+                    is EidInteractionEvent.RequestPuk -> {
+                        _scanInProgress.value = false
+                        flowStateMachine.transition(PinManagementStateMachine.Event.Error(IdCardInteractionException.CardBlocked))
+                    }
+                    is EidInteractionEvent.Error -> {
+                        _scanInProgress.value = false
+                        flowStateMachine.transition(PinManagementStateMachine.Event.Error(event.exception))
+                    }
                     else -> logger.debug("Ignoring event: $event")
                 }
             }
         }
-    }
 
-    private fun handleEidInteractionEventError(exception: IdCardInteractionException) {
-        logger.debug("Received exception: $exception")
-
-        when (exception) {
-            is IdCardInteractionException.CardDeactivated -> cancelPinManagementAndNavigate(SetupCardDeactivatedDestination)
-            is IdCardInteractionException.CardBlocked -> cancelPinManagementAndNavigate(SetupCardBlockedDestination)
-            is IdCardInteractionException.ProcessFailed -> {
-                (exception as? IdCardInteractionException)?.redacted?.let {
-                    issueTrackerManager.capture(it)
-                }
-                _scanInProgress.value = false
-                navigator.navigate(SetupCardUnreadableDestination(false))
-                cancelIdCardManagerTasks()
-            }
-            else -> {
-                (exception as? IdCardInteractionException)?.redacted?.let {
-                    issueTrackerManager.capture(it)
-                }
-                cancelPinManagementAndNavigate(SetupOtherErrorDestination)
-            }
-        }
+        idCardManager.changePin(context)
     }
 }

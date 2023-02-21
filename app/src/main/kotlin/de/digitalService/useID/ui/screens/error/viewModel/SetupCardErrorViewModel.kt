@@ -2,19 +2,20 @@ package de.digitalService.useID.ui.screens.error.viewModel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import javax.inject.Inject
 
 @HiltViewModel
 class SetupCardErrorViewModel @Inject constructor(
-    private val setupCoordinator: SetupCoordinator
+    private val pinManagementCoordinator: PinManagementCoordinator
 ) : ViewModel() {
 
     fun onNavigationButtonClicked() {
-        setupCoordinator.cancelSetup()
+        pinManagementCoordinator.cancelPinManagement()
     }
 
     fun onButtonClicked() {
-        setupCoordinator.cancelSetup()
+        pinManagementCoordinator.cancelPinManagement()
     }
 }

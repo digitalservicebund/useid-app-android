@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-typealias PinCallback = (String, String) -> Unit
-typealias PinManagementCallback = (String, String, String) -> Unit
+typealias PinCanCallback = (String, String) -> Unit
+typealias PinManagementCanCallback = (String, String, String) -> Unit
 
 @Singleton
 class CanStateMachine(initialState: State) {
@@ -22,26 +22,26 @@ class CanStateMachine(initialState: State) {
     sealed class State {
         object Invalid : State()
 
-        sealed class PinManagement(val oldPin: String, val callback: PinManagementCallback) : State() {
-            class Intro(oldPin: String, callback: PinManagementCallback, val newPin: String?) : PinManagement(oldPin, callback)
-            class IdAlreadySetup(oldPin: String, callback: PinManagementCallback, val newPin: String?) : PinManagement(oldPin, callback)
-            class PinReset(oldPin: String, callback: PinManagementCallback, val newPin: String?) : PinManagement(oldPin, callback)
-            class CanIntro(oldPin: String, callback: PinManagementCallback, val newPin: String?) : PinManagement(oldPin, callback)
-            class CanInput(oldPin: String, callback: PinManagementCallback, val newPin: String?) : PinManagement(oldPin, callback)
-            class CanInputRetry(oldPin: String, callback: PinManagementCallback, val newPin: String) : PinManagement(oldPin, callback)
-            class PinInput(oldPin: String, callback: PinManagementCallback, val can: String) : PinManagement(oldPin, callback)
-            class CanAndPinEntered(oldPin: String, callback: PinManagementCallback, val can: String, val newPin: String) : PinManagement(oldPin, callback)
+        sealed class PinManagement(val oldPin: String, val callback: PinManagementCanCallback) : State() {
+            class Intro(oldPin: String, callback: PinManagementCanCallback, val newPin: String?) : PinManagement(oldPin, callback)
+            class IdAlreadySetup(oldPin: String, callback: PinManagementCanCallback, val newPin: String?) : PinManagement(oldPin, callback)
+            class PinReset(oldPin: String, callback: PinManagementCanCallback, val newPin: String?) : PinManagement(oldPin, callback)
+            class CanIntro(oldPin: String, callback: PinManagementCanCallback, val newPin: String?) : PinManagement(oldPin, callback)
+            class CanInput(oldPin: String, callback: PinManagementCanCallback, val newPin: String?) : PinManagement(oldPin, callback)
+            class CanInputRetry(oldPin: String, callback: PinManagementCanCallback, val newPin: String) : PinManagement(oldPin, callback)
+            class PinInput(oldPin: String, callback: PinManagementCanCallback, val can: String) : PinManagement(oldPin, callback)
+            class CanAndPinEntered(oldPin: String, callback: PinManagementCanCallback, val can: String, val newPin: String) : PinManagement(oldPin, callback)
         }
 
-        sealed class Ident(val callback: PinCallback) : State() {
-            class Intro(callback: PinCallback, val pin: String?) : Ident(callback)
-            class PinReset(callback: PinCallback, val pin: String?) : Ident(callback)
-            class CanIntro(callback: PinCallback, val pin: String?) : Ident(callback)
-            class CanIntroWithoutFlowIntro(callback: PinCallback, val pin: String?) : Ident(callback)
-            class CanInput(callback: PinCallback, val pin: String?) : Ident(callback)
-            class CanInputRetry(callback: PinCallback, val pin: String) : Ident(callback)
-            class PinInput(callback: PinCallback, val can: String) : Ident(callback)
-            class CanAndPinEntered(callback: PinCallback, val can: String, val pin: String) : Ident(callback)
+        sealed class Ident(val callback: PinCanCallback) : State() {
+            class Intro(callback: PinCanCallback, val pin: String?) : Ident(callback)
+            class PinReset(callback: PinCanCallback, val pin: String?) : Ident(callback)
+            class CanIntro(callback: PinCanCallback, val pin: String?) : Ident(callback)
+            class CanIntroWithoutFlowIntro(callback: PinCanCallback, val pin: String?) : Ident(callback)
+            class CanInput(callback: PinCanCallback, val pin: String?) : Ident(callback)
+            class CanInputRetry(callback: PinCanCallback, val pin: String) : Ident(callback)
+            class PinInput(callback: PinCanCallback, val can: String) : Ident(callback)
+            class CanAndPinEntered(callback: PinCanCallback, val can: String, val pin: String) : Ident(callback)
         }
     }
 
@@ -52,8 +52,8 @@ class CanStateMachine(initialState: State) {
         object ResetPin : Event()
         object ConfirmCanIntro : Event()
 
-        data class InitializeCanForPinManagement(val oldPin: String, val newPin: String?, val callback: PinManagementCallback) : Event()
-        data class InitializeCanForIdent(val pin: String?, val callback: PinCallback) : Event()
+        data class InitializeCanForPinManagement(val oldPin: String, val newPin: String?, val callback: PinManagementCanCallback) : Event()
+        data class InitializeCanForIdent(val pin: String?, val callback: PinCanCallback) : Event()
 
         data class EnterCan(val can: String) : Event()
         data class EnterPin(val pin: String) : Event()
@@ -158,7 +158,4 @@ class CanStateMachine(initialState: State) {
             is Event.Invalidate -> State.Invalid
         }
     }
-
-    val backAllowed: Boolean
-        get() = try { nextState(Event.Back); true } catch (e: IllegalArgumentException) { false }
 }
