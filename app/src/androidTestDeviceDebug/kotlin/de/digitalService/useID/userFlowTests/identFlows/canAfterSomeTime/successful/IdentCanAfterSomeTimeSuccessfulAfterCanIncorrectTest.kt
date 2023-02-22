@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows.can
+package de.digitalService.useID.userFlowTests.identFlows.canAfterSomeTime.successful
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentSuccessfulOnThirdAttemptNavigationTest {
+class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -88,7 +88,7 @@ class IdentSuccessfulOnThirdAttemptNavigationTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentSuccessfulOnThirdAttemptNavigation() = runTest {
+    fun testIdentCanAfterSomeTimeSuccessfulAfterCanIncorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -106,8 +106,8 @@ class IdentSuccessfulOnThirdAttemptNavigationTest {
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
         val redirectUrl = "test.url.com"
         val personalPin = "123456"
-        val wrongPersonalPin = "111111"
         val can = "123456"
+        val wrongCan = "222222"
 
         // Define screens to be tested
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
@@ -115,7 +115,6 @@ class IdentSuccessfulOnThirdAttemptNavigationTest {
         val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
         val identificationCanPinForgotten = TestScreen.IdentificationCanPinForgotten(composeTestRule)
-        val identificationResetPersonalPin = TestScreen.ResetPersonalPin(composeTestRule)
         val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
         val identificationCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
@@ -153,20 +152,11 @@ class IdentSuccessfulOnThirdAttemptNavigationTest {
         eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
-        // ENTER WRONG PIN 1ST TIME
+        // ENTER CORRECT PIN
         identificationPersonalPin.assertIsDisplayed()
         identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
-        identificationPersonalPin.back.click()
-
-        identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.continueBtn.click()
-
-        identificationPersonalPin.assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
+        composeTestRule.performPinInput(personalPin)
+        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
@@ -179,20 +169,27 @@ class IdentSuccessfulOnThirdAttemptNavigationTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+        eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
 
-        // ENTER WRONG PIN 2ND TIME
-        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
+        identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
+        identificationCanIntro.enterCanNowBtn.click()
+
+        // ENTER WRONG CAN
+        identificationCanInput.assertIsDisplayed()
+        identificationCanInput.canEntryField.assertLength(0)
+        composeTestRule.performPinInput(wrongCan)
+        identificationCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        identificationScan.setProgress(false).assertIsDisplayed()
+        identificationScan
+            .setIdentPending(true)
+            .setBackAllowed(false)
+            .setProgress(false)
+            .assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
@@ -202,54 +199,11 @@ class IdentSuccessfulOnThirdAttemptNavigationTest {
         eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
 
-        identificationCanPinForgotten.assertIsDisplayed()
-        identificationCanPinForgotten.iWantANewPinBtn.click()
-
-        identificationResetPersonalPin.assertIsDisplayed()
-        identificationResetPersonalPin.back.click()
-
-        identificationCanPinForgotten.assertIsDisplayed()
-        identificationCanPinForgotten.tryAgainBtn.click()
-
-        identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
-        identificationCanIntro.back.click()
-
-        identificationCanPinForgotten.assertIsDisplayed()
-        identificationCanPinForgotten.tryAgainBtn.click()
-
-        identificationCanIntro.assertIsDisplayed()
-        identificationCanIntro.enterCanNowBtn.click()
-
-        identificationCanInput.assertIsDisplayed()
+        // ENTER CORRECT CAN
+        identificationCanInput.setRetry(true).assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)
         identificationCanInput.canEntryField.assertLength(can.length)
-        identificationCanInput.back.click()
-
-        identificationCanIntro.assertIsDisplayed()
-        identificationCanIntro.enterCanNowBtn.click()
-
-        identificationCanInput.assertIsDisplayed()
-        identificationCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(can)
-        identificationCanInput.canEntryField.assertLength(can.length)
-        composeTestRule.pressReturn()
-
-        // ENTER CORRECT PIN 3RD TIME
-        identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
-        identificationPersonalPin.back.click()
-
-        identificationCanInput.assertIsDisplayed()
-        identificationCanInput.canEntryField.assertLength(can.length) // TODO: This should work, the input should be stored
-        composeTestRule.pressReturn()
-
-        identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion

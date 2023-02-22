@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows.can
+package de.digitalService.useID.userFlowTests.identFlows.canAfterSomeTime.canceled
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -43,15 +43,12 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentSuccessfulOnThirdAttemptTest {
+class IdentCanAfterSomeTimeCanceledOnCanScanTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val intentsTestRule = IntentsTestRule(MainActivity::class.java)
-
-    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
@@ -88,7 +85,7 @@ class IdentSuccessfulOnThirdAttemptTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentSuccessfulOnThirdAttempt() = runTest {
+    fun testIdentCanAfterSomeTimeCanceledOnCanScan() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -104,9 +101,7 @@ class IdentSuccessfulOnThirdAttemptTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
-        val redirectUrl = "test.url.com"
         val personalPin = "123456"
-        val wrongPersonalPin = "111111"
         val can = "123456"
 
         // Define screens to be tested
@@ -114,8 +109,6 @@ class IdentSuccessfulOnThirdAttemptTest {
         val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
         val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
-        val identificationCanPinForgotten = TestScreen.IdentificationCanPinForgotten(composeTestRule)
-        val identificationResetPersonalPin = TestScreen.ResetPersonalPin(composeTestRule)
         val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
         val identificationCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
@@ -153,11 +146,11 @@ class IdentSuccessfulOnThirdAttemptTest {
         eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
-        // ENTER WRONG PIN 1ST TIME
+        // ENTER CORRECT PIN
         identificationPersonalPin.assertIsDisplayed()
         identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
+        composeTestRule.performPinInput(personalPin)
+        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
@@ -170,46 +163,16 @@ class IdentSuccessfulOnThirdAttemptTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
-        advanceUntilIdle()
-
-        // ENTER WRONG PIN 2ND TIME
-        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        identificationScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        identificationScan.setProgress(true).assertIsDisplayed()
-
         eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
 
-        identificationCanPinForgotten.assertIsDisplayed()
-        identificationCanPinForgotten.tryAgainBtn.click()
-
-        identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
+        identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
 
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)
         identificationCanInput.canEntryField.assertLength(can.length)
-        composeTestRule.pressReturn()
-
-        // ENTER CORRECT PIN 3RD TIME
-        identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
@@ -221,23 +184,15 @@ class IdentSuccessfulOnThirdAttemptTest {
             .setProgress(false)
             .assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
+        identificationScan.cancel.click()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.dismiss()
 
-        identificationScan.setProgress(true).assertIsDisplayed()
+        identificationScan.assertIsDisplayed()
+        identificationScan.cancel.click()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.confirm()
 
-        intending(allOf(
-            hasAction(Intent.ACTION_VIEW),
-            hasData(redirectUrl),
-            hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                null
-            )
-        )
-
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
-        advanceUntilIdle()
+        home.assertIsDisplayed()
     }
 }
