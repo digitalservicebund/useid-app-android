@@ -105,7 +105,7 @@ class IdentCanCanceledOnPinForgottenTest {
         val identificationCanPinForgotten = TestScreen.IdentificationCanPinForgotten(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()

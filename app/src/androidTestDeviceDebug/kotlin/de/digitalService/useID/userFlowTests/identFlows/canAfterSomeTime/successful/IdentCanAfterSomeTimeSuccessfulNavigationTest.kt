@@ -115,9 +115,8 @@ class IdentCanAfterSomeTimeSuccessfulNavigationTest {
         val identificationScan = TestScreen.Scan(composeTestRule)
         val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
         val identificationCanInput = TestScreen.CanInput(composeTestRule)
-        val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()

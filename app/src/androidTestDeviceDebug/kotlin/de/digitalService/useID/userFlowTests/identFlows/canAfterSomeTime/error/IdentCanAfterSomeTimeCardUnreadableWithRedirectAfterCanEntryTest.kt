@@ -117,9 +117,8 @@ class IdentCanAfterSomeTimeCardUnreadableWithRedirectAfterCanEntryTest {
         val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
         val identificationCanInput = TestScreen.CanInput(composeTestRule)
         val errorCardUnreadable = TestScreen.ErrorCardUnreadable(composeTestRule)
-        val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()

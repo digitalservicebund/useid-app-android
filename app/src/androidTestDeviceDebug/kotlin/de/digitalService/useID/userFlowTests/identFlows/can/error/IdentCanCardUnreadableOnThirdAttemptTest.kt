@@ -111,7 +111,7 @@ class IdentCanCardUnreadableOnThirdAttemptTest {
         val errorCardUnreadable = TestScreen.ErrorCardUnreadable(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()

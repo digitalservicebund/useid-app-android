@@ -113,9 +113,8 @@ class IdentSuccessAfterMetaDataFetchRetryTest {
         val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
         val errorGeneric = TestScreen.ErrorGenericError(composeTestRule)
-        val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()

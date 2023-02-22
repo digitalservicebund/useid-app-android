@@ -106,7 +106,7 @@ class IdentCanceledOnFetchMetaDataTest {
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()

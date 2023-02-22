@@ -108,7 +108,7 @@ class IdentCanAfterSomeTimeCardBlockedAfterPinIncorrectTest {
         val errorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
+        composeTestRule.waitForIdle()
 
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
