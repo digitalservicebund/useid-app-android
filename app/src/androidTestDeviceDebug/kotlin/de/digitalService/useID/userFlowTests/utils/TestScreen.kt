@@ -401,23 +401,18 @@ sealed class TestScreen {
         val identifyNowBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_done_identify)
         val finishSetupBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_done_close)
 
-        val navigationConfirmDialog: TestElement.NavigationConfirmDialog
-            get() {
-                return TestElement.NavigationConfirmDialog(testRule, identPending)
-            }
-
         override val expectedElements: List<TestElement>
             get() {
-                return listOf(title, idsImage, cancel, finishSetupBtn)
+                return listOf(title, idsImage)
                     .plus(listOf(identifyNowBtn).takeIf { identPending } ?: listOf())
-                    .plus(listOf(finishSetupBtn).takeIf { !identPending } ?: listOf())
+                    .plus(listOf(finishSetupBtn, cancel).takeIf { !identPending } ?: listOf())
             }
 
         override val unexpectedElements: List<TestElement>
             get() {
-                return listOf(TestElement.Tag(testRule, NavigationIcon.Back.name), navigationConfirmDialog)
+                return listOf(TestElement.Tag(testRule, NavigationIcon.Back.name))
                     .plus(listOf(identifyNowBtn).takeIf { !identPending } ?: listOf())
-                    .plus(listOf(finishSetupBtn).takeIf { identPending } ?: listOf())
+                    .plus(listOf(finishSetupBtn, cancel).takeIf { identPending } ?: listOf())
             }
     }
 
