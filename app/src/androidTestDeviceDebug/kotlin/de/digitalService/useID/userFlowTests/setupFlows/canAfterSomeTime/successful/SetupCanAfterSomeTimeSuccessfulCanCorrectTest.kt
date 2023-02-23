@@ -92,6 +92,7 @@ class SetupCanAfterSomeTimeSuccessfulCanCorrectTest {
         val home = TestScreen.Home(composeTestRule)
 
         runSetupUpToCanAfterSomeTime(
+            withWrongTransportPin = false,
             testRule = composeTestRule,
             eidFlow = eidFlow,
             testScope = this

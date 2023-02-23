@@ -93,9 +93,9 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     testScope.advanceUntilIdle()
 }
 
-fun runSetupUpToCanAfterSomeTime(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
+fun runSetupUpToCanAfterSomeTime(withWrongTransportPin: Boolean, testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
 
-    val transportPin = "12345"
+    val transportPin = if (withWrongTransportPin) "11111" else "12345"
     val personalPin = "123456"
 
     // Define screens to be tested
@@ -151,5 +151,6 @@ fun runSetupUpToCanAfterSomeTime(testRule: ComposeTestRule, eidFlow: MutableStat
     setupScan.setProgress(true).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+
     testScope.advanceUntilIdle()
 }
