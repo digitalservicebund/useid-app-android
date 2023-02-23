@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- "Autor" is correct in German -->
+    <issue id="Typos">
+        <ignore regexp="Autor" />
+    </issue>
+
+    <!-- Timber is only used in dependencies -->
+    <issue id="LogNotTimber" severity="ignore" />
+
+    <!-- Would only be relevant if ExoPlayer's DownloadService was used -->
+    <issue id="NotificationPermission">
+        <ignore regexp="exoplayer.*DownloadService" />
+    </issue>
+</lint>
