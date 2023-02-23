@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows.canAfterSomeTime.error
+package de.digitalService.useID.userFlowTests.setupFlows.canAfterSomeTime.canceled
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -17,7 +17,6 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.userFlowTests.utils.flowFragments.runSetupUpToCan
 import de.digitalService.useID.userFlowTests.utils.flowFragments.runSetupUpToCanAfterSomeTime
 import de.digitalService.useID.util.*
 import io.mockk.every
@@ -35,7 +34,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupCanErrorAfterSomeTimeCardBlockedAfterTransportPinAndCanIncorrectTest {
+class SetupCanAfterSomeTimeCanceledOnCanIntroTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -69,7 +68,7 @@ class SetupCanErrorAfterSomeTimeCardBlockedAfterTransportPinAndCanIncorrectTest 
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupCanErrorAfterSomeTimeCardBlockedAfterTransportPinAndCanIncorrect() = runTest {
+    fun testSetupCanAfterSomeTimeCanceledOnCanIntro() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -83,68 +82,28 @@ class SetupCanErrorAfterSomeTimeCardBlockedAfterTransportPinAndCanIncorrectTest 
             )
         }
 
-        val can = "123456"
-        val wrongCan = "111111"
-
         // Define screens to be tested
-        val setupScan = TestScreen.Scan(composeTestRule)
-        val setupErrorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val setupCanIntro = TestScreen.CanIntro(composeTestRule)
-        val setupCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         runSetupUpToCanAfterSomeTime(
-            withWrongTransportPin = true,
+            withWrongTransportPin = false,
             testRule = composeTestRule,
             eidFlow = eidFlow,
             testScope = this
         )
 
         setupCanIntro.setBackAllowed(false).assertIsDisplayed()
-        setupCanIntro.enterCanNowBtn.click()
+        setupCanIntro.cancel.click()
+        setupCanIntro.navigationConfirmDialog.assertIsDisplayed()
+        setupCanIntro.navigationConfirmDialog.dismiss()
 
-        // ENTER CAN WRONG
-        setupCanInput.assertIsDisplayed()
-        setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(wrongCan)
-        setupCanInput.canEntryField.assertLength(wrongCan.length)
-        composeTestRule.pressReturn()
+        setupCanIntro.setBackAllowed(false).assertIsDisplayed()
+        setupCanIntro.cancel.click()
+        setupCanIntro.navigationConfirmDialog.assertIsDisplayed()
+        setupCanIntro.navigationConfirmDialog.confirm()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
-
-        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
-        advanceUntilIdle()
-
-        // ENTER CORRECT CAN
-        setupCanInput.setRetry(true).assertIsDisplayed()
-        setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(can)
-        setupCanInput.canEntryField.assertLength(can.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestPuk {}
-        advanceUntilIdle()
-
-        setupErrorCardBlocked.assertIsDisplayed() // TODO: This error screen should be displayed
-        setupErrorCardBlocked.closeBtn.click()
 
         home.assertIsDisplayed()
     }
