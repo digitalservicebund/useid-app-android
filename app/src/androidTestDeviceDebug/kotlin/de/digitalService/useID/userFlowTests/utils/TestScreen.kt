@@ -282,7 +282,6 @@ sealed class TestScreen {
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_transportPIN_title)
 
         private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_transportPIN_body)
-        private val twoAttemptsLeftMessage = TestElement.Text(testRule, resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts, formatArg = "2", quantity = 2)
         private val oneAttemptLeftMessage = TestElement.Text(testRule, resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts, quantity = 1)
 
         val transportPinField = TestElement.TransportPin(testRule)
@@ -300,14 +299,14 @@ sealed class TestScreen {
                     .plus(listOf(oneAttemptLeftMessage).takeIf { attemptsLeft == 1 } ?: listOf())
                     .plus(listOf(cancel, titleSecondAttempt).takeIf { attemptsLeft == 2 } ?: listOf())
                     .plus(listOf(back, title).takeIf { attemptsLeft != 2 } ?: listOf())
-                    //.plus(listOf(twoAttemptsLeftMessage).takeIf { attemptsLeft == 2 } ?: listOf()) TODO: this should be displayed when there are two attemps left
+
             }
 
         override val unexpectedElements: List<TestElement>
             get() {
                 return listOf<TestElement>(navigationConfirmDialog)
                     .plus(listOf(oneAttemptLeftMessage).takeIf { attemptsLeft != 1 } ?: listOf())
-                    .plus(listOf(twoAttemptsLeftMessage, titleSecondAttempt, cancel).takeIf { attemptsLeft != 2 } ?: listOf())
+                    .plus(listOf(titleSecondAttempt, cancel).takeIf { attemptsLeft != 2 } ?: listOf())
                     .plus(listOf(back, title).takeIf { attemptsLeft == 2 } ?: listOf())
             }
     }

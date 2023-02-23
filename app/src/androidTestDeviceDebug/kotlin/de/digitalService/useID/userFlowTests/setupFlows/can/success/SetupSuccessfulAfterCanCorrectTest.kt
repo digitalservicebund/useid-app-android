@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows.can
+package de.digitalService.useID.userFlowTests.setupFlows.can.success
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupFailedThirdAttemptCanWrongTest {
+class SetupSuccessfulAfterCanCorrectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -67,7 +67,7 @@ class SetupFailedThirdAttemptCanWrongTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupFailedThirdAttemptCanWrong() = runTest {
+    fun testSetupSuccessfulAfterCanCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -85,7 +85,6 @@ class SetupFailedThirdAttemptCanWrongTest {
         val wrongTransportPin = "11111"
         val personalPin = "123456"
         val can = "111222"
-        val wrongCan = "111111"
 
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
@@ -96,10 +95,9 @@ class SetupFailedThirdAttemptCanWrongTest {
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.Scan(composeTestRule)
         val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
-        val setupCanAlreadySetup = TestScreen.SetupCanAlreadySetup(composeTestRule)
         val setupCanIntro = TestScreen.CanIntro(composeTestRule)
         val setupCanInput = TestScreen.CanInput(composeTestRule)
-        val setupErrorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
+        val setupFinish = TestScreen.SetupFinish(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
@@ -113,7 +111,7 @@ class SetupFailedThirdAttemptCanWrongTest {
 
         advanceUntilIdle()
 
-        // ENTER WRONG TRANSPORT PIN FIRST TIME
+        // ENTER INCORRECT TRANSPORT PIN 1ST TIME
         setupTransportPin.assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(wrongTransportPin)
@@ -151,7 +149,7 @@ class SetupFailedThirdAttemptCanWrongTest {
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
 
-        // ENTER WRONG TRANSPORT PIN SECOND TIME
+        // ENTER INCORRECT TRANSPORT PIN 2ND TIME
         setupTransportPin.setAttemptsLeft(2).assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(wrongTransportPin)
@@ -171,14 +169,11 @@ class SetupFailedThirdAttemptCanWrongTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
-        setupCanConfirmTransportPin.inputCorrectBtn.click()
+        setupCanConfirmTransportPin.retryInputBtn.click()
 
-        setupCanAlreadySetup.assertIsDisplayed()
-        setupCanAlreadySetup.back.click()
+        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+        setupCanIntro.back.click()
 
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
@@ -186,66 +181,20 @@ class SetupFailedThirdAttemptCanWrongTest {
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
 
-        // ENTER CAN WRONG
-        setupCanInput.assertIsDisplayed()
-        setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(wrongCan)
-        setupCanInput.canEntryField.assertLength(wrongCan.length)
-        composeTestRule.pressReturn()
-
-        // ENTER WRONG TRANSPORT PIN THIRD TIME
-        setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
-        setupTransportPin.transportPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongTransportPin)
-        setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
-        // TRY AGAIN WITH WRONG CAN
-        setupCanInput.setRetry(true).assertIsDisplayed()
-        setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(wrongCan)
-        setupCanInput.canEntryField.assertLength(wrongCan.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         // ENTER CORRECT CAN
-        setupCanInput.setRetry(true).assertIsDisplayed()
+        setupCanInput.assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)
         setupCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
+        // ENTER CORRECT TRANSPORT PIN
+        setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
+        composeTestRule.pressReturn()
+
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
@@ -256,14 +205,14 @@ class SetupFailedThirdAttemptCanWrongTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPuk {}
+        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
+        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
-        setupErrorCardBlocked.assertIsDisplayed() // TODO: This error screen should be displayed
-        setupErrorCardBlocked.closeBtn.click()
+        setupFinish.assertIsDisplayed()
+        setupFinish.finishSetupBtn.click()
 
         home.assertIsDisplayed()
     }
