@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulAfterCanCorrectTest {
+class SetupCanSuccessfulAfterCanCorrectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -67,7 +67,7 @@ class SetupSuccessfulAfterCanCorrectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupSuccessfulAfterCanCorrect() = runTest {
+    fun testSetupCanSuccessfulAfterCanCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)

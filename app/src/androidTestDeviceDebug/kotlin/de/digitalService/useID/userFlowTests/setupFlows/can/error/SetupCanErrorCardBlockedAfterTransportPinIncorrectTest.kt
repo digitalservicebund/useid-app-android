@@ -169,9 +169,6 @@ class SetupCanErrorCardBlockedAfterTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.inputCorrectBtn.click()
 
@@ -209,9 +206,6 @@ class SetupCanErrorCardBlockedAfterTransportPinIncorrectTest {
         setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestPuk {}
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         setupErrorCardBlocked.assertIsDisplayed() // TODO: This error screen should be displayed

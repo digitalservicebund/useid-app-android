@@ -171,9 +171,6 @@ class SetupCanErrorCardBlockedAfterTransportPinAndCanIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.inputCorrectBtn.click()
 
@@ -213,9 +210,6 @@ class SetupCanErrorCardBlockedAfterTransportPinAndCanIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         // TRY AGAIN WITH WRONG CAN
         setupCanInput.setRetry(true).assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
@@ -236,9 +230,6 @@ class SetupCanErrorCardBlockedAfterTransportPinAndCanIncorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         // ENTER CORRECT CAN
         setupCanInput.setRetry(true).assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
@@ -257,9 +248,6 @@ class SetupCanErrorCardBlockedAfterTransportPinAndCanIncorrectTest {
         setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestPuk {}
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         setupErrorCardBlocked.assertIsDisplayed() // TODO: This error screen should be displayed

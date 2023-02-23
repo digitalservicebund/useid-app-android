@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
+class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -67,7 +67,7 @@ class SetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
+    fun testSetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -170,9 +170,6 @@ class SetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         // CAN FLOW
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
@@ -213,9 +210,6 @@ class SetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         // ENTER WRONG CAN AGAIN
         setupCanInput.setRetry(true).assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
@@ -234,9 +228,6 @@ class SetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER CORRECT CAN

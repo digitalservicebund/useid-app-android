@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupSuccessfulAfterCanIncorrectAndThenCorrectTest {
+class SetupCanSuccessfulAfterCanIncorrectAndThenCorrectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -67,7 +67,7 @@ class SetupSuccessfulAfterCanIncorrectAndThenCorrectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupSuccessfulAfterCanIncorrectAndThenCorrect() = runTest {
+    fun testSetupCanSuccessfulAfterCanIncorrectAndThenCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -170,9 +170,6 @@ class SetupSuccessfulAfterCanIncorrectAndThenCorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         // CAN FLOW
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
@@ -211,9 +208,6 @@ class SetupSuccessfulAfterCanIncorrectAndThenCorrectTest {
         setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER CORRECT

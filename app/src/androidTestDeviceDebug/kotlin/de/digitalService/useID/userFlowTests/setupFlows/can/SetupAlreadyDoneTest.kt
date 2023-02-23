@@ -166,9 +166,6 @@ class SetupAlreadyDoneTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.inputCorrectBtn.click()
 
