@@ -98,6 +98,9 @@ class SetupCanSuccessfulNavigationTest {
         val setupResetPersonalPin = TestScreen.ResetPersonalPin(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,

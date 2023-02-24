@@ -1,5 +1,12 @@
 package de.digitalService.useID.userFlowTests.utils.flowFragments
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import de.digitalService.useID.idCardInterface.AuthenticationTerms
+import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.util.ComposeTestRule
@@ -8,6 +15,7 @@ import de.digitalService.useID.util.pressReturn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
+import org.hamcrest.Matchers
 
 fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
     val wrongTransportPin = "11111"
@@ -21,10 +29,6 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(testRule)
     val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(testRule)
     val setupScan = TestScreen.Scan(testRule)
-    val home = TestScreen.Home(testRule)
-
-    home.assertIsDisplayed()
-    home.setupIdBtn.click()
 
     setupIntro.assertIsDisplayed()
     setupIntro.setupIdBtn.click()

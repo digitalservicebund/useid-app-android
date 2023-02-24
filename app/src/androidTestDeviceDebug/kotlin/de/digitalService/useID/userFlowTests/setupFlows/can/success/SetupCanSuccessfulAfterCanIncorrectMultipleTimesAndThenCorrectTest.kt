@@ -96,6 +96,9 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         val setupFinish = TestScreen.SetupFinish(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,

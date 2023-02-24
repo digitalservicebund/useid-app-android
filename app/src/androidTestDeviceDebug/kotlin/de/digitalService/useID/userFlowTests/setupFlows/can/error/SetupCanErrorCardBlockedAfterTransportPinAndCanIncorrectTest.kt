@@ -96,6 +96,9 @@ class SetupCanErrorCardBlockedAfterTransportPinAndCanIncorrectTest {
         val setupErrorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,

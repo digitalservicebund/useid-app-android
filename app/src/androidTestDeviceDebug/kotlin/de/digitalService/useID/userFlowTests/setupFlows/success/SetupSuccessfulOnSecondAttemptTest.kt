@@ -81,6 +81,7 @@ class SetupSuccessfulOnSecondAttemptTest {
             )
         }
 
+        val wrongTransportPin = "11111"
         val transportPin = "12345"
         val personalPin = "123456"
 
@@ -108,8 +109,8 @@ class SetupSuccessfulOnSecondAttemptTest {
 
         setupTransportPin.assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
-        composeTestRule.performPinInput(transportPin)
-        setupTransportPin.transportPinField.assertLength(transportPin.length)
+        composeTestRule.performPinInput(wrongTransportPin)
+        setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
         composeTestRule.pressReturn()
 
         setupPersonalPinIntro.assertIsDisplayed()

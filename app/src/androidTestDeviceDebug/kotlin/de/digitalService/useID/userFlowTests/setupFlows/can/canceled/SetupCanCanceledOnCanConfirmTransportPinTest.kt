@@ -88,6 +88,9 @@ class SetupCanCanceledOnCanConfirmTransportPinTest {
         val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,
