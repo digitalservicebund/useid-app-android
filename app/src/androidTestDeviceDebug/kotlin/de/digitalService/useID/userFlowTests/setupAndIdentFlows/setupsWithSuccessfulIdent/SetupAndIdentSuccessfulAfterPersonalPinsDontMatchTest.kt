@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupAndIdentFlows
+package de.digitalService.useID.userFlowTests.setupAndIdentFlows.setupsWithSuccessfulIdent
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -28,6 +28,7 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.flowFragments.runSuccessfulIdentAfterSetup
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -45,7 +46,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class SetupAndIdentSuccessfulTest {
+class SetupAndIdentSuccessfulAfterPersonalPinsDontMatchTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -90,7 +91,7 @@ class SetupAndIdentSuccessfulTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupSuccessful() = runTest {
+    fun testSetupAndIdentSuccessfulAfterPersonalPinsDontMatch() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -106,9 +107,9 @@ class SetupAndIdentSuccessfulTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
-        val redirectUrl = "test.url.com"
         val transportPin = "12345"
         val personalPin = "123456"
+        val wrongPersonalPin = "000000"
 
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
@@ -119,10 +120,6 @@ class SetupAndIdentSuccessfulTest {
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.Scan(composeTestRule)
         val setupFinish = TestScreen.SetupFinish(composeTestRule)
-        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
-        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
-        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
-        val identificationScan = TestScreen.Scan(composeTestRule)
 
         composeTestRule.waitForIdle()
 
@@ -145,6 +142,22 @@ class SetupAndIdentSuccessfulTest {
 
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
+
+        setupPersonalPinInput.assertIsDisplayed()
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        setupPersonalPinConfirm.assertIsDisplayed()
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(wrongPersonalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(wrongPersonalPin.length)
+        composeTestRule.pressReturn()
+        setupPersonalPinConfirm.pinsDontMatchDialog.assertIsDisplayed()
+        setupPersonalPinConfirm.pinsDontMatchDialog.dismiss()
+
+        advanceUntilIdle()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)
@@ -177,64 +190,10 @@ class SetupAndIdentSuccessfulTest {
         setupFinish.setIdentPending(true).assertIsDisplayed()
         setupFinish.identifyNowBtn.click()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
-        advanceUntilIdle()
-
-        identificationFetchMetaData.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.subject,
-                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.validity,
-                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
-            )
-        ) {
-            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
-        }
-
-        advanceUntilIdle()
-
-        identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.continueBtn.click()
-
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
-        advanceUntilIdle()
-
-        identificationPersonalPin.assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        identificationScan.setProgress(true).assertIsDisplayed()
-
-        Intents.intending(
-            Matchers.allOf(
-                IntentMatchers.hasAction(Intent.ACTION_VIEW),
-                IntentMatchers.hasData(redirectUrl),
-                IntentMatchers.hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
-        ).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                null
-            )
+        runSuccessfulIdentAfterSetup(
+            testRule = composeTestRule,
+            eidFlow = eidFlow,
+            testScope = this
         )
-
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
-        advanceUntilIdle()
     }
 }

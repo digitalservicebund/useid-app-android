@@ -158,3 +158,207 @@ fun runSetupUpToCanAfterSomeTime(withWrongTransportPin: Boolean, testRule: Compo
 
     testScope.advanceUntilIdle()
 }
+
+fun runSetupCanSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
+    val transportPin = "12345"
+    val wrongTransportPin = "11111"
+    val can = "111222"
+
+    // Define screens to be tested
+    val setupTransportPin = TestScreen.SetupTransportPin(testRule)
+    val setupScan = TestScreen.Scan(testRule)
+    val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(testRule)
+    val setupCanIntro = TestScreen.CanIntro(testRule)
+    val setupCanInput = TestScreen.CanInput(testRule)
+
+    setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+    setupCanConfirmTransportPin.retryInputBtn.click()
+
+    setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+    setupCanIntro.back.click()
+
+    setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+    setupCanConfirmTransportPin.retryInputBtn.click()
+
+    setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+    setupCanIntro.enterCanNowBtn.click()
+
+    // ENTER CORRECT CAN
+    setupCanInput.assertIsDisplayed()
+    setupCanInput.canEntryField.assertLength(0)
+    testRule.performPinInput(can)
+    setupCanInput.canEntryField.assertLength(can.length)
+    testRule.pressReturn()
+
+    // ENTER CORRECT TRANSPORT PIN
+    setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
+    setupTransportPin.transportPinField.assertLength(0)
+    testRule.performPinInput(transportPin)
+    setupTransportPin.transportPinField.assertLength(transportPin.length)
+    testRule.pressReturn()
+
+    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    testScope.advanceUntilIdle()
+
+    setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.CardRecognized
+    testScope.advanceUntilIdle()
+
+    setupScan.setProgress(true).assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    testScope.advanceUntilIdle()
+}
+
+fun runSetupCanSuccessfulAfterCanWrongOnce(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
+    val transportPin = "12345"
+    val wrongTransportPin = "11111"
+    val can = "111222"
+    val wrongCan = "000000"
+
+    // Define screens to be tested
+    val setupTransportPin = TestScreen.SetupTransportPin(testRule)
+    val setupScan = TestScreen.Scan(testRule)
+    val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(testRule)
+    val setupCanIntro = TestScreen.CanIntro(testRule)
+    val setupCanInput = TestScreen.CanInput(testRule)
+
+    // CAN FLOW
+    setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+    setupCanConfirmTransportPin.retryInputBtn.click()
+
+    setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+    setupCanIntro.back.click()
+
+    setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+    setupCanConfirmTransportPin.retryInputBtn.click()
+
+    setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+    setupCanIntro.enterCanNowBtn.click()
+
+    // ENTER WRONG CAN
+    setupCanInput.assertIsDisplayed()
+    setupCanInput.canEntryField.assertLength(0)
+    testRule.performPinInput(wrongCan)
+    setupCanInput.canEntryField.assertLength(wrongCan.length)
+    testRule.pressReturn()
+
+    // ENTER CORRECT TRANSPORT PIN
+    setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
+    setupTransportPin.transportPinField.assertLength(0)
+    testRule.performPinInput(transportPin)
+    setupTransportPin.transportPinField.assertLength(transportPin.length)
+    testRule.pressReturn()
+
+    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    testScope.advanceUntilIdle()
+
+    setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.CardRecognized
+    testScope.advanceUntilIdle()
+
+    setupScan.setProgress(true).assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+    testScope.advanceUntilIdle()
+
+    // ENTER CORRECT
+    setupCanInput.setRetry(true).assertIsDisplayed()
+    setupCanInput.canEntryField.assertLength(0)
+    testRule.performPinInput(can)
+    setupCanInput.canEntryField.assertLength(can.length)
+    testRule.pressReturn()
+
+    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    testScope.advanceUntilIdle()
+
+    setupScan.setProgress(false).assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.CardRecognized
+    testScope.advanceUntilIdle()
+
+    setupScan.setProgress(true).assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    testScope.advanceUntilIdle()
+}
+
+fun runSuccessfulIdentAfterSetup(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
+
+    val redirectUrl = "test.url.com"
+    val personalPin = "123456"
+
+    // Define screens to be tested
+    val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(testRule)
+    val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(testRule)
+    val identificationPersonalPin = TestScreen.IdentificationPersonalPin(testRule)
+    val identificationScan = TestScreen.Scan(testRule)
+
+    eidFlow.value = EidInteractionEvent.AuthenticationStarted
+    testScope.advanceUntilIdle()
+
+    identificationFetchMetaData.assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        EidAuthenticationRequest(
+            TestScreen.IdentificationAttributeConsent.RequestData.issuer,
+            TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
+            TestScreen.IdentificationAttributeConsent.RequestData.subject,
+            TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
+            TestScreen.IdentificationAttributeConsent.RequestData.validity,
+            AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
+            TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
+            TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+        )
+    ) {
+        eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+    }
+
+    testScope.advanceUntilIdle()
+
+    identificationAttributeConsent.assertIsDisplayed()
+    identificationAttributeConsent.continueBtn.click()
+
+    eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
+    testScope.advanceUntilIdle()
+
+    identificationPersonalPin.assertIsDisplayed()
+    identificationPersonalPin.personalPinField.assertLength(0)
+    testRule.performPinInput(personalPin)
+    identificationPersonalPin.personalPinField.assertLength(personalPin.length)
+    testRule.pressReturn()
+
+    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    testScope.advanceUntilIdle()
+
+    identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+
+    eidFlow.value = EidInteractionEvent.CardRecognized
+    testScope.advanceUntilIdle()
+
+    identificationScan.setProgress(true).assertIsDisplayed()
+
+    Intents.intending(
+        Matchers.allOf(
+            IntentMatchers.hasAction(Intent.ACTION_VIEW),
+            IntentMatchers.hasData(redirectUrl),
+            IntentMatchers.hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )
+    ).respondWith(
+        Instrumentation.ActivityResult(
+            Activity.RESULT_OK,
+            null
+        )
+    )
+
+    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+    testScope.advanceUntilIdle()
+}
