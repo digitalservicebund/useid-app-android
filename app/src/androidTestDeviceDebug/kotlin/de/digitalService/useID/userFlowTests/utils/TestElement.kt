@@ -2,7 +2,6 @@ package de.digitalService.useID.userFlowTests.utils
 
 import androidx.compose.ui.test.*
 import de.digitalService.useID.util.ComposeTestRule
-import de.digitalService.useID.util.assertIsDisplayedDetailed
 import de.digitalService.useID.util.safeAssertIsNotDisplayed
 import de.digitalService.useID.R
 import de.digitalService.useID.util.assertIsDisplayedWithScrolling
@@ -46,7 +45,7 @@ sealed class TestElement {
                     testRule.activity.getString(resourceId, formatArg)
                 }
             } else {
-                Assert.fail("String/ResourceId to test against either not provided or abigious")
+                Assert.fail("String/ResourceId to test against either not provided or ambiguous")
                 ""
             }
         }
@@ -58,7 +57,7 @@ sealed class TestElement {
         }
 
         override fun assertIsNotDisplayed() {
-            testRule.onNodeWithText(string).safeAssertIsNotDisplayed()
+            testRule.onNodeWithText(string).safeAssertIsNotDisplayed(string)
         }
 
         override fun click() {
@@ -77,7 +76,7 @@ sealed class TestElement {
         }
 
         override fun assertIsNotDisplayed() {
-            testRule.onNodeWithTag(tag).safeAssertIsNotDisplayed()
+            testRule.onNodeWithTag(tag).safeAssertIsNotDisplayed(tag)
         }
 
         override fun click() {
@@ -111,18 +110,20 @@ sealed class TestElement {
         val bodyResId: Int,
         val iconTag: String
     ) : TestElement() {
+
+        private val title = testRule.activity.getString(titleResId)
+        private val body = testRule.activity.getString(bodyResId)
+
         override fun assertIsDisplayed() {
-            val title = testRule.activity.getString(titleResId)
             testRule.onNodeWithText(title).assertIsDisplayedWithScrolling(title)
-            val body = testRule.activity.getString(bodyResId)
             testRule.onNodeWithText(body).assertIsDisplayedWithScrolling(body)
             testRule.onNodeWithTag(iconTag).assertIsDisplayedWithScrolling(iconTag)
         }
 
         override fun assertIsNotDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(bodyResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithTag(iconTag).safeAssertIsNotDisplayed()
+            testRule.onNodeWithText(title).safeAssertIsNotDisplayed(title)
+            testRule.onNodeWithText(body).safeAssertIsNotDisplayed(body)
+            testRule.onNodeWithTag(iconTag).safeAssertIsNotDisplayed(iconTag)
         }
     }
 
@@ -136,18 +137,23 @@ sealed class TestElement {
         private val confirmBtnId = if (identPending) R.string.identification_confirmEnd_confirm else R.string.firstTimeUser_confirmEnd_confirm
         private val dismissBtnId = if (identPending) R.string.identification_confirmEnd_deny else R.string.firstTimeUser_confirmEnd_deny
 
+        private val title = testRule.activity.getString(titleResId)
+        private val message = testRule.activity.getString(messageResId)
+        private val confirmBtn= testRule.activity.getString(confirmBtnId)
+        private val dismissBtn = testRule.activity.getString(dismissBtnId)
+
         override fun assertIsDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(messageResId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(confirmBtnId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).assertIsDisplayed()
+            testRule.onNodeWithText(title).assertIsDisplayedWithScrolling(title)
+            testRule.onNodeWithText(message).assertIsDisplayedWithScrolling(message)
+            testRule.onNodeWithText(confirmBtn).assertIsDisplayedWithScrolling(confirmBtn)
+            testRule.onNodeWithText(dismissBtn).assertIsDisplayedWithScrolling(dismissBtn)
         }
 
         override fun assertIsNotDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(messageResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(confirmBtnId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).safeAssertIsNotDisplayed()
+            testRule.onNodeWithText(title).safeAssertIsNotDisplayed(title)
+            testRule.onNodeWithText(message).safeAssertIsNotDisplayed(message)
+            testRule.onNodeWithText(confirmBtn).safeAssertIsNotDisplayed(confirmBtn)
+            testRule.onNodeWithText(dismissBtn).safeAssertIsNotDisplayed(dismissBtn)
         }
 
         fun confirm() {
@@ -164,14 +170,17 @@ sealed class TestElement {
         val titleResId: Int,
         val dismissBtnId: Int
     ) : TestElement() {
+        private val title = testRule.activity.getString(titleResId)
+        private val dismissBtn = testRule.activity.getString(dismissBtnId)
+
         override fun assertIsDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).assertIsDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).assertIsDisplayed()
+            testRule.onNodeWithText(title).assertIsDisplayedWithScrolling(title)
+            testRule.onNodeWithText(dismissBtn).assertIsDisplayedWithScrolling(dismissBtn)
         }
 
         override fun assertIsNotDisplayed() {
-            testRule.onNodeWithText(testRule.activity.getString(titleResId)).safeAssertIsNotDisplayed()
-            testRule.onNodeWithText(testRule.activity.getString(dismissBtnId)).safeAssertIsNotDisplayed()
+            testRule.onNodeWithText(title).safeAssertIsNotDisplayed(title)
+            testRule.onNodeWithText(dismissBtn).safeAssertIsNotDisplayed(dismissBtn)
         }
 
         fun dismiss() {

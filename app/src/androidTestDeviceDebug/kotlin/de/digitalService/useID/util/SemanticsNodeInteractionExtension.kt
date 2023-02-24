@@ -5,13 +5,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.performScrollTo
 
-fun SemanticsNodeInteraction.assertIsDisplayedDetailed(nodeName: String) {
-    try {
-        assertIsDisplayed()
-    } catch (e: AssertionError) {
-        throw AssertionError("Assert failed: [$nodeName] is not displayed!")
-    }
-}
 
 fun SemanticsNodeInteraction.assertIsDisplayedWithScrolling(nodeName: String) {
     try {
@@ -26,10 +19,14 @@ fun SemanticsNodeInteraction.assertIsDisplayedWithScrolling(nodeName: String) {
     }
 }
 
-fun SemanticsNodeInteraction.safeAssertIsNotDisplayed() {
+fun SemanticsNodeInteraction.safeAssertIsNotDisplayed(nodeName: String) {
     try {
         assertDoesNotExist()
     } catch (e: AssertionError) {
-        assertIsNotDisplayed()
+        try {
+            assertIsNotDisplayed()
+        } catch (e: AssertionError) {
+            throw AssertionError("Assert failed: [$nodeName] is displayed!")
+        }
     }
 }
