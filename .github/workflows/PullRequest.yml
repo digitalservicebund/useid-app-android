@@ -11,8 +11,15 @@ concurrency:
 #   ImageOS: macos12
 
 jobs:
+  validate-gradle-wrapper:
+    runs-on: [self-hosted, ARM64]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@8d49e559aae34d3e0eb16cde532684bc9702762b
   lint:
     runs-on: [self-hosted, ARM64]
+    needs: [validate-gradle-wrapper]
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -29,7 +36,7 @@ jobs:
 
   test:
     runs-on: [self-hosted, ARM64]
-    needs: lint
+    needs: [validate-gradle-wrapper, lint]
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
