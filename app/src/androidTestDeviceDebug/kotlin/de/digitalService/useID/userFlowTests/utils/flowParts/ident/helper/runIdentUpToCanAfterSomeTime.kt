@@ -13,15 +13,15 @@ import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
-    val wrongPersonalPin = "111111"
+fun runIdentUpToCanAfterSomeTime(withWrongPersonalPin: Boolean, testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
+
+    val personalPin = if (withWrongPersonalPin) "111111" else "123456"
 
     // Define screens to be tested
     val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(testRule)
     val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(testRule)
     val identificationPersonalPin = TestScreen.IdentificationPersonalPin(testRule)
     val identificationScan = TestScreen.Scan(testRule)
-
 
     eidFlow.value = EidInteractionEvent.AuthenticationStarted
     testScope.advanceUntilIdle()
@@ -51,37 +51,17 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
     testScope.advanceUntilIdle()
 
-    // ENTER WRONG PIN 1ST TIME
+    // ENTER CORRECT PIN
     identificationPersonalPin.assertIsDisplayed()
     identificationPersonalPin.personalPinField.assertLength(0)
-    testRule.performPinInput(wrongPersonalPin)
-    identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
+    testRule.performPinInput(personalPin)
+    identificationPersonalPin.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
     eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
     identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
-
-    eidFlow.value = EidInteractionEvent.CardRecognized
-    testScope.advanceUntilIdle()
-
-    identificationScan.setProgress(true).assertIsDisplayed()
-
-    eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
-    testScope.advanceUntilIdle()
-
-    // ENTER WRONG PIN 2ND TIME
-    identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
-    identificationPersonalPin.personalPinField.assertLength(0)
-    testRule.performPinInput(wrongPersonalPin)
-    identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
-    testRule.pressReturn()
-
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
-    testScope.advanceUntilIdle()
-
-    identificationScan.setProgress(false).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()

@@ -5,10 +5,12 @@ import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.util.ComposeTestRule
 import de.digitalService.useID.util.performPinInput
 import de.digitalService.useID.util.pressReturn
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 
+@OptIn(ExperimentalCoroutinesApi::class)
 fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
     val wrongTransportPin = "11111"
     val personalPin = "123456"

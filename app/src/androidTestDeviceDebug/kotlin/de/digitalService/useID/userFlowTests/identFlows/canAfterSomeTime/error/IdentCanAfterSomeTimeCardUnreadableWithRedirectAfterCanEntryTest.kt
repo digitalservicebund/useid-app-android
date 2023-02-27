@@ -25,6 +25,7 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCanAfterSomeTime
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -105,14 +106,10 @@ class IdentCanAfterSomeTimeCardUnreadableWithRedirectAfterCanEntryTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
-        val personalPin = "123456"
         val redirectUrl = "test.url.com"
         val can = "123456"
 
         // Define screens to be tested
-        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
-        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
-        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
         val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
         val identificationCanInput = TestScreen.CanInput(composeTestRule)
@@ -123,53 +120,12 @@ class IdentCanAfterSomeTimeCardUnreadableWithRedirectAfterCanEntryTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
-        advanceUntilIdle()
-
-        identificationFetchMetaData.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.subject,
-                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.validity,
-                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
-            )
-        ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
-        }
-
-        advanceUntilIdle()
-
-        identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.continueBtn.click()
-
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
-        advanceUntilIdle()
-
-        // ENTER CORRECT PIN
-        identificationPersonalPin.assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-            advanceUntilIdle()
-
-        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        identificationScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
-        advanceUntilIdle()
+        runIdentUpToCanAfterSomeTime(
+            withWrongPersonalPin = false,
+            testRule = composeTestRule,
+            eidFlow = eidFlow,
+            testScope = this
+        )
 
         identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
