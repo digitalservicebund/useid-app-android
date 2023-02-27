@@ -24,10 +24,6 @@ fun runSetupUpToCanAfterSomeTime(withWrongTransportPin: Boolean, testRule: Compo
     val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(testRule)
     val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(testRule)
     val setupScan = TestScreen.Scan(testRule)
-    val home = TestScreen.Home(testRule)
-
-    home.assertIsDisplayed()
-    home.setupIdBtn.click()
 
     setupIntro.assertIsDisplayed()
     setupIntro.setupIdBtn.click()

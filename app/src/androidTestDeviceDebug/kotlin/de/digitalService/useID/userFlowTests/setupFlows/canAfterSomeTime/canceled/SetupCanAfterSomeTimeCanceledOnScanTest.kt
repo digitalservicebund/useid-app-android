@@ -90,6 +90,9 @@ class SetupCanAfterSomeTimeCanceledOnScanTest {
         val setupCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
+
         runSetupUpToCanAfterSomeTime(
             withWrongTransportPin = false,
             testRule = composeTestRule,

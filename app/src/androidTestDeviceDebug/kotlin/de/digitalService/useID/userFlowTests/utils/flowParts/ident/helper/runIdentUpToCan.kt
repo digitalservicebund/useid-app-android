@@ -81,7 +81,7 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
-    identificationScan.setProgress(false).assertIsDisplayed()
+    identificationScan.setProgress(false).assertIsDisplayed() // TODO: there should no progress spinner be shown at this point!
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()
