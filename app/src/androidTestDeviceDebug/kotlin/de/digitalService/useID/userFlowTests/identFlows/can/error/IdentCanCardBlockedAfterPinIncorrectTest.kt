@@ -20,6 +20,7 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCan
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -99,8 +100,6 @@ class IdentCanCardBlockedAfterPinIncorrectTest {
         val can = "123456"
 
         // Define screens to be tested
-        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
-        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
         val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
         val identificationCanPinForgotten = TestScreen.IdentificationCanPinForgotten(composeTestRule)
@@ -114,73 +113,11 @@ class IdentCanCardBlockedAfterPinIncorrectTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
-        advanceUntilIdle()
-
-        identificationFetchMetaData.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.subject,
-                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.validity,
-                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
-            )
-        ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
-        }
-
-        advanceUntilIdle()
-
-        identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.continueBtn.click()
-
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
-        advanceUntilIdle()
-
-        // ENTER WRONG PIN 1ST TIME
-        identificationPersonalPin.assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        identificationScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
-        advanceUntilIdle()
-
-        // ENTER WRONG PIN 2ND TIME
-        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        identificationScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        identificationScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
-        advanceUntilIdle()
+        runIdentUpToCan(
+            testRule = composeTestRule,
+            eidFlow = eidFlow,
+            testScope = this
+        )
 
         identificationCanPinForgotten.assertIsDisplayed()
         identificationCanPinForgotten.tryAgainBtn.click()
