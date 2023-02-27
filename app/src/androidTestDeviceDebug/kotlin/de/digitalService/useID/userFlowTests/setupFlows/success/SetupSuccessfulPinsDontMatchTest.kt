@@ -85,7 +85,7 @@ class SetupSuccessfulPinsDontMatchTest {
 
         val transportPin = "12345"
         val personalPin = "123456"
-        val wrongPersonalPin = "000000"
+        val differentPersonalPin = "000000"
 
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
@@ -126,8 +126,8 @@ class SetupSuccessfulPinsDontMatchTest {
 
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        setupPersonalPinConfirm.personalPinField.assertLength(wrongPersonalPin.length)
+        composeTestRule.performPinInput(differentPersonalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(differentPersonalPin.length)
         composeTestRule.pressReturn()
         setupPersonalPinConfirm.pinsDontMatchDialog.assertIsDisplayed()
         setupPersonalPinConfirm.pinsDontMatchDialog.dismiss()
