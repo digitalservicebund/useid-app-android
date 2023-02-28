@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
@@ -31,7 +33,9 @@ fun NoNfcScreen() {
             Image(
                 painter = painterResource(id = R.drawable.illustration_no_nfc),
                 contentDescription = "",
-                modifier = Modifier.padding(vertical = 79.dp)
+                modifier = Modifier
+                    .padding(vertical = 79.dp)
+                    .semantics { testTag = "NoNfcImage" }
             )
         }
 

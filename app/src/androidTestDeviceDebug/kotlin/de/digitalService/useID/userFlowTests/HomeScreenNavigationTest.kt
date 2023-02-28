@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.homeScreen
+package de.digitalService.useID.userFlowTests
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class)
 @HiltAndroidTest
-class HomeScreenNavigationTestsTest {
+class HomeScreenNavigationTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)

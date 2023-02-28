@@ -142,6 +142,56 @@ sealed class TestScreen {
             }
     }
 
+    // NFC SCREENS
+
+    data class NoNfc(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private val titleImage = TestElement.Tag(testRule, "NoNfcImage")
+        private val title = TestElement.Text(testRule, resourceId = R.string.noNfc_info_title)
+        private val body = TestElement.Text(testRule, resourceId = R.string.noNfc_info_body)
+
+        val moreInformationBtn = TestElement.Text(testRule, resourceId = R.string.noNfc_moreInformation_link)
+
+        override val expectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    titleImage, title, body, moreInformationBtn
+                )
+            }
+
+        override val unexpectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name),
+                    TestElement.Tag(testRule, NavigationIcon.Cancel.name),
+                )
+            }
+    }
+
+    data class NfcDeactivated(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private val titleImage = TestElement.Tag(testRule, "NfcDeactivatedImage")
+        private val title = TestElement.Text(testRule, resourceId = R.string.nfcDeactivated_info_title)
+        private val body = TestElement.Text(testRule, resourceId = R.string.nfcDeactivated_info_body)
+
+        val adaptSettingsBtn = TestElement.Text(testRule, resourceId = R.string.ndcDeactivated_openSettings_button)
+
+        override val expectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    titleImage, title, body, adaptSettingsBtn
+                )
+            }
+
+        override val unexpectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name),
+                    TestElement.Tag(testRule, NavigationIcon.Cancel.name),
+                )
+            }
+    }
+
     // CAN SCREENS
 
     data class CanIntro(override val testRule: ComposeTestRule) : TestScreen() {
