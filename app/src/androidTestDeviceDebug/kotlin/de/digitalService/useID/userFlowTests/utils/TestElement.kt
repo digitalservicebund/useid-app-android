@@ -167,19 +167,18 @@ sealed class TestElement {
 
     data class StandardDialog(
         override val testRule: ComposeTestRule,
-        val titleResId: Int,
         val dismissBtnId: Int
     ) : TestElement() {
-        private val title = testRule.activity.getString(titleResId)
         private val dismissBtn = testRule.activity.getString(dismissBtnId)
 
+        // Note: The dialog title is not included, because this lead to some mismatches
+        // on screens where e.g. a button had the same string as the dialog title
+
         override fun assertIsDisplayed() {
-            testRule.onNodeWithText(title).assertIsDisplayedWithScrolling(title)
             testRule.onNodeWithText(dismissBtn).assertIsDisplayedWithScrolling(dismissBtn)
         }
 
         override fun assertIsNotDisplayed() {
-            testRule.onNodeWithText(title).safeAssertIsNotDisplayed(title)
             testRule.onNodeWithText(dismissBtn).safeAssertIsNotDisplayed(dismissBtn)
         }
 

@@ -96,13 +96,11 @@ sealed class TestScreen {
 
         val nfcDialog = TestElement.StandardDialog(
             testRule,
-            titleResId = R.string.helpNFC_title,
             dismissBtnId = R.string.scanError_close
         )
 
         val helpDialog = TestElement.StandardDialog(
             testRule,
-            titleResId = R.string.scanError_cardUnreadable_title,
             dismissBtnId = R.string.scanError_close
         )
 
@@ -405,19 +403,12 @@ sealed class TestScreen {
 
     data class SetupPersonalPinConfirm(override val testRule: ComposeTestRule) : TestScreen() {
 
-        private var error = false
-        fun setError(value: Boolean) : SetupPersonalPinConfirm {
-            error = value
-            return this
-        }
-
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_personalPIN_confirmation_title)
         private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_personalPIN_confirmation_body)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val personalPinField = TestElement.PersonalPin(testRule)
         val pinsDontMatchDialog = TestElement.StandardDialog(
             testRule,
-            titleResId = R.string.firstTimeUser_personalPIN_error_mismatch_title,
             dismissBtnId = R.string.identification_fetchMetadataError_retry
         )
 
