@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
+import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
@@ -48,7 +49,9 @@ fun NoNfcScreen() {
                 text = stringResource(R.string.noNfc_info_title),
                 style = UseIdTheme.typography.headingL,
                 color = UseIdTheme.colors.black,
-                modifier = Modifier.padding(top = UseIdTheme.spaces.m)
+                modifier = Modifier
+                    .padding(top = UseIdTheme.spaces.m)
+                    .semantics { heading() }
             )
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))

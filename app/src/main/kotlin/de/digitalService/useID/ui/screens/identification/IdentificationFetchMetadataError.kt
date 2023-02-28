@@ -8,6 +8,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.BundButtonConfig
@@ -30,7 +32,11 @@ fun IdentificationFetchMetadataError(
                 .padding(horizontal = UseIdTheme.spaces.m)
                 .padding(top = UseIdTheme.spaces.m)
         ) {
-            Text(stringResource(id = R.string.identification_fetchMetadataError_title), style = UseIdTheme.typography.headingXl)
+            Text(
+                text = stringResource(id = R.string.identification_fetchMetadataError_title),
+                style = UseIdTheme.typography.headingXl,
+                modifier = Modifier.semantics { heading() }
+            )
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
             Text(stringResource(id = R.string.identification_fetchMetadataError_body), style = UseIdTheme.typography.bodyLRegular)
         }
