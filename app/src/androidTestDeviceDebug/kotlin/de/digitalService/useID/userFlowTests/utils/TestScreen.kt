@@ -104,9 +104,11 @@ sealed class TestScreen {
             dismissBtnId = R.string.scanError_close
         )
 
+        // TODO: As of now it is unclear whether or not there should be different body descriptions
+        // for the setup scan and ident scan screen. Until this is clearified, we ignore the body 
         override val expectedElements: List<TestElement>
             get() {
-                return listOf<TestElement>(title, body, nfcHelpBtn, scanHelpBtn)
+                return listOf<TestElement>(title, /*body,*/ nfcHelpBtn, scanHelpBtn)
                     .plus(listOf(progressIndicator).takeIf { progress } ?: listOf())
                     .plus(listOf(back).takeIf { backAllowed } ?: listOf())
                     .plus(listOf(cancel).takeIf { !backAllowed } ?: listOf())
