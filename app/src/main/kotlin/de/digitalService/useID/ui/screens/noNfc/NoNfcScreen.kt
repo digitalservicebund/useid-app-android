@@ -61,18 +61,6 @@ fun NoNfcScreen() {
                 style = UseIdTheme.typography.bodyLRegular,
                 color = UseIdTheme.colors.black
             )
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
-
-            TextButton(onClick = {}, contentPadding = PaddingValues(0.dp)) {
-                Text(
-                    text = stringResource(R.string.noNfc_moreInformation_link),
-                    style = UseIdTheme.typography.bodyMBold,
-                    color = UseIdTheme.colors.blue800
-                )
-            }
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
         }
     }
 }
