@@ -5,9 +5,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,6 +22,7 @@ enum class BundCardType {
     INFO, WARNING, ERROR, SUCCESS
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BundCard(type: BundCardType, title: String, body: String) {
     val containerColor: Color
@@ -71,7 +74,10 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     }
-                    .semantics { testTag = icon.name },
+                    .semantics {
+                        testTag = icon.name
+                        invisibleToUser()
+                    },
                 tint = iconTint
             )
 

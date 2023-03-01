@@ -10,10 +10,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -66,6 +68,7 @@ fun StandardButtonScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun StandardStaticComposition(
     title: String,
@@ -111,7 +114,12 @@ fun StandardStaticComposition(
                     painter = painterResource(id = imageId),
                     contentScale = imageScaling,
                     contentDescription = "",
-                    modifier = imageModifier.align(CenterHorizontally).semantics { testTag = imageId.toString() }
+                    modifier = imageModifier
+                        .align(CenterHorizontally)
+                        .semantics {
+                            invisibleToUser()
+                            testTag = imageId.toString()
+                        }
                 )
             }
         }

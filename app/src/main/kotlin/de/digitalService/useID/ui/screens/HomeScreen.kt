@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
@@ -14,6 +15,7 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.style.TextAlign
@@ -36,6 +38,7 @@ import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.theme.*
 import javax.inject.Inject
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 @Destination
 @RootNavGraph(start = true)
@@ -57,7 +60,10 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .padding(start = 50.dp, end = 50.dp, top = 60.dp, bottom = 16.dp)
-                    .semantics { testTag = R.drawable.abstract_widget_phone.toString() }
+                    .semantics {
+                        testTag = R.drawable.abstract_widget_phone.toString()
+                        invisibleToUser()
+                    }
             )
 
             Text(
@@ -171,6 +177,7 @@ fun SetupIdBoxLayout(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
     CardBox {
@@ -183,7 +190,10 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
                     .padding(top = UseIdTheme.spaces.s)
                     .padding(horizontal = UseIdTheme.spaces.l)
                     .fillMaxWidth()
-                    .semantics { testTag = R.drawable.eid_3.toString() }
+                    .semantics {
+                        testTag = R.drawable.eid_3.toString()
+                        invisibleToUser()
+                    }
             )
 
             BundButton(
