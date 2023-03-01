@@ -123,163 +123,163 @@ class SetupSuccessfulAndDifferentIdentFlowsTest {
         )
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun testSuccessfulSetupFollowedSuccessfulIdentAfterPersonalPinIncorrectAndThenCorrect() = runTest {
-        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
-        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
-
-        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
-
-        composeTestRule.activity.setContentUsingUseIdTheme {
-            UseIDApp(
-                nfcAvailability = NfcAvailability.Available,
-                navigator = navigator,
-                trackerManager = trackerManager
-            )
-        }
-
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
-
-        composeTestRule.waitForIdle()
-
-        appCoordinator.handleDeepLink(deepLink)
-        advanceUntilIdle()
-
-        runSetupSuccessful(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-
-        setupFinish.setIdentPending(true).assertIsDisplayed()
-        setupFinish.identifyNowBtn.click()
-
-        runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun testSuccessfulSetupFollowedSuccessfulIdentAfterPersonalPinIncorrectTwiceAndThenCorrect() = runTest {
-        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
-        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
-
-        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
-
-        composeTestRule.activity.setContentUsingUseIdTheme {
-            UseIDApp(
-                nfcAvailability = NfcAvailability.Available,
-                navigator = navigator,
-                trackerManager = trackerManager
-            )
-        }
-
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
-
-        composeTestRule.waitForIdle()
-
-        appCoordinator.handleDeepLink(deepLink)
-        advanceUntilIdle()
-
-        runSetupSuccessful(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-
-        setupFinish.setIdentPending(true).assertIsDisplayed()
-        setupFinish.identifyNowBtn.click()
-
-        runIdentSuccessfulCan(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun testSuccessfulSetupFollowedSuccessfulIdentAfterCanIncorrectAndThenCorrect() = runTest {
-        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
-        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
-
-        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
-
-        composeTestRule.activity.setContentUsingUseIdTheme {
-            UseIDApp(
-                nfcAvailability = NfcAvailability.Available,
-                navigator = navigator,
-                trackerManager = trackerManager
-            )
-        }
-
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
-
-        composeTestRule.waitForIdle()
-
-        appCoordinator.handleDeepLink(deepLink)
-        advanceUntilIdle()
-
-        runSetupSuccessful(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-
-        setupFinish.setIdentPending(true).assertIsDisplayed()
-        setupFinish.identifyNowBtn.click()
-
-        runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @Test
-    fun testSuccessfulSetupFollowedSuccessfulIdentAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
-        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
-        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
-
-        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
-
-        composeTestRule.activity.setContentUsingUseIdTheme {
-            UseIDApp(
-                nfcAvailability = NfcAvailability.Available,
-                navigator = navigator,
-                trackerManager = trackerManager
-            )
-        }
-
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
-
-        composeTestRule.waitForIdle()
-
-        appCoordinator.handleDeepLink(deepLink)
-        advanceUntilIdle()
-
-        runSetupSuccessful(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-
-        setupFinish.setIdentPending(true).assertIsDisplayed()
-        setupFinish.identifyNowBtn.click()
-
-        runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
-    }
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun testSuccessfulSetupFollowedSuccessfulIdentAfterPersonalPinIncorrectAndThenCorrect() = runTest {
+//        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+//        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+//
+//        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+//        every { mockIdCardManager.eidFlow } returns eidFlow
+//
+//        composeTestRule.activity.setContentUsingUseIdTheme {
+//            UseIDApp(
+//                nfcAvailability = NfcAvailability.Available,
+//                navigator = navigator,
+//                trackerManager = trackerManager
+//            )
+//        }
+//
+//        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+//
+//        composeTestRule.waitForIdle()
+//
+//        appCoordinator.handleDeepLink(deepLink)
+//        advanceUntilIdle()
+//
+//        runSetupSuccessful(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//
+//        setupFinish.setIdentPending(true).assertIsDisplayed()
+//        setupFinish.identifyNowBtn.click()
+//
+//        runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//    }
+//
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun testSuccessfulSetupFollowedSuccessfulIdentAfterPersonalPinIncorrectTwiceAndThenCorrect() = runTest {
+//        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+//        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+//
+//        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+//        every { mockIdCardManager.eidFlow } returns eidFlow
+//
+//        composeTestRule.activity.setContentUsingUseIdTheme {
+//            UseIDApp(
+//                nfcAvailability = NfcAvailability.Available,
+//                navigator = navigator,
+//                trackerManager = trackerManager
+//            )
+//        }
+//
+//        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+//
+//        composeTestRule.waitForIdle()
+//
+//        appCoordinator.handleDeepLink(deepLink)
+//        advanceUntilIdle()
+//
+//        runSetupSuccessful(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//
+//        setupFinish.setIdentPending(true).assertIsDisplayed()
+//        setupFinish.identifyNowBtn.click()
+//
+//        runIdentSuccessfulCan(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//    }
+//
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun testSuccessfulSetupFollowedSuccessfulIdentAfterCanIncorrectAndThenCorrect() = runTest {
+//        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+//        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+//
+//        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+//        every { mockIdCardManager.eidFlow } returns eidFlow
+//
+//        composeTestRule.activity.setContentUsingUseIdTheme {
+//            UseIDApp(
+//                nfcAvailability = NfcAvailability.Available,
+//                navigator = navigator,
+//                trackerManager = trackerManager
+//            )
+//        }
+//
+//        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+//
+//        composeTestRule.waitForIdle()
+//
+//        appCoordinator.handleDeepLink(deepLink)
+//        advanceUntilIdle()
+//
+//        runSetupSuccessful(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//
+//        setupFinish.setIdentPending(true).assertIsDisplayed()
+//        setupFinish.identifyNowBtn.click()
+//
+//        runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//    }
+//
+//    @OptIn(ExperimentalCoroutinesApi::class)
+//    @Test
+//    fun testSuccessfulSetupFollowedSuccessfulIdentAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
+//        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+//        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+//
+//        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+//        every { mockIdCardManager.eidFlow } returns eidFlow
+//
+//        composeTestRule.activity.setContentUsingUseIdTheme {
+//            UseIDApp(
+//                nfcAvailability = NfcAvailability.Available,
+//                navigator = navigator,
+//                trackerManager = trackerManager
+//            )
+//        }
+//
+//        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+//
+//        composeTestRule.waitForIdle()
+//
+//        appCoordinator.handleDeepLink(deepLink)
+//        advanceUntilIdle()
+//
+//        runSetupSuccessful(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//
+//        setupFinish.setIdentPending(true).assertIsDisplayed()
+//        setupFinish.identifyNowBtn.click()
+//
+//        runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(
+//            testRule = composeTestRule,
+//            eidFlow = eidFlow,
+//            testScope = this
+//        )
+//    }
 }

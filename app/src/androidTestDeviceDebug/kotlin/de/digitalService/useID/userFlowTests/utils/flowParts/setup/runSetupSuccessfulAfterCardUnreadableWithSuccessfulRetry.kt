@@ -85,7 +85,7 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
-    setupScan.setProgress(false).setBackAllowed(true).assertIsDisplayed() // TODO: BUG DISCOVERED, navigating back should be possible here
+    setupScan.setProgress(false).setBackAllowed(true).assertIsDisplayed() // TODO: navigating back should be possible here. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()

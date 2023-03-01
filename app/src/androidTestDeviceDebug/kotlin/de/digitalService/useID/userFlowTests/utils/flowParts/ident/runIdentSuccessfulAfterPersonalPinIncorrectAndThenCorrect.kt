@@ -86,7 +86,7 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
     eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
-    identificationScan.setProgress(false).assertIsDisplayed() // TODO: when this flow is ran after the setup flow, a progress indicator is shown here but shouldn be!
+    identificationScan.setProgress(false).assertIsDisplayed() // TODO: when this flow is ran after the setup flow, a progress indicator is shown here but shouldn be! Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()
