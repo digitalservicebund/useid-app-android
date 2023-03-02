@@ -5,7 +5,6 @@ import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.CoroutineContextProviderType
 import de.digitalService.useID.util.NfcInterfaceManagerType
 import kotlinx.coroutines.CoroutineScope
