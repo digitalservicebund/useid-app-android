@@ -7,8 +7,25 @@ end
 platform :android do
   desc "Runs all the tests"
   lane :test do
+
+    # The gradle managed devices feature is experimental and we need to do the following workarounds:
+      # 1. Executing the tests using groups of multiple managed devices causes memory issues. Therefore we execute the tests for every device configuration individually. 
+      # 2. Sharding does not work reliable on API level 31+ right now. We therefore disable it for those API levels for now. https://stackoverflow.com/questions/75452923/android-gradle-managed-devices-fails-to-boot-emulator
+
+    common_test_parameters = "-Pandroid.experimental.androidTest.useUnifiedTestPlatform=true -Dorg.gradle.jvmargs=-Xmx14000M"
+    sharding_test_parameter = "-Pandroid.experimental.androidTest.numManagedDeviceShards=5"
+
     gradle(tasks: ["clean", "testDeviceReleaseUnitTest"])
-    gradle(tasks: ["-Pandroid.experimental.androidTest.useUnifiedTestPlatform=true -Dorg.gradle.workers.max=1", "testDevicesGroupDeviceDebugAndroidTest", "--info"])
+    
+    gradle(tasks: [common_test_parameters, sharding_test_parameter, "pixel2api28DeviceDebugAndroidTest", "--info"])
+    gradle(tasks: [common_test_parameters, sharding_test_parameter, "pixel2api29DeviceDebugAndroidTest", "--info"])
+    gradle(tasks: [common_test_parameters, sharding_test_parameter, "pixel2api30DeviceDebugAndroidTest", "--info"])
+    gradle(tasks: [common_test_parameters, "pixel2api31DeviceDebugAndroidTest", "--info"])
+
+    gradle(tasks: [common_test_parameters, sharding_test_parameter, "pixel6api28DeviceDebugAndroidTest", "--info"])
+    gradle(tasks: [common_test_parameters, sharding_test_parameter, "pixel6api29DeviceDebugAndroidTest", "--info"])
+    gradle(tasks: [common_test_parameters, sharding_test_parameter, "pixel6api30DeviceDebugAndroidTest", "--info"])
+    gradle(tasks: [common_test_parameters, "pixel6api31DeviceDebugAndroidTest", "--info"])
   end
 
   desc "Run Android linter and ktlint"
