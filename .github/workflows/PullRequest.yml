@@ -51,3 +51,4 @@ jobs:
           path: |
             app/build/outputs/androidTest-results
             !app/build/outputs/androidTest-results/**/adb.additional*
+            !app/build/outputs/androidTest-results/**/adb.test_outputfiles*
