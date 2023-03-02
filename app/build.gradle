@@ -144,7 +144,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.get()
+        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
     }
     packagingOptions {
         resources {
@@ -155,13 +155,6 @@ android {
         textReport true
     }
     namespace 'de.digitalService.useID'
-    applicationVariants.all { variant ->
-        kotlin.sourceSets {
-            getByName(variant.name) {
-                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
-            }
-        }
-    }
 }
 
 dependencies {
