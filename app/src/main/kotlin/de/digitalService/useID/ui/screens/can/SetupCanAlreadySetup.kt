@@ -10,6 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
@@ -55,9 +57,10 @@ fun SetupCanAlreadySetup(viewModel: SetupCanAlreadySetupViewModelInterface = hil
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    stringResource(id = R.string.firstTimeUser_can_alreadySetup_title),
+                    text = stringResource(id = R.string.firstTimeUser_can_alreadySetup_title),
                     style = UseIdTheme.typography.headingXl,
-                    color = UseIdTheme.colors.black
+                    color = UseIdTheme.colors.black,
+                    modifier = Modifier.semantics { heading() }
                 )
 
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))

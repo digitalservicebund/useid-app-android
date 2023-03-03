@@ -157,7 +157,11 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                 Text(
                     content.subject,
                     style = UseIdTheme.typography.headingXl,
-                    modifier = Modifier.semantics { testTag = "subjectTitle" }
+                    modifier = Modifier
+                        .semantics {
+                            testTag = "subjectTitle"
+                            heading()
+                        }
                 )
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),

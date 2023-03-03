@@ -68,6 +68,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = UseIdTheme.spaces.m)
+                    .semantics { heading() }
             )
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))

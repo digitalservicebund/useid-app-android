@@ -158,8 +158,9 @@ fun ScanScreen(
         StandardDialog(
             title = {
                 Text(
-                    stringResource(id = R.string.scanError_cardUnreadable_title),
-                    style = UseIdTheme.typography.headingL
+                    text = stringResource(id = R.string.scanError_cardUnreadable_title),
+                    style = UseIdTheme.typography.headingL,
+                    modifier = Modifier.semantics { heading() }
                 )
             },
             text = {
