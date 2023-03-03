@@ -105,7 +105,7 @@ sealed class TestScreen {
         )
 
         // TODO: As of now it is unclear whether or not there should be different body descriptions
-        // for the setup scan and ident scan screen. Until this is clearified, we ignore the body 
+        // for the setup scan and ident scan screen. Until this is clearified, we ignore the body
         override val expectedElements: List<TestElement>
             get() {
                 return listOf<TestElement>(title, /*body,*/ nfcHelpBtn, scanHelpBtn)
@@ -150,12 +150,10 @@ sealed class TestScreen {
         private val title = TestElement.Text(testRule, resourceId = R.string.noNfc_info_title)
         private val body = TestElement.Text(testRule, resourceId = R.string.noNfc_info_body)
 
-        val moreInformationBtn = TestElement.Text(testRule, resourceId = R.string.noNfc_moreInformation_link)
-
         override val expectedElements: List<TestElement>
             get() {
                 return listOf(
-                    titleImage, title, body, moreInformationBtn
+                    titleImage, title, body
                 )
             }
 
