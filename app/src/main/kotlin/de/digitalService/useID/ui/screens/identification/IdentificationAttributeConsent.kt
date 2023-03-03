@@ -166,11 +166,15 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
                     style = UseIdTheme.typography.headingMBold,
-                    modifier = Modifier.semantics { testTag = "providerInfoTitle" }
+                    modifier = Modifier.semantics {
+                        testTag = "providerInfoTitle"
+                        heading()
+                    }
                 )
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_provider),
-                    style = UseIdTheme.typography.bodyLBold
+                    style = UseIdTheme.typography.bodyLBold,
+                    modifier = Modifier.semantics { heading() }
                 )
                 Column {
                     Text(
@@ -186,7 +190,8 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                 }
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_issuer),
-                    style = UseIdTheme.typography.bodyLBold
+                    style = UseIdTheme.typography.bodyLBold,
+                    modifier = Modifier.semantics { heading() }
                 )
                 Column {
                     Text(
@@ -203,7 +208,10 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
                 Text(
                     stringResource(id = R.string.identification_attributeConsentInfo_providerInfo),
                     style = UseIdTheme.typography.bodyLBold,
-                    modifier = Modifier.semantics { testTag = "providerInfoSubtitle" }
+                    modifier = Modifier.semantics {
+                        testTag = "providerInfoSubtitle"
+                        heading()
+                    }
                 )
                 Text(
                     content.terms,
