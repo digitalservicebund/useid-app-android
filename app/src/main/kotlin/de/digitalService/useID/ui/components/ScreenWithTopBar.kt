@@ -50,7 +50,6 @@ data class NavigationButton(
     val icon: NavigationIcon,
     val onClick: () -> Unit,
     val confirmation: Flow?,
-    val contentDescription: String? = null,
     val testTag: String? = null
 )
 
@@ -74,9 +73,6 @@ fun ScreenWithTopBar(
                             modifier = Modifier
                                 .semantics {
                                     testTag = navigationButton.testTag ?: navigationButton.icon.name
-                                    navigationButton.contentDescription?.let {
-                                        this.contentDescription = it
-                                    }
                                 },
                             onClick = {
                                 if (navigationButton.confirmation != null) {

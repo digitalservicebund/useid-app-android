@@ -20,6 +20,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.ScreenWithTopBar
 import de.digitalService.useID.ui.theme.UseIdTheme
+import de.digitalService.useID.util.isScreenReaderOn
 import kotlinx.coroutines.delay
 
 enum class InputType {
@@ -39,6 +40,7 @@ fun StandardNumberEntryScreen(
     delayFocusRequest: Boolean = true
 ) {
     val resources = LocalContext.current.resources
+    val context = LocalContext.current
 
     ScreenWithTopBar(
         navigationButton = navigationButton
@@ -54,11 +56,13 @@ fun StandardNumberEntryScreen(
             val focusRequesterPin = remember { FocusRequester() }
 
             LaunchedEffect(Unit) {
-                if (delayFocusRequest) {
-                    delay(400)
-                }
+                if (!context.isScreenReaderOn()) {
+                    if (delayFocusRequest) {
+                        delay(400)
+                    }
 
-                focusRequesterPin.requestFocus()
+                    focusRequesterPin.requestFocus()
+                }
             }
 
             Text(

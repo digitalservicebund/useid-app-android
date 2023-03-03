@@ -47,7 +47,6 @@ fun SetupTransportPin(
             icon = icon,
             onClick = viewModel::onNavigationButtonClicked,
             confirmation = (if (viewModel.identificationPending) Flow.Identification else Flow.Setup).takeIf { viewModel.retry },
-            contentDescription = titleString
         ),
         inputType = InputType.TransportPin,
         entryFieldDescription = "",
