@@ -98,7 +98,7 @@
     <string name="firstTimeUser_pinLetter_requestLetter">No, order PIN reset letter</string>
     <string name="firstTimeUser_pinLetter_title">Do you still have your PIN letter\?</string>
     <string name="firstTimeUser_pinLetter_letterPresent">Yes, the PIN letter is available</string>
-    <string name="firstTimeUser_scan_body">In the next step, hold your ID against the top back of the iPhone. Make sure that your ID card is directly in contact with the device.</string>
+    <string name="firstTimeUser_scan_body">Try out different positions. Make sure that your ID is in direct contact with the device.</string>
     <string name="firstTimeUser_scan_error_button">Okay</string>
     <string name="firstTimeUser_scan_error_text_feature_unavailable">This function is not supported at present. Please use AusweisApp2.</string>
     <string name="firstTimeUser_scan_error_text_unknown">An unexpected error has occurred. Please have a look at the logs.</string>
