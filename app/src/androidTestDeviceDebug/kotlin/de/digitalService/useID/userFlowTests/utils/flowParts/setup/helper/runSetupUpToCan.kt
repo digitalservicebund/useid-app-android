@@ -42,6 +42,7 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     setupPersonalPinIntro.assertIsDisplayed()
     setupPersonalPinIntro.continueBtn.click()
 
+    testRule.waitForIdle()
     setupPersonalPinInput.assertIsDisplayed()
     setupPersonalPinInput.personalPinField.assertLength(0)
     testRule.performPinInput(personalPin)
