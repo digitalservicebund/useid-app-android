@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -113,13 +112,10 @@ fun StandardStaticComposition(
                 Image(
                     painter = painterResource(id = imageId),
                     contentScale = imageScaling,
-                    contentDescription = "",
+                    contentDescription = null,
                     modifier = imageModifier
                         .align(CenterHorizontally)
-                        .semantics {
-                            invisibleToUser()
-                            testTag = imageId.toString()
-                        }
+                        .semantics { testTag = imageId.toString() }
                 )
             }
         }

@@ -9,7 +9,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -65,7 +64,7 @@ fun BundCard(type: BundCardType, title: String, body: String) {
 
             Icon(
                 imageVector = icon,
-                contentDescription = "",
+                contentDescription = null,
                 modifier = Modifier
                     .size(30.dp)
                     .padding(end = UseIdTheme.spaces.xs)
@@ -74,10 +73,7 @@ fun BundCard(type: BundCardType, title: String, body: String) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     }
-                    .semantics {
-                        testTag = icon.name
-                        invisibleToUser()
-                    },
+                    .semantics { testTag = icon.name },
                 tint = iconTint
             )
 

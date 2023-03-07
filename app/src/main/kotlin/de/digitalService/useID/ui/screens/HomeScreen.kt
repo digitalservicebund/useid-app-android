@@ -15,7 +15,6 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.style.TextAlign
@@ -56,14 +55,11 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
         ) {
             Image(
                 painter = painterResource(id = R.drawable.abstract_widget_phone),
-                contentDescription = "",
+                contentDescription = null,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
                     .padding(start = 50.dp, end = 50.dp, top = 60.dp, bottom = 16.dp)
-                    .semantics {
-                        testTag = R.drawable.abstract_widget_phone.toString()
-                        invisibleToUser()
-                    }
+                    .semantics { testTag = R.drawable.abstract_widget_phone.toString() }
             )
 
             Text(
@@ -185,15 +181,12 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
             Image(
                 painter = painterResource(id = R.drawable.eid_3),
                 contentScale = ContentScale.FillWidth,
-                contentDescription = "",
+                contentDescription = null,
                 modifier = Modifier
                     .padding(top = UseIdTheme.spaces.s)
                     .padding(horizontal = UseIdTheme.spaces.l)
                     .fillMaxWidth()
-                    .semantics {
-                        testTag = R.drawable.eid_3.toString()
-                        invisibleToUser()
-                    }
+                    .semantics { testTag = R.drawable.eid_3.toString() }
             )
 
             BundButton(

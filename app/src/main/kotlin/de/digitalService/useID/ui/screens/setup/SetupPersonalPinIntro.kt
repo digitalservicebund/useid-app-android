@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
-import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
@@ -71,13 +70,10 @@ fun SetupPersonalPinIntro(viewModel: SetupPersonalPinIntroViewModelInterface = h
                 Image(
                     painter = painterResource(id = imageId),
                     contentScale = ContentScale.Inside,
-                    contentDescription = "",
+                    contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .semantics {
-                            testTag = imageId.toString()
-                            invisibleToUser()
-                        }
+                        .semantics { testTag = imageId.toString() }
                 )
             }
         }
