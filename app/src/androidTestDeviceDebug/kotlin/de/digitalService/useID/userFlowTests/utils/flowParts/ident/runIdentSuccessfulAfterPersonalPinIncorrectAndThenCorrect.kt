@@ -47,7 +47,9 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
             TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
         )
     ) {
-        eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        })
     }
 
     testScope.advanceUntilIdle()
@@ -55,7 +57,6 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
     identificationAttributeConsent.assertIsDisplayed()
     identificationAttributeConsent.continueBtn.click()
 
-    eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
     testScope.advanceUntilIdle()
 
     identificationPersonalPin.assertIsDisplayed()
@@ -64,7 +65,6 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
     identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
     identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
@@ -75,6 +75,9 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
     identificationScan.setProgress(true).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 
     identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()

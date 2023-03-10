@@ -138,7 +138,9 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -146,7 +148,6 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
@@ -155,7 +156,6 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
@@ -206,7 +206,9 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -214,7 +216,6 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
@@ -223,7 +224,6 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setProgress(false).setIdentPending(true).setBackAllowed(false).assertIsDisplayed()

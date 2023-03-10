@@ -28,6 +28,8 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     setupIntro.assertIsDisplayed()
     setupIntro.setupIdBtn.click()
 
+    testScope.advanceUntilIdle()
+
     setupPinLetter.assertIsDisplayed()
     setupPinLetter.letterPresentBtn.click()
 
@@ -39,14 +41,20 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
     testRule.pressReturn()
 
+    testScope.advanceUntilIdle()
+
     setupPersonalPinIntro.assertIsDisplayed()
     setupPersonalPinIntro.continueBtn.click()
+
+    testScope.advanceUntilIdle()
 
     setupPersonalPinInput.assertIsDisplayed()
     setupPersonalPinInput.personalPinField.assertLength(0)
     testRule.performPinInput(personalPin)
     setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
+
+    testScope.advanceUntilIdle()
 
     setupPersonalPinConfirm.assertIsDisplayed()
     setupPersonalPinConfirm.personalPinField.assertLength(0)
@@ -70,6 +78,9 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
     testScope.advanceUntilIdle()
 
+    eidFlow.value = EidInteractionEvent.CardRemoved
+    testScope.advanceUntilIdle()
+
     setupTransportPin.setAttemptsLeft(2).assertIsDisplayed()
     setupTransportPin.transportPinField.assertLength(0)
     testRule.performPinInput(transportPin)
@@ -85,9 +96,6 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     testScope.advanceUntilIdle()
 
     setupScan.setBackAllowed(false).setProgress(true).assertIsDisplayed()
-
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-    testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
     testScope.advanceUntilIdle()

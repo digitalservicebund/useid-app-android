@@ -70,6 +70,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
     @Test
     fun testSetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -95,6 +96,8 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         runSetupUpToCanAfterSomeTime(
             withWrongTransportPin = false,
             testRule = composeTestRule,
@@ -104,6 +107,8 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
 
         setupCanIntro.setBackAllowed(false).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         // ENTER WRONG CAN
         setupCanInput.assertIsDisplayed()
@@ -121,6 +126,9 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER WRONG CAN AGAIN
@@ -141,6 +149,9 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
+        eidFlow.value = EidInteractionEvent.CardRemoved
+        advanceUntilIdle()
+
         // ENTER CORRECT CAN
         setupCanInput.setRetry(true).assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
@@ -158,14 +169,13 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
         eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
         setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
 
         home.assertIsDisplayed()
     }

@@ -1,9 +1,14 @@
-package de.digitalService.useID.userFlowTests.identFlows.canceled
+package de.digitalService.useID.userFlowTests.identFlows.backToBackIdents
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -29,6 +34,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -37,12 +43,15 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnSecondAttemptPinEntryTest {
+class SecondIdentSuccessfulAfterFirstCancelledTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
+    val intentsTestRule = IntentsTestRule(MainActivity::class.java)
+
+    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
@@ -79,7 +88,7 @@ class IdentCanceledOnSecondAttemptPinEntryTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnSecondAttemptPinEntry() = runTest {
+    fun testSecondIdentSuccessfulAfterFirstCancelled() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -95,7 +104,8 @@ class IdentCanceledOnSecondAttemptPinEntryTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
-        val wrongPersonalPin = "111111"
+        val redirectUrl = "test.url.com"
+        val personalPin = "123456"
 
         // Define screens to be tested
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
@@ -126,7 +136,48 @@ class IdentCanceledOnSecondAttemptPinEntryTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        }
+
+        advanceUntilIdle()
+
+        identificationAttributeConsent.assertIsDisplayed()
+        identificationAttributeConsent.cancel.click()
+        identificationAttributeConsent.navigationConfirmDialog.assertIsDisplayed()
+        identificationAttributeConsent.navigationConfirmDialog.confirm()
+
+        home.assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.Idle
+        advanceUntilIdle()
+
+
+        // Start new Identification
+        composeTestRule.waitForIdle()
+
+        appCoordinator.handleDeepLink(deepLink)
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
+
+        identificationFetchMetaData.assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+            EidAuthenticationRequest(
+                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
+                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.subject,
+                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.validity,
+                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
+                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
+                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+            )
+        ) {
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -134,38 +185,36 @@ class IdentCanceledOnSecondAttemptPinEntryTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
         identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(wrongPersonalPin)
-        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
+        composeTestRule.performPinInput(personalPin)
+        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+        identificationScan.setProgress(false).setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+        intending(allOf(
+            hasAction(Intent.ACTION_VIEW),
+            hasData(redirectUrl),
+            hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK)
+        )).respondWith(
+            Instrumentation.ActivityResult(
+                Activity.RESULT_OK,
+                null
+            )
+        )
+
+        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
         advanceUntilIdle()
-
-        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
-        identificationPersonalPin.cancel.click()
-        identificationPersonalPin.navigationConfirmDialog.assertIsDisplayed()
-        identificationPersonalPin.navigationConfirmDialog.dismiss()
-
-        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
-        identificationPersonalPin.cancel.click()
-        identificationPersonalPin.navigationConfirmDialog.assertIsDisplayed()
-        identificationPersonalPin.navigationConfirmDialog.confirm()
-
-        home.assertIsDisplayed()
     }
 }

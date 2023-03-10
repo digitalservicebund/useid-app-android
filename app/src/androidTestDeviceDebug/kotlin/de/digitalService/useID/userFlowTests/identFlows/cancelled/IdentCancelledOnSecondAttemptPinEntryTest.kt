@@ -1,14 +1,9 @@
-package de.digitalService.useID.userFlowTests.identFlows.canAfterSomeTime.canceled
+package de.digitalService.useID.userFlowTests.identFlows.cancelled
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -25,7 +20,6 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCanAfterSomeTime
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -35,7 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,7 +37,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanAfterSomeTimeCanceledCanIntroTest {
+class IdentCancelledOnSecondAttemptPinEntryTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -86,7 +79,7 @@ class IdentCanAfterSomeTimeCanceledCanIntroTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanAfterSomeTimeCanceledOnCanScan() = runTest {
+    fun testIdentCancelledOnSecondAttemptPinEntry() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -102,9 +95,13 @@ class IdentCanAfterSomeTimeCanceledCanIntroTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val wrongPersonalPin = "111111"
 
         // Define screens to be tested
-        val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
+        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
+        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
+        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
+        val identificationScan = TestScreen.Scan(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         composeTestRule.waitForIdle()
@@ -112,24 +109,62 @@ class IdentCanAfterSomeTimeCanceledCanIntroTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        runIdentUpToCanAfterSomeTime(
-            withWrongPersonalPin = false,
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
+        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
 
-        identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
-        identificationCanIntro.cancel.click()
-        identificationCanIntro.navigationConfirmDialog.assertIsDisplayed()
-        identificationCanIntro.navigationConfirmDialog.dismiss()
+        identificationFetchMetaData.assertIsDisplayed()
 
-        identificationCanIntro.assertIsDisplayed()
-        identificationCanIntro.cancel.click()
-        identificationCanIntro.navigationConfirmDialog.assertIsDisplayed()
-        identificationCanIntro.navigationConfirmDialog.confirm()
+        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+            EidAuthenticationRequest(
+                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
+                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.subject,
+                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.validity,
+                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
+                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
+                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+            )
+        ) {
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
+        }
 
         advanceUntilIdle()
+
+        identificationAttributeConsent.assertIsDisplayed()
+        identificationAttributeConsent.continueBtn.click()
+
+        advanceUntilIdle()
+
+        identificationPersonalPin.assertIsDisplayed()
+        identificationPersonalPin.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(wrongPersonalPin)
+        identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        identificationScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+        advanceUntilIdle()
+
+        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
+        identificationPersonalPin.cancel.click()
+        identificationPersonalPin.navigationConfirmDialog.assertIsDisplayed()
+        identificationPersonalPin.navigationConfirmDialog.dismiss()
+
+        identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
+        identificationPersonalPin.cancel.click()
+        identificationPersonalPin.navigationConfirmDialog.assertIsDisplayed()
+        identificationPersonalPin.navigationConfirmDialog.confirm()
 
         home.assertIsDisplayed()
     }

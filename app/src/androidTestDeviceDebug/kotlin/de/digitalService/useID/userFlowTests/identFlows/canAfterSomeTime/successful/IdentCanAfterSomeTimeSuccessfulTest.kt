@@ -128,6 +128,8 @@ class IdentCanAfterSomeTimeSuccessfulTest {
         identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
 
+        advanceUntilIdle()
+
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)

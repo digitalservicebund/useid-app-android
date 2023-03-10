@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows.canceled
+package de.digitalService.useID.userFlowTests.identFlows.canAfterSomeTime.cancelled
 
 import android.net.Uri
 import androidx.compose.ui.test.*
@@ -20,6 +20,7 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCanAfterSomeTime
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -37,7 +38,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnCardBlockedTest {
+class IdentCanAfterSomeTimeCancelledOnCanScanTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -79,7 +80,7 @@ class IdentCanceledOnCardBlockedTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnCardBlocked() = runTest {
+    fun testIdentCanAfterSomeTimeCancelledOnCanScan() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -95,14 +96,12 @@ class IdentCanceledOnCardBlockedTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
-        val personalPin = "123456"
+        val can = "123456"
 
         // Define screens to be tested
-        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
-        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
-        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
-        val errorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
+        val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
+        val identificationCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         composeTestRule.waitForIdle()
@@ -110,55 +109,41 @@ class IdentCanceledOnCardBlockedTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
-        advanceUntilIdle()
+        runIdentUpToCanAfterSomeTime(
+            withWrongPersonalPin = false,
+            testRule = composeTestRule,
+            eidFlow = eidFlow,
+            testScope = this
+        )
 
-        identificationFetchMetaData.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.subject,
-                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.validity,
-                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
-            )
-        ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
-        }
+        identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
+        identificationCanIntro.enterCanNowBtn.click()
 
         advanceUntilIdle()
 
-        identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.continueBtn.click()
-
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
-        advanceUntilIdle()
-
-        identificationPersonalPin.assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
+        identificationCanInput.assertIsDisplayed()
+        identificationCanInput.canEntryField.assertLength(0)
+        composeTestRule.performPinInput(can)
+        identificationCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+        identificationScan
+            .setIdentPending(true)
+            .setBackAllowed(false)
+            .setProgress(false)
+            .assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
+        identificationScan.cancel.click()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.dismiss()
 
-        identificationScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
-        advanceUntilIdle()
-
-        errorCardBlocked.assertIsDisplayed()
-        errorCardBlocked.cancel.click()
+        identificationScan.assertIsDisplayed()
+        identificationScan.cancel.click()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.confirm()
 
         home.assertIsDisplayed()
     }

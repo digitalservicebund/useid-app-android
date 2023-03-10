@@ -70,6 +70,7 @@ class SetupCanSuccessfulAfterCanCorrectTest {
     @Test
     fun testSetupCanSuccessfulAfterCanCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -98,6 +99,8 @@ class SetupCanSuccessfulAfterCanCorrectTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,
@@ -107,14 +110,22 @@ class SetupCanSuccessfulAfterCanCorrectTest {
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
 
+        advanceUntilIdle()
+
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.back.click()
+
+        advanceUntilIdle()
 
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
 
+        advanceUntilIdle()
+
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT CAN
         setupCanInput.assertIsDisplayed()
@@ -122,6 +133,8 @@ class SetupCanSuccessfulAfterCanCorrectTest {
         composeTestRule.performPinInput(can)
         setupCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT TRANSPORT PIN
         setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
@@ -140,14 +153,13 @@ class SetupCanSuccessfulAfterCanCorrectTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
         eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
         setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
 
         home.assertIsDisplayed()
     }

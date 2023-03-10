@@ -140,7 +140,9 @@ class IdentCanSuccessfulOnThirdAttemptTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value = EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -148,7 +150,6 @@ class IdentCanSuccessfulOnThirdAttemptTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         // ENTER WRONG PIN 1ST TIME
@@ -168,7 +169,12 @@ class IdentCanSuccessfulOnThirdAttemptTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {
+            eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        })
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER WRONG PIN 2ND TIME
@@ -178,7 +184,6 @@ class IdentCanSuccessfulOnThirdAttemptTest {
         identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setProgress(false).assertIsDisplayed()
@@ -191,17 +196,26 @@ class IdentCanSuccessfulOnThirdAttemptTest {
         eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
 
+        eidFlow.value = EidInteractionEvent.CardRemoved
+        advanceUntilIdle()
+
         identificationCanPinForgotten.assertIsDisplayed()
         identificationCanPinForgotten.tryAgainBtn.click()
 
+        advanceUntilIdle()
+
         identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)
         identificationCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT PIN 3RD TIME
         identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()

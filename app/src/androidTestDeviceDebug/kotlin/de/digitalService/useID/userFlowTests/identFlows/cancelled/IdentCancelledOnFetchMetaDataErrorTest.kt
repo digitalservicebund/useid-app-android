@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows.canceled
+package de.digitalService.useID.userFlowTests.identFlows.cancelled
 
 import android.net.Uri
 import androidx.compose.ui.test.*
@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnFetchMetaDataErrorTest {
+class IdentCancelledOnFetchMetaDataErrorTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -80,7 +80,7 @@ class IdentCanceledOnFetchMetaDataErrorTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnFetchMetaDataError() = runTest {
+    fun testIdentCancelledOnFetchMetaDataError() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 

@@ -40,8 +40,12 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     identificationCanPinForgotten.assertIsDisplayed()
     identificationCanPinForgotten.tryAgainBtn.click()
 
+    testScope.advanceUntilIdle()
+
     identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
     identificationCanIntro.enterCanNowBtn.click()
+
+    testScope.advanceUntilIdle()
 
     // ENTER WRONG CAN
     identificationCanInput.assertIsDisplayed()
@@ -49,6 +53,8 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     testRule.performPinInput(wrongCan)
     identificationCanInput.canEntryField.assertLength(wrongCan.length)
     testRule.pressReturn()
+
+    testScope.advanceUntilIdle()
 
     // ENTER CORRECT PIN 3RD TIME
     identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()
@@ -72,6 +78,9 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     identificationScan.setProgress(true).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 
     // ENTER CORRECT CAN

@@ -46,7 +46,9 @@ fun runIdentSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
             TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
         )
     ) {
-        eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        })
     }
 
     testScope.advanceUntilIdle()
@@ -54,7 +56,6 @@ fun runIdentSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     identificationAttributeConsent.assertIsDisplayed()
     identificationAttributeConsent.continueBtn.click()
 
-    eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
     testScope.advanceUntilIdle()
 
     identificationPersonalPin.assertIsDisplayed()
@@ -63,7 +64,6 @@ fun runIdentSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     identificationPersonalPin.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
     identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()

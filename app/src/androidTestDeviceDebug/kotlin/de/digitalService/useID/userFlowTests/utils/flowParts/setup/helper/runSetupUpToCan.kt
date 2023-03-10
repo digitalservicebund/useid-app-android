@@ -27,6 +27,8 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     setupIntro.assertIsDisplayed()
     setupIntro.setupIdBtn.click()
 
+    testScope.advanceUntilIdle()
+
     setupPinLetter.assertIsDisplayed()
     setupPinLetter.letterPresentBtn.click()
 
@@ -39,9 +41,12 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
     testRule.pressReturn()
 
+    testScope.advanceUntilIdle()
+
     setupPersonalPinIntro.assertIsDisplayed()
     setupPersonalPinIntro.continueBtn.click()
 
+    testScope.advanceUntilIdle()
     testRule.waitForIdle()
     setupPersonalPinInput.assertIsDisplayed()
     setupPersonalPinInput.personalPinField.assertLength(0)
@@ -49,6 +54,7 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
+    testScope.advanceUntilIdle()
     setupPersonalPinConfirm.assertIsDisplayed()
     setupPersonalPinConfirm.personalPinField.assertLength(0)
     testRule.performPinInput(personalPin)
@@ -71,6 +77,9 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     eidFlow.value = EidInteractionEvent.RequestChangedPin(null) { _, _ -> }
     testScope.advanceUntilIdle()
 
+    eidFlow.value = EidInteractionEvent.CardRemoved
+    testScope.advanceUntilIdle()
+
     // ENTER INCORRECT TRANSPORT PIN 2ND TIME
     setupTransportPin.setAttemptsLeft(2).assertIsDisplayed()
     setupTransportPin.transportPinField.assertLength(0)
@@ -89,5 +98,8 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     setupScan.setBackAllowed(false).setProgress(true).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 }

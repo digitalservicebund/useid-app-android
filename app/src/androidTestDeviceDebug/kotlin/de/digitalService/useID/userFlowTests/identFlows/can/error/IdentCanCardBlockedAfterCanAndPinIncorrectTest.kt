@@ -123,8 +123,12 @@ class IdentCanCardBlockedAfterCanAndPinIncorrectTest {
         identificationCanPinForgotten.assertIsDisplayed()
         identificationCanPinForgotten.tryAgainBtn.click()
 
+        advanceUntilIdle()
+
         identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         // ENTER WRONG CAN
         identificationCanInput.assertIsDisplayed()
@@ -133,12 +137,16 @@ class IdentCanCardBlockedAfterCanAndPinIncorrectTest {
         identificationCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
 
+        advanceUntilIdle()
+
         // ENTER WRONG PIN 3RD TIME
         identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()
         identificationPersonalPin.personalPinField.assertLength(0)
         composeTestRule.performPinInput(wrongPersonalPin)
         identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
@@ -155,6 +163,9 @@ class IdentCanCardBlockedAfterCanAndPinIncorrectTest {
         identificationScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER CORRECT CAN

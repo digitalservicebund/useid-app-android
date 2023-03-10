@@ -39,14 +39,20 @@ fun runIdentSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
     identificationCanPinForgotten.assertIsDisplayed()
     identificationCanPinForgotten.tryAgainBtn.click()
 
+    testScope.advanceUntilIdle()
+
     identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
     identificationCanIntro.enterCanNowBtn.click()
+
+    testScope.advanceUntilIdle()
 
     identificationCanInput.assertIsDisplayed()
     identificationCanInput.canEntryField.assertLength(0)
     testRule.performPinInput(can)
     identificationCanInput.canEntryField.assertLength(can.length)
     testRule.pressReturn()
+
+    testScope.advanceUntilIdle()
 
     // ENTER CORRECT PIN 3RD TIME
     identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()

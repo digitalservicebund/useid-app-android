@@ -26,13 +26,17 @@ class CanCoordinator @Inject constructor(
 ) {
     private val logger by getLogger()
 
+    private var stateMachineCoroutineScope: Job? = null
     private var eIdEventFlowCoroutineScope: Job? = null
 
     private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
 
-    init {
+    private fun collectStateMachineEvents() {
+        if (stateMachineCoroutineScope != null) {
+            return
+        }
         CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
                 if (eventAndPair.first is CanStateMachine.Event.Back) {
@@ -71,12 +75,16 @@ class CanCoordinator @Inject constructor(
     }
 
     fun startPinManagementCanFlow(identificationPending: Boolean, oldPin: String, newPin: String, shortFlow: Boolean): Flow<SubCoordinatorState> {
+        collectStateMachineEvents()
+
         _stateFlow.value = SubCoordinatorState.ACTIVE
         handleEidEventsForPinManagement(identificationPending, oldPin, newPin, shortFlow)
         return stateFlow
     }
 
     fun startIdentCanFlow(pin: String?): Flow<SubCoordinatorState> {
+        collectStateMachineEvents()
+
         _stateFlow.value = SubCoordinatorState.ACTIVE
         handleEidEventsForIdent(pin)
         return stateFlow

@@ -132,14 +132,20 @@ class IdentCanCardUnreadableOnThirdAttemptWithRedirectUrlTest {
         identificationCanPinForgotten.assertIsDisplayed()
         identificationCanPinForgotten.tryAgainBtn.click()
 
+        advanceUntilIdle()
+
         identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)
         identificationCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT PIN 3RD TIME
         identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()

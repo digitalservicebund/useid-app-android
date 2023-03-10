@@ -27,9 +27,13 @@ class SetupCoordinator @Inject constructor(
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
 
+    private var stateMachineCoroutineScope: Job? = null
     private var subFlowCoroutineScope: Job? = null
 
-    init {
+    private fun collectStateMachineEvents() {
+        if (stateMachineCoroutineScope != null) {
+            return
+        }
         CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
                 when (eventAndPair.first) {
@@ -58,6 +62,8 @@ class SetupCoordinator @Inject constructor(
     }
 
     fun showSetupIntro(tcTokenUrl: String?) {
+        collectStateMachineEvents()
+
         _stateFlow.value = SubCoordinatorState.ACTIVE
         flowStateMachine.transition(SetupStateMachine.Event.OfferSetup(tcTokenUrl))
     }

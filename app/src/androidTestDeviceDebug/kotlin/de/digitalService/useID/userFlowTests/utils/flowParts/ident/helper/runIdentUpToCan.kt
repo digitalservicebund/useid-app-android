@@ -40,7 +40,9 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
             TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
         )
     ) {
-        eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        })
     }
 
     testScope.advanceUntilIdle()
@@ -48,7 +50,6 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     identificationAttributeConsent.assertIsDisplayed()
     identificationAttributeConsent.continueBtn.click()
 
-    eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
     testScope.advanceUntilIdle()
 
     // ENTER WRONG PIN 1ST TIME
@@ -58,7 +59,6 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
     identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
@@ -68,7 +68,12 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+    eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    })
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 
     // ENTER WRONG PIN 2ND TIME
@@ -78,7 +83,6 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
     testScope.advanceUntilIdle()
 
     identificationScan.setProgress(false).assertIsDisplayed() // TODO: there should no progress spinner be shown at this point! Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
@@ -89,5 +93,8 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     identificationScan.setProgress(true).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 }

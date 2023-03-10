@@ -33,14 +33,22 @@ fun runSetupSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
     setupCanConfirmTransportPin.retryInputBtn.click()
 
+    testScope.advanceUntilIdle()
+
     setupCanIntro.setBackAllowed(true).assertIsDisplayed()
     setupCanIntro.back.click()
+
+    testScope.advanceUntilIdle()
 
     setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
     setupCanConfirmTransportPin.retryInputBtn.click()
 
+    testScope.advanceUntilIdle()
+
     setupCanIntro.setBackAllowed(true).assertIsDisplayed()
     setupCanIntro.enterCanNowBtn.click()
+
+    testScope.advanceUntilIdle()
 
     // ENTER CORRECT CAN
     setupCanInput.assertIsDisplayed()
@@ -48,6 +56,8 @@ fun runSetupSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     testRule.performPinInput(can)
     setupCanInput.canEntryField.assertLength(can.length)
     testRule.pressReturn()
+
+    testScope.advanceUntilIdle()
 
     // ENTER CORRECT TRANSPORT PIN
     setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
@@ -65,9 +75,6 @@ fun runSetupSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     testScope.advanceUntilIdle()
 
     setupScan.setProgress(true).assertIsDisplayed()
-
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-    testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
     testScope.advanceUntilIdle()

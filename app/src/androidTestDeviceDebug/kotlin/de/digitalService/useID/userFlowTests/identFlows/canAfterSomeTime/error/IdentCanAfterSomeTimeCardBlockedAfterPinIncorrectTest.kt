@@ -120,6 +120,8 @@ class IdentCanAfterSomeTimeCardBlockedAfterPinIncorrectTest {
         identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
 
+        advanceUntilIdle()
+
         // ENTER CORRECT CAN
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)

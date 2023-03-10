@@ -90,6 +90,25 @@ class IdentificationCoordinatorTest {
 
         every { mockIdentificationStateMachine.state } returns stateFlow
 
+        mockkStatic(Uri::class)
+
+        val mockUriBuilder = mockk<Uri.Builder>()
+
+        mockkConstructor(Uri.Builder::class)
+
+        every {
+            anyConstructed<Uri.Builder>()
+                .scheme("http")
+                .encodedAuthority("127.0.0.1:24727")
+                .appendPath("eID-Client")
+                .appendQueryParameter("tcTokenURL", testTokenUrl)
+        } returns mockUriBuilder
+
+        val normalizedUri = mockk<Uri>()
+
+        every { mockUriBuilder.build() } returns normalizedUri
+        every { normalizedUri.toString() } returns testUrl
+
         // For supporting destinations with String nav arguments
         mockkStatic("android.net.Uri")
         every { Uri.encode(any()) } answers { value }
@@ -115,6 +134,7 @@ class IdentificationCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
 
             stateFlow.value = Pair(event, state)
             testScope.advanceUntilIdle()
@@ -152,6 +172,7 @@ class IdentificationCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
 
             every { mockIdCardManager.eidFlow } returns flowOf(EidInteractionEvent.Idle)
 
@@ -380,25 +401,6 @@ class IdentificationCoordinatorTest {
             mockCoroutineContextProvider
         )
 
-        mockkStatic(Uri::class)
-
-        val mockUriBuilder = mockk<Uri.Builder>()
-
-        mockkConstructor(Uri.Builder::class)
-
-        every {
-            anyConstructed<Uri.Builder>()
-                .scheme("http")
-                .encodedAuthority("127.0.0.1:24727")
-                .appendPath("eID-Client")
-                .appendQueryParameter("tcTokenURL", testTokenUrl)
-        } returns mockUriBuilder
-
-        val normalizedUri = mockk<Uri>()
-
-        every { mockUriBuilder.build() } returns normalizedUri
-        every { normalizedUri.toString() } returns testUrl
-
         Assertions.assertEquals(SubCoordinatorState.FINISHED, identificationCoordinator.stateFlow.value)
 
         val tcTokenUrl = "tcTokenUrl"
@@ -462,6 +464,7 @@ class IdentificationCoordinatorTest {
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
+        identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
 
         val canStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockCanCoordinator.stateFlow } returns canStateFlow

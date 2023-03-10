@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows.canAfterSomeTime.canceled
+package de.digitalService.useID.userFlowTests.setupFlows.can.cancelled
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -17,7 +17,7 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.userFlowTests.utils.flowParts.setup.helper.runSetupUpToCanAfterSomeTime
+import de.digitalService.useID.userFlowTests.utils.flowParts.setup.helper.runSetupUpToCan
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupCanAfterSomeTimeCanceledOnCanIntroTest {
+class SetupCanCancelledOnCanIntroAfterCanWrongTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -68,8 +68,9 @@ class SetupCanAfterSomeTimeCanceledOnCanIntroTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupCanAfterSomeTimeCanceledOnCanIntro() = runTest {
+    fun testSetupCanCancelledOnCanIntroAfterCanWrong() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -82,19 +83,73 @@ class SetupCanAfterSomeTimeCanceledOnCanIntroTest {
             )
         }
 
+        val transportPin = "12345"
+        val wrongTransportPin = "11111"
+        val wrongCan = "111222"
+
         // Define screens to be tested
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
+        val setupScan = TestScreen.Scan(composeTestRule)
+        val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
         val setupCanIntro = TestScreen.CanIntro(composeTestRule)
+        val setupCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
-        runSetupUpToCanAfterSomeTime(
-            withWrongTransportPin = false,
+        advanceUntilIdle()
+
+        runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,
             testScope = this
         )
+
+        // CAN FLOW
+        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+        setupCanConfirmTransportPin.retryInputBtn.click()
+
+        advanceUntilIdle()
+
+        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+        setupCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
+
+        // ENTER WRONG CAN
+        setupCanInput.assertIsDisplayed()
+        setupCanInput.canEntryField.assertLength(0)
+        composeTestRule.performPinInput(wrongCan)
+        setupCanInput.canEntryField.assertLength(wrongCan.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        // ENTER CORRECT TRANSPORT PIN
+        setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
+        composeTestRule.pressReturn()
+
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        setupScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        advanceUntilIdle()
+
+        setupCanInput.setRetry(true).assertIsDisplayed()
+        setupCanInput.back.click()
+
+        advanceUntilIdle()
 
         setupCanIntro.setBackAllowed(false).assertIsDisplayed()
         setupCanIntro.cancel.click()

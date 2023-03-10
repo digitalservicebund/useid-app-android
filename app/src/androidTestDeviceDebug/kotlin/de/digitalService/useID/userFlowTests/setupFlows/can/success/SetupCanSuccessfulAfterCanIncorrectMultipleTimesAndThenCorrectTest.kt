@@ -70,6 +70,7 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
     @Test
     fun testSetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -99,6 +100,8 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,
@@ -109,14 +112,22 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
 
+        advanceUntilIdle()
+
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.back.click()
+
+        advanceUntilIdle()
 
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
 
+        advanceUntilIdle()
+
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         // ENTER WRONG CAN
         setupCanInput.assertIsDisplayed()
@@ -124,6 +135,8 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         composeTestRule.performPinInput(wrongCan)
         setupCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT TRANSPORT PIN
         setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
@@ -143,6 +156,9 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER WRONG CAN AGAIN
@@ -165,6 +181,9 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
         advanceUntilIdle()
 
+        eidFlow.value = EidInteractionEvent.CardRemoved
+        advanceUntilIdle()
+
         // ENTER CORRECT CAN
         setupCanInput.setRetry(true).assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
@@ -182,14 +201,13 @@ class SetupCanSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrectTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
         eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
         setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
 
         home.assertIsDisplayed()
     }

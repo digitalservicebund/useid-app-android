@@ -81,6 +81,7 @@ class CanCoordinatorTest {
             every { mockCanStateMachine.state } returns stateFlow
 
             val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+            canCoordinator.startIdentCanFlow(null)
 
             stateFlow.value = Pair(event, state)
             testScope.advanceUntilIdle()

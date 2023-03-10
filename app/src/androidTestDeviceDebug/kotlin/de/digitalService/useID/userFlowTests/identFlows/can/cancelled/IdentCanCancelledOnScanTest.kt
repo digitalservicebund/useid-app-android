@@ -1,14 +1,9 @@
-package de.digitalService.useID.userFlowTests.identFlows.canceled
+package de.digitalService.useID.userFlowTests.identFlows.can.cancelled
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -25,6 +20,7 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCan
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -34,7 +30,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +38,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnFetchMetaDataTest {
+class IdentCanCancelledOnScanTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -85,7 +80,7 @@ class IdentCanceledOnFetchMetaDataTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnFetchMetaData() = runTest {
+    fun testIdentCanCancelledOnScan() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -101,9 +96,15 @@ class IdentCanceledOnFetchMetaDataTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val personalPin = "123456"
+        val can = "123456"
 
         // Define screens to be tested
-        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
+        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
+        val identificationScan = TestScreen.Scan(composeTestRule)
+        val identificationCanPinForgotten = TestScreen.IdentificationCanPinForgotten(composeTestRule)
+        val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
+        val identificationCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         composeTestRule.waitForIdle()
@@ -111,18 +112,54 @@ class IdentCanceledOnFetchMetaDataTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        runIdentUpToCan(
+            testRule = composeTestRule,
+            eidFlow = eidFlow,
+            testScope = this
+        )
+
+        identificationCanPinForgotten.assertIsDisplayed()
+        identificationCanPinForgotten.tryAgainBtn.click()
+
         advanceUntilIdle()
 
-        identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.dismiss()
+        identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
+        identificationCanIntro.enterCanNowBtn.click()
 
-        identificationFetchMetaData.assertIsDisplayed()
-        identificationFetchMetaData.cancel.click()
-        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
-        identificationFetchMetaData.navigationConfirmDialog.confirm()
+        advanceUntilIdle()
+
+        identificationCanInput.assertIsDisplayed()
+        identificationCanInput.canEntryField.assertLength(0)
+        composeTestRule.performPinInput(can)
+        identificationCanInput.canEntryField.assertLength(can.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        // ENTER CORRECT PIN 3RD TIME
+        identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()
+        identificationPersonalPin.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        identificationScan
+            .setIdentPending(true)
+            .setBackAllowed(false)
+            .setProgress(false)
+            .assertIsDisplayed()
+
+        identificationScan.cancel.click()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.dismiss()
+
+        identificationScan.assertIsDisplayed()
+        identificationScan.cancel.click()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.confirm()
 
         home.assertIsDisplayed()
     }

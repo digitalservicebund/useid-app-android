@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows.canAfterSomeTime.successful
+package de.digitalService.useID.userFlowTests.setupFlows.can.cancelled
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -17,7 +17,7 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.userFlowTests.utils.flowParts.setup.helper.runSetupUpToCanAfterSomeTime
+import de.digitalService.useID.userFlowTests.utils.flowParts.setup.helper.runSetupUpToCan
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrectTest {
+class SetupCanCancelledOnScanTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -68,7 +68,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrect() = runTest {
+    fun testSetupCanCancelledOnScan() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -83,14 +83,17 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrectTest {
             )
         }
 
-        val can = "123456"
-        val wrongCan = "111222"
+        val transportPin = "12345"
+        val wrongTransportPin = "11111"
+        val can = "111222"
 
         // Define screens to be tested
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupScan = TestScreen.Scan(composeTestRule)
-        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+        val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
         val setupCanIntro = TestScreen.CanIntro(composeTestRule)
         val setupCanInput = TestScreen.CanInput(composeTestRule)
+        val setupFinish = TestScreen.SetupFinish(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
@@ -98,61 +101,60 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrectTest {
 
         advanceUntilIdle()
 
-        runSetupUpToCanAfterSomeTime(
-            withWrongTransportPin = false,
+        runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,
             testScope = this
         )
 
-        setupCanIntro.setBackAllowed(false).assertIsDisplayed()
+        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+        setupCanConfirmTransportPin.retryInputBtn.click()
+
+        advanceUntilIdle()
+
+        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+        setupCanIntro.back.click()
+
+        advanceUntilIdle()
+
+        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+        setupCanConfirmTransportPin.retryInputBtn.click()
+
+        advanceUntilIdle()
+
+        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
 
         advanceUntilIdle()
 
-        // ENTER WRONG CAN
+        // ENTER CORRECT CAN
         setupCanInput.assertIsDisplayed()
         setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(wrongCan)
-        setupCanInput.canEntryField.assertLength(wrongCan.length)
+        composeTestRule.performPinInput(can)
+        setupCanInput.canEntryField.assertLength(can.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        // ENTER CORRECT TRANSPORT PIN
+        setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
         composeTestRule.pressReturn()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+        setupScan.cancel.click()
+        setupScan.navigationConfirmDialog.assertIsDisplayed()
+        setupScan.navigationConfirmDialog.dismiss()
 
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.CardRemoved
-        advanceUntilIdle()
-
-        // ENTER CORRECT CAN
-        setupCanInput.setRetry(true).assertIsDisplayed()
-        setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(can)
-        setupCanInput.canEntryField.assertLength(can.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-        advanceUntilIdle()
-
-        setupFinish.assertIsDisplayed()
-        setupFinish.finishSetupBtn.click()
+        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+        setupScan.cancel.click()
+        setupScan.navigationConfirmDialog.assertIsDisplayed()
+        setupScan.navigationConfirmDialog.confirm()
 
         advanceUntilIdle()
 

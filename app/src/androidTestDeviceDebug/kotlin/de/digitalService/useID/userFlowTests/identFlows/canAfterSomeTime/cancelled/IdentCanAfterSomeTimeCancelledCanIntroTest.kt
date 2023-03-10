@@ -1,7 +1,9 @@
-package de.digitalService.useID.userFlowTests.setupFlows.can.canceled
+package de.digitalService.useID.userFlowTests.identFlows.canAfterSomeTime.cancelled
 
+import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -10,14 +12,15 @@ import de.digitalService.useID.MainActivity
 import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
+import de.digitalService.useID.hilt.NfcInterfaceMangerModule
 import de.digitalService.useID.hilt.SingletonModule
-import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
+import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.userFlowTests.utils.flowParts.setup.helper.runSetupUpToCan
+import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCanAfterSomeTime
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -32,9 +35,10 @@ import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 
-@UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
+
+@UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class SetupCanCanceledOnCanConfirmTransportPinTest {
+class IdentCanAfterSomeTimeCancelledCanIntroTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -47,6 +51,9 @@ class SetupCanCanceledOnCanConfirmTransportPinTest {
 
     @Inject
     lateinit var trackerManager: TrackerManagerType
+
+    @Inject
+    lateinit var appCoordinator: AppCoordinatorType
 
     @BindValue
     val mockIdCardManager: IdCardManager = mockk(relaxed = true)
@@ -61,6 +68,11 @@ class SetupCanCanceledOnCanConfirmTransportPinTest {
         every { Main } returns Dispatchers.Main
     }
 
+    @BindValue
+    val mockNfcInterfaceManager: NfcInterfaceManagerType = mockk(relaxed = true){
+        every { nfcAvailability } returns MutableStateFlow(NfcAvailability.Available)
+    }
+
     @Before
     fun before() {
         hiltRule.inject()
@@ -68,8 +80,9 @@ class SetupCanCanceledOnCanConfirmTransportPinTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupCanCanceledOnCanConfirmTransportPin() = runTest {
+    fun testIdentCanAfterSomeTimeCancelledOnCanScan() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -82,30 +95,33 @@ class SetupCanCanceledOnCanConfirmTransportPinTest {
             )
         }
 
-        val wrongTransportPin = "11111"
+        val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
 
         // Define screens to be tested
-        val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
+        val identificationCanIntro = TestScreen.CanIntro(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
-        home.assertIsDisplayed()
-        home.setupIdBtn.click()
+        composeTestRule.waitForIdle()
 
-        runSetupUpToCan(
+        appCoordinator.handleDeepLink(deepLink)
+        advanceUntilIdle()
+
+        runIdentUpToCanAfterSomeTime(
+            withWrongPersonalPin = false,
             testRule = composeTestRule,
             eidFlow = eidFlow,
             testScope = this
         )
 
-        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
-        setupCanConfirmTransportPin.cancel.click()
-        setupCanConfirmTransportPin.navigationConfirmDialog.assertIsDisplayed()
-        setupCanConfirmTransportPin.navigationConfirmDialog.dismiss()
+        identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
+        identificationCanIntro.cancel.click()
+        identificationCanIntro.navigationConfirmDialog.assertIsDisplayed()
+        identificationCanIntro.navigationConfirmDialog.dismiss()
 
-        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
-        setupCanConfirmTransportPin.cancel.click()
-        setupCanConfirmTransportPin.navigationConfirmDialog.assertIsDisplayed()
-        setupCanConfirmTransportPin.navigationConfirmDialog.confirm()
+        identificationCanIntro.assertIsDisplayed()
+        identificationCanIntro.cancel.click()
+        identificationCanIntro.navigationConfirmDialog.assertIsDisplayed()
+        identificationCanIntro.navigationConfirmDialog.confirm()
 
         advanceUntilIdle()
 

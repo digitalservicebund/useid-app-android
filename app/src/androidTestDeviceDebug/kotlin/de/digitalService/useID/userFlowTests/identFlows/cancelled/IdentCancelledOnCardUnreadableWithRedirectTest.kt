@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows.backToBackIdents
+package de.digitalService.useID.userFlowTests.identFlows.cancelled
 
 import android.app.Activity
 import android.app.Instrumentation
@@ -6,7 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intending
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,7 +44,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class SecondIdentSuccessfulAfterFirstCanceledTest {
+class IdentCancelledOnCardUnreadableWithRedirectTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -89,7 +89,7 @@ class SecondIdentSuccessfulAfterFirstCanceledTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSecondIdentSuccessfulAfterFirstCanceled() = runTest {
+    fun testIdentCancelledOnCardUnreadableWithRedirect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -113,7 +113,7 @@ class SecondIdentSuccessfulAfterFirstCanceledTest {
         val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
         val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
-        val home = TestScreen.Home(composeTestRule)
+        val errorCardUnreadable= TestScreen.ErrorCardUnreadable(composeTestRule)
 
         composeTestRule.waitForIdle()
 
@@ -137,46 +137,9 @@ class SecondIdentSuccessfulAfterFirstCanceledTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
-        }
-
-        advanceUntilIdle()
-
-        identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.cancel.click()
-        identificationAttributeConsent.navigationConfirmDialog.assertIsDisplayed()
-        identificationAttributeConsent.navigationConfirmDialog.confirm()
-        
-        home.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.Idle
-        advanceUntilIdle()
-
-
-        // Start new Identification
-        composeTestRule.waitForIdle()
-
-        appCoordinator.handleDeepLink(deepLink)
-        advanceUntilIdle()
-
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
-        advanceUntilIdle()
-
-        identificationFetchMetaData.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-            EidAuthenticationRequest(
-                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.subject,
-                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.validity,
-                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
-            )
-        ) {
-            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -184,7 +147,6 @@ class SecondIdentSuccessfulAfterFirstCanceledTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
@@ -193,28 +155,37 @@ class SecondIdentSuccessfulAfterFirstCanceledTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
-        identificationScan.setProgress(false).setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        intending(allOf(
-            hasAction(Intent.ACTION_VIEW),
-            hasData(redirectUrl),
-            hasFlag(Intent.FLAG_ACTIVITY_NEW_TASK)
-        )).respondWith(
+        eidFlow.value = EidInteractionEvent.Error(
+            IdCardInteractionException.ProcessFailed(
+                resultCode = ActivationResultCode.INTERNAL_ERROR,
+                redirectUrl = redirectUrl,
+                resultMinor = null
+            )
+        )
+        advanceUntilIdle()
+
+        Intents.intending(
+            Matchers.allOf(
+                hasAction(Intent.ACTION_VIEW),
+                hasData(redirectUrl),
+            )
+        ).respondWith(
             Instrumentation.ActivityResult(
                 Activity.RESULT_OK,
                 null
             )
         )
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
-        advanceUntilIdle()
+        errorCardUnreadable.setIdentPending(true).setRedirectUrlPresent(true).assertIsDisplayed()
+        errorCardUnreadable.cancel.click()
     }
 }

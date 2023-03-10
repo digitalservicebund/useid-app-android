@@ -90,6 +90,7 @@ class SetupCoordinatorTest {
                 flowStateMachine = mockSetupStateMachine,
                 coroutineContextProvider = mockCoroutineContextProvider
             )
+            setupCoordinator.showSetupIntro(null)
 
             stateFlow.value = Pair(event, state)
             testScope.advanceUntilIdle()
@@ -222,6 +223,7 @@ class SetupCoordinatorTest {
                 flowStateMachine = mockSetupStateMachine,
                 coroutineContextProvider = mockCoroutineContextProvider
             )
+            setupCoordinator.showSetupIntro(null)
 
             stateFlow.value = Pair(SetupStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
@@ -305,6 +307,7 @@ class SetupCoordinatorTest {
             flowStateMachine = mockSetupStateMachine,
             coroutineContextProvider = mockCoroutineContextProvider
         )
+        setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
         every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow
@@ -329,6 +332,7 @@ class SetupCoordinatorTest {
             flowStateMachine = mockSetupStateMachine,
             coroutineContextProvider = mockCoroutineContextProvider
         )
+        setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.BACKED_DOWN)
         every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow
@@ -350,6 +354,7 @@ class SetupCoordinatorTest {
             flowStateMachine = mockSetupStateMachine,
             coroutineContextProvider = mockCoroutineContextProvider
         )
+        setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.FINISHED)
         every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow
@@ -371,6 +376,7 @@ class SetupCoordinatorTest {
             flowStateMachine = mockSetupStateMachine,
             coroutineContextProvider = mockCoroutineContextProvider
         )
+        setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.SKIPPED)
         every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow

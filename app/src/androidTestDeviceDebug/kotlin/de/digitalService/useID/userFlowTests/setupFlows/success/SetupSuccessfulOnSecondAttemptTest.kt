@@ -69,6 +69,7 @@ class SetupSuccessfulOnSecondAttemptTest {
     @Test
     fun testSetupSuccessfulOnSecondAttempt() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -99,8 +100,12 @@ class SetupSuccessfulOnSecondAttemptTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
+
+        advanceUntilIdle()
 
         setupPinLetter.assertIsDisplayed()
         setupPinLetter.letterPresentBtn.click()
@@ -113,14 +118,20 @@ class SetupSuccessfulOnSecondAttemptTest {
         setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
         composeTestRule.pressReturn()
 
+        advanceUntilIdle()
+
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
+
+        advanceUntilIdle()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)
         composeTestRule.performPinInput(personalPin)
         setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
@@ -144,6 +155,9 @@ class SetupSuccessfulOnSecondAttemptTest {
         eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
         advanceUntilIdle()
 
+        eidFlow.value = EidInteractionEvent.CardRemoved
+        advanceUntilIdle()
+
         setupTransportPin.setAttemptsLeft(2).assertIsDisplayed()
         setupTransportPin.transportPinField.assertLength(0)
         composeTestRule.performPinInput(transportPin)
@@ -160,14 +174,13 @@ class SetupSuccessfulOnSecondAttemptTest {
 
         setupScan.setBackAllowed(false).setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
         eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
         setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
 
         home.assertIsDisplayed()
     }

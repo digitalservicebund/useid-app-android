@@ -1,14 +1,9 @@
-package de.digitalService.useID.userFlowTests.identFlows.canceled
+package de.digitalService.useID.userFlowTests.identFlows.cancelled
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -34,7 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +37,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnScanningTest {
+class IdentCancelledOnCardDeactivatedTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -85,7 +79,7 @@ class IdentCanceledOnScanningTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnScanning() = runTest {
+    fun testIdentCancelledOnCardDeactivated() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -108,6 +102,7 @@ class IdentCanceledOnScanningTest {
         val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
         val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
         val identificationScan = TestScreen.Scan(composeTestRule)
+        val errorDeactivated = TestScreen.ErrorCardDeactivated(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         composeTestRule.waitForIdle()
@@ -132,7 +127,9 @@ class IdentCanceledOnScanningTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -140,7 +137,6 @@ class IdentCanceledOnScanningTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
@@ -149,18 +145,20 @@ class IdentCanceledOnScanningTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
-        identificationScan.cancel.click()
-        identificationScan.navigationConfirmDialog.assertIsDisplayed()
-        identificationScan.navigationConfirmDialog.dismiss()
 
-        identificationScan.assertIsDisplayed()
-        identificationScan.cancel.click()
-        identificationScan.navigationConfirmDialog.assertIsDisplayed()
-        identificationScan.navigationConfirmDialog.confirm()
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        identificationScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
+        advanceUntilIdle()
+
+        errorDeactivated.assertIsDisplayed()
+        errorDeactivated.cancel.click()
 
         home.assertIsDisplayed()
     }

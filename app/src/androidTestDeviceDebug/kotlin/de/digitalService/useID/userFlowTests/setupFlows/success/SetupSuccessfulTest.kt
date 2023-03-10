@@ -69,6 +69,7 @@ class SetupSuccessfulTest {
     @Test
     fun testSetupSuccessful() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -98,8 +99,12 @@ class SetupSuccessfulTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
+
+        advanceUntilIdle()
 
         setupPinLetter.assertIsDisplayed()
         setupPinLetter.letterPresentBtn.click()
@@ -112,8 +117,12 @@ class SetupSuccessfulTest {
         setupTransportPin.transportPinField.assertLength(transportPin.length)
         composeTestRule.pressReturn()
 
+        advanceUntilIdle()
+
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
+
+        advanceUntilIdle()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)
@@ -121,11 +130,15 @@ class SetupSuccessfulTest {
         setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
+        advanceUntilIdle()
+
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
         composeTestRule.performPinInput(personalPin)
         setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
@@ -137,14 +150,13 @@ class SetupSuccessfulTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
         eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
         setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
 
         home.assertIsDisplayed()
     }

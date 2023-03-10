@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows.can.canceled
+package de.digitalService.useID.userFlowTests.setupFlows.can.cancelled
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupCanCanceledOnCanIntroAfterCanWrongTest {
+class SetupCanCancelledOnCanConfirmTransportPinTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -68,8 +68,9 @@ class SetupCanCanceledOnCanIntroAfterCanWrongTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupCanCanceledOnCanIntroAfterCanWrong() = runTest {
+    fun testSetupCanCancelledOnCanConfirmTransportPin() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -82,20 +83,16 @@ class SetupCanCanceledOnCanIntroAfterCanWrongTest {
             )
         }
 
-        val transportPin = "12345"
         val wrongTransportPin = "11111"
-        val wrongCan = "111222"
 
         // Define screens to be tested
-        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
-        val setupScan = TestScreen.Scan(composeTestRule)
         val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
-        val setupCanIntro = TestScreen.CanIntro(composeTestRule)
-        val setupCanInput = TestScreen.CanInput(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
         home.setupIdBtn.click()
+
+        advanceUntilIdle()
 
         runSetupUpToCan(
             testRule = composeTestRule,
@@ -103,52 +100,15 @@ class SetupCanCanceledOnCanIntroAfterCanWrongTest {
             testScope = this
         )
 
-        // CAN FLOW
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
-        setupCanConfirmTransportPin.retryInputBtn.click()
+        setupCanConfirmTransportPin.cancel.click()
+        setupCanConfirmTransportPin.navigationConfirmDialog.assertIsDisplayed()
+        setupCanConfirmTransportPin.navigationConfirmDialog.dismiss()
 
-        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
-        setupCanIntro.enterCanNowBtn.click()
-
-        // ENTER WRONG CAN
-        setupCanInput.assertIsDisplayed()
-        setupCanInput.canEntryField.assertLength(0)
-        composeTestRule.performPinInput(wrongCan)
-        setupCanInput.canEntryField.assertLength(wrongCan.length)
-        composeTestRule.pressReturn()
-
-        // ENTER CORRECT TRANSPORT PIN
-        setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
-        setupTransportPin.transportPinField.assertLength(0)
-        composeTestRule.performPinInput(transportPin)
-        setupTransportPin.transportPinField.assertLength(transportPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        setupScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
-        advanceUntilIdle()
-
-        setupCanInput.setRetry(true).assertIsDisplayed()
-        setupCanInput.back.click()
-
-        setupCanIntro.setBackAllowed(false).assertIsDisplayed()
-        setupCanIntro.cancel.click()
-        setupCanIntro.navigationConfirmDialog.assertIsDisplayed()
-        setupCanIntro.navigationConfirmDialog.dismiss()
-
-        setupCanIntro.setBackAllowed(false).assertIsDisplayed()
-        setupCanIntro.cancel.click()
-        setupCanIntro.navigationConfirmDialog.assertIsDisplayed()
-        setupCanIntro.navigationConfirmDialog.confirm()
+        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+        setupCanConfirmTransportPin.cancel.click()
+        setupCanConfirmTransportPin.navigationConfirmDialog.assertIsDisplayed()
+        setupCanConfirmTransportPin.navigationConfirmDialog.confirm()
 
         advanceUntilIdle()
 

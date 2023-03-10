@@ -70,6 +70,7 @@ class SetupCanAfterSomeTimeSuccessfulCanCorrectTest {
     @Test
     fun testSetupCanAfterSomeTimeSuccessfulCanCorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -94,6 +95,8 @@ class SetupCanAfterSomeTimeSuccessfulCanCorrectTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         runSetupUpToCanAfterSomeTime(
             withWrongTransportPin = false,
             testRule = composeTestRule,
@@ -103,6 +106,8 @@ class SetupCanAfterSomeTimeSuccessfulCanCorrectTest {
 
         setupCanIntro.setBackAllowed(false).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT CAN
         setupCanInput.assertIsDisplayed()
@@ -121,14 +126,13 @@ class SetupCanAfterSomeTimeSuccessfulCanCorrectTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
         eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
         setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
 
         home.assertIsDisplayed()
     }

@@ -35,14 +35,22 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
     setupCanConfirmTransportPin.retryInputBtn.click()
 
+    testScope.advanceUntilIdle()
+
     setupCanIntro.setBackAllowed(true).assertIsDisplayed()
     setupCanIntro.back.click()
+
+    testScope.advanceUntilIdle()
 
     setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
     setupCanConfirmTransportPin.retryInputBtn.click()
 
+    testScope.advanceUntilIdle()
+
     setupCanIntro.setBackAllowed(true).assertIsDisplayed()
     setupCanIntro.enterCanNowBtn.click()
+
+    testScope.advanceUntilIdle()
 
     // ENTER WRONG CAN
     setupCanInput.assertIsDisplayed()
@@ -50,6 +58,8 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     testRule.performPinInput(wrongCan)
     setupCanInput.canEntryField.assertLength(wrongCan.length)
     testRule.pressReturn()
+
+    testScope.advanceUntilIdle()
 
     // ENTER CORRECT TRANSPORT PIN
     setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
@@ -69,6 +79,9 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     setupScan.setProgress(true).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 
     // ENTER WRONG CAN AGAIN
@@ -91,6 +104,9 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
     testScope.advanceUntilIdle()
 
+    eidFlow.value = EidInteractionEvent.CardRemoved
+    testScope.advanceUntilIdle()
+
     // ENTER CORRECT CAN
     setupCanInput.setRetry(true).assertIsDisplayed()
     setupCanInput.canEntryField.assertLength(0)
@@ -107,9 +123,6 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     testScope.advanceUntilIdle()
 
     setupScan.setProgress(true).assertIsDisplayed()
-
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-    testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
     testScope.advanceUntilIdle()

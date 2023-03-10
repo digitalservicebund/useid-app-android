@@ -135,7 +135,9 @@ class IdentSuccessfulTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -143,7 +145,6 @@ class IdentSuccessfulTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
@@ -152,7 +153,6 @@ class IdentSuccessfulTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()

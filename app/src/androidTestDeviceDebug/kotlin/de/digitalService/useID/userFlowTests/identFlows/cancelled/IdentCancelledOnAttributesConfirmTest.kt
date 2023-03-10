@@ -1,14 +1,9 @@
-package de.digitalService.useID.userFlowTests.identFlows.canceled
+package de.digitalService.useID.userFlowTests.identFlows.cancelled
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -34,25 +29,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanceledOnCardUnreadableWithRedirectTest {
+class IdentCancelledOnAttributesConfirmTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val intentsTestRule = IntentsTestRule(MainActivity::class.java)
-
-    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
@@ -89,7 +79,7 @@ class IdentCanceledOnCardUnreadableWithRedirectTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanceledOnCardUnreadableWithRedirect() = runTest {
+    fun testIdentCancelledOnAttributesConfirm() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -105,15 +95,11 @@ class IdentCanceledOnCardUnreadableWithRedirectTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
-        val redirectUrl = "test.url.com"
-        val personalPin = "123456"
 
         // Define screens to be tested
         val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
         val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
-        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
-        val identificationScan = TestScreen.Scan(composeTestRule)
-        val errorCardUnreadable= TestScreen.ErrorCardUnreadable(composeTestRule)
+        val home = TestScreen.Home(composeTestRule)
 
         composeTestRule.waitForIdle()
 
@@ -137,55 +123,23 @@ class IdentCanceledOnCardUnreadableWithRedirectTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
 
         identificationAttributeConsent.assertIsDisplayed()
-        identificationAttributeConsent.continueBtn.click()
+        identificationAttributeConsent.cancel.click()
+        identificationAttributeConsent.navigationConfirmDialog.assertIsDisplayed()
+        identificationAttributeConsent.navigationConfirmDialog.dismiss()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
-        advanceUntilIdle()
+        identificationAttributeConsent.assertIsDisplayed()
+        identificationAttributeConsent.cancel.click()
+        identificationAttributeConsent.navigationConfirmDialog.assertIsDisplayed()
+        identificationAttributeConsent.navigationConfirmDialog.confirm()
 
-        identificationPersonalPin.assertIsDisplayed()
-        identificationPersonalPin.personalPinField.assertLength(0)
-        composeTestRule.performPinInput(personalPin)
-        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
-        composeTestRule.pressReturn()
-
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
-        advanceUntilIdle()
-
-        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.CardRecognized
-        advanceUntilIdle()
-
-        identificationScan.setProgress(true).assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.Error(
-            IdCardInteractionException.ProcessFailed(
-                resultCode = ActivationResultCode.INTERNAL_ERROR,
-                redirectUrl = redirectUrl,
-                resultMinor = null
-            )
-        )
-        advanceUntilIdle()
-
-        Intents.intending(
-            Matchers.allOf(
-                hasAction(Intent.ACTION_VIEW),
-                hasData(redirectUrl),
-            )
-        ).respondWith(
-            Instrumentation.ActivityResult(
-                Activity.RESULT_OK,
-                null
-            )
-        )
-
-        errorCardUnreadable.setIdentPending(true).setRedirectUrlPresent(true).assertIsDisplayed()
-        errorCardUnreadable.cancel.click()
+        home.assertIsDisplayed()
     }
 }

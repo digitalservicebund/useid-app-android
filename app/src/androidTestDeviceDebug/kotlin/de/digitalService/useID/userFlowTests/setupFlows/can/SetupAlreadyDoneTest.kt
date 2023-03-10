@@ -70,6 +70,7 @@ class SetupAlreadyDoneTest {
     @Test
     fun testSetupAlreadyDone() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -93,6 +94,8 @@ class SetupAlreadyDoneTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,
@@ -102,17 +105,27 @@ class SetupAlreadyDoneTest {
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.inputCorrectBtn.click()
 
+        advanceUntilIdle()
+
         setupCanAlreadySetup.assertIsDisplayed()
         setupCanAlreadySetup.personalPinNotAvailableBtn.click()
+
+        advanceUntilIdle()
 
         setupResetPersonalPin.assertIsDisplayed()
         setupResetPersonalPin.back.click()
 
+        advanceUntilIdle()
+
         setupCanAlreadySetup.assertIsDisplayed()
         setupCanAlreadySetup.back.click()
 
+        advanceUntilIdle()
+
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.inputCorrectBtn.click()
+
+        advanceUntilIdle()
 
         setupCanAlreadySetup.assertIsDisplayed()
         setupCanAlreadySetup.finishSetupBtn.click()

@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.setupFlows.can.canceled
+package de.digitalService.useID.userFlowTests.setupFlows.can.cancelled
 
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -34,7 +34,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
 @HiltAndroidTest
-class SetupCanCanceledOnScanAfterCanWrongTest {
+class SetupCanCancelledOnScanAfterCanWrongTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -68,8 +68,9 @@ class SetupCanCanceledOnScanAfterCanWrongTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupCanCanceledOnScanAfterCanWrong() = runTest {
+    fun testSetupCanCancelledOnScanAfterCanWrong() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -98,6 +99,8 @@ class SetupCanCanceledOnScanAfterCanWrongTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         runSetupUpToCan(
             testRule = composeTestRule,
             eidFlow = eidFlow,
@@ -108,8 +111,12 @@ class SetupCanCanceledOnScanAfterCanWrongTest {
         setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
         setupCanConfirmTransportPin.retryInputBtn.click()
 
+        advanceUntilIdle()
+
         setupCanIntro.setBackAllowed(true).assertIsDisplayed()
         setupCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         // ENTER WRONG CAN
         setupCanInput.assertIsDisplayed()
@@ -117,6 +124,8 @@ class SetupCanCanceledOnScanAfterCanWrongTest {
         composeTestRule.performPinInput(wrongCan)
         setupCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT TRANSPORT PIN
         setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
@@ -136,6 +145,9 @@ class SetupCanCanceledOnScanAfterCanWrongTest {
         setupScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER CORRECT CAN

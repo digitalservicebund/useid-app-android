@@ -136,7 +136,9 @@ class IdentSuccessfulOnSecondAttemptTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -144,7 +146,6 @@ class IdentSuccessfulOnSecondAttemptTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
@@ -153,7 +154,6 @@ class IdentSuccessfulOnSecondAttemptTest {
         identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
@@ -163,7 +163,12 @@ class IdentSuccessfulOnSecondAttemptTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        })
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()
@@ -172,7 +177,6 @@ class IdentSuccessfulOnSecondAttemptTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setProgress(false).assertIsDisplayed()

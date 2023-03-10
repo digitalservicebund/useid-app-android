@@ -33,6 +33,7 @@ class PinManagementCoordinator @Inject constructor(
 ) {
     private val logger by getLogger()
 
+    private var stateMachineCoroutineScope: Job? = null
     private var eIdEventFlowCoroutineScope: Job? = null
     private var canEventFlowCoroutineScope: Job? = null
 
@@ -44,7 +45,11 @@ class PinManagementCoordinator @Inject constructor(
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
 
-    init {
+    private fun collectStateMachineEvents() {
+        if (stateMachineCoroutineScope != null) {
+            return
+        }
+
         CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
                 if (eventAndPair.first is PinManagementStateMachine.Event.Back) {
@@ -88,6 +93,8 @@ class PinManagementCoordinator @Inject constructor(
     }
 
     fun startPinManagement(identificationPending: Boolean, transportPin: Boolean): Flow<SubCoordinatorState> {
+        collectStateMachineEvents()
+
         canStateMachine.transition(CanStateMachine.Event.Invalidate)
         flowStateMachine.transition(PinManagementStateMachine.Event.StartPinManagement(identificationPending, transportPin))
         _stateFlow.value = SubCoordinatorState.ACTIVE

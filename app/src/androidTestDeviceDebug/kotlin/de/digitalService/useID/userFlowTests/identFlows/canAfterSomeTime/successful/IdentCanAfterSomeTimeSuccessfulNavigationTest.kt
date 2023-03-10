@@ -128,14 +128,20 @@ class IdentCanAfterSomeTimeSuccessfulNavigationTest {
         identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
 
+        advanceUntilIdle()
+
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
         composeTestRule.performPinInput(can)
         identificationCanInput.canEntryField.assertLength(can.length)
         identificationCanInput.back.click()
 
+        advanceUntilIdle()
+
         identificationCanIntro.assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)

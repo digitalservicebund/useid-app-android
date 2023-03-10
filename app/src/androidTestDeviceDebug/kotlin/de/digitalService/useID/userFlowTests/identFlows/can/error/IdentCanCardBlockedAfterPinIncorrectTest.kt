@@ -122,8 +122,12 @@ class IdentCanCardBlockedAfterPinIncorrectTest {
         identificationCanPinForgotten.assertIsDisplayed()
         identificationCanPinForgotten.tryAgainBtn.click()
 
+        advanceUntilIdle()
+
         identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
+
+        advanceUntilIdle()
 
         // ENTER CORRECT CAN
         identificationCanInput.assertIsDisplayed()
@@ -131,6 +135,8 @@ class IdentCanCardBlockedAfterPinIncorrectTest {
         composeTestRule.performPinInput(can)
         identificationCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         // ENTER WRONG PIN 3RD TIME
         identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()

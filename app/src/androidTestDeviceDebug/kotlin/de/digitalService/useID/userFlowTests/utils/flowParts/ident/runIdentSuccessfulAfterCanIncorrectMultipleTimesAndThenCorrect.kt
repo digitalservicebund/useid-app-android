@@ -63,8 +63,12 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     identificationCanPinForgotten.assertIsDisplayed()
     identificationCanPinForgotten.tryAgainBtn.click()
 
+    testScope.advanceUntilIdle()
+
     identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
     identificationCanIntro.enterCanNowBtn.click()
+
+    testScope.advanceUntilIdle()
 
     // ENTER WRONG CAN
     identificationCanInput.assertIsDisplayed()
@@ -72,6 +76,8 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     testRule.performPinInput(wrongCan)
     identificationCanInput.canEntryField.assertLength(wrongCan.length)
     testRule.pressReturn()
+
+    testScope.advanceUntilIdle()
 
     // ENTER CORRECT PIN 3RD TIME
     identificationPersonalPin.setAttemptsLeft(1).assertIsDisplayed()
@@ -97,6 +103,9 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
     testScope.advanceUntilIdle()
 
+    eidFlow.value = EidInteractionEvent.CardRemoved
+    testScope.advanceUntilIdle()
+
     // ENTER WRONG CAN 2ND TIME
     identificationCanInput.setRetry(true).assertIsDisplayed()
     identificationCanInput.canEntryField.assertLength(0)
@@ -119,6 +128,9 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     identificationScan.setProgress(true).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 
     // ENTER CORRECT CAN

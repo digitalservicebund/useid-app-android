@@ -27,6 +27,8 @@ fun runSetupSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     setupIntro.assertIsDisplayed()
     setupIntro.setupIdBtn.click()
 
+    testScope.advanceUntilIdle()
+
     setupPinLetter.assertIsDisplayed()
     setupPinLetter.letterPresentBtn.click()
 
@@ -39,8 +41,12 @@ fun runSetupSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     setupTransportPin.transportPinField.assertLength(transportPin.length)
     testRule.pressReturn()
 
+    testScope.advanceUntilIdle()
+
     setupPersonalPinIntro.assertIsDisplayed()
     setupPersonalPinIntro.continueBtn.click()
+
+    testScope.advanceUntilIdle()
 
     // SET NEW PERSONAL PIN
     setupPersonalPinInput.assertIsDisplayed()
@@ -48,6 +54,8 @@ fun runSetupSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     testRule.performPinInput(personalPin)
     setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
+
+    testScope.advanceUntilIdle()
 
     // CONFIRM NEW PERSONAL PIN
     setupPersonalPinConfirm.assertIsDisplayed()

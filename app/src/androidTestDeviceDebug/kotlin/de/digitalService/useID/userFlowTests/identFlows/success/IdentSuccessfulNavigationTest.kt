@@ -138,7 +138,9 @@ class IdentSuccessfulNavigationTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-           eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
         }
 
         advanceUntilIdle()
@@ -148,6 +150,8 @@ class IdentSuccessfulNavigationTest {
         identificationAttributeConsent.infoDialog.assertIsDisplayed()
         identificationAttributeConsent.infoDialogCloseBtn.click()
 
+        advanceUntilIdle()
+
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.cancel.click()
         identificationAttributeConsent.navigationConfirmDialog.assertIsDisplayed()
@@ -156,14 +160,17 @@ class IdentSuccessfulNavigationTest {
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
         identificationPersonalPin.back.click()
 
+        advanceUntilIdle()
+
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
+
+        advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
         identificationPersonalPin.personalPinField.assertLength(0)
@@ -171,8 +178,12 @@ class IdentSuccessfulNavigationTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         identificationPersonalPin.back.click()
 
+        advanceUntilIdle()
+
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
+
+        advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
         identificationPersonalPin.personalPinField.assertLength(0)
@@ -180,7 +191,6 @@ class IdentSuccessfulNavigationTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
         advanceUntilIdle()
 
         identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()

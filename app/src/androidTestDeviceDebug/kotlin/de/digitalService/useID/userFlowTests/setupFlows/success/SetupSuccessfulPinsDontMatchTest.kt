@@ -71,6 +71,7 @@ class SetupSuccessfulPinsDontMatchTest {
     @Test
     fun testSetupSuccessfulPinsDontMatch() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -101,8 +102,12 @@ class SetupSuccessfulPinsDontMatchTest {
         home.assertIsDisplayed()
         home.setupIdBtn.click()
 
+        advanceUntilIdle()
+
         setupIntro.assertIsDisplayed()
         setupIntro.setupIdBtn.click()
+
+        advanceUntilIdle()
 
         setupPinLetter.assertIsDisplayed()
         setupPinLetter.letterPresentBtn.click()
@@ -115,14 +120,20 @@ class SetupSuccessfulPinsDontMatchTest {
         setupTransportPin.transportPinField.assertLength(transportPin.length)
         composeTestRule.pressReturn()
 
+        advanceUntilIdle()
+
         setupPersonalPinIntro.assertIsDisplayed()
         setupPersonalPinIntro.continueBtn.click()
+
+        advanceUntilIdle()
 
         setupPersonalPinInput.assertIsDisplayed()
         setupPersonalPinInput.personalPinField.assertLength(0)
         composeTestRule.performPinInput(personalPin)
         setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
+
+        advanceUntilIdle()
 
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
@@ -140,6 +151,8 @@ class SetupSuccessfulPinsDontMatchTest {
         setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
+        advanceUntilIdle()
+
         setupPersonalPinConfirm.assertIsDisplayed()
         setupPersonalPinConfirm.personalPinField.assertLength(0)
         composeTestRule.performPinInput(personalPin)
@@ -156,14 +169,13 @@ class SetupSuccessfulPinsDontMatchTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-        advanceUntilIdle()
-
         eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
         setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
 
         home.assertIsDisplayed()
     }

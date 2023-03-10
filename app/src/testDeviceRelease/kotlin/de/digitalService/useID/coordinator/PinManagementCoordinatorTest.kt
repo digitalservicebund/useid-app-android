@@ -102,6 +102,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             stateFlow.value = Pair(event, state)
             testScope.advanceUntilIdle()
@@ -137,6 +138,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             stateFlow.value = Pair(PinManagementStateMachine.Event.Back, state)
             advanceUntilIdle()
@@ -313,6 +315,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)
             advanceUntilIdle()
@@ -335,6 +338,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)
             advanceUntilIdle()
@@ -392,6 +396,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestCardInsertion)
             every { mockIdCardManager.eidFlow} returns eIdFlow
@@ -414,6 +419,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.CardRecognized)
             every { mockIdCardManager.eidFlow} returns eIdFlow
@@ -441,6 +447,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val eIdFlow = MutableStateFlow(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
             every { mockIdCardManager.eidFlow} returns eIdFlow
@@ -463,6 +470,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestChangedPin(null, pinManagementCallback))
             every { mockIdCardManager.eidFlow} returns eIdFlow
@@ -485,6 +493,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestCanAndChangedPin(pinManagementCanCallback))
             every { mockIdCardManager.eidFlow} returns eIdFlow
@@ -507,6 +516,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestPuk({_ -> }))
             every { mockIdCardManager.eidFlow} returns eIdFlow
@@ -529,6 +539,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated))
             every { mockIdCardManager.eidFlow} returns eIdFlow
@@ -551,6 +562,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val exception = IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null)
             val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(exception))
@@ -743,6 +755,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val oldPin = "123456"
             val newPin = "000000"
@@ -771,6 +784,7 @@ class PinManagementCoordinatorTest {
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
+            pinManagementCoordinator.startPinManagement(false, false)
 
             val oldPin = "123456"
             val newPin = "000000"

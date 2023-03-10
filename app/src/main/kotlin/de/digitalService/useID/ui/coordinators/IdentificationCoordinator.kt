@@ -42,6 +42,7 @@ class IdentificationCoordinator @Inject constructor(
     val scanInProgress: Flow<Boolean>
         get() = _scanInProgress
 
+    private var stateMachineCoroutineScope: Job? = null
     private var eIdEventFlowCoroutineScope: Job? = null
     private var canEventFlowCoroutineScope: Job? = null
 
@@ -49,8 +50,12 @@ class IdentificationCoordinator @Inject constructor(
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
 
-    init {
-        CoroutineScope(coroutineContextProvider.Default).launch {
+    private fun collectStateMachineEvents() {
+        if (stateMachineCoroutineScope != null) {
+            return
+        }
+
+        stateMachineCoroutineScope = CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
                 if (eventAndPair.first is IdentificationStateMachine.Event.Back) {
                     navigator.pop()
@@ -84,6 +89,7 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     fun startIdentificationProcess(tcTokenUrl: String, setupSkipped: Boolean) {
+        collectStateMachineEvents()
         _stateFlow.value = SubCoordinatorState.ACTIVE
 
         val normalizedTcTokenUrl = Uri

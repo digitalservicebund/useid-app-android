@@ -129,6 +129,8 @@ class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTwoTimesTest {
         identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
         identificationCanIntro.enterCanNowBtn.click()
 
+        advanceUntilIdle()
+
         // ENTER WRONG CAN
         identificationCanInput.assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
@@ -153,6 +155,9 @@ class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTwoTimesTest {
         eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
         advanceUntilIdle()
 
+        eidFlow.value = EidInteractionEvent.CardRemoved
+        advanceUntilIdle()
+
         // ENTER WRONG CAN 2ND TIME
         identificationCanInput.setRetry(true).assertIsDisplayed()
         identificationCanInput.canEntryField.assertLength(0)
@@ -175,6 +180,9 @@ class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTwoTimesTest {
         identificationScan.setProgress(true).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
         // ENTER CORRECT CAN

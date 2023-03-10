@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.identFlows.can.canceled
+package de.digitalService.useID.userFlowTests.identFlows.cancelled
 
 import android.net.Uri
 import androidx.compose.ui.test.*
@@ -20,7 +20,6 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCan
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -38,7 +37,7 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentCanCanceledOnPinForgottenTest {
+class IdentCancelledOnCardBlockedTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
@@ -80,7 +79,7 @@ class IdentCanCanceledOnPinForgottenTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentCanCanceledOnPinForgotten() = runTest {
+    fun testIdentCancelledOnCardBlocked() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -96,9 +95,14 @@ class IdentCanCanceledOnPinForgottenTest {
         }
 
         val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val personalPin = "123456"
 
         // Define screens to be tested
-        val identificationCanPinForgotten = TestScreen.IdentificationCanPinForgotten(composeTestRule)
+        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
+        val identificationAttributeConsent = TestScreen.IdentificationAttributeConsent(composeTestRule)
+        val identificationPersonalPin = TestScreen.IdentificationPersonalPin(composeTestRule)
+        val identificationScan = TestScreen.Scan(composeTestRule)
+        val errorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
         composeTestRule.waitForIdle()
@@ -106,23 +110,55 @@ class IdentCanCanceledOnPinForgottenTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        runIdentUpToCan(
-            testRule = composeTestRule,
-            eidFlow = eidFlow,
-            testScope = this
-        )
+        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        advanceUntilIdle()
 
-        identificationCanPinForgotten.assertIsDisplayed()
-        identificationCanPinForgotten.cancel.click()
-        identificationCanPinForgotten.navigationConfirmDialog.assertIsDisplayed()
-        identificationCanPinForgotten.navigationConfirmDialog.dismiss()
+        identificationFetchMetaData.assertIsDisplayed()
 
-        identificationCanPinForgotten.assertIsDisplayed()
-        identificationCanPinForgotten.cancel.click()
-        identificationCanPinForgotten.navigationConfirmDialog.assertIsDisplayed()
-        identificationCanPinForgotten.navigationConfirmDialog.confirm()
+        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+            EidAuthenticationRequest(
+                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
+                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.subject,
+                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
+                TestScreen.IdentificationAttributeConsent.RequestData.validity,
+                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
+                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
+                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+            )
+        ) {
+            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            })
+        }
 
         advanceUntilIdle()
+
+        identificationAttributeConsent.assertIsDisplayed()
+        identificationAttributeConsent.continueBtn.click()
+
+        advanceUntilIdle()
+
+        identificationPersonalPin.assertIsDisplayed()
+        identificationPersonalPin.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        identificationPersonalPin.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        identificationScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
+        advanceUntilIdle()
+
+        errorCardBlocked.assertIsDisplayed()
+        errorCardBlocked.cancel.click()
 
         home.assertIsDisplayed()
     }
