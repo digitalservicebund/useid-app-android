@@ -88,6 +88,17 @@ class SetupStateMachineTest {
     }
 
     @Test
+    fun `start setup with url after previously skipped setup`() = runTest {
+        val tcTokenUrl = "tcTokenUrl"
+
+        val event = SetupStateMachine.Event.StartSetup
+        val oldState = SetupStateMachine.State.SkippingToIdentRequested(tcTokenUrl)
+        val newState: SetupStateMachine.State.StartSetup = transition(oldState, event, this)
+
+        Assertions.assertEquals(tcTokenUrl, newState.tcTokenUrl)
+    }
+
+    @Test
     fun `start setup without url`() = runTest {
         val event = SetupStateMachine.Event.StartSetup
         val oldState = SetupStateMachine.State.Intro(null)
@@ -285,7 +296,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["Intro"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["Intro", "SkippingToIdentRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `start setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.StartSetup
 
@@ -299,17 +310,6 @@ class SetupStateMachineTest {
         @SealedClassesSource(names = ["StartSetup"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `PIN reset`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.ResetPin
-
-            val stateMachine = SetupStateMachine(oldState)
-            Assertions.assertEquals(stateMachine.state.value.second, oldState)
-
-            Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
-        }
-
-        @ParameterizedTest
-        @SealedClassesSource(names = ["Intro"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
-        fun `start PIN management`(oldState: SetupStateMachine.State) = runTest {
-            val event = SetupStateMachine.Event.StartSetup
 
             val stateMachine = SetupStateMachine(oldState)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)

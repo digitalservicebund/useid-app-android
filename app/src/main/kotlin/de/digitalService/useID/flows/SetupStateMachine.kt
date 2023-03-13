@@ -75,6 +75,7 @@ class SetupStateMachine(initialState: State) {
             is Event.StartSetup -> {
                 when (val currentState = state.value.second) {
                     is State.Intro -> State.StartSetup(currentState.tcTokenUrl)
+                    is State.SkippingToIdentRequested -> State.StartSetup(currentState.tcTokenUrl)
                     else -> throw IllegalArgumentException()
                 }
             }
