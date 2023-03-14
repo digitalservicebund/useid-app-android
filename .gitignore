@@ -70,7 +70,9 @@ Temporary Items
 .apdisk
 
 # CI
-.bundle
+.bundle/*
+!.bundle/config
+
 vendor
 .env
 Brewfile.lock.json

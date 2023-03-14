@@ -37,7 +37,7 @@ runs:
       shell: bash
       run: echo "~/.rbenv/shims" >> $GITHUB_PATH
     - name: Restore Dependencies
-      uses: actions/cache@v2
+      uses: actions/cache/restore@v3
       id: cache-dependencies
       env:
         cache-name: cache-dependencies
@@ -49,9 +49,9 @@ runs:
     - name: Install dependencies
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       shell: bash
-      run: bundle install --path=vendor
+      run: bundle install
     - name: Save Dependencies
-      uses: actions/cache@v2
+      uses: actions/cache/save@v3
       if: steps.cache-dependencies.outputs.cache-hit != 'true'
       env:
         cache-name: cache-dependencies
