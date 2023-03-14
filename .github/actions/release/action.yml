@@ -52,7 +52,7 @@ runs:
         KEYSTORE_BASE64: ${{ inputs.KEYSTORE_BASE64 }}
       run: |
         KEYSTORE_PATH=$RUNNER_TEMP/keystore.jks
-        echo -n "$KEYSTORE_BASE64" | base64 --decode --output $KEYSTORE_PATH
+        echo -n "$KEYSTORE_BASE64" | base64 --decode -o $KEYSTORE_PATH
         echo "KEYSTORE_PATH=$KEYSTORE_PATH" >> $GITHUB_ENV
     - name: Deploy fastlane API key
       shell: bash
