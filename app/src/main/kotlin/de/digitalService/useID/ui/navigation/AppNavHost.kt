@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui
+package de.digitalService.useID.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

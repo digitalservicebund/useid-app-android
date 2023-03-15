@@ -19,6 +19,9 @@ class ConfigModule {
         const val TRACKING_SITE_ID = "TRACKING_SITE_ID"
 
         const val SENTRY_DSN = "SENTRY_DSN"
+
+        const val UNLEASH_API_URL = "CONFIGURATION_API_URL"
+        const val UNLEASH_API_KEY = "CONFIGURATION_API_KEY"
     }
 
     @Provides
@@ -46,5 +49,21 @@ class ConfigModule {
         return "https://$sentryPublicKey@o1248831.ingest.sentry.io/$sentryProjectId"
     }
 
-    private fun getMetadata(context: Context): Bundle = context.packageManager.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA).metaData
+    @Provides
+    @Named(UNLEASH_API_URL)
+    fun providesUnleashApiUrl(@ApplicationContext context: Context): String {
+        val unleashHost = getMetadata(context).getString("unleashHost")
+        return "$unleashHost/api/frontend"
+    }
+
+    @Provides
+    @Named(UNLEASH_API_KEY)
+    fun providesUnleashApiKey(@ApplicationContext context: Context): String {
+        return getMetadata(context).getString("unleashKey").orEmpty()
+    }
+
+    private fun getMetadata(context: Context): Bundle = context.packageManager.getApplicationInfo(
+        context.packageName,
+        PackageManager.GET_META_DATA
+    ).metaData
 }

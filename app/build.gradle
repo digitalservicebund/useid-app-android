@@ -35,6 +35,8 @@ android {
                 sentryProjectId: findProperty("sentryProjectId"),
                 matomoHost: findProperty("matomoHost"),
                 matomoSiteId: findProperty("matomoSiteId"),
+                unleashHost: findProperty("unleashHost"),
+                unleashKey: findProperty("unleashKey")
         ]
     }
 
@@ -190,6 +192,7 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.bundles.aboutlibraries)
     implementation(libs.matomo.sdk.android)
+    implementation(libs.unleash)
 
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)

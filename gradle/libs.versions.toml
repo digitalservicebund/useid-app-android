@@ -62,6 +62,7 @@ openecard-android = "org.openecard.clients:android-lib:2.1.6"
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry" }
 sentry-compose-android = { module = "io.sentry:sentry-compose-android", version.ref = "sentry" }
 slf4j-api = "org.slf4j:slf4j-api:2.0.6"
+unleash = "io.getunleash:unleash-android-proxy-sdk:0.5.0"
 xerces = "xerces:xercesImpl:2.12.2"
 
 [bundles]

@@ -15,12 +15,10 @@ import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
+import de.digitalService.useID.util.AbTestManager
 import de.digitalService.useID.util.NfcInterfaceManagerType
 import io.sentry.Sentry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
@@ -48,17 +46,11 @@ class MainActivity : ComponentActivity() {
     @Named(ConfigModule.SENTRY_DSN)
     lateinit var sentryDsn: String
 
+    @Inject
+    lateinit var abTestManager: AbTestManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
-
-        var keepSplashScreen = true
-        splashScreen.setKeepOnScreenCondition { keepSplashScreen }
-
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(600)
-            keepSplashScreen = false
-        }
-
+        showSplashScreen()
         super.onCreate(savedInstanceState)
 
         Sentry.init(sentryDsn)
@@ -87,6 +79,35 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleNewIntent(intent)
+    }
+
+    private fun showSplashScreen() {
+        val splashScreen = installSplashScreen()
+
+        var minimumSplashDurationExpired = false
+        var abTestManagerLoaded = false
+        splashScreen.setKeepOnScreenCondition { !(minimumSplashDurationExpired && abTestManagerLoaded) }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(600)
+            minimumSplashDurationExpired = true
+        }
+
+        CoroutineScope(Dispatchers.Main).launch {
+            launch {
+                delay(1500)
+                abTestManager.disable()
+                abTestManagerLoaded = true
+                this.cancel()
+            }
+
+            abTestManager.state.collect {
+                if (it != AbTestManager.State.LOADING) {
+                    abTestManagerLoaded = true
+                    this.cancel()
+                }
+            }
+        }
     }
 
     private fun handleNewIntent(intent: Intent) {

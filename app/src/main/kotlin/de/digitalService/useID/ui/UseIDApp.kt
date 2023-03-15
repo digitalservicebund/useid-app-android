@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.models.NfcAvailability
+import de.digitalService.useID.ui.navigation.AppNavHost
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.previewMocks.PreviewTrackerManager
 import de.digitalService.useID.ui.screens.destinations.*

@@ -56,6 +56,8 @@
         <meta-data android:name="sentryProjectId" android:value="${sentryProjectId}" />
         <meta-data android:name="matomoHost" android:value="${matomoHost}" />
         <meta-data android:name="matomoSiteId" android:value="${matomoSiteId}" />
+        <meta-data android:name="unleashHost" android:value="${unleashHost}" />
+        <meta-data android:name="unleashKey" android:value="${unleashKey}" />
 
         <meta-data android:name="io.sentry.auto-init" android:value="false" />
     </application>

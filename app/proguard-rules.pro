@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
+
+# necessary for unleash integration
+-keep public class io.getunleash.** {*;}
+-keep class com.fasterxml.** { *; }
