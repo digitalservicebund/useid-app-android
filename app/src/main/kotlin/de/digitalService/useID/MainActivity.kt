@@ -22,6 +22,8 @@ import kotlinx.coroutines.*
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -50,8 +52,8 @@ class MainActivity : ComponentActivity() {
     lateinit var abTestManager: AbTestManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        showSplashScreen()
         super.onCreate(savedInstanceState)
+        showSplashScreen()
 
         Sentry.init(sentryDsn)
 
@@ -81,31 +83,29 @@ class MainActivity : ComponentActivity() {
         handleNewIntent(intent)
     }
 
+    @OptIn(ExperimentalTime::class)
     private fun showSplashScreen() {
         val splashScreen = installSplashScreen()
 
-        var minimumSplashDurationExpired = false
-        var abTestManagerLoaded = false
-        splashScreen.setKeepOnScreenCondition { !(minimumSplashDurationExpired && abTestManagerLoaded) }
+        var keepOnScreen = true
+        splashScreen.setKeepOnScreenCondition { keepOnScreen }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(600)
-            minimumSplashDurationExpired = true
-        }
-
-        CoroutineScope(Dispatchers.Main).launch {
-            launch {
-                delay(1500)
-                abTestManager.disable()
-                abTestManagerLoaded = true
-                this.cancel()
-            }
-
-            abTestManager.state.collect {
-                if (it != AbTestManager.State.LOADING) {
-                    abTestManagerLoaded = true
-                    this.cancel()
+        CoroutineScope(Dispatchers.Default).launch {
+            try {
+                val duration = measureTime {
+                    withTimeout(1500) {
+                        abTestManager.initialise()
+                    }
                 }
+
+                val splashScreenDelay = 600 - duration.inWholeMilliseconds
+                if (splashScreenDelay > 0) {
+                    delay(splashScreenDelay)
+                }
+            } catch (e: TimeoutCancellationException) {
+                abTestManager.disable()
+            } finally {
+                keepOnScreen = false
             }
         }
     }

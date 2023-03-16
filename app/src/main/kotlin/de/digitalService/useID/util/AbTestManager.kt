@@ -1,5 +1,7 @@
 package de.digitalService.useID.util
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.ConfigModule
@@ -7,12 +9,12 @@ import io.getunleash.UnleashClient
 import io.getunleash.UnleashConfig
 import io.getunleash.UnleashContext
 import io.getunleash.polling.PollingModes
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlin.coroutines.resume
 
 @Singleton
 class AbTestManager @Inject constructor(
@@ -22,14 +24,12 @@ class AbTestManager @Inject constructor(
     private val issueTrackerManager: IssueTrackerManagerType
 ) {
 
-    private val unleashClient: UnleashClient
+    private lateinit var unleashClient: UnleashClient
 
-    private val _state: MutableStateFlow<State> = MutableStateFlow(State.LOADING)
-    val state: Flow<State> = _state
+    private val _initialised = mutableStateOf(false)
+    val initialised: State<Boolean> = _initialised
 
-    enum class State { LOADING, ACTIVE, DISABLED }
-
-    init {
+    suspend fun initialise() = suspendCancellableCoroutine { continuation ->
         val config = UnleashConfig.newBuilder()
             .proxyUrl(url)
             .clientKey(apiKey)
@@ -46,16 +46,22 @@ class AbTestManager @Inject constructor(
         unleashClient = UnleashClient(config, context)
 
         unleashClient.addTogglesUpdatedListener {
-            _state.value = State.ACTIVE
+            _initialised.value = true
+            continuation.resume(Unit)
         }
         unleashClient.addTogglesErroredListener {
             issueTrackerManager.capture(it)
-            _state.value = State.DISABLED
+            _initialised.value = false
+            continuation.resume(Unit)
+        }
+
+        continuation.invokeOnCancellation {
+            //todo - can we stop unleash trying to fetch data? because we don't care anymore at this point
         }
     }
 
     fun disable() {
-        _state.value = State.DISABLED
+        _initialised.value = false
         issueTrackerManager.addInfoBreadcrumbs("Unleash", "Request taking too long.")
     }
 
@@ -67,7 +73,7 @@ class AbTestManager @Inject constructor(
         } else false
 
     private fun String.isEnabled(): Boolean =
-        if (_state.value == State.ACTIVE) unleashClient.isEnabled(this) else false
+        _initialised.value && unleashClient.isEnabled(this)
 }
 
 enum class AbTest(val testName: String) {
