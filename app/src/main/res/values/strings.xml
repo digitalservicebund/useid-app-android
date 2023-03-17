@@ -76,7 +76,7 @@
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Inkorrekte Transport-PIN eingegeben.</string>
     <string name="firstTimeUser_intro_body">Sie müssen Ihren Ausweis insgesamt nur einmal einrichten. Falls Sie schon über eine 6‑stellige PIN verfügen, ist Ihr Ausweis bereits eingerichtet.</string>
-    <string name="firstTimeUser_intro_body_variant">Hinweis: Falls Sie schon über eine persönliche 6‑stellige PIN verfügen, ist Ihr Ausweis bereits eingerichtet.</string>
+    <string name="firstTimeUser_intro_body_variant">**Hinweis:** Falls Sie schon über eine persönliche 6‑stellige PIN verfügen, ist Ihr Ausweis bereits eingerichtet.</string>
     <string name="firstTimeUser_intro_startSetup">Jetzt Online-Ausweis einrichten</string>
     <string name="firstTimeUser_intro_title">Haben Sie Ihren Online‑Ausweis bereits eingerichtet\?</string>
     <string name="firstTimeUser_intro_title_variant">Online-Ausweis noch nicht eingerichtet?</string>

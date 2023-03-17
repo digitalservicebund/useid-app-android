@@ -28,6 +28,8 @@ import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.AbTestManager
+import de.digitalService.useID.util.markDownResource
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import javax.inject.Inject
 
 @Destination(navArgsDelegate = SetupIntroNavArgs::class)
@@ -71,10 +73,11 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
                         shape = UseIdTheme.shapes.roundedMedium
                     ) {
                         Column(modifier = Modifier.padding(UseIdTheme.spaces.m)) {
-                            Text(
-                                text = stringResource(id = R.string.firstTimeUser_intro_body_variant),
-                                style = UseIdTheme.typography.bodyLRegular,
-                                color = UseIdTheme.colors.black,
+                            MarkdownText(
+                                markdown = markDownResource(id = R.string.firstTimeUser_intro_body_variant),
+                                fontResource = R.font.bundes_sans_dtp_regular,
+                                fontSize = UseIdTheme.typography.bodyLRegular.fontSize,
+                                color = UseIdTheme.colors.black
                             )
 
                             Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
