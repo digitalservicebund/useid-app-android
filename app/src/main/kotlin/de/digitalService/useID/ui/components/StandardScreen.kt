@@ -67,7 +67,6 @@ fun StandardButtonScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun StandardStaticComposition(
     title: String,

@@ -7,8 +7,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
+import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.idCardInterface.IdCardManager
@@ -45,15 +47,22 @@ class MainActivity : ComponentActivity() {
     lateinit var nfcInterfaceManager: NfcInterfaceManagerType
 
     @Inject
-    @Named(ConfigModule.SENTRY_DSN)
-    lateinit var sentryDsn: String
+    lateinit var issueTrackerManager: IssueTrackerManagerType
 
     @Inject
     lateinit var abTestManager: AbTestManager
 
+    @Inject
+    @Named(ConfigModule.SENTRY_DSN)
+    lateinit var sentryDsn: String
+
+    private lateinit var splashScreen: SplashScreen
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        showSplashScreen()
+
+        prepareAppLaunch()
 
         Sentry.init(sentryDsn)
 
@@ -84,9 +93,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @OptIn(ExperimentalTime::class)
-    private fun showSplashScreen() {
-        val splashScreen = installSplashScreen()
-
+    private fun prepareAppLaunch() {
         var keepOnScreen = true
         splashScreen.setKeepOnScreenCondition { keepOnScreen }
 
@@ -102,8 +109,8 @@ class MainActivity : ComponentActivity() {
                 if (splashScreenDelay > 0) {
                     delay(splashScreenDelay)
                 }
-            } catch (e: TimeoutCancellationException) {
-                abTestManager.disable()
+            } catch (_: TimeoutCancellationException) {
+
             } finally {
                 keepOnScreen = false
             }

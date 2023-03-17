@@ -21,7 +21,6 @@ enum class BundCardType {
     INFO, WARNING, ERROR, SUCCESS
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BundCard(type: BundCardType, title: String, body: String) {
     val containerColor: Color

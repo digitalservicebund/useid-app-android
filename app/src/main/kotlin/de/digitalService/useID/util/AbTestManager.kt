@@ -26,14 +26,14 @@ class AbTestManager @Inject constructor(
 
     private lateinit var unleashClient: UnleashClient
 
-    private val _initialised = mutableStateOf(false)
-    val initialised: State<Boolean> = _initialised
+    private val _isSetupIntroTestVariant = mutableStateOf(false)
+    val isSetupIntroTestVariant: State<Boolean> = _isSetupIntroTestVariant
 
     suspend fun initialise() = suspendCancellableCoroutine { continuation ->
         val config = UnleashConfig.newBuilder()
             .proxyUrl(url)
             .clientKey(apiKey)
-            .pollingMode(PollingModes.autoPoll(3600))
+            .pollingMode(PollingModes.autoPoll(Int.MAX_VALUE.toLong()))
             .build()
 
         val supportedAbTests = AbTest.values().joinToString(",") { it.testName }
@@ -46,36 +46,33 @@ class AbTestManager @Inject constructor(
         unleashClient = UnleashClient(config, context)
 
         unleashClient.addTogglesUpdatedListener {
-            _initialised.value = true
+            _isSetupIntroTestVariant.value = isVariationActivatedFor(AbTest.SETUP_INTRODUCTION_EXPLANATION)
             continuation.resume(Unit)
         }
         unleashClient.addTogglesErroredListener {
             issueTrackerManager.capture(it)
-            _initialised.value = false
+            trackDisabled("Error fetching toggles.")
             continuation.resume(Unit)
         }
 
         continuation.invokeOnCancellation {
-            //todo - can we stop unleash trying to fetch data? because we don't care anymore at this point
+            unleashClient.close()
+            trackDisabled("Timed out while fetching toggles.")
         }
     }
 
-    fun disable() {
-        _initialised.value = false
-        issueTrackerManager.addInfoBreadcrumbs("Unleash", "Request taking too long.")
-    }
-
-    fun isVariationActivatedFor(test: AbTest): Boolean =
-        if (test.testName.isEnabled()) {
+    private fun isVariationActivatedFor(test: AbTest): Boolean =
+        if (unleashClient.isEnabled(test.testName)) {
             val variantName = unleashClient.getVariant(test.testName).name
             trackerManager.trackEvent("abtesting", test.testName, variantName)
             variantName == "variation"
         } else false
 
-    private fun String.isEnabled(): Boolean =
-        _initialised.value && unleashClient.isEnabled(this)
+    private fun trackDisabled(message: String) {
+        issueTrackerManager.addInfoBreadcrumbs("Unleash", message)
+    }
 }
 
 enum class AbTest(val testName: String) {
-    DARIA_TEST("daria.test")
+    SETUP_INTRODUCTION_EXPLANATION("bundesIdent.setup_introduction_explanation")
 }

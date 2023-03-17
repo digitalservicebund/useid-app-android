@@ -76,8 +76,10 @@
     <string name="firstTimeUser_incorrectTransportPIN_textFieldLabel">Transport PIN input field, five digits</string>
     <string name="firstTimeUser_incorrectTransportPIN_title">Entered incorrect transport PIN.</string>
     <string name="firstTimeUser_intro_body">You only need to set up your ID card once. If you already have a 6‑digit PIN, your ID card has been already set up.</string>
+    <string name="firstTimeUser_intro_body_variant">Please note: If you already have a personal 6-digit PIN, your ID card has been already set up.</string>
     <string name="firstTimeUser_intro_startSetup">Set up online ID card now</string>
     <string name="firstTimeUser_intro_title">Have you already set up your online ID card\?</string>
+    <string name="firstTimeUser_intro_title_variant">Online ID card not set up yet?</string>
     <string name="firstTimeUser_intro_skipSetup">Already set up</string>
     <string name="firstTimeUser_missingPINLetter_body">Do you need a new PIN\? Order a PIN reset letter:
 \n
