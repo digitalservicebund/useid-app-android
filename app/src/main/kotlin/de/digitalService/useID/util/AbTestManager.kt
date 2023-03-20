@@ -11,9 +11,7 @@ import io.getunleash.UnleashContext
 import io.getunleash.polling.PollingModes
 import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
-import javax.inject.Inject
 import javax.inject.Named
-import javax.inject.Singleton
 import kotlin.coroutines.resume
 
 class AbTestManager constructor(
@@ -63,9 +61,10 @@ class AbTestManager constructor(
     private fun isVariationActivatedFor(test: AbTest): Boolean =
         if (unleashClient.isEnabled(test.testName)) {
             val variantName = unleashClient.getVariant(test.testName).name
-            trackerManager.trackEvent("abtesting", test.testName, variantName)
+            val testNameForTracking = test.testName.replace(".", "_")
+            trackerManager.trackEvent("abtesting", testNameForTracking, variantName)
             issueTrackerManager.addInfoBreadcrumb("abtest", "${test.testName}: $variantName")
-            variantName == "variation"
+            variantName == "Variation"
         } else {
             false
         }
