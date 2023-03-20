@@ -38,7 +38,7 @@ class AbTestManager @Inject constructor(
 
         val supportedAbTests = AbTest.values().joinToString(",") { it.testName }
         val context = UnleashContext.newBuilder()
-            .appName("useid-android")
+            .appName("bundesIdent.Android")
             .sessionId(UUID.randomUUID().toString())
             .properties(mutableMapOf(Pair("supportedToggles", supportedAbTests)))
             .build()
@@ -51,13 +51,12 @@ class AbTestManager @Inject constructor(
         }
         unleashClient.addTogglesErroredListener {
             issueTrackerManager.capture(it)
-            trackDisabled("Error fetching toggles.")
             continuation.resume(Unit)
         }
 
         continuation.invokeOnCancellation {
+            issueTrackerManager.capture(UnleashException("Timed out while fetching toggles."))
             unleashClient.close()
-            trackDisabled("Timed out while fetching toggles.")
         }
     }
 
@@ -65,16 +64,15 @@ class AbTestManager @Inject constructor(
         if (unleashClient.isEnabled(test.testName)) {
             val variantName = unleashClient.getVariant(test.testName).name
             trackerManager.trackEvent("abtesting", test.testName, variantName)
+            issueTrackerManager.addInfoBreadcrumb("abtest", "${test.testName}: $variantName")
             variantName == "variation"
         } else {
             false
         }
-
-    private fun trackDisabled(message: String) {
-        issueTrackerManager.addInfoBreadcrumbs("Unleash", message)
-    }
 }
 
 enum class AbTest(val testName: String) {
     SETUP_INTRODUCTION_EXPLANATION("bundesIdent.setup_introduction_explanation")
 }
+
+class UnleashException(override val message: String) : Exception()
