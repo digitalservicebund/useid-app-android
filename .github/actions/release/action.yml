@@ -77,4 +77,6 @@ runs:
         SENTRY_ORG: digitalservice
         SENTRY_PROJECT: ${{ inputs.SENTRY_PROJECT }}
         GH_TOKEN: ${{ inputs.GH_TOKEN }}
+        UNLEASH_API_KEY: ${{ inputs.UNLEASH_API_KEY }}
+        UNLEASH_HOST: ${{ inputs.UNLEASH_HOST }}
       run: bundle exec fastlane release stage:${{ inputs.stage }}

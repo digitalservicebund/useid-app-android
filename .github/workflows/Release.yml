@@ -59,6 +59,8 @@ jobs:
           SENTRY_PROJECT_ID: ${{ secrets.SENTRY_PROJECT_ID_PRODUCTION }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_PROJECT: useid-android
+          UNLEASH_API_KEY: ${{ secrets.UNLEASH_API_KEY_PRODUCTION }}
+          UNLEASH_HOST: ${{ secrets.UNLEASH_HOST }}
 
   preview:
     runs-on: [self-hosted, ARM64]
@@ -79,6 +81,8 @@ jobs:
           SENTRY_PROJECT_ID: ${{ secrets.SENTRY_PROJECT_ID_PREVIEW }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_PROJECT: useid-preview-android
+          UNLEASH_API_KEY: ${{ secrets.UNLEASH_API_KEY_PREVIEW }}
+          UNLEASH_HOST: ${{ secrets.UNLEASH_HOST }}
 
   github:
     runs-on: [self-hosted, ARM64]
@@ -100,3 +104,5 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_PROJECT: useid-android
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UNLEASH_API_KEY: ${{ secrets.UNLEASH_API_KEY_PRODUCTION }}
+          UNLEASH_HOST: ${{ secrets.UNLEASH_HOST }}
