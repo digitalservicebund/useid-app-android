@@ -16,8 +16,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 
-@Singleton
-class AbTestManager @Inject constructor(
+class AbTestManager constructor(
     @Named(ConfigModule.UNLEASH_API_URL) private val url: String,
     @Named(ConfigModule.UNLEASH_API_KEY) private val apiKey: String,
     private val trackerManager: TrackerManagerType,
@@ -46,7 +45,8 @@ class AbTestManager @Inject constructor(
         unleashClient = UnleashClient(config, context)
 
         unleashClient.addTogglesUpdatedListener {
-            _isSetupIntroTestVariant.value = isVariationActivatedFor(AbTest.SETUP_INTRODUCTION_EXPLANATION)
+            _isSetupIntroTestVariant.value =
+                isVariationActivatedFor(AbTest.SETUP_INTRODUCTION_EXPLANATION)
             continuation.resume(Unit)
         }
         unleashClient.addTogglesErroredListener {

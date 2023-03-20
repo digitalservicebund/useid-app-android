@@ -38,6 +38,12 @@ inputs:
   SENTRY_PROJECT:
     description: 'sentry.io project'
     required: true
+  UNLEASH_API_KEY:
+    description: 'Unleash API token'
+    required: true
+  UNLEASH_HOST:
+    description: 'Unleash API URL'
+    required: true
 
 runs:
   using: "composite"
