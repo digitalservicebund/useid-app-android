@@ -16,7 +16,10 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
-import de.digitalService.useID.util.*
+import de.digitalService.useID.util.CoroutineContextProviderType
+import de.digitalService.useID.util.performPinInput
+import de.digitalService.useID.util.pressReturn
+import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -57,11 +60,6 @@ class SetupSuccessfulPinsDontMatchTest {
     @BindValue
     val mockCoroutineContextProvider: CoroutineContextProviderType = mockk {
         every { Main } returns Dispatchers.Main
-    }
-
-    @BindValue
-    val mockAbTestManager: AbTestManager = mockk(relaxed = true) {
-        every { isSetupIntroTestVariant.value } returns false
     }
 
     @Before

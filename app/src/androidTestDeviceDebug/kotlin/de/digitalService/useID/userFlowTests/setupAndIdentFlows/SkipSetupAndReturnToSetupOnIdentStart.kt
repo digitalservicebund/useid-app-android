@@ -22,7 +22,6 @@ import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.runIdentSuccessful
 import de.digitalService.useID.userFlowTests.utils.flowParts.setup.runSetupSuccessful
-import de.digitalService.useID.util.AbTestManager
 import de.digitalService.useID.util.CoroutineContextProviderType
 import de.digitalService.useID.util.NfcInterfaceManagerType
 import de.digitalService.useID.util.setContentUsingUseIdTheme
@@ -76,11 +75,6 @@ class SkipSetupAndReturnToSetupOnIdentStart {
     @BindValue
     val mockNfcInterfaceManager: NfcInterfaceManagerType = mockk(relaxed = true){
         every { nfcAvailability } returns MutableStateFlow(NfcAvailability.Available)
-    }
-
-    @BindValue
-    val mockAbTestManager: AbTestManager = mockk(relaxed = true) {
-        every { isSetupIntroTestVariant.value } returns false
     }
 
     private val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
