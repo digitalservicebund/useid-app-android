@@ -60,6 +60,11 @@ class SetupSuccessfulTest {
         every { Main } returns Dispatchers.Main
     }
 
+    @BindValue
+    val mockAbTestManager: AbTestManager = mockk(relaxed = true) {
+        every { isSetupIntroTestVariant.value } returns false
+    }
+
     @Before
     fun before() {
         hiltRule.inject()

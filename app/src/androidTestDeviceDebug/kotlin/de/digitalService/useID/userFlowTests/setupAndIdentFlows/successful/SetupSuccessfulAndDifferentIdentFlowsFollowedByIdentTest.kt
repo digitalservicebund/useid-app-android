@@ -70,6 +70,11 @@ class SetupSuccessfulAndDifferentIdentFlowsFollowedByIdentTest {
         every { nfcAvailability } returns MutableStateFlow(NfcAvailability.Available)
     }
 
+    @BindValue
+    val mockAbTestManager: AbTestManager = mockk(relaxed = true) {
+        every { isSetupIntroTestVariant.value } returns false
+    }
+
     private val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
 
     @Before
