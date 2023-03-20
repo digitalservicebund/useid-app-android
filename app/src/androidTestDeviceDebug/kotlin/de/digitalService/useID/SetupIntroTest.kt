@@ -30,6 +30,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns true
+        every { viewModel.showVariant } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -49,6 +50,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns false
+        every { viewModel.showVariant } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -69,6 +71,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns false
+        every { viewModel.showVariant } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -85,6 +88,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns false
+        every { viewModel.showVariant } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)

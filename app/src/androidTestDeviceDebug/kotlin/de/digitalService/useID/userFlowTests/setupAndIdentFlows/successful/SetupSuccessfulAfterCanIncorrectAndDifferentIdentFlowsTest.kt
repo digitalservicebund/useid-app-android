@@ -21,7 +21,6 @@ import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.*
-import de.digitalService.useID.userFlowTests.utils.flowParts.runSetupSuccessful
 import de.digitalService.useID.userFlowTests.utils.flowParts.setup.runSetupSuccessfulAfterCanIncorrectOnceAndThenCorrect
 import de.digitalService.useID.util.*
 import io.mockk.every

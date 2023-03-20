@@ -21,7 +21,7 @@ import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.runIdentSuccessful
-import de.digitalService.useID.userFlowTests.utils.flowParts.runSetupSuccessful
+import de.digitalService.useID.userFlowTests.utils.flowParts.setup.runSetupSuccessful
 import de.digitalService.useID.util.CoroutineContextProviderType
 import de.digitalService.useID.util.NfcInterfaceManagerType
 import de.digitalService.useID.util.setContentUsingUseIdTheme

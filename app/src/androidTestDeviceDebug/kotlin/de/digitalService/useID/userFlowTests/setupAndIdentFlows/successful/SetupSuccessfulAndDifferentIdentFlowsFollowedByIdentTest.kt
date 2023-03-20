@@ -8,7 +8,6 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
 import de.digitalService.useID.MainActivity
-import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.NfcInterfaceMangerModule
@@ -21,7 +20,7 @@ import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.*
-import de.digitalService.useID.userFlowTests.utils.flowParts.runSetupSuccessful
+import de.digitalService.useID.userFlowTests.utils.flowParts.setup.runSetupSuccessful
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk

@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.utils.flowParts
+package de.digitalService.useID.userFlowTests.utils.flowParts.setup
 
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen

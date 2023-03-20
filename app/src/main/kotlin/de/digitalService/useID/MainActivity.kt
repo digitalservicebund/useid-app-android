@@ -10,7 +10,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
-import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.idCardInterface.IdCardManager
@@ -45,9 +44,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var nfcInterfaceManager: NfcInterfaceManagerType
-
-    @Inject
-    lateinit var issueTrackerManager: IssueTrackerManagerType
 
     @Inject
     lateinit var abTestManager: AbTestManager
@@ -109,8 +105,6 @@ class MainActivity : ComponentActivity() {
                 if (splashScreenDelay > 0) {
                     delay(splashScreenDelay)
                 }
-            } catch (_: TimeoutCancellationException) {
-
             } finally {
                 keepOnScreen = false
             }

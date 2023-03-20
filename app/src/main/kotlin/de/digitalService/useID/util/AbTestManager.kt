@@ -66,7 +66,9 @@ class AbTestManager @Inject constructor(
             val variantName = unleashClient.getVariant(test.testName).name
             trackerManager.trackEvent("abtesting", test.testName, variantName)
             variantName == "variation"
-        } else false
+        } else {
+            false
+        }
 
     private fun trackDisabled(message: String) {
         issueTrackerManager.addInfoBreadcrumbs("Unleash", message)
