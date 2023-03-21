@@ -60,7 +60,10 @@ class MainActivity : ComponentActivity() {
 
         prepareAppLaunch()
 
-        Sentry.init(sentryDsn)
+        Sentry.init { options ->
+            options.dsn = sentryDsn
+            options.dist = "${BuildConfig.VERSION_CODE}"
+        }
 
         handleNewIntent(intent)
 
