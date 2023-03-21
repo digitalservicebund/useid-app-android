@@ -1,5 +1,6 @@
 package de.digitalService.useID
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -98,5 +99,37 @@ class SetupIntroTest {
         composeTestRule.onNodeWithText(secondaryButton).performClick()
 
         verify { viewModel.onNonFirstTimeUsage() }
+    }
+
+    @Test
+    fun showsOriginal() {
+        val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true) {
+            every { confirmCancellation } returns false
+            every { showVariant } returns false
+        }
+
+        composeTestRule.activity.setContentUsingUseIdTheme {
+            SetupIntro(viewModel = viewModel)
+        }
+
+        val title = composeTestRule.activity.getString(R.string.firstTimeUser_intro_title)
+
+        composeTestRule.onNodeWithText(title).assertIsDisplayed()
+    }
+
+    @Test
+    fun showsVariant() {
+        val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true) {
+            every { confirmCancellation } returns false
+            every { showVariant } returns true
+        }
+
+        composeTestRule.activity.setContentUsingUseIdTheme {
+            SetupIntro(viewModel = viewModel)
+        }
+
+        val title = composeTestRule.activity.getString(R.string.firstTimeUser_intro_title_variant)
+
+        composeTestRule.onNodeWithText(title).assertIsDisplayed()
     }
 }

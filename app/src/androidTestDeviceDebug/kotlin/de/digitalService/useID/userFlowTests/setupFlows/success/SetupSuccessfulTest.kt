@@ -9,7 +9,9 @@ import dagger.hilt.android.testing.UninstallModules
 import de.digitalService.useID.MainActivity
 import de.digitalService.useID.StorageManager
 import de.digitalService.useID.analytics.TrackerManagerType
+import de.digitalService.useID.hilt.AbTestModule
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
+import de.digitalService.useID.hilt.MockAbTestModule
 import de.digitalService.useID.hilt.SingletonModule
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardManager
@@ -31,7 +33,7 @@ import org.junit.Rule
 import org.junit.Test
 import javax.inject.Inject
 
-@UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class)
+@UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, AbTestModule::class, MockAbTestModule::class)
 @HiltAndroidTest
 class SetupSuccessfulTest {
 
@@ -60,6 +62,9 @@ class SetupSuccessfulTest {
         every { Main } returns Dispatchers.Main
     }
 
+    @BindValue
+    val mockAbTestManager: AbTestManager = mockk(relaxed = true)
+
     @Before
     fun before() {
         hiltRule.inject()
@@ -70,6 +75,7 @@ class SetupSuccessfulTest {
     fun testSetupSuccessful() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+        every { mockAbTestManager.isSetupIntroTestVariant.value } returns false
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -87,6 +93,104 @@ class SetupSuccessfulTest {
 
         // Define screens to be tested
         val setupIntro = TestScreen.SetupIntro(composeTestRule)
+        val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
+        val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
+        val setupPersonalPinInput = TestScreen.SetupPersonalPinInput(composeTestRule)
+        val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
+        val setupScan = TestScreen.Scan(composeTestRule)
+        val setupFinish = TestScreen.SetupFinish(composeTestRule)
+        val home = TestScreen.Home(composeTestRule)
+
+        home.assertIsDisplayed()
+        home.setupIdBtn.click()
+
+        advanceUntilIdle()
+
+        setupIntro.assertIsDisplayed()
+        setupIntro.setupIdBtn.click()
+
+        advanceUntilIdle()
+
+        setupPinLetter.assertIsDisplayed()
+        setupPinLetter.letterPresentBtn.click()
+
+        advanceUntilIdle()
+
+        setupTransportPin.assertIsDisplayed()
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(transportPin)
+        setupTransportPin.transportPinField.assertLength(transportPin.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        setupPersonalPinIntro.assertIsDisplayed()
+        setupPersonalPinIntro.continueBtn.click()
+
+        advanceUntilIdle()
+
+        setupPersonalPinInput.assertIsDisplayed()
+        setupPersonalPinInput.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        setupPersonalPinConfirm.assertIsDisplayed()
+        setupPersonalPinConfirm.personalPinField.assertLength(0)
+        composeTestRule.performPinInput(personalPin)
+        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        advanceUntilIdle()
+
+        setupScan.assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        setupScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        advanceUntilIdle()
+
+        setupFinish.assertIsDisplayed()
+        setupFinish.finishSetupBtn.click()
+
+        advanceUntilIdle()
+
+        home.assertIsDisplayed()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testSetupSuccessfulIntroVariant() = runTest {
+        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+        every { mockAbTestManager.isSetupIntroTestVariant.value } returns true
+
+
+        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
+        every { mockIdCardManager.eidFlow } returns eidFlow
+
+        composeTestRule.activity.setContentUsingUseIdTheme {
+            UseIDApp(
+                nfcAvailability = NfcAvailability.Available,
+                navigator = navigator,
+                trackerManager = trackerManager
+            )
+        }
+
+        val transportPin = "12345"
+        val personalPin = "123456"
+
+        // Define screens to be tested
+        val setupIntro = TestScreen.SetupIntroVariant(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
         val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)

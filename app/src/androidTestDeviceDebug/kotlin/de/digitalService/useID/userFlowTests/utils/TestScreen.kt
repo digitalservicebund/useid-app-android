@@ -266,8 +266,10 @@ sealed class TestScreen {
 
     data class SetupIntro(override val testRule: ComposeTestRule) : TestScreen() {
 
-        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title)
-//        val body = TestElement.Text(R.string.firstTimeUser_intro_body) TODO: reenable when markdown is matchable in UI tests
+        private val title =
+            TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title)
+
+        //        val body = TestElement.Text(R.string.firstTimeUser_intro_body) TODO: reenable when markdown is matchable in UI tests
         private val idsImage = TestElement.Tag(testRule, R.drawable.eid_3.toString())
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val setupIdBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_startSetup)
@@ -287,6 +289,32 @@ sealed class TestScreen {
                 )
             }
     }
+
+    data class SetupIntroVariant(override val testRule: ComposeTestRule) : TestScreen() {
+
+        private val title =
+            TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title_variant)
+        //private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_body_variant) // TODO : reenable when markdown is matchable in UI tests
+        //private val idsImage = TestElement.Tag(testRule, R.drawable.img_pin_setup.toString()) // TODO vector image not matchable??
+        val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+        val setupIdBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_startSetup)
+        private val alreadySetupBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_skipSetup)
+
+        override val expectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    title, cancel, setupIdBtn, alreadySetupBtn
+                )
+            }
+
+        override val unexpectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name)
+                )
+            }
+    }
+
 
     data class SetupPinLetter(override val testRule: ComposeTestRule) : TestScreen() {
 
