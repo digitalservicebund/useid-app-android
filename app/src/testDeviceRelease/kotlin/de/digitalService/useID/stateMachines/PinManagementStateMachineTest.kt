@@ -1,5 +1,6 @@
 package de.digitalService.useID.stateMachines
 
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.PinManagementCallback
 import de.digitalService.useID.flows.PinManagementStateMachine
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
@@ -22,8 +23,10 @@ import kotlin.reflect.KClass
 class PinManagementStateMachineTest {
     val pinManagementCallback: PinManagementCallback = mockk()
 
+    private val issueTrackerManager = mockk<IssueTrackerManagerType>(relaxUnitFun = true)
+
     private inline fun <reified NewState: PinManagementStateMachine.State> transition(initialState: PinManagementStateMachine.State, event: PinManagementStateMachine.Event, testScope: TestScope): NewState {
-        val stateMachine = PinManagementStateMachine(initialState)
+        val stateMachine = PinManagementStateMachine(initialState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, initialState)
 
         stateMachine.transition(event)
@@ -535,7 +538,7 @@ class PinManagementStateMachineTest {
     fun invalidate(oldState: PinManagementStateMachine.State) = runTest {
         val event = PinManagementStateMachine.Event.Invalidate
 
-        val stateMachine = PinManagementStateMachine(oldState)
+        val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
         stateMachine.transition(event)
@@ -549,7 +552,7 @@ class PinManagementStateMachineTest {
         fun `start PIN management`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.StartPinManagement(false, true)
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -560,7 +563,7 @@ class PinManagementStateMachineTest {
         fun `enter old PIN`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.EnterOldPin("")
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -571,7 +574,7 @@ class PinManagementStateMachineTest {
         fun `confirm PIN intro`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.ConfirmNewPinIntro
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -582,7 +585,7 @@ class PinManagementStateMachineTest {
         fun `retry PIN confirmation after mismatch`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.RetryNewPinConfirmation
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -593,7 +596,7 @@ class PinManagementStateMachineTest {
         fun `enter new PIN`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.EnterNewPin("")
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -604,7 +607,7 @@ class PinManagementStateMachineTest {
         fun `confirm new PIN`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.ConfirmNewPin("")
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -615,7 +618,7 @@ class PinManagementStateMachineTest {
         fun `request card insertion`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.RequestCardInsertion
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -626,7 +629,7 @@ class PinManagementStateMachineTest {
         fun `framework requests changed PIN`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.FrameworkRequestsChangedPin(pinManagementCallback)
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -637,7 +640,7 @@ class PinManagementStateMachineTest {
         fun `framework requests CAN`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.FrameworkRequestsCan
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -648,7 +651,7 @@ class PinManagementStateMachineTest {
         fun finish(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.Finish
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -659,7 +662,7 @@ class PinManagementStateMachineTest {
         fun `proceed after error`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.ProceedAfterError
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -670,7 +673,7 @@ class PinManagementStateMachineTest {
         fun `card deactivated`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -681,7 +684,7 @@ class PinManagementStateMachineTest {
         fun `card blocked`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.Error(IdCardInteractionException.CardBlocked)
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -693,7 +696,7 @@ class PinManagementStateMachineTest {
         fun `process failed`(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -705,7 +708,7 @@ class PinManagementStateMachineTest {
         fun back(oldState: PinManagementStateMachine.State) = runTest {
             val event = PinManagementStateMachine.Event.Back
 
-            val stateMachine = PinManagementStateMachine(oldState)
+            val stateMachine = PinManagementStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }

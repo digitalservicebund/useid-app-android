@@ -1,5 +1,6 @@
 package de.digitalService.useID.flows
 
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
 import de.digitalService.useID.idCardInterface.IdCardAttribute
@@ -13,8 +14,8 @@ typealias AttributeConfirmationCallback = (Map<IdCardAttribute, Boolean>) -> Uni
 typealias PinCallback = (String) -> Unit
 
 @Singleton
-class IdentificationStateMachine(initialState: State) {
-    @Inject constructor() : this(State.Invalid)
+class IdentificationStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
+    @Inject constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
 
     private val logger by getLogger()
 
@@ -67,9 +68,12 @@ class IdentificationStateMachine(initialState: State) {
     }
 
     fun transition(event: Event) {
-        logger.debug("${state.value.second::class.simpleName}  ====${event::class.simpleName}===>  ???")
+        val currentStateDescription = state.value.second::class.simpleName
+        val eventDescription = event::class.simpleName
+        issueTrackerManager.addInfoBreadcrumb("transition", "Transitioning from $currentStateDescription via $eventDescription.")
+        logger.debug("$currentStateDescription  ====$eventDescription===>  ???")
         val nextState = nextState(event)
-        logger.debug("${state.value.second::class.simpleName}  ====${event::class.simpleName}===>  ${nextState::class.simpleName}")
+        logger.debug("$currentStateDescription  ====$eventDescription===>  ${nextState::class.simpleName}")
         _state.value = Pair(event, nextState)
     }
 

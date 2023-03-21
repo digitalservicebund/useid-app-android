@@ -1,5 +1,6 @@
 package de.digitalService.useID.stateMachines
 
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.*
 import de.digitalService.useID.util.CanIdentStateFactory
 import de.digitalService.useID.util.CanPinManagementStateFactory
@@ -23,9 +24,11 @@ class CanStateMachineTest {
     private val pinManagementCallback: PinManagementCanCallback = mockk()
     private val pinCallback: PinCanCallback = mockk()
 
+    private val issueTrackerManager = mockk<IssueTrackerManagerType>(relaxUnitFun = true)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private inline fun <reified NewState: CanStateMachine.State> transition(initialState: CanStateMachine.State, event: CanStateMachine.Event, testScope: TestScope): NewState {
-        val stateMachine = CanStateMachine(initialState)
+        val stateMachine = CanStateMachine(initialState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, initialState)
 
         stateMachine.transition(event)
@@ -298,7 +301,7 @@ class CanStateMachineTest {
                 val newPin = "000000"
                 val oldState = CanStateMachine.State.PinManagement.CanIntro(identificationPending, pinManagementCallback, oldPin, newPin, true)
 
-                val stateMachine = CanStateMachine(oldState)
+                val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                 Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
             }
 
@@ -514,7 +517,7 @@ class CanStateMachineTest {
             fun back(oldState: CanStateMachine.State.PinManagement) = runTest {
                 val event = CanStateMachine.Event.Back
 
-                val stateMachine = CanStateMachine(oldState)
+                val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                 Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                 Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -531,7 +534,7 @@ class CanStateMachineTest {
                 fun `initialize with pin management callback`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.FrameworkRequestsCanForPinManagement(false, "999999", "888888", false, pinManagementCallback)
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -542,7 +545,7 @@ class CanStateMachineTest {
                 fun `initialize with pin callback`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.FrameworkRequestsCanForIdent(null, pinCallback)
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -553,7 +556,7 @@ class CanStateMachineTest {
                 fun `agree to third attempt`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.AgreeToThirdAttempt
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -564,7 +567,7 @@ class CanStateMachineTest {
                 fun `deny third attempt`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.DenyThirdAttempt
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -575,7 +578,7 @@ class CanStateMachineTest {
                 fun `reset PIN`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.ResetPin
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -586,7 +589,7 @@ class CanStateMachineTest {
                 fun `confirm CAN intro`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.ConfirmCanIntro
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -597,7 +600,7 @@ class CanStateMachineTest {
                 fun `enter CAN`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.EnterCan("")
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -608,7 +611,7 @@ class CanStateMachineTest {
                 fun `enter PIN`(oldState: CanStateMachine.State.PinManagement) = runTest {
                     val event = CanStateMachine.Event.EnterPin("")
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -623,7 +626,7 @@ class CanStateMachineTest {
                 fun `initialize with pin management callback`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.FrameworkRequestsCanForPinManagement(false, "999999", "888888", false, pinManagementCallback)
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -634,7 +637,7 @@ class CanStateMachineTest {
                 fun `initialize with pin callback`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.FrameworkRequestsCanForIdent(null, pinCallback)
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -645,7 +648,7 @@ class CanStateMachineTest {
                 fun `agree to third attempt`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.AgreeToThirdAttempt
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -656,7 +659,7 @@ class CanStateMachineTest {
                 fun `deny third attempt`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.DenyThirdAttempt
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -667,7 +670,7 @@ class CanStateMachineTest {
                 fun `reset PIN`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.ResetPin
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -678,7 +681,7 @@ class CanStateMachineTest {
                 fun `confirm CAN intro`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.ConfirmCanIntro
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -689,7 +692,7 @@ class CanStateMachineTest {
                 fun `enter CAN`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.EnterCan("")
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -700,7 +703,7 @@ class CanStateMachineTest {
                 fun `enter PIN`(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.EnterPin("")
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -711,7 +714,7 @@ class CanStateMachineTest {
                 fun back(oldState: CanStateMachine.State.Ident) = runTest {
                     val event = CanStateMachine.Event.Back
 
-                    val stateMachine = CanStateMachine(oldState)
+                    val stateMachine = CanStateMachine(oldState, issueTrackerManager)
                     Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
                     Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -724,7 +727,7 @@ class CanStateMachineTest {
         fun `invalidate from pin management state`(oldState: CanStateMachine.State.PinManagement) = runTest {
             val event = CanStateMachine.Event.Invalidate
 
-            val stateMachine = CanStateMachine(oldState)
+            val stateMachine = CanStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             stateMachine.transition(event)
@@ -736,7 +739,7 @@ class CanStateMachineTest {
         fun `invalidate from ident state`(oldState: CanStateMachine.State.Ident) = runTest {
             val event = CanStateMachine.Event.Invalidate
 
-            val stateMachine = CanStateMachine(oldState)
+            val stateMachine = CanStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             stateMachine.transition(event)

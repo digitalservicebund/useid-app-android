@@ -1,5 +1,6 @@
 package de.digitalService.useID.flows
 
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -7,8 +8,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SetupStateMachine(initialState: State) {
-    @Inject constructor() : this(State.Invalid)
+class SetupStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
+    @Inject constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
 
     private val logger by getLogger()
 
@@ -49,9 +50,12 @@ class SetupStateMachine(initialState: State) {
     }
 
     fun transition(event: Event) {
-        logger.debug("${state.value.second::class.simpleName}  ====${event::class.simpleName}===>  ???")
+        val currentStateDescription = state.value.second::class.simpleName
+        val eventDescription = event::class.simpleName
+        issueTrackerManager.addInfoBreadcrumb("transition", "Transitioning from $currentStateDescription via $eventDescription.")
+        logger.debug("$currentStateDescription  ====$eventDescription===>  ???")
         val nextState = nextState(event)
-        logger.debug("${state.value.second::class.simpleName}  ====${event::class.simpleName}===>  ${nextState::class.simpleName}")
+        logger.debug("$currentStateDescription  ====$eventDescription===>  ${nextState::class.simpleName}")
         _state.value = Pair(event, nextState)
     }
 

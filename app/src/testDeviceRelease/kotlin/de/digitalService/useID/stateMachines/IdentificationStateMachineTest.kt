@@ -1,5 +1,6 @@
 package de.digitalService.useID.stateMachines
 
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.AttributeConfirmationCallback
 import de.digitalService.useID.flows.IdentificationStateMachine
 import de.digitalService.useID.flows.PinCallback
@@ -28,8 +29,10 @@ class IdentificationStateMachineTest {
     private val request: EidAuthenticationRequest = mockk()
     private val attributeConfirmationCallback: AttributeConfirmationCallback = mockk()
 
+    private val issueTrackerManager = mockk<IssueTrackerManagerType>(relaxUnitFun = true)
+
     private inline fun <reified NewState: IdentificationStateMachine.State> transition(initialState: IdentificationStateMachine.State, event: IdentificationStateMachine.Event, testScope: TestScope): NewState {
-        val stateMachine = IdentificationStateMachine(initialState)
+        val stateMachine = IdentificationStateMachine(initialState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, initialState)
 
         stateMachine.transition(event)
@@ -342,7 +345,7 @@ class IdentificationStateMachineTest {
     fun invalidate(oldState: IdentificationStateMachine.State) = runTest {
 
         val event = IdentificationStateMachine.Event.Invalidate
-        val stateMachine = IdentificationStateMachine(oldState)
+        val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
         stateMachine.transition(event)
@@ -355,7 +358,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["StartIdentification"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `started fetching metadata`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.StartedFetchingMetadata
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -365,7 +368,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["FetchingMetadata"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `framework requests attribute confirmation`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(request, attributeConfirmationCallback)
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -375,7 +378,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["RequestAttributeConfirmation", "RevisitAttributes"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `confirm attributes`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.ConfirmAttributes
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -385,7 +388,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["SubmitAttributeConfirmation", "WaitingForCardAttachment"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `framework requests PIN`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.FrameworkRequestsPin(pinCallback)
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -395,7 +398,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["PinInput", "PinInputRetry"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `enter PIN`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.EnterPin("")
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -405,7 +408,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["WaitingForCardAttachment"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `framework requests CAN`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.FrameworkRequestsCan
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -415,7 +418,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["PinEntered", "CanRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `request card insertion`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.RequestCardInsertion
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -425,7 +428,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["WaitingForCardAttachment", "CanRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun finish(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.Finish("")
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -435,7 +438,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["FetchingMetadata", "WaitingForCardAttachment", "CanRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun error(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -445,7 +448,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["FetchingMetadataFailed"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `retry after error`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.RetryAfterError
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -455,7 +458,7 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["FetchingMetadata", "RequestAttributeConfirmation", "PinInput"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun back(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.Back
-            val stateMachine = IdentificationStateMachine(oldState)
+            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }

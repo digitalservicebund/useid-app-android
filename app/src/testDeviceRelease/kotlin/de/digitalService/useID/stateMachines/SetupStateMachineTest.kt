@@ -1,9 +1,11 @@
 package de.digitalService.useID.stateMachines
 
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.SetupStateMachine
 import de.digitalService.useID.util.SetupStateFactory
 import de.jodamob.junit5.DefaultTypeFactory
 import de.jodamob.junit5.SealedClassesSource
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -17,8 +19,10 @@ import kotlin.reflect.KClass
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SetupStateMachineTest {
+
+    private val issueTrackerManager = mockk<IssueTrackerManagerType>(relaxUnitFun = true)
     private inline fun <reified NewState: SetupStateMachine.State> transition(initialState: SetupStateMachine.State, event: SetupStateMachine.Event, testScope: TestScope): NewState {
-        val stateMachine = SetupStateMachine(initialState)
+        val stateMachine = SetupStateMachine(initialState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, initialState)
 
         stateMachine.transition(event)
@@ -264,7 +268,7 @@ class SetupStateMachineTest {
     fun invalidate(oldState: SetupStateMachine.State) = runTest {
         val event = SetupStateMachine.Event.Invalidate
 
-        val stateMachine = SetupStateMachine(oldState)
+        val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
         stateMachine.transition(event)
@@ -278,7 +282,7 @@ class SetupStateMachineTest {
         fun `offer setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.OfferSetup(null)
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -289,7 +293,7 @@ class SetupStateMachineTest {
         fun `skip setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.SkipSetup
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -300,7 +304,7 @@ class SetupStateMachineTest {
         fun `start setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.StartSetup
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -311,7 +315,7 @@ class SetupStateMachineTest {
         fun `PIN reset`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.ResetPin
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -322,7 +326,7 @@ class SetupStateMachineTest {
         fun `finish PIN management`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.FinishPinManagement
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -333,7 +337,7 @@ class SetupStateMachineTest {
         fun `confirm finish`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.ConfirmFinish
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -344,7 +348,7 @@ class SetupStateMachineTest {
         fun `subsequent flow backed down`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.SubsequentFlowBackedDown
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
@@ -355,7 +359,7 @@ class SetupStateMachineTest {
         fun back(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.Back
 
-            val stateMachine = SetupStateMachine(oldState)
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
             Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
