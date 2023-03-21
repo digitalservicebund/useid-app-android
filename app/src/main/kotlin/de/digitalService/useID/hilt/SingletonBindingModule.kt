@@ -29,12 +29,6 @@ abstract class SingletonBindingModule {
     abstract fun bindStorageManager(storageManager: StorageManager): StorageManagerType
 
     @Binds
-    abstract fun bindTrackerManager(trackerManager: TrackerManager): TrackerManagerType
-
-    @Binds
-    abstract fun bindIssueTrackerManager(issueTrackerManager: IssueTrackerManager): IssueTrackerManagerType
-
-    @Binds
     abstract fun bindCurrentTimeProvider(currentTimeProvider: CurrentTimeProvider): CurrentTimeProviderInterface
 }
 
@@ -50,4 +44,14 @@ abstract class CoroutineContextProviderModule {
 abstract class NfcInterfaceMangerModule {
     @Binds
     abstract fun bindNfcInterfaceManager(nfcInterfaceManager: NfcInterfaceManager): NfcInterfaceManagerType
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class TrackerManagerModule {
+    @Binds
+    abstract fun bindTrackerManager(trackerManager: TrackerManager): TrackerManagerType
+
+    @Binds
+    abstract fun bindIssueTrackerManager(issueTrackerManager: IssueTrackerManager): IssueTrackerManagerType
 }

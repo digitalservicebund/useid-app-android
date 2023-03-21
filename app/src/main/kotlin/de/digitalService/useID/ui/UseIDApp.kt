@@ -72,7 +72,7 @@ fun UseIDApp(nfcAvailability: NfcAvailability, navigator: Navigator, trackerMana
 
             SetupCanIntroDestination.route, IdentificationCanIntroDestination.route -> "canIntro"
             CanInputDestination.route -> "canInput"
-            IdentificationCanPinInputDestination.route -> "personalPIN"
+            IdentificationCanPinInputDestination.route -> identificationRoute("personalPIN")
 
             ImprintScreenDestination.route -> "imprint"
             AccessibilityScreenDestination.route -> "accessibility"
