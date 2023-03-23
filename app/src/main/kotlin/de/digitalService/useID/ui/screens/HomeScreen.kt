@@ -7,11 +7,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -29,15 +28,13 @@ import de.digitalService.useID.BuildConfig
 import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.ui.components.BundButton
-import de.digitalService.useID.ui.components.ButtonType
+import de.digitalService.useID.ui.components.BundInformationButton
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
-import de.digitalService.useID.ui.theme.*
+import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 @Destination
 @RootNavGraph(start = true)
@@ -51,41 +48,70 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxWidth()
-                .background(UseIdTheme.colors.blue200)
+                .background(
+                    brush = Brush.verticalGradient(
+                        listOf(
+                            UseIdTheme.colors.blue100,
+                            UseIdTheme.colors.blue200
+                        )
+                    )
+                )
         ) {
             Image(
-                painter = painterResource(id = R.drawable.abstract_widget_phone),
+                painter = painterResource(id = R.drawable.img_logo),
                 contentDescription = null,
-                contentScale = ContentScale.FillWidth,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .padding(start = 50.dp, end = 50.dp, top = 60.dp, bottom = 16.dp)
-                    .semantics { testTag = R.drawable.abstract_widget_phone.toString() }
+                    .padding(top = 52.dp, bottom = 32.dp)
+                    .semantics { testTag = R.drawable.img_logo.toString() }
             )
 
             Text(
                 text = stringResource(R.string.home_header_title),
-                style = UseIdTheme.typography.headingXl,
-                color = UseIdTheme.colors.black,
+                style = UseIdTheme.typography.bodyLBold,
+                color = UseIdTheme.colors.blue800,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = UseIdTheme.spaces.m)
+                    .padding(horizontal = 42.dp)
                     .semantics { heading() }
             )
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
 
             Text(
-                text = stringResource(R.string.home_header_body),
+                text = stringResource(R.string.home_header_infoText),
                 style = UseIdTheme.typography.bodyLRegular,
                 color = UseIdTheme.colors.black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = UseIdTheme.spaces.m)
+                    .padding(horizontal = 42.dp)
             )
 
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
+
+            Text(
+                text = stringResource(R.string.home_header_infoCTA),
+                style = UseIdTheme.typography.bodyLBold,
+                color = UseIdTheme.colors.black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 42.dp)
+            )
+
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
+
+            Image(
+                painter = painterResource(id = R.drawable.abstract_widget_phone),
+                contentDescription = null,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .semantics { testTag = R.drawable.abstract_widget_phone.toString() }
+            )
+
+            Spacer(modifier = Modifier.height(52.dp))
         }
 
         Column(
@@ -94,16 +120,7 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
                 .fillMaxHeight()
                 .padding(horizontal = UseIdTheme.spaces.m)
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = stringResource(R.string.home_more_title),
-                color = UseIdTheme.colors.black,
-                style = UseIdTheme.typography.headingXl,
-                modifier = Modifier.semantics { heading() }
-            )
-
-            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
             SetupUseIdCardBox(viewModel)
 
@@ -144,60 +161,42 @@ private fun CardBox(content: @Composable ColumnScope.() -> Unit) {
 }
 
 @Composable
-fun SetupIdBoxLayout(
-    modifier: Modifier = Modifier,
-    content: @Composable () -> Unit
-) {
-    Layout(
-        modifier = modifier,
-        content = content
-    ) { measurables, constraints ->
-        val idCardImage = measurables[0]
-        val setupButton = measurables[1]
-
-        val imagePlaceable = idCardImage.measure(constraints)
-        val buttonPlaceable = setupButton.measure(constraints)
-
-        val overlapFactor = 0.9
-
-        layout(
-            width = constraints.maxWidth,
-            height = (imagePlaceable.height * overlapFactor).toInt() + buttonPlaceable.height
-        ) {
-            imagePlaceable.placeRelative(0, 0)
-            buttonPlaceable.placeRelative(
-                x = 0,
-                y = (imagePlaceable.height * overlapFactor).toInt()
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalComposeUiApi::class)
-@Composable
 private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
     CardBox {
-        SetupIdBoxLayout(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(id = R.drawable.eid_3),
-                contentScale = ContentScale.FillWidth,
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(top = UseIdTheme.spaces.s)
-                    .padding(horizontal = UseIdTheme.spaces.l)
-                    .fillMaxWidth()
-                    .semantics { testTag = R.drawable.eid_3.toString() }
-            )
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
-            BundButton(
-                type = ButtonType.PRIMARY,
-                onClick = viewModel::setupOnlineId,
-                label = stringResource(R.string.home_startSetup),
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(bottom = UseIdTheme.spaces.s)
-            )
-        }
+        Text(
+            text = stringResource(R.string.home_setup_title),
+            style = UseIdTheme.typography.headingMBold,
+            color = UseIdTheme.colors.black,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = UseIdTheme.spaces.m)
+        )
+
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
+
+        Text(
+            text = stringResource(R.string.home_setup_body),
+            style = UseIdTheme.typography.bodyMRegular,
+            color = UseIdTheme.colors.black,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = UseIdTheme.spaces.m)
+        )
+
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
+
+        BundInformationButton(
+            onClick = viewModel::setupOnlineId,
+            label = stringResource(R.string.home_setup_setup),
+            modifier = Modifier
+                .padding(horizontal = UseIdTheme.spaces.m)
+        )
+
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
     }
 }
 

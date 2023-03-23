@@ -88,7 +88,7 @@ class SetupCanAfterSomeTimeCancelledOnCanIntroTest {
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
-        home.setupIdBtn.click()
+        home.setupButton.click()
 
         advanceUntilIdle()
 

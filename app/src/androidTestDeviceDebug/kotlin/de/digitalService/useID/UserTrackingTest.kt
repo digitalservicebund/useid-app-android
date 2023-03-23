@@ -188,7 +188,7 @@ class UserTrackingTest {
         composeTestRule.waitForIdle()
 
         Assert.assertEquals(home.trackingIdentifier, trackingRouteSlot.captured)
-        home.setupIdBtn.scrollToAndClick()
+        home.setupButton.scrollToAndClick()
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -313,7 +313,7 @@ class UserTrackingTest {
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
-        home.setupIdBtn.click()
+        home.setupButton.click()
 
         advanceUntilIdle()
 
@@ -426,7 +426,7 @@ class UserTrackingTest {
 
         composeTestRule.waitForIdle()
 
-        home.setupIdBtn.scrollToAndClick()
+        home.setupButton.scrollToAndClick()
         advanceUntilIdle()
         setupIntro.setupIdBtn.click()
         advanceUntilIdle()
@@ -485,7 +485,7 @@ class UserTrackingTest {
 
         composeTestRule.waitForIdle()
 
-        home.setupIdBtn.scrollToAndClick()
+        home.setupButton.scrollToAndClick()
         advanceUntilIdle()
         setupIntro.setupIdBtn.click()
         advanceUntilIdle()
@@ -544,7 +544,7 @@ class UserTrackingTest {
 
         composeTestRule.waitForIdle()
 
-        home.setupIdBtn.scrollToAndClick()
+        home.setupButton.scrollToAndClick()
         advanceUntilIdle()
         setupIntro.setupIdBtn.click()
         advanceUntilIdle()

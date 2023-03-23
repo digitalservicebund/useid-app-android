@@ -115,7 +115,8 @@
     <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport‑PIN ein.</string>
     <string name="helpNFC_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kurze Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
     <string name="helpNFC_title">So funktioniert die NFC‑Technologie</string>
-    <string name="home_header_body">Öffnen Sie die »Grundsteuererklärung für Privateigentum« Website, um die Identifizierung zu starten. Wir werden bald weitere Anbieter unterstützen.</string>
+    <string name="home_header_infoText">Öffnen Sie die Internetseite von  »Grundsteuererklärung für Privateigentum«. Um die Identifizierung zu starten, tippen Sie dort auf:</string>
+    <string name="home_header_infoCTA">»Mit BundesIdent ausweisen«</string>
     <string name="home_header_title">So funktioniert’s</string>
     <string name="home_more_accessibilityStatement">Barrierefreiheitserklärung</string>
     <string name="home_more_imprint">Kontakt und Impressum</string>
@@ -124,7 +125,9 @@
     <string name="home_more_settings">Einstellungen</string>
     <string name="home_more_terms">Nutzungsbedingungen</string>
     <string name="home_more_title">Mehr</string>
-    <string name="home_startSetup">Online-Ausweis einrichten</string>
+    <string name="home_setup_title">Neuer Ausweis?</string>
+    <string name="home_setup_body">Vergeben Sie Ihre persönliche Ausweis‑PIN. Danach können Sie sich mit Ihrem Ausweis online identifizieren.</string>
+    <string name="home_setup_setup">Online-Ausweis einrichten</string>
     <string name="identification_attributeConsent_title">Freigabe erteilen für »%1s«.</string>
     <string name="identification_attributeConsent_body">Der Diensteanbieter möchte auf folgende Daten von Ihrem Ausweis zugreifen:</string>
     <string name="identification_attributeConsent_button_additionalInformation">Weitere Informationen</string>

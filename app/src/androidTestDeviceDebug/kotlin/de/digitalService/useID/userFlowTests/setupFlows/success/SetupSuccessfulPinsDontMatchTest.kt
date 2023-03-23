@@ -100,7 +100,7 @@ class SetupSuccessfulPinsDontMatchTest {
         val home = TestScreen.Home(composeTestRule)
 
         home.assertIsDisplayed()
-        home.setupIdBtn.click()
+        home.setupButton.click()
 
         advanceUntilIdle()
 

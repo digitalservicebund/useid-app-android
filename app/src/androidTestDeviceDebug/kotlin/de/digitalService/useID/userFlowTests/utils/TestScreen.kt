@@ -31,13 +31,15 @@ sealed class TestScreen {
     data class Home(override val testRule: ComposeTestRule) : TestScreen() {
         override val trackingIdentifier: String = "/"
 
-        private val titleImage = TestElement.Tag(testRule, R.drawable.abstract_widget_phone.toString())
+        private val logoImage = TestElement.Tag(testRule, R.drawable.img_logo.toString())
         private val headerTitle = TestElement.Text(testRule, resourceId = R.string.home_header_title)
-        private val headerBody = TestElement.Text(testRule, resourceId = R.string.home_header_body)
+        private val headerInfoText = TestElement.Text(testRule, resourceId = R.string.home_header_infoText)
+        private val headerInfoTextCTA = TestElement.Text(testRule, resourceId = R.string.home_header_infoCTA)
+        private val widgetImage = TestElement.Tag(testRule, R.drawable.abstract_widget_phone.toString())
 
-        private val title = TestElement.Text(testRule, resourceId = R.string.home_more_title)
-        private val idsImage = TestElement.Tag(testRule, R.drawable.eid_3.toString())
-        val setupIdBtn = TestElement.Text(testRule, resourceId = R.string.home_startSetup)
+        private val setupTitle = TestElement.Text(testRule, resourceId = R.string.home_setup_title)
+        private val setupBody = TestElement.Text(testRule, resourceId = R.string.home_setup_body)
+        val setupButton = TestElement.Text(testRule, resourceId = R.string.home_setup_setup)
 
         val privacyBtn = TestElement.Text(testRule, resourceId = R.string.home_more_privacy)
         val licensesBtn = TestElement.Text(testRule, resourceId = R.string.home_more_licenses)
@@ -48,8 +50,8 @@ sealed class TestScreen {
         override val expectedElements: List<TestElement>
             get() {
                 return listOf(
-                    titleImage, headerTitle, headerBody, title, idsImage, setupIdBtn,
-                    privacyBtn, licensesBtn, accessibilityBtn, termsAndConditionsBtn, imprintBtn
+                    logoImage, headerTitle, headerInfoText, headerInfoTextCTA, widgetImage, setupTitle, setupBody,
+                    setupButton, privacyBtn, licensesBtn, accessibilityBtn, termsAndConditionsBtn, imprintBtn
                 )
             }
 

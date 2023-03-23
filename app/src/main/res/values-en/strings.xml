@@ -113,7 +113,8 @@
     <string name="firstTimeUser_transportPIN_title">Enter the transport PIN.</string>
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
     <string name="helpNFC_title">How the NFC technology works</string>
-    <string name="home_header_body">Visit the »Grundsteuererklärung für Privateigentum« website to start the identification process. We will support more providers soon.</string>
+    <string name="home_header_infoText">Go to the website »Grundsteuererklärung für Privateigentum«. To start the identification, tap on the button:</string>
+    <string name="home_header_infoCTA">»Mit BundesIdent ausweisen«</string>
     <string name="home_header_title">How it works</string>
     <string name="home_more_accessibilityStatement">Accessibility statement</string>
     <string name="home_more_imprint">Contact and Imprint</string>
@@ -122,7 +123,9 @@
     <string name="home_more_settings">Settings</string>
     <string name="home_more_terms">Terms and Conditions of Use</string>
     <string name="home_more_title">More</string>
-    <string name="home_startSetup">Set up online ID card</string>
+    <string name="home_setup_title">New ID card?</string>
+    <string name="home_setup_body">Assign your personal ID PIN. After you have done this, you can use your ID card to identify yourself online.</string>
+    <string name="home_setup_setup">Set up online ID card</string>
     <string name="identification_attributeConsent_title">Grant release for »%1s«.</string>
     <string name="identification_attributeConsent_body">The service provider would like to access the following data from your ID card:</string>
     <string name="identification_attributeConsent_button_additionalInformation">More information</string>
