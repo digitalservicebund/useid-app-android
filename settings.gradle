@@ -10,7 +10,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://mvn.ecsec.de/repository/openecard-public" }
+        maven { url 'https://nexus.governikus.de/nexus/content/repositories/SDKWrapper/' }
         maven { url 'https://jitpack.io' }
     }
 }

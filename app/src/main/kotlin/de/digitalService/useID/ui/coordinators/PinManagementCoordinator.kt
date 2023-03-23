@@ -75,7 +75,8 @@ class PinManagementCoordinator @Inject constructor(
                         is PinManagementStateMachine.State.ReadyForScan -> executePinManagement()
                         is PinManagementStateMachine.State.WaitingForFirstCardAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
                         is PinManagementStateMachine.State.WaitingForCardReAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
-                        is PinManagementStateMachine.State.FrameworkReadyForPinManagement -> state.callback(state.oldPin, state.newPin)
+                        is PinManagementStateMachine.State.FrameworkReadyForPinInput -> idCardManager.providePin(state.oldPin)
+                        is PinManagementStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.oldPin)
                         is PinManagementStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin, state.shortFlow)
                         is PinManagementStateMachine.State.OldTransportPinRetry -> navigator.navigate(SetupTransportPinDestination(true, state.identificationPending))
                         is PinManagementStateMachine.State.OldPersonalPinRetry -> throw NotImplementedError()
@@ -200,15 +201,19 @@ class PinManagementCoordinator @Inject constructor(
                     EidInteractionEvent.CardInteractionComplete -> {
                         logger.debug("Card interaction complete.")
                     }
-                    EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult -> {
+                    EidInteractionEvent.PinManagementFinished -> {
                         logger.debug("Process completed successfully.")
                         flowStateMachine.transition(PinManagementStateMachine.Event.Finish)
                     }
-                    is EidInteractionEvent.RequestChangedPin -> {
-                        logger.debug("Request changed PIN.")
-                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsChangedPin(event.pinCallback))
+                    is EidInteractionEvent.RequestPin -> {
+                        logger.debug("Request PIN.")
+                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsPin)
                     }
-                    is EidInteractionEvent.RequestCanAndChangedPin -> {
+                    is EidInteractionEvent.RequestNewPin -> {
+                        logger.debug("Request new PIN.")
+                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsNewPin)
+                    }
+                    is EidInteractionEvent.RequestCan -> {
                         logger.debug("PIN and CAN requested.")
                         flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsCan)
                     }

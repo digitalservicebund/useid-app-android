@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.openecard.mobile.activation.ActivationResultCode
+//import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 @Composable
@@ -86,7 +86,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectException(IdCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
+            idCardManager.injectException(IdCardInteractionException.ProcessFailed)
         }
     }
 
@@ -94,13 +94,7 @@ class PreviewIdentificationScanViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             simulateWaiting()
 
-            idCardManager.injectException(
-                IdCardInteractionException.ProcessFailed(
-                    ActivationResultCode.BAD_REQUEST,
-                    "https://digitalservice.bund.de",
-                    null
-                )
-            )
+            idCardManager.injectException(IdCardInteractionException.ProcessFailed)
         }
     }
 

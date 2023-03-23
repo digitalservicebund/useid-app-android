@@ -36,12 +36,13 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
         class ReadyForScan(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
         class WaitingForFirstCardAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
         class WaitingForCardReAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
-        class FrameworkReadyForPinManagement(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val callback: PinManagementCallback) : State()
+        class FrameworkReadyForPinInput(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
+        class FrameworkReadyForNewPinInput(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
         class CanRequested(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : State()
         object Finished : State()
         object Cancelled : State()
-        class OldTransportPinRetry(val identificationPending: Boolean, val newPin: String, val callback: PinManagementCallback) : State()
-        class OldPersonalPinRetry(val newPin: String, val callback: PinManagementCallback) : State()
+        class OldTransportPinRetry(val identificationPending: Boolean, val newPin: String) : State()
+        class OldPersonalPinRetry(val newPin: String) : State()
 
         object CardDeactivated : State()
         object CardBlocked : State()
@@ -57,7 +58,8 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
         data class ConfirmNewPin(val newPin: String) : Event()
         object RetryNewPinConfirmation : Event()
         object RequestCardInsertion : Event()
-        data class FrameworkRequestsChangedPin(val pinManagementCallback: PinManagementCallback) : Event()
+        object FrameworkRequestsPin : Event()
+        object FrameworkRequestsNewPin : Event()
         object FrameworkRequestsCan : Event()
         object Finish : Event()
 
@@ -95,8 +97,8 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
                 when (val currentState = state.value.second) {
                     is State.OldTransportPinInput -> State.NewPinIntro(currentState.identificationPending, true, event.oldPin)
                     is State.OldPersonalPinInput -> State.NewPinIntro(false, false, event.oldPin)
-                    is State.OldTransportPinRetry -> State.FrameworkReadyForPinManagement(currentState.identificationPending, true, event.oldPin, currentState.newPin, currentState.callback)
-                    is State.OldPersonalPinRetry -> State.FrameworkReadyForPinManagement(false, false, event.oldPin, currentState.newPin, currentState.callback)
+//                    is State.OldTransportPinRetry -> State.FrameworkReadyForPinManagement(currentState.identificationPending, true, event.oldPin, currentState.newPin, currentState.callback)
+//                    is State.OldPersonalPinRetry -> State.FrameworkReadyForPinManagement(false, false, event.oldPin, currentState.newPin, currentState.callback)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -132,16 +134,23 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
             is Event.RequestCardInsertion -> {
                 when (val currentState = state.value.second) {
                     is State.ReadyForScan -> State.WaitingForFirstCardAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-                    is State.FrameworkReadyForPinManagement -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+//                    is State.FrameworkReadyForPinManagement -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     is State.CanRequested -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
 
-            is Event.FrameworkRequestsChangedPin -> {
+            is Event.FrameworkRequestsPin -> {
                 when (val currentState = state.value.second) {
-                    is State.WaitingForFirstCardAttachment -> State.FrameworkReadyForPinManagement(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, event.pinManagementCallback)
-                    is State.FrameworkReadyForPinManagement -> if (currentState.transportPin) State.OldTransportPinRetry(currentState.identificationPending, currentState.newPin, event.pinManagementCallback) else State.OldPersonalPinRetry(currentState.newPin, event.pinManagementCallback)
+                    is State.WaitingForFirstCardAttachment -> State.FrameworkReadyForPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+//                    is State.FrameworkReadyForPinManagement -> if (currentState.transportPin) State.OldTransportPinRetry(currentState.identificationPending, currentState.newPin, event.pinManagementCallback) else State.OldPersonalPinRetry(currentState.newPin, event.pinManagementCallback)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
+            is Event.FrameworkRequestsNewPin -> {
+                when (val currentState = state.value.second) {
+                    is State.FrameworkReadyForPinInput -> State.FrameworkReadyForNewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -150,14 +159,14 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
                 when (val currentState = state.value.second) {
                     is State.WaitingForFirstCardAttachment -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
                     is State.WaitingForCardReAttachment -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
-                    is State.FrameworkReadyForPinManagement -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
+//                    is State.FrameworkReadyForPinManagement -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.Finish -> {
                 when (state.value.second) {
-                    is State.FrameworkReadyForPinManagement, is State.WaitingForFirstCardAttachment, is State.WaitingForCardReAttachment, is State.CanRequested -> State.Finished
+//                    is State.FrameworkReadyForPinManagement, is State.WaitingForFirstCardAttachment, is State.WaitingForCardReAttachment, is State.CanRequested -> State.Finished
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -174,13 +183,13 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
                     return when (event.exception) {
                         is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
                         is IdCardInteractionException.CardBlocked -> State.CardBlocked
-                        is IdCardInteractionException.ProcessFailed -> State.ProcessFailed(identificationPending, transportPin, oldPin, newPin, firstScan)
+//                        is IdCardInteractionException.ProcessFailed -> State.ProcessFailed(identificationPending, transportPin, oldPin, newPin, firstScan)
                         else -> State.UnknownError
                     }
                 }
 
                 when (val currentState = state.value.second) {
-                    is State.FrameworkReadyForPinManagement -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
+//                    is State.FrameworkReadyForPinManagement -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
                     is State.WaitingForFirstCardAttachment -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
                     is State.WaitingForCardReAttachment -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
                     else -> throw IllegalArgumentException()

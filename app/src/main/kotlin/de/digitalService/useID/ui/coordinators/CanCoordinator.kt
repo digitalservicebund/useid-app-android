@@ -145,9 +145,9 @@ class CanCoordinator @Inject constructor(
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-                    is EidInteractionEvent.RequestPinAndCan -> {
-                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForIdent(pin, event.pinCanCallback))
-                    }
+//                    is EidInteractionEvent.RequestPinAndCan -> {
+//                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForIdent(pin, event.pinCanCallback))
+//                    }
                     is EidInteractionEvent.AuthenticationSuccessful, EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult, is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")
@@ -163,9 +163,9 @@ class CanCoordinator @Inject constructor(
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-                    is EidInteractionEvent.RequestCanAndChangedPin -> {
-                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForPinManagement(identificationPending, pin, newPin, shortFlow, event.pinCallback))
-                    }
+//                    is EidInteractionEvent.RequestCanAndChangedPin -> {
+//                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForPinManagement(identificationPending, pin, newPin, shortFlow, event.pinCallback))
+//                    }
                     is EidInteractionEvent.AuthenticationSuccessful, EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult, is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")

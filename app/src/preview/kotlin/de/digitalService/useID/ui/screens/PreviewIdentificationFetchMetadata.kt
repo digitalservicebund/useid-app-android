@@ -23,7 +23,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.openecard.mobile.activation.ActivationResultCode
+//import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 @Composable
@@ -83,7 +83,7 @@ class PreviewIdentificationFetchMetadataViewModel @Inject constructor(
 
     fun simulateConnectionError() {
         viewModelScope.launch(Dispatchers.Main) {
-            idCardManager.injectException(IdCardInteractionException.ProcessFailed(ActivationResultCode.BAD_REQUEST, null, null))
+            idCardManager.injectException(IdCardInteractionException.ProcessFailed)
         }
         trackerManager.trackEvent("identification", "loadingFailed", "attributes")
     }

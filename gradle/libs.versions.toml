@@ -59,7 +59,7 @@ matomo-sdk-android = "com.github.matomo-org:matomo-sdk-android:5c6b715"
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
-openecard-android = "org.openecard.clients:android-lib:2.1.6"
+ausweisapp2sdk-wrapper = "de.governikus.ausweisapp2:sdkwrapper:1.26.3.0"
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry" }
 sentry-compose-android = { module = "io.sentry:sentry-compose-android", version.ref = "sentry" }
 slf4j-api = "org.slf4j:slf4j-api:2.0.7"

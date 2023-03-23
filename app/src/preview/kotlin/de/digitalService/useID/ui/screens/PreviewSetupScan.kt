@@ -27,7 +27,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.openecard.mobile.activation.ActivationResultCode
+//import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -122,7 +122,7 @@ class PreviewSetupScanViewModel @Inject constructor(
         viewModelScope.launch {
             simulateWaiting()
 
-            idCardManager.injectException(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null))
+            idCardManager.injectException(IdCardInteractionException.ProcessFailed)
             setupPreviewHelper.firstTry = true
         }
         trackerManager.trackScreen("firstTimeUser/cardUnreadable")

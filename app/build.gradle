@@ -152,6 +152,9 @@ android {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
     lint {
         textReport true
@@ -184,7 +187,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.compose.markdown)
     implementation(libs.exoplayer)
-    implementation(libs.openecard.android)
+    implementation(libs.ausweisapp2sdk.wrapper)
     implementation(libs.xerces)
     implementation(libs.slf4j.api)
     implementation(libs.logback.android)
