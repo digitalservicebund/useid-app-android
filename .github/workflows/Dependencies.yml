@@ -18,6 +18,6 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Gradle Dependency Submission
-        uses: mikepenz/gradle-dependency-submission@v0.8.5
+        uses: mikepenz/gradle-dependency-submission@v0.8.6
         with:
           gradle-build-module: ":app"
