@@ -114,7 +114,7 @@
     <string name="helpNFC_body">NFC stands for Near Field Communication. The technology enables the contactless exchange of data over very short distances. It is also used, for example, when paying with a smartphone at the supermarket checkout.</string>
     <string name="helpNFC_title">How the NFC technology works</string>
     <string name="home_header_infoText">Go to the website »Grundsteuererklärung für Privateigentum«. To start the identification, tap on the button:</string>
-    <string name="home_header_infoCTA">»Mit BundesIdent ausweisen«</string>
+    <string name="home_header_infoCTA">‘Mit BundesIdent ausweisen’</string>
     <string name="home_header_title">How it works</string>
     <string name="home_more_accessibilityStatement">Accessibility statement</string>
     <string name="home_more_imprint">Contact and Imprint</string>
