@@ -90,6 +90,29 @@ class PinManagementCoordinatorTest {
         every { mockPinManagementStateMachine.state } returns stateFlow
     }
 
+    @Test
+    fun singleStateObservation() = runTest {
+        val pinManagementCoordinator = PinManagementCoordinator(
+            mockContext,
+            mockCanCoordinator,
+            mockNavigator,
+            mockIdCardManager,
+            mockPinManagementStateMachine,
+            mockCanStateMachine,
+            mockCoroutineContextProvider
+        )
+
+        pinManagementCoordinator.startPinManagement(false, false)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockPinManagementStateMachine.state }
+
+        pinManagementCoordinator.startPinManagement(false, false)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockPinManagementStateMachine.state }
+    }
+
     @Nested
     inner class PinManagementStateChangeHandling {
         private fun testTransition(event: PinManagementStateMachine.Event, state: PinManagementStateMachine.State, testScope: TestScope) {

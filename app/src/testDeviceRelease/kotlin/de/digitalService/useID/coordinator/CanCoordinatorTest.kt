@@ -4,18 +4,14 @@ import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.flows.*
 import de.digitalService.useID.idCardInterface.*
-import de.digitalService.useID.stateMachines.CanStateMachineTest
-import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.SubCoordinatorState
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.ui.screens.can.IdentificationCanPinForgotten
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CanIdentStateFactory
 import de.digitalService.useID.util.CanPinManagementStateFactory
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.EidInteractionEventTypeFactory
-import de.jodamob.junit5.DefaultTypeFactory
 import de.jodamob.junit5.SealedClassesSource
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -23,7 +19,6 @@ import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.*
 import org.junit.jupiter.api.Assertions
@@ -33,8 +28,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.openecard.common.sal.Assert
-import kotlin.reflect.KClass
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MockKExtension::class)
@@ -72,6 +65,25 @@ class CanCoordinatorTest {
         mockkStatic("android.net.Uri")
         every { Uri.encode(any()) } answers { value }
         every { Uri.decode(any()) } answers { value }
+    }
+
+    @Test
+    fun singleStateObservation() = runTest {
+        val stateFlow: MutableStateFlow<Pair<CanStateMachine.Event, CanStateMachine.State>> = MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
+        every { mockCanStateMachine.state } returns stateFlow
+        every { mockIdCardManager.eidFlow } returns flowOf()
+
+        val canCoordinator = CanCoordinator(mockAppNavigator, mockIdCardManager, mockCanStateMachine, mockCoroutineContextProvider)
+
+        canCoordinator.startIdentCanFlow(null)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockCanStateMachine.state }
+
+        canCoordinator.startIdentCanFlow(null)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockCanStateMachine.state }
     }
 
     @Nested

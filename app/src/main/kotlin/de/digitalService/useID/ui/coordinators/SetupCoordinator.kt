@@ -34,7 +34,7 @@ class SetupCoordinator @Inject constructor(
         if (stateMachineCoroutineScope != null) {
             return
         }
-        CoroutineScope(coroutineContextProvider.Default).launch {
+        stateMachineCoroutineScope = CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
                 when (eventAndPair.first) {
                     is SetupStateMachine.Event.Back -> navigator.pop()

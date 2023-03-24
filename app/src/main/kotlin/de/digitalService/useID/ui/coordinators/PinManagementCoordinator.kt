@@ -50,7 +50,7 @@ class PinManagementCoordinator @Inject constructor(
             return
         }
 
-        CoroutineScope(coroutineContextProvider.Default).launch {
+        stateMachineCoroutineScope = CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
                 if (eventAndPair.first is PinManagementStateMachine.Event.Back) {
                     navigator.pop()

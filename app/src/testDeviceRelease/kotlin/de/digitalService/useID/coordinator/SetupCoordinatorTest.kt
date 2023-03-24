@@ -79,6 +79,28 @@ class SetupCoordinatorTest {
         every { mockSetupStateMachine.state } returns stateFlow
     }
 
+    @Test
+    fun singleStateObservation() = runTest {
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            flowStateMachine = mockSetupStateMachine,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        setupCoordinator.showSetupIntro(null)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockSetupStateMachine.state }
+
+        setupCoordinator.showSetupIntro(null)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockSetupStateMachine.state }
+    }
+
     @Nested
     inner class SetupStateChangeHandling {
         private fun testTransition(event: SetupStateMachine.Event, state: SetupStateMachine.State, testScope: TestScope) {

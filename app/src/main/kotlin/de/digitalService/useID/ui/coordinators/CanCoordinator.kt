@@ -37,7 +37,7 @@ class CanCoordinator @Inject constructor(
         if (stateMachineCoroutineScope != null) {
             return
         }
-        CoroutineScope(coroutineContextProvider.Default).launch {
+        stateMachineCoroutineScope = CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
                 if (eventAndPair.first is CanStateMachine.Event.Back) {
                     navigator.pop()

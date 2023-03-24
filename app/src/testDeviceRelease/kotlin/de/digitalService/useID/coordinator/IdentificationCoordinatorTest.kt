@@ -11,6 +11,7 @@ import de.digitalService.useID.flows.*
 import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
+import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.coordinators.SubCoordinatorState
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
@@ -118,6 +119,31 @@ class IdentificationCoordinatorTest {
     @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+
+    @Test
+    fun singleStateObservation() = runTest {
+        val identificationCoordinator = IdentificationCoordinator(
+            mockContext,
+            mockCanCoordinator,
+            mockNavigator,
+            mockIdCardManager,
+            mockStorageManager,
+            mockTrackerManager,
+            mockIdentificationStateMachine,
+            mockCanStateMachine,
+            mockCoroutineContextProvider
+        )
+
+        identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockIdentificationStateMachine.state }
+
+        identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+        advanceUntilIdle()
+
+        verify(exactly = 1) { mockIdentificationStateMachine.state }
     }
 
     @Nested
