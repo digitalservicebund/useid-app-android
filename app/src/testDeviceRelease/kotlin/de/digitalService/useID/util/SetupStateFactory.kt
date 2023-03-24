@@ -16,6 +16,7 @@ class SetupStateFactory: DefaultTypeFactory() {
             SetupStateMachine.State.PinManagement::class -> SetupStateMachine.State.PinManagement(null)
             SetupStateMachine.State.PinManagementFinished::class -> SetupStateMachine.State.PinManagement(null)
             SetupStateMachine.State.IdentAfterFinishedSetupRequested::class -> SetupStateMachine.State.IdentAfterFinishedSetupRequested("")
+            SetupStateMachine.State.AlreadySetUpConfirmation::class -> SetupStateMachine.State.AlreadySetUpConfirmation
             SetupStateMachine.State.SetupFinished::class -> SetupStateMachine.State.SetupFinished
 
             else -> throw IllegalArgumentException()

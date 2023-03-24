@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -84,7 +85,8 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
 
                             Image(
                                 imageVector = ImageVector.vectorResource(id = R.drawable.img_pin_setup),
-                                contentDescription = null
+                                contentDescription = null,
+                                modifier = Modifier.semantics { testTag = R.drawable.img_pin_setup.toString() }
                             )
                         }
                     }

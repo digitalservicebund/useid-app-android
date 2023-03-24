@@ -3,14 +3,10 @@ package de.digitalService.useID.coordinator
 import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManager
-import de.digitalService.useID.flows.CanStateMachine
 import de.digitalService.useID.flows.SetupStateMachine
-import de.digitalService.useID.stateMachines.CanStateMachineTest
-import de.digitalService.useID.stateMachines.SetupStateMachineTest
 import de.digitalService.useID.ui.coordinators.*
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
-import de.digitalService.useID.util.CanPinManagementStateFactory
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.digitalService.useID.util.SetupStateFactory
 import de.jodamob.junit5.SealedClassesSource
@@ -19,7 +15,6 @@ import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.*
 import org.junit.jupiter.api.Assertions
@@ -57,8 +52,9 @@ class SetupCoordinatorTest {
     private val navigationDestinationSlot = slot<Direction>()
     private val navigationPoppingDestinationSlot = slot<Direction>()
 
-    val stateFlow: MutableStateFlow<Pair<SetupStateMachine.Event, SetupStateMachine.State>> = MutableStateFlow(Pair(
-        SetupStateMachine.Event.Invalidate, SetupStateMachine.State.Invalid))
+    val stateFlow: MutableStateFlow<Pair<SetupStateMachine.Event, SetupStateMachine.State>> = MutableStateFlow(
+        Pair(SetupStateMachine.Event.Invalidate, SetupStateMachine.State.Invalid)
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
@@ -119,7 +115,7 @@ class SetupCoordinatorTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = [] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = [], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun back(state: SetupStateMachine.State) = runTest {
             testTransition(SetupStateMachine.Event.Back, state, this)
 
@@ -127,7 +123,7 @@ class SetupCoordinatorTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = [] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = [], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `subsequent flow backed down`(state: SetupStateMachine.State) = runTest {
             testTransition(SetupStateMachine.Event.SubsequentFlowBackedDown, state, this)
 
@@ -233,8 +229,9 @@ class SetupCoordinatorTest {
         fun `setup finished`() = runTest {
             val newState = SetupStateMachine.State.SetupFinished
 
-            val stateFlow: MutableStateFlow<Pair<SetupStateMachine.Event, SetupStateMachine.State>> = MutableStateFlow(Pair(
-                SetupStateMachine.Event.Invalidate, SetupStateMachine.State.Invalid))
+            val stateFlow: MutableStateFlow<Pair<SetupStateMachine.Event, SetupStateMachine.State>> = MutableStateFlow(
+                Pair(SetupStateMachine.Event.Invalidate, SetupStateMachine.State.Invalid)
+            )
             every { mockSetupStateMachine.state } returns stateFlow
 
             val setupCoordinator = SetupCoordinator(
@@ -264,6 +261,15 @@ class SetupCoordinatorTest {
             testTransition(SetupStateMachine.Event.Invalidate, newState, this)
 
             verify { mockIdentificationCoordinator.startIdentificationProcess(tcTokenUrl, false) }
+        }
+
+        @Test
+        fun `already set up`() = runTest {
+            val newState = SetupStateMachine.State.AlreadySetUpConfirmation
+
+            testTransition(SetupStateMachine.Event.Invalidate, newState, this)
+
+            verify { mockNavigator.navigate(AlreadySetupConfirmationDestination) }
         }
     }
 
@@ -459,6 +465,22 @@ class SetupCoordinatorTest {
         setupCoordinator.skipSetup()
 
         verify { mockSetupStateMachine.transition(SetupStateMachine.Event.SkipSetup) }
+    }
+
+    @Test
+    fun `confirm already set up`() {
+        val setupCoordinator = SetupCoordinator(
+            navigator = mockNavigator,
+            pinManagementCoordinator = mockPinManagementCoordinator,
+            identificationCoordinator = mockIdentificationCoordinator,
+            storageManager = mockStorageManager,
+            flowStateMachine = mockSetupStateMachine,
+            coroutineContextProvider = mockCoroutineContextProvider
+        )
+
+        setupCoordinator.confirmAlreadySetUp()
+
+        verify { mockSetupStateMachine.transition(SetupStateMachine.Event.ConfirmAlreadySetUp) }
     }
 
     @Test

@@ -42,6 +42,7 @@ fun UseIDApp(nfcAvailability: NfcAvailability, navigator: Navigator, trackerMana
             SetupResetPersonalPinDestination.route, CanResetPersonalPinDestination.route -> "missingPINLetter"
 
             SetupIntroDestination.route -> firstTimeUserRoute("intro")
+            AlreadySetupConfirmationDestination.route -> firstTimeUserRoute("alreadySetupConfirmation")
             SetupPinLetterDestination.route -> firstTimeUserRoute("PINLetter")
             SetupTransportPinDestination.route -> firstTimeUserRoute("transportPIN")
             SetupPersonalPinIntroDestination.route -> firstTimeUserRoute("personalPINIntro")

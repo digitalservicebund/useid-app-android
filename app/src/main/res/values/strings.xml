@@ -113,6 +113,9 @@
     <string name="firstTimeUser_transportPIN_body">Die 5‑stellige Transport‑PIN finden Sie in Ihrem PIN‑Brief.</string>
     <string name="firstTimeUser_transportPIN_textFieldLabel">Eingabefeld Transport-PIN, fünfstellig</string>
     <string name="firstTimeUser_transportPIN_title">Geben Sie die Transport‑PIN ein.</string>
+    <string name="firstTimeUser_alreadySetupConfirmation_box">**Hinweis:** Um sich mit Ihrem Ausweis im Internet zu identifizieren, brauchen Sie Ihre persönliche PIN. Gehen Sie zur Internetseite des Services, für den Sie sich ausweisen wollen. Dort können Sie die Identifizierung starten.</string>
+    <string name="firstTimeUser_alreadySetupConfirmation_close">Verstanden</string>
+    <string name="firstTimeUser_alreadySetupConfirmation_title">Sie sind startklar!</string>
     <string name="helpNFC_body">NFC steht für Near Field Communication. Die Technik ermöglicht den kontaktlosen Austausch von Daten über sehr kurze Strecken. Sie wird bspw. auch beim Bezahlen mit dem Smartphone an der Supermarktkasse verwendet.</string>
     <string name="helpNFC_title">So funktioniert die NFC‑Technologie</string>
     <string name="home_header_infoText">Öffnen Sie die Internetseite von  »Grundsteuererklärung für Privateigentum«. Um die Identifizierung zu starten, tippen Sie dort auf:</string>

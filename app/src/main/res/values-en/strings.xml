@@ -62,6 +62,9 @@
     <string name="cardAttribute_dg17">Address</string>
     <string name="cardAttribute_dg19">Collateral clauses I</string>
     <string name="cardAttribute_restrictedIdentification">Provider and card-specific identifier</string>
+    <string name="firstTimeUser_alreadySetupConfirmation_box">**Please note:** To identify yourself with your ID card on the Internet, you need your personal PIN. Go to the website of the service for which you want to identify yourself. From there you can start identification.</string>
+    <string name="firstTimeUser_alreadySetupConfirmation_close">Got it</string>
+    <string name="firstTimeUser_alreadySetupConfirmation_title">You are ready to go!</string>
     <string name="firstTimeUser_confirmEnd_confirm">Exit</string>
     <string name="firstTimeUser_confirmEnd_deny">Cancel</string>
     <string name="firstTimeUser_confirmEnd_message">Do you want to cancel the setup of the online ID card function\?

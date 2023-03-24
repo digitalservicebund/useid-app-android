@@ -66,6 +66,13 @@ class SetupStateMachineTest {
     fun `skip setup in intro without url`() = runTest {
         val event = SetupStateMachine.Event.SkipSetup
         val oldState = SetupStateMachine.State.Intro(null)
+        val newState: SetupStateMachine.State.AlreadySetUpConfirmation = transition(oldState, event, this)
+    }
+
+    @Test
+    fun `confirm already set up`() = runTest {
+        val event = SetupStateMachine.Event.ConfirmAlreadySetUp
+        val oldState = SetupStateMachine.State.AlreadySetUpConfirmation
         val newState: SetupStateMachine.State.SetupFinished = transition(oldState, event, this)
     }
 
@@ -355,7 +362,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["StartSetup", "PinReset"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["StartSetup", "PinReset", "AlreadySetUpConfirmation"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun back(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.Back
 

@@ -7,7 +7,7 @@ import de.digitalService.useID.R
 import de.digitalService.useID.idCardInterface.IdCardAttribute
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.userFlowTests.utils.TestElement
-import de.digitalService.useID.util.*
+import de.digitalService.useID.util.ComposeTestRule
 
 sealed class TestScreen {
     val progressIndicatorTag = "ProgressIndicator"
@@ -67,25 +67,25 @@ sealed class TestScreen {
     data class Scan(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var backAllowed = true
-        fun setBackAllowed(value: Boolean) : Scan {
+        fun setBackAllowed(value: Boolean): Scan {
             backAllowed = value
             return this
         }
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : Scan {
+        fun setIdentPending(value: Boolean): Scan {
             identPending = value
             return this
         }
 
         private var progress = false
-        fun setProgress(value: Boolean) : Scan {
+        fun setProgress(value: Boolean): Scan {
             progress = value
             return this
         }
 
         override val trackingIdentifier: String
-            get() = "${ if (identPending) "identification" else "firstTimeUser"}/scan"
+            get() = "${if (identPending) "identification" else "firstTimeUser"}/scan"
 
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_title_android)
         private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_scan_body)
@@ -93,7 +93,7 @@ sealed class TestScreen {
 
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
-        val navigationConfirmDialog:  TestElement.NavigationConfirmDialog
+        val navigationConfirmDialog: TestElement.NavigationConfirmDialog
             get() {
                 return TestElement.NavigationConfirmDialog(testRule, identPending)
             }
@@ -134,7 +134,9 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "missingPINLetter"
 
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_missingPINLetter_title)
-        //        val body = TestElement.Text(R.string.firstTimeUser_missingPINLetter_body) TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_missingPINLetter_body)
         private val pinLetterImage = TestElement.Tag(testRule, R.drawable.ic_illustration_pin_letter.toString())
 
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
@@ -206,19 +208,21 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "canIntro"
 
         private var backAllowed = false
-        fun setBackAllowed(value: Boolean) : CanIntro {
+        fun setBackAllowed(value: Boolean): CanIntro {
             backAllowed = value
             return this
         }
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : CanIntro {
+        fun setIdentPending(value: Boolean): CanIntro {
             identPending = value
             return this
         }
 
         private val title = TestElement.Text(testRule, resourceId = R.string.identification_can_intro_title)
-        //        private val body = TestElement.Text(testRule, resourceId = R.string.identification_can_intro_body) TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        private val body = TestElement.Text(testRule, resourceId = R.string.identification_can_intro_body)
         val enterCanNowBtn = TestElement.Text(testRule, resourceId = R.string.identification_can_intro_continue)
         private val canImage = TestElement.Tag(testRule, R.drawable.illustration_id_can.toString())
 
@@ -249,14 +253,15 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "canInput"
 
         private var retry = false
-        fun setRetry(value: Boolean) : CanInput {
+        fun setRetry(value: Boolean): CanInput {
             retry = value
             return this
         }
 
         private val title = TestElement.Text(testRule, resourceId = R.string.identification_can_input_title)
         private val body = TestElement.Text(testRule, resourceId = R.string.identification_can_input_body)
-        private val errorMessage = TestElement.Text(testRule, resourceId = R.string.identification_can_incorrectInput_error_incorrect_body)
+        private val errorMessage =
+            TestElement.Text(testRule, resourceId = R.string.identification_can_incorrectInput_error_incorrect_body)
         private val retryMessage = TestElement.Text(testRule, resourceId = R.string.identification_personalPIN_error_tryAgain)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val canEntryField = TestElement.Can(testRule)
@@ -279,10 +284,10 @@ sealed class TestScreen {
     data class SetupIntro(override val testRule: ComposeTestRule) : TestScreen() {
         override val trackingIdentifier: String = "firstTimeUser/intro"
 
-        private val title =
-            TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title)
+        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title)
 
-        //        val body = TestElement.Text(R.string.firstTimeUser_intro_body) TODO: reenable when markdown is matchable in UI tests
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_body)
         private val idsImage = TestElement.Tag(testRule, R.drawable.eid_3.toString())
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val setupIdBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_startSetup)
@@ -306,10 +311,11 @@ sealed class TestScreen {
     data class SetupIntroVariant(override val testRule: ComposeTestRule) : TestScreen() {
         override val trackingIdentifier: String = "firstTimeUser/intro"
 
-        private val title =
-            TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title_variant)
-        //private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_body_variant) // TODO : reenable when markdown is matchable in UI tests
-        //private val idsImage = TestElement.Tag(testRule, R.drawable.img_pin_setup.toString()) // TODO vector image not matchable??
+        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title_variant)
+
+        // TODO: Use when markdown is matchable
+        //private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_body_variant)
+        private val pinSetupImage = TestElement.Tag(testRule, R.drawable.img_pin_setup.toString())
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val setupIdBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_startSetup)
         private val alreadySetupBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_skipSetup)
@@ -317,7 +323,7 @@ sealed class TestScreen {
         override val expectedElements: List<TestElement>
             get() {
                 return listOf(
-                    title, cancel, setupIdBtn, alreadySetupBtn
+                    title, cancel, pinSetupImage, setupIdBtn, alreadySetupBtn
                 )
             }
 
@@ -329,12 +335,38 @@ sealed class TestScreen {
             }
     }
 
+    data class AlreadySetupConfirmation(override val testRule: ComposeTestRule) : TestScreen() {
+        override val trackingIdentifier: String = "firstTimeUser/alreadySetupConfirmation"
+
+        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_alreadySetupConfirmation_title)
+
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_alreadySetupConfirmation_box)
+        val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
+        val confirmationButton = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_alreadySetupConfirmation_close)
+
+        override val expectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    title, back, confirmationButton
+                )
+            }
+
+        override val unexpectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    TestElement.Tag(testRule, NavigationIcon.Cancel.name)
+                )
+            }
+    }
 
     data class SetupPinLetter(override val testRule: ComposeTestRule) : TestScreen() {
         override val trackingIdentifier: String = "firstTimeUser/PINLetter"
 
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_pinLetter_title)
-        //        val body = TestElement.Text(R.string.firstTimeUser_pinLetter_body) TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_pinLetter_body)
         private val pinLetterImage = TestElement.Tag(testRule, R.drawable.pin_letter.toString())
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val letterPresentBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_pinLetter_letterPresent)
@@ -359,23 +391,26 @@ sealed class TestScreen {
         private var attemptsLeft = 3
 
         override val trackingIdentifier: String
-            get() = "${ if (attemptsLeft > 1) "firstTimeUser/" else ""}transportPIN"
-        fun setAttemptsLeft(value: Int) : SetupTransportPin {
+            get() = "${if (attemptsLeft > 1) "firstTimeUser/" else ""}transportPIN"
+
+        fun setAttemptsLeft(value: Int): SetupTransportPin {
             attemptsLeft = value
             return this
         }
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : SetupTransportPin {
+        fun setIdentPending(value: Boolean): SetupTransportPin {
             identPending = value
             return this
         }
 
-        private val titleSecondAttempt = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_incorrectTransportPIN_title)
+        private val titleSecondAttempt =
+            TestElement.Text(testRule, resourceId = R.string.firstTimeUser_incorrectTransportPIN_title)
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_transportPIN_title)
 
         private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_transportPIN_body)
-        private val oneAttemptLeftMessage = TestElement.Text(testRule, resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts, quantity = 1)
+        private val oneAttemptLeftMessage =
+            TestElement.Text(testRule, resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts, quantity = 1)
 
         val transportPinField = TestElement.TransportPin(testRule)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
@@ -409,10 +444,8 @@ sealed class TestScreen {
 
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_personalPINIntro_title)
         private val card = TestElement.BundCard(
-            testRule,
-            titleResId = R.string.firstTimeUser_personalPINIntro_info_title,
-            bodyResId = R.string.firstTimeUser_personalPINIntro_info_body,
-            iconTag = Icons.Filled.Info.name
+            testRule, titleResId = R.string.firstTimeUser_personalPINIntro_info_title,
+            bodyResId = R.string.firstTimeUser_personalPINIntro_info_body, iconTag = Icons.Filled.Info.name
         )
         private val idsImage = TestElement.Tag(testRule, R.drawable.eid_3_pin.toString())
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
@@ -456,10 +489,8 @@ sealed class TestScreen {
         private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_personalPIN_confirmation_body)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val personalPinField = TestElement.PersonalPin(testRule)
-        val pinsDontMatchDialog = TestElement.StandardDialog(
-            testRule,
-            dismissBtnId = R.string.identification_fetchMetadataError_retry
-        )
+        val pinsDontMatchDialog =
+            TestElement.StandardDialog(testRule, dismissBtnId = R.string.identification_fetchMetadataError_retry)
 
         override val expectedElements: List<TestElement>
             get() {
@@ -467,7 +498,7 @@ sealed class TestScreen {
             }
 
         override val unexpectedElements: List<TestElement>
-            get()  {
+            get() {
                 return listOf(
                     TestElement.Tag(testRule, NavigationIcon.Cancel.name),
                     pinsDontMatchDialog
@@ -479,7 +510,7 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "firstTimeUser/done"
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : SetupFinish {
+        fun setIdentPending(value: Boolean): SetupFinish {
             identPending = value
             return this
         }
@@ -510,26 +541,29 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "confirmTransportPIN"
 
         private var transportPin = ""
-        fun setTransportPin(value: String) : SetupCanConfirmTransportPin {
+        fun setTransportPin(value: String): SetupCanConfirmTransportPin {
             transportPin = value
             return this
         }
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : SetupCanConfirmTransportPin {
+        fun setIdentPending(value: Boolean): SetupCanConfirmTransportPin {
             identPending = value
             return this
         }
 
         private val title: TestElement
             get() {
-                return TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_confirmTransportPIN_title, formatArg = transportPin)
+                return TestElement.Text(
+                    testRule,
+                    resourceId = R.string.firstTimeUser_can_confirmTransportPIN_title,
+                    formatArg = transportPin
+                )
             }
 
-//        private val body: TestElement TODO: reenable when markdown is matchable in UI tests
-//            get() {
-//                return TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_confirmTransportPIN_body, transportPin)
-//            }
+        // TODO: Use when markdown is matchable
+        private val body =
+            TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_confirmTransportPIN_body, formatArg = transportPin)
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val inputCorrectBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_confirmTransportPIN_confirmInput)
         val retryInputBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_confirmTransportPIN_incorrectInput)
@@ -556,18 +590,19 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "alreadySetup"
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : SetupCanAlreadySetup {
+        fun setIdentPending(value: Boolean): SetupCanAlreadySetup {
             identPending = value
             return this
         }
 
         private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_alreadySetup_title)
 
-        // TODO: Use when markdwon is matchable
+        // TODO: Use when markdown is matchable
         private val bodyIdent = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_alreadySetup_body_ident)
         private val bodyNoIdent = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_alreadySetup_body_setup)
 
-        val personalPinNotAvailableBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_alreadySetup_personalPINNotAvailable)
+        val personalPinNotAvailableBtn =
+            TestElement.Text(testRule, resourceId = R.string.firstTimeUser_can_alreadySetup_personalPINNotAvailable)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
 
         val finishSetupBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_done_close)
@@ -594,7 +629,7 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "identification/fetchMetadata"
 
         private var backAllowed = false
-        fun setBackAllowed(value: Boolean) : IdentificationFetchMetaData {
+        fun setBackAllowed(value: Boolean): IdentificationFetchMetaData {
             backAllowed = value
             return this
         }
@@ -629,7 +664,7 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "identification/attributes"
 
         private var backAllowed = false
-        fun setBackAllowed(value: Boolean) : IdentificationAttributeConsent {
+        fun setBackAllowed(value: Boolean): IdentificationAttributeConsent {
             backAllowed = value
             return this
         }
@@ -640,7 +675,8 @@ sealed class TestScreen {
             val subject = "subject"
             val subjectURL = "subjectURL"
             val validity = "validity"
-            val authenticationTerms = "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            val authenticationTerms =
+                "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             val transactionInfo = "transactionInfo"
             val readAttributes = IdCardAttribute.values().associateWith { true }
         }
@@ -663,19 +699,26 @@ sealed class TestScreen {
             IdCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
         }
 
-        private val title = TestElement.Text(testRule, resourceId = R.string.identification_attributeConsent_title, formatArg = RequestData.subject)
+        private val title = TestElement.Text(
+            testRule,
+            resourceId = R.string.identification_attributeConsent_title,
+            formatArg = RequestData.subject
+        )
         private val body = TestElement.Text(testRule, resourceId = R.string.identification_attributeConsent_body)
         private val readAttributes = IdCardAttribute.values().map {
             TestElement.Text(testRule, text = "\u2022 ${testRule.activity.getString(attributeDescriptionID(it))}")
         }
 
-        val moreInformationBtn = TestElement.Text(testRule, resourceId = R.string.identification_attributeConsent_button_additionalInformation)
+        val moreInformationBtn =
+            TestElement.Text(testRule, resourceId = R.string.identification_attributeConsent_button_additionalInformation)
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val continueBtn = TestElement.Text(testRule, resourceId = R.string.identification_attributeConsent_continue)
+
         // TODO: Find a way to test against the actual strings, currently the matcher finds multiple matches
         // if the actual strings are used, because some are already on the "parent" page
-        val infoDialog = TestElement.Group(testRule,
+        val infoDialog = TestElement.Group(
+            testRule,
             listOf(
                 TestElement.Tag(testRule, "subjectTitle"),
                 TestElement.Tag(testRule, "providerInfoTitle"),
@@ -716,7 +759,7 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "identification/personalPIN"
 
         private var attemptsLeft = 3
-        fun setAttemptsLeft(value: Int) : IdentificationPersonalPin {
+        fun setAttemptsLeft(value: Int): IdentificationPersonalPin {
             attemptsLeft = value
             return this
         }
@@ -726,13 +769,25 @@ sealed class TestScreen {
         val back = TestElement.Tag(testRule, NavigationIcon.Back.name)
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
 
-        private val twoAttemptsLeftMessages = TestElement.Group(testRule, listOf(
-            TestElement.Text(testRule, resourceId = R.string.identification_personalPIN_error_incorrectPIN),
-            TestElement.Text(testRule, resourceId = R.string.identification_personalPIN_error_tryAgain),
-            TestElement.Text(testRule, resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts, formatArg = "2", quantity = 2)
-        ))
+        private val twoAttemptsLeftMessages = TestElement.Group(
+            testRule, listOf(
+                TestElement.Text(testRule, resourceId = R.string.identification_personalPIN_error_incorrectPIN),
+                TestElement.Text(testRule, resourceId = R.string.identification_personalPIN_error_tryAgain),
+                TestElement.Text(
+                    testRule,
+                    resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts,
+                    formatArg = "2",
+                    quantity = 2
+                )
+            )
+        )
 
-        private val oneAttemptLeftMessage = TestElement.Text(testRule, resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts, formatArg = "1", quantity = 1)
+        private val oneAttemptLeftMessage = TestElement.Text(
+            testRule,
+            resourceId = R.plurals.firstTimeUser_transportPIN_remainingAttempts,
+            formatArg = "1",
+            quantity = 1
+        )
 
         val navigationConfirmDialog: TestElement.NavigationConfirmDialog
             get() {
@@ -743,7 +798,7 @@ sealed class TestScreen {
             get() {
                 return listOf(title, personalPinField)
                     .plus(listOf(back).takeIf { attemptsLeft == 3 } ?: listOf())
-                    .plus(listOf(cancel, twoAttemptsLeftMessages ).takeIf { attemptsLeft == 2 } ?: listOf())
+                    .plus(listOf(cancel, twoAttemptsLeftMessages).takeIf { attemptsLeft == 2 } ?: listOf())
                     .plus(listOf(back, oneAttemptLeftMessage).takeIf { attemptsLeft == 1 } ?: listOf())
             }
 
@@ -751,7 +806,7 @@ sealed class TestScreen {
             get() {
                 return listOf<TestElement>(navigationConfirmDialog)
                     .plus(listOf(back).takeIf { attemptsLeft == 2 } ?: listOf())
-                    .plus(listOf(cancel, twoAttemptsLeftMessages ).takeIf { attemptsLeft != 2 } ?: listOf())
+                    .plus(listOf(cancel, twoAttemptsLeftMessages).takeIf { attemptsLeft != 2 } ?: listOf())
                     .plus(listOf(oneAttemptLeftMessage).takeIf { attemptsLeft != 1 } ?: listOf())
             }
     }
@@ -760,7 +815,9 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "canPINForgotten"
 
         private val title = TestElement.Text(testRule, resourceId = R.string.identification_can_pinForgotten_title)
-//        private val body = TestElement.Text(testRule, resourceId = R.string.identification_can_pinForgotten_body) // TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        private val body = TestElement.Text(testRule, resourceId = R.string.identification_can_pinForgotten_body)
         private val idCardImage = TestElement.Tag(testRule, R.drawable.illustration_id_confused.toString())
 
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
@@ -791,18 +848,20 @@ sealed class TestScreen {
     data class ErrorCardDeactivated(override val testRule: ComposeTestRule) : TestScreen() {
 
         private val title = TestElement.Text(testRule, resourceId = R.string.scanError_cardDeactivated_title)
-        //        val body = TestElement.Text(R.string.scanError_cardDeactivated_body) TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.scanError_cardDeactivated_body)
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val closeBtn = TestElement.Text(testRule, resourceId = R.string.scanError_close)
 
         private var ident = false
-        fun setIdent(value: Boolean) : ErrorCardDeactivated {
+        fun setIdent(value: Boolean): ErrorCardDeactivated {
             ident = value
             return this
         }
 
         override val trackingIdentifier: String
-            get() = "${ if (ident) "identification" else "firstTimeUser"}/cardDeactivated"
+            get() = "${if (ident) "identification" else "firstTimeUser"}/cardDeactivated"
 
         override val expectedElements: List<TestElement>
             get() {
@@ -818,13 +877,13 @@ sealed class TestScreen {
     data class ErrorCardUnreadable(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : ErrorCardUnreadable {
+        fun setIdentPending(value: Boolean): ErrorCardUnreadable {
             identPending = value
             return this
         }
 
         private var redirectUrlPresent = false
-        fun setRedirectUrlPresent(value: Boolean) : ErrorCardUnreadable {
+        fun setRedirectUrlPresent(value: Boolean): ErrorCardUnreadable {
             redirectUrlPresent = value
             return this
         }
@@ -833,7 +892,9 @@ sealed class TestScreen {
             get() = "${if (identPending) "identification" else "firstTimeUser"}/cardUnreadable"
 
         private val title = TestElement.Text(testRule, resourceId = R.string.scanError_cardUnreadable_title)
-        //        val body = TestElement.Text(R.string.scanError_cardUnreadable_body) TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.scanError_cardUnreadable_body)
         private val errorCard = TestElement.BundCard(
             testRule,
             titleResId = R.string.scanError_box_title,
@@ -866,13 +927,15 @@ sealed class TestScreen {
         override val trackingIdentifier: String = "identification/other"
 
         private var identPending = false
-        fun setIdentPending(value: Boolean) : ErrorGenericError {
+        fun setIdentPending(value: Boolean): ErrorGenericError {
             identPending = value
             return this
         }
 
         private val title = TestElement.Text(testRule, resourceId = R.string.scanError_unknown_title)
-        //        val body = TestElement.Text(R.string.scanError_unknown_body) TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.scanError_unknown_body)
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val confirmationDialog: TestElement.NavigationConfirmDialog
             get() {
@@ -900,12 +963,14 @@ sealed class TestScreen {
     data class ErrorCardBlocked(override val testRule: ComposeTestRule) : TestScreen() {
 
         private val title = TestElement.Text(testRule, resourceId = R.string.scanError_cardBlocked_title)
-        //        val body = TestElement.Text(R.string.scanError_cardBlocked_body) TODO: reenable when markdown is matchable in UI tests
+
+        // TODO: Use when markdown is matchable
+        val body = TestElement.Text(testRule, resourceId = R.string.scanError_cardBlocked_body)
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
         val closeBtn = TestElement.Text(testRule, resourceId = R.string.scanError_close)
 
         private var ident = false
-        fun setIdent(value: Boolean) : ErrorCardBlocked {
+        fun setIdent(value: Boolean): ErrorCardBlocked {
             ident = value
             return this
         }

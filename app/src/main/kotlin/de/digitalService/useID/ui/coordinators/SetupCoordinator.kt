@@ -50,6 +50,7 @@ class SetupCoordinator @Inject constructor(
                                 storageManager.setIsNotFirstTimeUser()
                                 navigator.navigate(SetupFinishDestination(state.tcTokenUrl != null))
                             }
+                            is SetupStateMachine.State.AlreadySetUpConfirmation -> navigator.navigate(AlreadySetupConfirmationDestination)
                             is SetupStateMachine.State.SetupFinished -> finishSetup()
                             is SetupStateMachine.State.IdentAfterFinishedSetupRequested -> identificationCoordinator.startIdentificationProcess(state.tcTokenUrl, false)
 
@@ -102,6 +103,10 @@ class SetupCoordinator @Inject constructor(
 
     fun skipSetup() {
         flowStateMachine.transition(SetupStateMachine.Event.SkipSetup)
+    }
+
+    fun confirmAlreadySetUp() {
+        flowStateMachine.transition(SetupStateMachine.Event.ConfirmAlreadySetUp)
     }
 
     fun onSetupFinishConfirmed() {

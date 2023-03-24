@@ -32,12 +32,16 @@ class SetupStateMachine(initialState: State, private val issueTrackerManager: Is
         class PinManagement(val tcTokenUrl: String?) : State()
         class PinManagementFinished(val tcTokenUrl: String?) : State()
         class IdentAfterFinishedSetupRequested(val tcTokenUrl: String) : State()
+
+        object AlreadySetUpConfirmation : State()
         object SetupFinished : State()
     }
 
     sealed class Event {
         data class OfferSetup(val tcTokenUrl: String?) : Event()
         object SkipSetup : Event()
+
+        object ConfirmAlreadySetUp : Event()
         object StartSetup : Event()
         object ResetPin : Event()
         object StartPinManagement : Event()
@@ -70,8 +74,15 @@ class SetupStateMachine(initialState: State, private val issueTrackerManager: Is
 
             is Event.SkipSetup -> {
                 when (val currentState = state.value.second) {
-                    is State.Intro -> if (currentState.tcTokenUrl != null) State.SkippingToIdentRequested(currentState.tcTokenUrl) else State.SetupFinished
+                    is State.Intro -> if (currentState.tcTokenUrl != null) State.SkippingToIdentRequested(currentState.tcTokenUrl) else State.AlreadySetUpConfirmation
                     is State.SkippingToIdentRequested -> State.SkippingToIdentRequested(currentState.tcTokenUrl)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
+            is Event.ConfirmAlreadySetUp -> {
+                when (state.value.second) {
+                    is State.AlreadySetUpConfirmation -> State.SetupFinished
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -123,6 +134,7 @@ class SetupStateMachine(initialState: State, private val issueTrackerManager: Is
                 when (val currentState = state.value.second) {
                     is State.StartSetup -> State.Intro(currentState.tcTokenUrl)
                     is State.PinReset -> State.StartSetup(currentState.tcTokenUrl)
+                    is State.AlreadySetUpConfirmation -> State.Intro(null)
                     else -> throw IllegalArgumentException()
                 }
             }
