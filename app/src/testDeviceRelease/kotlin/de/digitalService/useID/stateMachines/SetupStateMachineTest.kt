@@ -307,6 +307,17 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
+        @SealedClassesSource(names = ["AlreadySetUpConfirmation"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        fun `confirm already set up`(oldState: SetupStateMachine.State) = runTest {
+            val event = SetupStateMachine.Event.ConfirmAlreadySetUp
+
+            val stateMachine = SetupStateMachine(oldState, issueTrackerManager)
+            Assertions.assertEquals(stateMachine.state.value.second, oldState)
+
+            Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
+        }
+
+        @ParameterizedTest
         @SealedClassesSource(names = ["Intro", "SkippingToIdentRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `start setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.StartSetup
