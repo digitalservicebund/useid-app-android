@@ -8,15 +8,22 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 # Matches multiple files with brace expansion notation
+[*.{kt,kts}]
+
 # Set default charset
-[*.kt]
 charset = utf-8
 
 # 4 space indentation
-[*.kt]
 indent_style = space
 indent_size = 4
 
 # Max line length
-[*.kt]
 max_line_length=off
+
+# ktlint configuration
+ktlint_experimental = enabled
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+ktlint_experimental_property-naming = disabled
+ktlint_experimental_function-naming = disabled

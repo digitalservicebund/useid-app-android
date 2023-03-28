@@ -87,7 +87,7 @@ hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlinter = "org.jmailen.kotlinter:3.13.0"
+kotlinter = "org.jmailen.kotlinter:3.14.0"
 ksp = "com.google.devtools.ksp:1.8.10-1.0.9"
 sentry-android = "io.sentry.android.gradle:3.4.2"
 version-catalog-update = "nl.littlerobots.version-catalog-update:0.7.0"
