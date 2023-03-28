@@ -24,6 +24,7 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.SetupCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupIntroDestination
@@ -128,6 +129,7 @@ interface SetupIntroViewModelInterface {
 @HiltViewModel
 class SetupIntroViewModel @Inject constructor(
     private val setupCoordinator: SetupCoordinator,
+    private val trackerManager: TrackerManagerType,
     abTestManager: AbTestManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel(), SetupIntroViewModelInterface {
@@ -140,10 +142,12 @@ class SetupIntroViewModel @Inject constructor(
     }
 
     override fun onFirstTimeUsage() {
+        trackerManager.trackEvent("firstTimeUser", "buttonPressed", "startSetup")
         setupCoordinator.startSetupIdCard()
     }
 
     override fun onNonFirstTimeUsage() {
+        trackerManager.trackEvent("firstTimeUser", "buttonPressed", "alreadySetup")
         setupCoordinator.skipSetup()
     }
 
