@@ -153,7 +153,7 @@ class AbTestManagerTest {
 
         val testName = AbTest.SETUP_INTRODUCTION_EXPLANATION.testName.replace(".", "_")
         verify { mockTrackerManager.trackEvent("abtesting", testName, "Variation") }
-        assertTrue(abTestManager.isSetupIntroTestVariant.value)
+        assertTrue(abTestManager.isSetupIntroTestVariation.value)
     }
 
     @Test
@@ -171,7 +171,7 @@ class AbTestManagerTest {
 
         val testName = AbTest.SETUP_INTRODUCTION_EXPLANATION.testName.replace(".", "_")
         verify(exactly = 0) { mockTrackerManager.trackEvent(any(), any(), any()) }
-        assertFalse(abTestManager.isSetupIntroTestVariant.value)
+        assertFalse(abTestManager.isSetupIntroTestVariation.value)
     }
 
     @Test
@@ -196,7 +196,7 @@ class AbTestManagerTest {
 
         val testName = AbTest.SETUP_INTRODUCTION_EXPLANATION.testName.replace(".", "_")
         verify { mockTrackerManager.trackEvent("abtesting", testName, "Original") }
-        assertFalse(abTestManager.isSetupIntroTestVariant.value)
+        assertFalse(abTestManager.isSetupIntroTestVariation.value)
     }
 
     @Test
@@ -212,7 +212,7 @@ class AbTestManagerTest {
         abTestManager.initialise()
 
         verify { mockIssueTrackerManager.capture(exception) }
-        assertFalse(abTestManager.isSetupIntroTestVariant.value)
+        assertFalse(abTestManager.isSetupIntroTestVariation.value)
     }
 
     @Test
@@ -225,7 +225,7 @@ class AbTestManagerTest {
             delay(100)
             job.cancel()
             verify { mockIssueTrackerManager.capture(withArg { (UnleashException("Timed out while fetching toggles.")) }) }
-            assertFalse(abTestManager.isSetupIntroTestVariant.value)
+            assertFalse(abTestManager.isSetupIntroTestVariation.value)
         }
     }
 }
