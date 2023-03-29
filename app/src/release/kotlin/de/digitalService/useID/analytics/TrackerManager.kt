@@ -39,6 +39,10 @@ class TrackerManager @Inject constructor(
         updateSession()
     }
 
+    override fun trackButtonPressed(category: String, name: String) {
+        trackEvent(category, "buttonPressed", name)
+    }
+
     override fun dispatch() {
         tracker.dispatch()
     }

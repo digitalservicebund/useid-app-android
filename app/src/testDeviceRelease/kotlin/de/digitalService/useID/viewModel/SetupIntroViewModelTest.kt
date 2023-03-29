@@ -52,7 +52,7 @@ class SetupIntroViewModelTest {
         viewModel.onFirstTimeUsage()
 
         verify(exactly = 1) { mockSetupCoordinator.startSetupIdCard() }
-        verify(exactly = 1) { mockTrackerManager.trackEvent("firstTimeUser", "buttonPressed", "startSetup") }
+        verify(exactly = 1) { mockTrackerManager.trackButtonPressed("firstTimeUser", "startSetup") }
     }
 
     @Test
@@ -62,7 +62,7 @@ class SetupIntroViewModelTest {
         viewModel.onNonFirstTimeUsage()
 
         verify(exactly = 1) { mockSetupCoordinator.skipSetup() }
-        verify(exactly = 1) { mockTrackerManager.trackEvent("firstTimeUser", "buttonPressed", "alreadySetup") }
+        verify(exactly = 1) { mockTrackerManager.trackButtonPressed("firstTimeUser", "alreadySetup") }
     }
 
     @ParameterizedTest

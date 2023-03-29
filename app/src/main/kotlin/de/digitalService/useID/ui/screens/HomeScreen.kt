@@ -285,7 +285,7 @@ class HomeScreenViewModel @Inject constructor(
 
     override fun setupOnlineId() {
         appCoordinator.offerIdSetup(null)
-        trackerManager.trackEvent(category = "firstTimeUser", action = "buttonPressed", name = "start")
+        trackerManager.trackButtonPressed(category = "firstTimeUser", "start")
     }
 
     override fun onPrivacyButtonClicked() {

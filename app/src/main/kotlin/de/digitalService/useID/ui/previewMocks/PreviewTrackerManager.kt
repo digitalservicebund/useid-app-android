@@ -7,5 +7,6 @@ class PreviewTrackerManager : TrackerManagerType {
     override fun initTracker(context: Context) {}
     override fun trackScreen(route: String) {}
     override fun trackEvent(category: String, action: String, name: String) {}
+    override fun trackButtonPressed(category: String, name: String) {}
     override fun dispatch() {}
 }

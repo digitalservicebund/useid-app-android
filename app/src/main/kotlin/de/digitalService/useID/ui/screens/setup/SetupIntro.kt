@@ -142,12 +142,12 @@ class SetupIntroViewModel @Inject constructor(
     }
 
     override fun onFirstTimeUsage() {
-        trackerManager.trackEvent("firstTimeUser", "buttonPressed", "startSetup")
+        trackerManager.trackButtonPressed("firstTimeUser", "startSetup")
         setupCoordinator.startSetupIdCard()
     }
 
     override fun onNonFirstTimeUsage() {
-        trackerManager.trackEvent("firstTimeUser", "buttonPressed", "alreadySetup")
+        trackerManager.trackButtonPressed("firstTimeUser", "alreadySetup")
         setupCoordinator.skipSetup()
     }
 
