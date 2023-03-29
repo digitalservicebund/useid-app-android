@@ -43,7 +43,7 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
             onClick = viewModel::onCancelSetup
         )
     ) { topPadding ->
-        if (viewModel.showVariant) {
+        if (viewModel.showVariation) {
             StandardButtonScreen(
                 primaryButton = BundButtonConfig(
                     title = stringResource(id = R.string.firstTimeUser_intro_startSetup),
@@ -62,7 +62,7 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
                         .verticalScroll(rememberScrollState())
                 ) {
                     Text(
-                        stringResource(id = R.string.firstTimeUser_intro_title_variant),
+                        stringResource(id = R.string.firstTimeUser_intro_titleVariation),
                         style = UseIdTheme.typography.headingXl,
                         modifier = Modifier.semantics { heading() }
                     )
@@ -75,7 +75,7 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
                     ) {
                         Column(modifier = Modifier.padding(UseIdTheme.spaces.m)) {
                             MarkdownText(
-                                markdown = markDownResource(id = R.string.firstTimeUser_intro_body_variant),
+                                markdown = markDownResource(id = R.string.firstTimeUser_intro_box),
                                 fontResource = R.font.bundes_sans_dtp_regular,
                                 fontSize = UseIdTheme.typography.bodyLRegular.fontSize,
                                 color = UseIdTheme.colors.black
@@ -119,7 +119,7 @@ data class SetupIntroNavArgs(
 
 interface SetupIntroViewModelInterface {
     val confirmCancellation: Boolean
-    val showVariant: Boolean
+    val showVariation: Boolean
     fun onFirstTimeUsage()
     fun onNonFirstTimeUsage()
     fun onCancelSetup()
@@ -133,7 +133,7 @@ class SetupIntroViewModel @Inject constructor(
 ) : ViewModel(), SetupIntroViewModelInterface {
 
     override val confirmCancellation: Boolean
-    override val showVariant: Boolean by abTestManager.isSetupIntroTestVariant
+    override val showVariation: Boolean by abTestManager.isSetupIntroTestVariation
 
     init {
         confirmCancellation = SetupIntroDestination.argsFrom(savedStateHandle).confirmCancellation
@@ -155,7 +155,7 @@ class SetupIntroViewModel @Inject constructor(
 //region Preview
 private class PreviewSetupIntroViewModel : SetupIntroViewModelInterface {
     override val confirmCancellation: Boolean = false
-    override val showVariant = true
+    override val showVariation = true
     override fun onFirstTimeUsage() {}
     override fun onNonFirstTimeUsage() {}
     override fun onCancelSetup() {}

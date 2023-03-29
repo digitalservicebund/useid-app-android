@@ -23,8 +23,8 @@ class AbTestManager constructor(
 
     private lateinit var unleashClient: UnleashClient
 
-    private val _isSetupIntroTestVariant = mutableStateOf(false)
-    val isSetupIntroTestVariant: State<Boolean> = _isSetupIntroTestVariant
+    private val _isSetupIntroTestVariation = mutableStateOf(false)
+    val isSetupIntroTestVariation: State<Boolean> = _isSetupIntroTestVariation
 
     suspend fun initialise() = suspendCancellableCoroutine { continuation ->
         val config = UnleashConfig.newBuilder()
@@ -43,7 +43,7 @@ class AbTestManager constructor(
         unleashClient = UnleashClient(config, context)
 
         unleashClient.addTogglesUpdatedListener {
-            _isSetupIntroTestVariant.value =
+            _isSetupIntroTestVariation.value =
                 isVariationActivatedFor(AbTest.SETUP_INTRODUCTION_EXPLANATION)
             continuation.resume(Unit)
         }

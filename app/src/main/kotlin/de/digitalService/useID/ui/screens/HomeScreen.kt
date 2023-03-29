@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -33,6 +34,7 @@ import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.ui.theme.UseIdTheme
+import de.digitalService.useID.util.AbTestManager
 import javax.inject.Inject
 
 @Composable
@@ -191,7 +193,7 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
 
         BundInformationButton(
             onClick = viewModel::setupOnlineId,
-            label = stringResource(R.string.home_setup_setup),
+            label = stringResource(if (viewModel.showVariation) R.string.home_setup_setupVariation else R.string.home_setup_setup),
             modifier = Modifier
                 .padding(horizontal = UseIdTheme.spaces.m)
         )
@@ -256,6 +258,7 @@ private fun CardButton(
 }
 
 interface HomeScreenViewModelInterface {
+    val showVariation: Boolean
     fun setupOnlineId()
     fun homeScreenLaunched()
     fun onPrivacyButtonClicked()
@@ -269,10 +272,12 @@ interface HomeScreenViewModelInterface {
 class HomeScreenViewModel @Inject constructor(
     private val appCoordinator: AppCoordinator,
     private val appNavigator: Navigator,
-    private val trackerManager: TrackerManagerType
+    private val trackerManager: TrackerManagerType,
+    abTestManager: AbTestManager
 ) : ViewModel(), HomeScreenViewModelInterface {
     private val logger by getLogger()
 
+    override val showVariation: Boolean by abTestManager.isSetupIntroTestVariation
     override fun homeScreenLaunched() {
         logger.debug("Home screen launched.")
         appCoordinator.homeScreenLaunched()
@@ -305,6 +310,7 @@ class HomeScreenViewModel @Inject constructor(
 }
 
 private class PreviewViewModel : HomeScreenViewModelInterface {
+    override val showVariation = true
     override fun setupOnlineId() {}
     override fun homeScreenLaunched() {}
     override fun onPrivacyButtonClicked() {}
