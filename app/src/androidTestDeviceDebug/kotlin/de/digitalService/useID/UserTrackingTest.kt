@@ -71,11 +71,14 @@ class UserTrackingTest {
     private val trackingEventCategorySlot = slot<String>()
     private val trackingEventActionSlot = slot<String>()
     private val trackingEventNameSlot = slot<String>()
+    private val trackingButtonPressedCategorySlot = slot<String>()
+    private val trackingButtonPressedNameSlot = slot<String>()
 
     @BindValue
     val trackerManager: TrackerManagerType = mockk(relaxed = true) {
         every { trackScreen(capture(trackingRouteSlot)) } returns Unit
         every { trackEvent(capture(trackingEventCategorySlot), capture(trackingEventActionSlot), capture(trackingEventNameSlot)) } returns Unit
+        every { trackButtonPressed(capture(trackingButtonPressedCategorySlot), capture(trackingButtonPressedNameSlot)) } returns Unit
     }
 
     @BindValue
@@ -95,7 +98,7 @@ class UserTrackingTest {
     }
 
     @BindValue
-    val mockNfcInterfaceManager: NfcInterfaceManagerType = mockk(relaxed = true){
+    val mockNfcInterfaceManager: NfcInterfaceManagerType = mockk(relaxed = true) {
         every { nfcAvailability } returns MutableStateFlow(NfcAvailability.Available)
     }
 
@@ -192,18 +195,24 @@ class UserTrackingTest {
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
-        Assert.assertEquals("firstTimeUser", trackingEventCategorySlot.captured)
-        Assert.assertEquals("buttonPressed", trackingEventActionSlot.captured)
-        Assert.assertEquals("start", trackingEventNameSlot.captured)
+        Assert.assertEquals("firstTimeUser", trackingButtonPressedCategorySlot.captured)
+        Assert.assertEquals("start", trackingButtonPressedNameSlot.captured)
 
         advanceUntilIdle()
         composeTestRule.waitForIdle()
+
+        Assert.assertEquals("firstTimeUser", trackingEventCategorySlot.captured)
+        Assert.assertEquals("setupIntroOpened", trackingEventActionSlot.captured)
+        Assert.assertEquals("home", trackingEventNameSlot.captured)
 
         Assert.assertEquals(setupIntro.trackingIdentifier, trackingRouteSlot.captured)
         setupIntro.setupIdBtn.click()
 
         advanceUntilIdle()
         composeTestRule.waitForIdle()
+
+        Assert.assertEquals("firstTimeUser", trackingButtonPressedCategorySlot.captured)
+        Assert.assertEquals("startSetup", trackingButtonPressedNameSlot.captured)
 
         Assert.assertEquals(setupPinLetter.trackingIdentifier, trackingRouteSlot.captured)
         setupPinLetter.noLetterBtn.click()
@@ -574,6 +583,96 @@ class UserTrackingTest {
     }
 
     @Test
+    fun skipSetup() = runTest {
+        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+
+        composeTestRule.activity.setContentUsingUseIdTheme {
+            UseIDApp(
+                nfcAvailability = NfcAvailability.Available,
+                navigator = navigator,
+                trackerManager = trackerManager
+            )
+        }
+
+        // Define screens to be tested
+        val setupIntro = TestScreen.SetupIntro(composeTestRule)
+        val alreadySetupConfirmation = TestScreen.AlreadySetupConfirmation(composeTestRule)
+        val home = TestScreen.Home(composeTestRule)
+
+        composeTestRule.waitForIdle()
+
+        Assert.assertEquals(home.trackingIdentifier, trackingRouteSlot.captured)
+        home.setupButton.scrollToAndClick()
+        advanceUntilIdle()
+        composeTestRule.waitForIdle()
+
+        Assert.assertEquals("firstTimeUser", trackingButtonPressedCategorySlot.captured)
+        Assert.assertEquals("start", trackingButtonPressedNameSlot.captured)
+
+        advanceUntilIdle()
+        composeTestRule.waitForIdle()
+
+        Assert.assertEquals("firstTimeUser", trackingEventCategorySlot.captured)
+        Assert.assertEquals("setupIntroOpened", trackingEventActionSlot.captured)
+        Assert.assertEquals("home", trackingEventNameSlot.captured)
+
+        Assert.assertEquals(setupIntro.trackingIdentifier, trackingRouteSlot.captured)
+        setupIntro.alreadySetupBtn.click()
+
+        advanceUntilIdle()
+        composeTestRule.waitForIdle()
+
+        Assert.assertEquals("firstTimeUser", trackingButtonPressedCategorySlot.captured)
+        Assert.assertEquals("alreadySetup", trackingButtonPressedNameSlot.captured)
+
+        advanceUntilIdle()
+        composeTestRule.waitForIdle()
+
+        alreadySetupConfirmation.assertIsDisplayed()
+        Assert.assertEquals(alreadySetupConfirmation.trackingIdentifier, trackingRouteSlot.captured)
+        alreadySetupConfirmation.confirmationButton.click()
+
+        advanceUntilIdle()
+        composeTestRule.waitForIdle()
+
+        home.assertIsDisplayed()
+        Assert.assertEquals(home.trackingIdentifier, trackingRouteSlot.captured)
+    }
+
+    @Test
+    fun setupFromWidget() = runTest {
+        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
+
+        composeTestRule.activity.setContentUsingUseIdTheme {
+            UseIDApp(
+                nfcAvailability = NfcAvailability.Available,
+                navigator = navigator,
+                trackerManager = trackerManager
+            )
+        }
+
+        every { mockStorageManager.firstTimeUser } returns true
+
+        val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+
+        // Define screens to be tested
+        val setupIntro = TestScreen.SetupIntro(composeTestRule)
+
+        composeTestRule.waitForIdle()
+
+        appCoordinator.handleDeepLink(deepLink)
+        advanceUntilIdle()
+        composeTestRule.waitForIdle()
+
+        Assert.assertEquals(setupIntro.trackingIdentifier, trackingRouteSlot.captured)
+        Assert.assertEquals("firstTimeUser", trackingEventCategorySlot.captured)
+        Assert.assertEquals("setupIntroOpened", trackingEventActionSlot.captured)
+        Assert.assertEquals("widget", trackingEventNameSlot.captured)
+    }
+
+    @Test
     fun ident() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
@@ -589,7 +688,8 @@ class UserTrackingTest {
             )
         }
 
-        val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val deepLink =
+            Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
         val redirectUrl = "test.url.com"
         val personalPin = "123456"
 
@@ -623,7 +723,7 @@ class UserTrackingTest {
             )
         ) {
             eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+                eidFlow.value = EidInteractionEvent.RequestCardInsertion
             })
         }
 
@@ -847,7 +947,7 @@ class UserTrackingTest {
             )
         ) {
             eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+                eidFlow.value = EidInteractionEvent.RequestCardInsertion
             })
         }
 
@@ -915,7 +1015,7 @@ class UserTrackingTest {
             )
         ) {
             eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+                eidFlow.value = EidInteractionEvent.RequestCardInsertion
             })
         }
 
@@ -983,7 +1083,7 @@ class UserTrackingTest {
             )
         ) {
             eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+                eidFlow.value = EidInteractionEvent.RequestCardInsertion
             })
         }
 

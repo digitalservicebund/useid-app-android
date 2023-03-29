@@ -53,7 +53,7 @@ class HomeViewModelTest {
         viewModel.setupOnlineId()
 
         verify(exactly = 1) { mockAppCoordinator.offerIdSetup(null) }
-        verify(exactly = 1) { mockTrackerManager.trackEvent("firstTimeUser", "buttonPressed", "start") }
+        verify(exactly = 1) { mockTrackerManager.trackButtonPressed("firstTimeUser", "start") }
     }
 
     @Test

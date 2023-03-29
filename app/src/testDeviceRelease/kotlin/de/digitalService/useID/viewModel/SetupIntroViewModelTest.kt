@@ -42,7 +42,7 @@ class SetupIntroViewModelTest {
         mockkObject(SetupIntroDestination)
         every { SetupIntroDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
         every { mockNavArgs.confirmCancellation } returns false
-        every { mockAbTestManager.isSetupIntroTestVariant.value } returns false
+        every { mockAbTestManager.isSetupIntroTestVariation.value } returns false
     }
 
     @Test
@@ -68,11 +68,11 @@ class SetupIntroViewModelTest {
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
     fun testShowVariant(isVariant: Boolean) {
-        every { mockAbTestManager.isSetupIntroTestVariant.value } returns isVariant
+        every { mockAbTestManager.isSetupIntroTestVariation.value } returns isVariant
 
         val viewModel = SetupIntroViewModel(mockSetupCoordinator, mockTrackerManager, mockAbTestManager, mockSaveStateHandle)
 
-        Assertions.assertEquals(isVariant, viewModel.showVariant)
+        Assertions.assertEquals(isVariant, viewModel.showVariation)
     }
 
     @ParameterizedTest
