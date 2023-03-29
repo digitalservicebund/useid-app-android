@@ -46,11 +46,11 @@ fun SetupIntro(viewModel: SetupIntroViewModelInterface = hiltViewModel<SetupIntr
         if (viewModel.showVariation) {
             StandardButtonScreen(
                 primaryButton = BundButtonConfig(
-                    title = stringResource(id = R.string.firstTimeUser_intro_startSetup),
+                    title = stringResource(id = R.string.firstTimeUser_intro_startSetupVariation),
                     action = viewModel::onFirstTimeUsage
                 ),
                 secondaryButton = BundButtonConfig(
-                    title = stringResource(id = R.string.firstTimeUser_intro_skipSetup),
+                    title = stringResource(id = R.string.firstTimeUser_intro_skipSetupVariation),
                     action = viewModel::onNonFirstTimeUsage
                 ),
                 modifier = Modifier.padding(top = topPadding)
