@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.coordinators
 
 import android.net.Uri
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.navigation.Navigator
@@ -28,7 +29,8 @@ class AppCoordinator @Inject constructor(
     private val setupCoordinator: SetupCoordinator,
     private val identificationCoordinator: IdentificationCoordinator,
     private val storageManager: StorageManagerType,
-    private val coroutineContextProvider: CoroutineContextProviderType
+    private val coroutineContextProvider: CoroutineContextProviderType,
+    private val trackerManager: TrackerManagerType
 ) : AppCoordinatorType {
     private val logger by getLogger()
 
@@ -52,6 +54,7 @@ class AppCoordinator @Inject constructor(
 
     override fun offerIdSetup(tcTokenUrl: String?) {
         navigator.popToRoot()
+        trackerManager.trackEvent("firstTimeUser", "setupIntroOpened", tcTokenUrl?.let { "widget" } ?: "home")
         setupCoordinator.showSetupIntro(tcTokenUrl)
     }
 
