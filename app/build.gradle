@@ -194,6 +194,9 @@ dependencies {
     implementation(libs.matomo.sdk.android)
     implementation(libs.unleash)
 
+    // CVE-2022-42003 (can probably be removed when updating unleash > 0.5.0)
+    implementation(libs.jackson.databind)
+
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
 
