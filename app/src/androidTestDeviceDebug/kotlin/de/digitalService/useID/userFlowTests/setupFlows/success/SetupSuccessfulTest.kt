@@ -75,7 +75,7 @@ class SetupSuccessfulTest {
     fun testSetupSuccessful() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
-        every { mockAbTestManager.isSetupIntroTestVariant.value } returns false
+        every { mockAbTestManager.isSetupIntroTestVariation.value } returns false
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
         every { mockIdCardManager.eidFlow } returns eidFlow
@@ -169,10 +169,10 @@ class SetupSuccessfulTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSetupSuccessfulIntroVariant() = runTest {
+    fun testSetupSuccessfulIntroVariation() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
-        every { mockAbTestManager.isSetupIntroTestVariant.value } returns true
+        every { mockAbTestManager.isSetupIntroTestVariation.value } returns true
 
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
@@ -190,7 +190,7 @@ class SetupSuccessfulTest {
         val personalPin = "123456"
 
         // Define screens to be tested
-        val setupIntro = TestScreen.SetupIntroVariant(composeTestRule)
+        val setupIntro = TestScreen.SetupIntroVariation(composeTestRule)
         val setupPinLetter = TestScreen.SetupPinLetter(composeTestRule)
         val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
         val setupPersonalPinIntro = TestScreen.SetupPersonalPinIntro(composeTestRule)
@@ -198,7 +198,7 @@ class SetupSuccessfulTest {
         val setupPersonalPinConfirm = TestScreen.SetupPersonalPinConfirm(composeTestRule)
         val setupScan = TestScreen.Scan(composeTestRule)
         val setupFinish = TestScreen.SetupFinish(composeTestRule)
-        val home = TestScreen.Home(composeTestRule)
+        val home = TestScreen.HomeVariation(composeTestRule)
 
         home.assertIsDisplayed()
         home.setupButton.click()

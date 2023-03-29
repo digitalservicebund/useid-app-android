@@ -31,7 +31,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns true
-        every { viewModel.showVariant } returns false
+        every { viewModel.showVariation } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -51,7 +51,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns false
-        every { viewModel.showVariant } returns false
+        every { viewModel.showVariation } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -72,7 +72,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns false
-        every { viewModel.showVariant } returns false
+        every { viewModel.showVariation } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -89,7 +89,7 @@ class SetupIntroTest {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true)
 
         every { viewModel.confirmCancellation } returns false
-        every { viewModel.showVariant } returns false
+        every { viewModel.showVariation } returns false
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
@@ -105,7 +105,7 @@ class SetupIntroTest {
     fun showsOriginal() {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true) {
             every { confirmCancellation } returns false
-            every { showVariant } returns false
+            every { showVariation } returns false
         }
 
         composeTestRule.activity.setContentUsingUseIdTheme {
@@ -121,14 +121,14 @@ class SetupIntroTest {
     fun showsVariant() {
         val viewModel: SetupIntroViewModelInterface = mockk(relaxUnitFun = true) {
             every { confirmCancellation } returns false
-            every { showVariant } returns true
+            every { showVariation } returns true
         }
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             SetupIntro(viewModel = viewModel)
         }
 
-        val title = composeTestRule.activity.getString(R.string.firstTimeUser_intro_title_variant)
+        val title = composeTestRule.activity.getString(R.string.firstTimeUser_intro_titleVariation)
 
         composeTestRule.onNodeWithText(title).assertIsDisplayed()
     }

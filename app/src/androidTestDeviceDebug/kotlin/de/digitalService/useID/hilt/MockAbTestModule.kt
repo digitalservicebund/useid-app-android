@@ -24,6 +24,6 @@ class MockAbTestModule {
     @Provides
     @Singleton
     fun providesAbTestManager(): AbTestManager = mockk(relaxed = true) {
-        every { isSetupIntroTestVariant.value } returns false
+        every { isSetupIntroTestVariation.value } returns false
     }
 }

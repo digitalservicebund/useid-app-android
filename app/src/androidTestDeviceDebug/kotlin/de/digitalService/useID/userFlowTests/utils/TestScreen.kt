@@ -64,6 +64,42 @@ sealed class TestScreen {
             }
     }
 
+    data class HomeVariation(override val testRule: ComposeTestRule) : TestScreen() {
+        override val trackingIdentifier: String = "/"
+
+        private val logoImage = TestElement.Tag(testRule, R.drawable.img_logo.toString())
+        private val headerTitle = TestElement.Text(testRule, resourceId = R.string.home_header_title)
+        private val headerInfoText = TestElement.Text(testRule, resourceId = R.string.home_header_infoText)
+        private val headerInfoTextCTA = TestElement.Text(testRule, resourceId = R.string.home_header_infoCTA)
+        private val widgetImage = TestElement.Tag(testRule, R.drawable.abstract_widget_phone.toString())
+
+        private val setupTitle = TestElement.Text(testRule, resourceId = R.string.home_setup_title)
+        private val setupBody = TestElement.Text(testRule, resourceId = R.string.home_setup_body)
+        val setupButton = TestElement.Text(testRule, resourceId = R.string.home_setup_setupVariation)
+
+        val privacyBtn = TestElement.Text(testRule, resourceId = R.string.home_more_privacy)
+        val licensesBtn = TestElement.Text(testRule, resourceId = R.string.home_more_licenses)
+        val accessibilityBtn = TestElement.Text(testRule, resourceId = R.string.home_more_accessibilityStatement)
+        val termsAndConditionsBtn = TestElement.Text(testRule, resourceId = R.string.home_more_terms)
+        val imprintBtn = TestElement.Text(testRule, resourceId = R.string.home_more_imprint)
+
+        override val expectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    logoImage, headerTitle, headerInfoText, headerInfoTextCTA, widgetImage, setupTitle, setupBody,
+                    setupButton, privacyBtn, licensesBtn, accessibilityBtn, termsAndConditionsBtn, imprintBtn
+                )
+            }
+
+        override val unexpectedElements: List<TestElement>
+            get() {
+                return listOf(
+                    TestElement.Tag(testRule, NavigationIcon.Back.name),
+                    TestElement.Tag(testRule, NavigationIcon.Cancel.name),
+                )
+            }
+    }
+
     data class Scan(override val testRule: ComposeTestRule) : TestScreen() {
 
         private var backAllowed = true
@@ -308,17 +344,17 @@ sealed class TestScreen {
             }
     }
 
-    data class SetupIntroVariant(override val testRule: ComposeTestRule) : TestScreen() {
+    data class SetupIntroVariation(override val testRule: ComposeTestRule) : TestScreen() {
         override val trackingIdentifier: String = "firstTimeUser/intro"
 
-        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_title_variant)
+        private val title = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_titleVariation)
 
         // TODO: Use when markdown is matchable
-        //private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_body_variant)
+//        private val body = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_box)
         private val pinSetupImage = TestElement.Tag(testRule, R.drawable.img_pin_setup.toString())
         val cancel = TestElement.Tag(testRule, NavigationIcon.Cancel.name)
-        val setupIdBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_startSetup)
-        private val alreadySetupBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_skipSetup)
+        val setupIdBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_startSetupVariation)
+        private val alreadySetupBtn = TestElement.Text(testRule, resourceId = R.string.firstTimeUser_intro_skipSetupVariation)
 
         override val expectedElements: List<TestElement>
             get() {
