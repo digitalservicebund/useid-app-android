@@ -71,7 +71,7 @@ class AbTestManager constructor(
 }
 
 enum class AbTest(val testName: String) {
-    SETUP_INTRODUCTION_EXPLANATION("bundesIdent.setup_introduction_explanation")
+    SETUP_INTRODUCTION_EXPLANATION("bundesIdent.setup_introduction_explanation_03_23")
 }
 
 class UnleashException(override val message: String) : Exception()
