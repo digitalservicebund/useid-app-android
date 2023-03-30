@@ -1,6 +1,8 @@
 package de.digitalService.useID.idCardInterface
 
+import android.net.Uri
 import kotlinx.serialization.Serializable
+import java.util.*
 
 @Serializable
 data class EidAuthenticationRequest(

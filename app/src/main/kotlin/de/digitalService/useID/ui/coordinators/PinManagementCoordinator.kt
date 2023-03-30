@@ -189,7 +189,7 @@ class PinManagementCoordinator @Inject constructor(
                         logger.debug("Card insertion requested.")
                         flowStateMachine.transition(PinManagementStateMachine.Event.RequestCardInsertion)
                     }
-                    EidInteractionEvent.PinManagementStarted -> logger.debug("PIN management started.")
+                    EidInteractionEvent.ChangingPinStarted -> logger.debug("PIN management started.")
                     EidInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized.")
                         _scanInProgress.value = true
@@ -201,7 +201,7 @@ class PinManagementCoordinator @Inject constructor(
                     EidInteractionEvent.CardInteractionComplete -> {
                         logger.debug("Card interaction complete.")
                     }
-                    EidInteractionEvent.PinManagementFinished -> {
+                    EidInteractionEvent.ChangingPinSucceeded -> {
                         logger.debug("Process completed successfully.")
                         flowStateMachine.transition(PinManagementStateMachine.Event.Finish)
                     }

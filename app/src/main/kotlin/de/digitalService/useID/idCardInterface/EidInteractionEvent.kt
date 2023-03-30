@@ -1,5 +1,7 @@
 package de.digitalService.useID.idCardInterface
 
+import de.governikus.ausweisapp2.sdkwrapper.card.core.CertificateDescription
+
 sealed class EidInteractionEvent {
     object Idle : EidInteractionEvent()
     class Error(val exception: IdCardInteractionException) : EidInteractionEvent()
@@ -11,16 +13,15 @@ sealed class EidInteractionEvent {
     object RequestCan : EidInteractionEvent()
     class RequestPin(val attempts: Int?) : EidInteractionEvent()
     object RequestPuk : EidInteractionEvent()
-    object ProcessCompletedSuccessfullyWithoutResult : EidInteractionEvent()
-    class ProcessCompletedSuccessfullyWithRedirect(val redirectURL: String) : EidInteractionEvent()
 
     object AuthenticationStarted : EidInteractionEvent()
-    class RequestAuthenticationRequestConfirmation(val request: EidAuthenticationRequest, val confirmationCallback: (Map<IdCardAttribute, Boolean>) -> Unit) : EidInteractionEvent()
-    object AuthenticationSuccessful : EidInteractionEvent()
+    class RequestAuthenticationRequestConfirmation(val request: AuthenticationRequest) : EidInteractionEvent()
+    class AuthenticationCertificate(val certification: de.digitalService.useID.idCardInterface.CertificateDescription) : EidInteractionEvent()
+    class AuthenticationSucceededWithRedirect(val redirectURL: String?) : EidInteractionEvent()
 
-    object PinManagementStarted : EidInteractionEvent()
+    object ChangingPinStarted : EidInteractionEvent()
     class RequestNewPin(val attempts: Int?) : EidInteractionEvent()
-    object PinManagementFinished : EidInteractionEvent()
+    object ChangingPinSucceeded : EidInteractionEvent()
 
 //    val redacted: RedactedEidInteractionEvent
 //        get() = when (this) {

@@ -2,20 +2,16 @@ package de.digitalService.useID.idCardInterface
 
 import android.content.Context
 import android.nfc.Tag
-import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.governikus.ausweisapp2.sdkwrapper.SDKWrapper.workflowController
 import de.governikus.ausweisapp2.sdkwrapper.card.core.*
+import de.governikus.ausweisapp2.sdkwrapper.card.core.CertificateDescription
 //import de.governikus.ausweisapp2.sdkwrapper.card.core.WorkflowController
-import io.sentry.Sentry
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -160,7 +156,21 @@ class IdCardManager @Inject constructor(
 
     private val workflowCallbacks = object : WorkflowCallbacks {
         override fun onAccessRights(error: String?, accessRights: AccessRights?) {
-            TODO("Not yet implemented")
+            logger.trace("onAccessRights called")
+
+            error?.let { logger.error(it) }
+            if (accessRights == null) {
+                logger.error("Access rights missing.")
+                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Access rights missing. ${error ?: "n/a"}"))
+                return
+            }
+
+            if (accessRights.effectiveRights == accessRights.requiredRights) {
+                val authenticationRequest = AuthenticationRequest(accessRights.requiredRights, accessRights.transactionInfo)
+                _eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(authenticationRequest)
+            } else {
+                workflowController.setAccessRights(listOf())
+            }
         }
 
         override fun onApiLevel(error: String?, apiLevel: ApiLevel?) {
@@ -172,36 +182,49 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onAuthenticationStartFailed(error: String) {
-            TODO("Not yet implemented")
+            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError(error))
         }
 
         override fun onAuthenticationStarted() {
-            TODO("Not yet implemented")
+            _eidFlow.value = EidInteractionEvent.AuthenticationStarted
         }
 
         override fun onBadState(error: String) {
-            TODO("Not yet implemented")
+            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Bad state: $error"))
         }
 
         override fun onCertificate(certificateDescription: CertificateDescription) {
-            TODO("Not yet implemented")
+            _eidFlow.value = EidInteractionEvent.AuthenticationCertificate(
+                CertificateDescription(
+                    certificateDescription.issuerName,
+                    certificateDescription.issuerUrl,
+                    certificateDescription.purpose,
+                    certificateDescription.subjectName,
+                    certificateDescription.subjectUrl,
+                    certificateDescription.termsOfUsage,
+                    certificateDescription.validity.effectiveDate,
+                    certificateDescription.validity.expirationDate
+                )
+            )
         }
 
         override fun onChangePinCompleted(changePinResult: ChangePinResult) {
             if (changePinResult.success) {
-                logger.debug("New PIN has been set sucessfully.")
-                _eidFlow.value = EidInteractionEvent.PinManagementFinished
+                logger.debug("New PIN has been set successfully.")
+                _eidFlow.value = EidInteractionEvent.ChangingPinSucceeded
             } else {
                 logger.error("Changing PIN failed.")
+                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ChangingPinFailed)
             }
         }
 
         override fun onChangePinStarted() {
-            _eidFlow.value = EidInteractionEvent.PinManagementStarted
+            _eidFlow.value = EidInteractionEvent.ChangingPinStarted
         }
 
         override fun onEnterCan(error: String?, reader: Reader) {
-            TODO("Not yet implemented")
+            error?.let { logger.error(it) }
+            _eidFlow.value = EidInteractionEvent.RequestCan
         }
 
         override fun onEnterNewPin(error: String?, reader: Reader) {
@@ -215,7 +238,8 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onEnterPuk(error: String?, reader: Reader) {
-            TODO("Not yet implemented")
+            error?.let { logger.error(it) }
+            _eidFlow.value = EidInteractionEvent.RequestPuk
         }
 
         override fun onInfo(versionInfo: VersionInfo) {
@@ -223,15 +247,28 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onInsertCard(error: String?) {
+            error?.let { logger.error(it) }
             _eidFlow.value = EidInteractionEvent.RequestCardInsertion
         }
 
         override fun onInternalError(error: String) {
             logger.error(error)
+            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError(error))
         }
 
         override fun onReader(reader: Reader?) {
             logger.trace("onReader")
+            if (reader == null) {
+                logger.error("Unknown reader.")
+                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.UnknownReader)
+                return
+            }
+
+            if (reader.card == null) {
+                _eidFlow.value = EidInteractionEvent.CardRemoved
+            } else {
+                _eidFlow.value = EidInteractionEvent.CardRecognized
+            }
         }
 
         override fun onReaderList(readers: List<Reader>?) {
@@ -244,11 +281,12 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onStatus(workflowProgress: WorkflowProgress) {
-            TODO("Not yet implemented")
+            logger.trace("onStatus with state ${ workflowProgress.state } and progress ${ workflowProgress.progress }")
         }
 
         override fun onWrapperError(error: WrapperError) {
             logger.error("${error.error} - ${error.msg}")
+            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError(error.msg))
         }
     }
 

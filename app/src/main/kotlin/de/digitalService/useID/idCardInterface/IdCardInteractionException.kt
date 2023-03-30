@@ -8,7 +8,9 @@ sealed class IdCardInteractionException(message: String? = null) : CancellationE
     class UnexpectedReadAttribute(message: String? = null) : IdCardInteractionException(message)
     object CardBlocked : IdCardInteractionException()
     object CardDeactivated : IdCardInteractionException()
+    object UnknownReader : IdCardInteractionException()
     object ProcessFailed : IdCardInteractionException()
+    object ChangingPinFailed : IdCardInteractionException()
 
     val redacted: RedactedIDCardInteractionException?
         get() = when (this) {
