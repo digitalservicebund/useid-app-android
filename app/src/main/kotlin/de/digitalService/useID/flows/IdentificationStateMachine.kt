@@ -149,15 +149,19 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                     return when (event.exception) {
                         is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
                         is IdCardInteractionException.CardBlocked -> State.CardBlocked
-                        is IdCardInteractionException.ProcessFailed -> State.CardUnreadable(event.exception.redirectUrl)
+                        is IdCardInteractionException.ProcessFailed -> {
+                            when (val currentState = state.value.second) {
+                                is State.CardBlocked, is State.CardDeactivated -> currentState
+                                else -> State.CardUnreadable(event.exception.redirectUrl)
+                            }
+                        }
                         else -> throw IllegalArgumentException()
                     }
                 }
 
                 when (val currentState = state.value.second) {
                     is State.FetchingMetadata -> State.FetchingMetadataFailed(currentState.backingDownAllowed, currentState.tcTokenUrl)
-                    is State.WaitingForCardAttachment, is State.CanRequested -> nextState()
-                    else -> throw IllegalArgumentException()
+                    else -> nextState()
                 }
             }
 

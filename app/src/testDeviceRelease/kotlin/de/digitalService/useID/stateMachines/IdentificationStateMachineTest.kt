@@ -266,29 +266,47 @@ class IdentificationStateMachineTest {
             Assertions.assertEquals(backingDownAllowed, newState.backingDownAllowed)
         }
 
-        @Test
-        fun `card deactivated`() = runTest {
+        @ParameterizedTest
+        @SealedClassesSource(names = ["FetchingMetadata"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
+        fun `card deactivated`(oldState: IdentificationStateMachine.State) = runTest {
                 val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
-                val oldState = IdentificationStateMachine.State.WaitingForCardAttachment(null)
                 val newState: IdentificationStateMachine.State.CardDeactivated = transition(oldState, event, this)
         }
 
-        @Test
-        fun `card blocked`() = runTest {
+        @ParameterizedTest
+        @SealedClassesSource(names = ["FetchingMetadata"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
+        fun `card blocked`(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.CardBlocked)
-            val oldState = IdentificationStateMachine.State.WaitingForCardAttachment(null)
+            val newState: IdentificationStateMachine.State.CardBlocked = transition(oldState, event, this)
+        }
+
+        @ParameterizedTest
+        @SealedClassesSource(names = ["FetchingMetadata", "CardBlocked", "CardDeactivated"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
+        fun `process failed`(oldState: IdentificationStateMachine.State) = runTest {
+            val redirectUrl = "redirectUrl"
+
+            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, redirectUrl, null))
+            val newState: IdentificationStateMachine.State.CardUnreadable = transition(oldState, event, this)
+
+            Assertions.assertEquals(redirectUrl, newState.redirectUrl)
+        }
+
+        @Test
+        fun `process failed after card blocked`() = runTest {
+            val redirectUrl = "redirectUrl"
+
+            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, redirectUrl, null))
+            val oldState = IdentificationStateMachine.State.CardBlocked
             val newState: IdentificationStateMachine.State.CardBlocked = transition(oldState, event, this)
         }
 
         @Test
-        fun `process failed`() = runTest {
+        fun `process failed after card deactivated`() = runTest {
             val redirectUrl = "redirectUrl"
 
             val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, redirectUrl, null))
-            val oldState = IdentificationStateMachine.State.WaitingForCardAttachment(null)
-            val newState: IdentificationStateMachine.State.CardUnreadable = transition(oldState, event, this)
-
-            Assertions.assertEquals(redirectUrl, newState.redirectUrl)
+            val oldState = IdentificationStateMachine.State.CardBlocked
+            val newState: IdentificationStateMachine.State.CardBlocked = transition(oldState, event, this)
         }
     }
 
@@ -428,16 +446,6 @@ class IdentificationStateMachineTest {
         @SealedClassesSource(names = ["WaitingForCardAttachment", "CanRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun finish(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.Finish("")
-            val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
-            Assertions.assertEquals(stateMachine.state.value.second, oldState)
-
-            Assertions.assertThrows(IllegalArgumentException::class.java) { stateMachine.transition(event) }
-        }
-
-        @ParameterizedTest
-        @SealedClassesSource(names = ["FetchingMetadata", "WaitingForCardAttachment", "CanRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
-        fun error(oldState: IdentificationStateMachine.State) = runTest {
-            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
             val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
 
