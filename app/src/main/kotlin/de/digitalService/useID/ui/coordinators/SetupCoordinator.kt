@@ -66,6 +66,7 @@ class SetupCoordinator @Inject constructor(
         collectStateMachineEvents()
 
         _stateFlow.value = SubCoordinatorState.ACTIVE
+        flowStateMachine.transition(SetupStateMachine.Event.Invalidate)
         flowStateMachine.transition(SetupStateMachine.Event.OfferSetup(tcTokenUrl))
     }
 

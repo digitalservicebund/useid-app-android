@@ -290,6 +290,7 @@ class SetupCoordinatorTest {
         setupCoordinator.showSetupIntro(tcTokenUrl)
 
         Assertions.assertEquals(SubCoordinatorState.ACTIVE, setupCoordinator.stateFlow.value)
+        verify { mockSetupStateMachine.transition(SetupStateMachine.Event.Invalidate) }
         verify { mockSetupStateMachine.transition(SetupStateMachine.Event.OfferSetup(tcTokenUrl)) }
     }
 
