@@ -15,7 +15,7 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
@@ -69,7 +69,7 @@ interface SetupTransportPinViewModelInterface {
 
 @HiltViewModel
 class SetupTransportPinViewModel @Inject constructor(
-    private val pinManagementCoordinator: PinManagementCoordinator,
+    private val changePinCoordinator: ChangePinCoordinator,
     savedStateHandle: SavedStateHandle
 ) :
     ViewModel(), SetupTransportPinViewModelInterface {
@@ -82,14 +82,14 @@ class SetupTransportPinViewModel @Inject constructor(
     }
 
     override fun onDoneClicked(pin: String) {
-        pinManagementCoordinator.onOldPinEntered(pin)
+        changePinCoordinator.onOldPinEntered(pin)
     }
 
     override fun onNavigationButtonClicked() {
         if (retry) {
-            pinManagementCoordinator.cancelPinManagement()
+            changePinCoordinator.cancelPinManagement()
         } else {
-            pinManagementCoordinator.onBack()
+            changePinCoordinator.onBack()
         }
     }
 }

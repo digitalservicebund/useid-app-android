@@ -152,7 +152,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                         is IdCardInteractionException.ProcessFailed -> {
                             when (val currentState = state.value.second) {
                                 is State.CardBlocked, is State.CardDeactivated -> currentState
-                                else -> State.CardUnreadable(event.exception.redirectUrl)
+                                else -> State.CardUnreadable(null)
                             }
                         }
                         else -> throw IllegalArgumentException()

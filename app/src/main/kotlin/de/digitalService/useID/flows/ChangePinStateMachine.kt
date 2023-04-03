@@ -11,7 +11,7 @@ import javax.inject.Singleton
 typealias PinManagementCallback = (String, String) -> Unit
 
 @Singleton
-class PinManagementStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
+class ChangePinStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
     @Inject constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
 
     private val logger by getLogger()
@@ -51,7 +51,7 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
     }
 
     sealed class Event {
-        data class StartPinManagement(val identificationPending: Boolean, val transportPin: Boolean) : Event()
+        data class StartPinChange(val identificationPending: Boolean, val transportPin: Boolean) : Event()
         data class EnterOldPin(val oldPin: String) : Event()
         object ConfirmNewPinIntro : Event()
         data class EnterNewPin(val newPin: String) : Event()
@@ -86,7 +86,7 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
 
     private fun nextState(event: Event): State {
         return when (event) {
-            is Event.StartPinManagement -> {
+            is Event.StartPinChange -> {
                 when (state.value.second) {
                     is State.Invalid -> if (event.transportPin) State.OldTransportPinInput(event.identificationPending) else State.OldPersonalPinInput
                     else -> throw IllegalArgumentException()
@@ -97,8 +97,8 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
                 when (val currentState = state.value.second) {
                     is State.OldTransportPinInput -> State.NewPinIntro(currentState.identificationPending, true, event.oldPin)
                     is State.OldPersonalPinInput -> State.NewPinIntro(false, false, event.oldPin)
-//                    is State.OldTransportPinRetry -> State.FrameworkReadyForPinManagement(currentState.identificationPending, true, event.oldPin, currentState.newPin, currentState.callback)
-//                    is State.OldPersonalPinRetry -> State.FrameworkReadyForPinManagement(false, false, event.oldPin, currentState.newPin, currentState.callback)
+                    is State.OldTransportPinRetry -> State.FrameworkReadyForPinInput(currentState.identificationPending, true, event.oldPin, currentState.newPin)
+                    is State.OldPersonalPinRetry -> State.FrameworkReadyForPinInput(false, false, event.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -134,8 +134,10 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
             is Event.RequestCardInsertion -> {
                 when (val currentState = state.value.second) {
                     is State.ReadyForScan -> State.WaitingForFirstCardAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-//                    is State.FrameworkReadyForPinManagement -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+                    is State.FrameworkReadyForPinInput -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+                    is State.FrameworkReadyForNewPinInput -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     is State.CanRequested -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+                    is State.WaitingForFirstCardAttachment -> currentState
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -143,7 +145,7 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
             is Event.FrameworkRequestsPin -> {
                 when (val currentState = state.value.second) {
                     is State.WaitingForFirstCardAttachment -> State.FrameworkReadyForPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-//                    is State.FrameworkReadyForPinManagement -> if (currentState.transportPin) State.OldTransportPinRetry(currentState.identificationPending, currentState.newPin, event.pinManagementCallback) else State.OldPersonalPinRetry(currentState.newPin, event.pinManagementCallback)
+                    is State.FrameworkReadyForPinInput -> if (currentState.transportPin) State.OldTransportPinRetry(currentState.identificationPending, currentState.newPin) else State.OldPersonalPinRetry(currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -151,6 +153,7 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
             is Event.FrameworkRequestsNewPin -> {
                 when (val currentState = state.value.second) {
                     is State.FrameworkReadyForPinInput -> State.FrameworkReadyForNewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+                    is State.WaitingForCardReAttachment -> State.FrameworkReadyForNewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -167,6 +170,7 @@ class PinManagementStateMachine(initialState: State, private val issueTrackerMan
             is Event.Finish -> {
                 when (state.value.second) {
 //                    is State.FrameworkReadyForPinManagement, is State.WaitingForFirstCardAttachment, is State.WaitingForCardReAttachment, is State.CanRequested -> State.Finished
+                    is State.FrameworkReadyForNewPinInput -> State.Finished
                     else -> throw IllegalArgumentException()
                 }
             }

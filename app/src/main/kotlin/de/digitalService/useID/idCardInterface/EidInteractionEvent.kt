@@ -7,7 +7,7 @@ sealed class EidInteractionEvent {
     class Error(val exception: IdCardInteractionException) : EidInteractionEvent()
 
     object RequestCardInsertion : EidInteractionEvent()
-    object CardInteractionComplete : EidInteractionEvent()
+    object CardInteractionComplete : EidInteractionEvent() //todo remove
     object CardRecognized : EidInteractionEvent()
     object CardRemoved : EidInteractionEvent()
     object RequestCan : EidInteractionEvent()

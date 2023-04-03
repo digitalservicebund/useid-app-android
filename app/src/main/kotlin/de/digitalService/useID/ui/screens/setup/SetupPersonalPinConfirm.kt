@@ -17,7 +17,7 @@ import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.StandardNumberEntryScreen
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.dialogs.StandardDialog
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
@@ -64,20 +64,20 @@ interface SetupPersonalPinConfirmViewModelInterface {
 
 @HiltViewModel
 class SetupPersonalPinConfirmViewModel @Inject constructor(
-    private val pinManagementCoordinator: PinManagementCoordinator
+    private val changePinCoordinator: ChangePinCoordinator
 ) : ViewModel(), SetupPersonalPinConfirmViewModelInterface {
     override var shouldShowError: Boolean by mutableStateOf(false)
 
     override fun onDoneClicked(pin: String) {
-        shouldShowError = !pinManagementCoordinator.confirmNewPin(pin)
+        shouldShowError = !changePinCoordinator.confirmNewPin(pin)
     }
 
     override fun onErrorDialogButtonClicked() {
-        pinManagementCoordinator.onConfirmPinMismatchError()
+        changePinCoordinator.onConfirmPinMismatchError()
     }
 
     override fun onBack() {
-        pinManagementCoordinator.onBack()
+        changePinCoordinator.onBack()
     }
 }
 

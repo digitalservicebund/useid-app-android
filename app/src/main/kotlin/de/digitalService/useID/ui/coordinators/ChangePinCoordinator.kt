@@ -3,7 +3,7 @@ package de.digitalService.useID.ui.coordinators
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.flows.CanStateMachine
-import de.digitalService.useID.flows.PinManagementStateMachine
+import de.digitalService.useID.flows.ChangePinStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
@@ -22,12 +22,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PinManagementCoordinator @Inject constructor(
+class ChangePinCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     private val canCoordinator: CanCoordinator,
     private val navigator: Navigator,
     private val idCardManager: IdCardManager,
-    private val flowStateMachine: PinManagementStateMachine,
+    private val flowStateMachine: ChangePinStateMachine,
     private val canStateMachine: CanStateMachine,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
@@ -52,93 +52,93 @@ class PinManagementCoordinator @Inject constructor(
 
         stateMachineCoroutineScope = CoroutineScope(coroutineContextProvider.Default).launch {
             flowStateMachine.state.collect { eventAndPair ->
-                if (eventAndPair.first is PinManagementStateMachine.Event.Back) {
+                if (eventAndPair.first is ChangePinStateMachine.Event.Back) {
                     navigator.pop()
 
                     // From Scan screen
-                    if (eventAndPair.second is PinManagementStateMachine.State.NewPinInput) {
+                    if (eventAndPair.second is ChangePinStateMachine.State.NewPinInput) {
                         resetCoordinatorState()
                     }
 
                     // Backing down
-                    if (eventAndPair.second is PinManagementStateMachine.State.Invalid) {
+                    if (eventAndPair.second is ChangePinStateMachine.State.Invalid) {
                         resetCoordinatorState()
                         _stateFlow.value = SubCoordinatorState.BACKED_DOWN
                     }
                 } else {
                     when (val state = eventAndPair.second) {
-                        is PinManagementStateMachine.State.OldTransportPinInput -> navigator.navigate(SetupTransportPinDestination(false, state.identificationPending))
-                        is PinManagementStateMachine.State.OldPersonalPinInput -> throw NotImplementedError()
-                        is PinManagementStateMachine.State.NewPinIntro -> navigator.navigate(SetupPersonalPinIntroDestination)
-                        is PinManagementStateMachine.State.NewPinInput -> if (eventAndPair.first is PinManagementStateMachine.Event.RetryNewPinConfirmation) navigator.pop() else navigator.navigate(SetupPersonalPinInputDestination)
-                        is PinManagementStateMachine.State.NewPinConfirmation -> navigator.navigate(SetupPersonalPinConfirmDestination)
-                        is PinManagementStateMachine.State.ReadyForScan -> executePinManagement()
-                        is PinManagementStateMachine.State.WaitingForFirstCardAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
-                        is PinManagementStateMachine.State.WaitingForCardReAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
-                        is PinManagementStateMachine.State.FrameworkReadyForPinInput -> idCardManager.providePin(state.oldPin)
-                        is PinManagementStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.oldPin)
-                        is PinManagementStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin, state.shortFlow)
-                        is PinManagementStateMachine.State.OldTransportPinRetry -> navigator.navigate(SetupTransportPinDestination(true, state.identificationPending))
-                        is PinManagementStateMachine.State.OldPersonalPinRetry -> throw NotImplementedError()
-                        PinManagementStateMachine.State.Finished -> finishPinManagement()
-                        PinManagementStateMachine.State.Cancelled -> cancelPinManagement()
-                        PinManagementStateMachine.State.CardDeactivated -> navigator.navigate(SetupCardDeactivatedDestination)
-                        PinManagementStateMachine.State.CardBlocked -> navigator.navigate(SetupCardBlockedDestination)
-                        is PinManagementStateMachine.State.ProcessFailed -> navigator.navigate(SetupCardUnreadableDestination(false))
-                        PinManagementStateMachine.State.UnknownError -> navigator.navigate(SetupOtherErrorDestination)
-                        PinManagementStateMachine.State.Invalid -> logger.debug("Ignoring transition to state INVALID.")
+                        is ChangePinStateMachine.State.OldTransportPinInput -> navigator.navigate(SetupTransportPinDestination(false, state.identificationPending))
+                        is ChangePinStateMachine.State.OldPersonalPinInput -> throw NotImplementedError()
+                        is ChangePinStateMachine.State.NewPinIntro -> navigator.navigate(SetupPersonalPinIntroDestination)
+                        is ChangePinStateMachine.State.NewPinInput -> if (eventAndPair.first is ChangePinStateMachine.Event.RetryNewPinConfirmation) navigator.pop() else navigator.navigate(SetupPersonalPinInputDestination)
+                        is ChangePinStateMachine.State.NewPinConfirmation -> navigator.navigate(SetupPersonalPinConfirmDestination)
+                        is ChangePinStateMachine.State.ReadyForScan -> executePinChange()
+                        is ChangePinStateMachine.State.WaitingForFirstCardAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
+                        is ChangePinStateMachine.State.WaitingForCardReAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
+                        is ChangePinStateMachine.State.FrameworkReadyForPinInput -> idCardManager.providePin(state.oldPin)
+                        is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.oldPin)
+                        is ChangePinStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin, state.shortFlow)
+                        is ChangePinStateMachine.State.OldTransportPinRetry -> navigator.navigate(SetupTransportPinDestination(true, state.identificationPending))
+                        is ChangePinStateMachine.State.OldPersonalPinRetry -> throw NotImplementedError()
+                        ChangePinStateMachine.State.Finished -> finishPinManagement()
+                        ChangePinStateMachine.State.Cancelled -> cancelPinManagement()
+                        ChangePinStateMachine.State.CardDeactivated -> navigator.navigate(SetupCardDeactivatedDestination)
+                        ChangePinStateMachine.State.CardBlocked -> navigator.navigate(SetupCardBlockedDestination)
+                        is ChangePinStateMachine.State.ProcessFailed -> navigator.navigate(SetupCardUnreadableDestination(false))
+                        ChangePinStateMachine.State.UnknownError -> navigator.navigate(SetupOtherErrorDestination)
+                        ChangePinStateMachine.State.Invalid -> logger.debug("Ignoring transition to state INVALID.")
                     }
                 }
             }
         }
     }
 
-    fun startPinManagement(identificationPending: Boolean, transportPin: Boolean): Flow<SubCoordinatorState> {
+    fun startPinChange(identificationPending: Boolean, transportPin: Boolean): Flow<SubCoordinatorState> {
         collectStateMachineEvents()
 
         canStateMachine.transition(CanStateMachine.Event.Invalidate)
-        flowStateMachine.transition(PinManagementStateMachine.Event.StartPinManagement(identificationPending, transportPin))
+        flowStateMachine.transition(ChangePinStateMachine.Event.StartPinChange(identificationPending, transportPin))
         _stateFlow.value = SubCoordinatorState.ACTIVE
         return stateFlow
     }
 
     fun onOldPinEntered(oldPin: String) {
-        flowStateMachine.transition(PinManagementStateMachine.Event.EnterOldPin(oldPin))
+        flowStateMachine.transition(ChangePinStateMachine.Event.EnterOldPin(oldPin))
     }
 
     fun onPersonalPinIntroFinished() {
-        flowStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPinIntro)
+        flowStateMachine.transition(ChangePinStateMachine.Event.ConfirmNewPinIntro)
     }
 
     fun onNewPinEntered(newPin: String) {
-        flowStateMachine.transition(PinManagementStateMachine.Event.EnterNewPin(newPin))
+        flowStateMachine.transition(ChangePinStateMachine.Event.EnterNewPin(newPin))
     }
 
     fun confirmNewPin(newPin: String): Boolean {
         return try {
-            flowStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPin(newPin))
+            flowStateMachine.transition(ChangePinStateMachine.Event.ConfirmNewPin(newPin))
             true
-        } catch (e: PinManagementStateMachine.Error.PinConfirmationFailed) {
+        } catch (e: ChangePinStateMachine.Error.PinConfirmationFailed) {
             false
         }
     }
 
     fun onConfirmPinMismatchError() {
-        flowStateMachine.transition(PinManagementStateMachine.Event.RetryNewPinConfirmation)
+        flowStateMachine.transition(ChangePinStateMachine.Event.RetryNewPinConfirmation)
     }
 
     fun onBack() {
-        flowStateMachine.transition(PinManagementStateMachine.Event.Back)
+        flowStateMachine.transition(ChangePinStateMachine.Event.Back)
     }
 
     fun cancelPinManagement() {
         _stateFlow.value = SubCoordinatorState.CANCELLED
-        flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
+        flowStateMachine.transition(ChangePinStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }
 
     fun confirmCardUnreadableError() {
-        flowStateMachine.transition(PinManagementStateMachine.Event.ProceedAfterError)
+        flowStateMachine.transition(ChangePinStateMachine.Event.ProceedAfterError)
     }
 
     private fun startCanFlow(identificationPending: Boolean, oldPin: String, newPin: String, shortFlow: Boolean) {
@@ -159,13 +159,13 @@ class PinManagementCoordinator @Inject constructor(
 
     private fun skipPinManagement() {
         _stateFlow.value = SubCoordinatorState.SKIPPED
-        flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
+        flowStateMachine.transition(ChangePinStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }
 
     private fun finishPinManagement() {
         _stateFlow.value = SubCoordinatorState.FINISHED
-        flowStateMachine.transition(PinManagementStateMachine.Event.Invalidate)
+        flowStateMachine.transition(ChangePinStateMachine.Event.Invalidate)
         resetCoordinatorState()
     }
 
@@ -176,7 +176,7 @@ class PinManagementCoordinator @Inject constructor(
         idCardManager.cancelTask()
     }
 
-    private fun executePinManagement() {
+    private fun executePinChange() {
         eIdEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
 
@@ -187,7 +187,7 @@ class PinManagementCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-                        flowStateMachine.transition(PinManagementStateMachine.Event.RequestCardInsertion)
+                        flowStateMachine.transition(ChangePinStateMachine.Event.RequestCardInsertion)
                     }
                     EidInteractionEvent.ChangingPinStarted -> logger.debug("PIN management started.")
                     EidInteractionEvent.CardRecognized -> {
@@ -203,27 +203,27 @@ class PinManagementCoordinator @Inject constructor(
                     }
                     EidInteractionEvent.ChangingPinSucceeded -> {
                         logger.debug("Process completed successfully.")
-                        flowStateMachine.transition(PinManagementStateMachine.Event.Finish)
+                        flowStateMachine.transition(ChangePinStateMachine.Event.Finish)
                     }
                     is EidInteractionEvent.RequestPin -> {
                         logger.debug("Request PIN.")
-                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsPin)
+                        flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsPin)
                     }
                     is EidInteractionEvent.RequestNewPin -> {
                         logger.debug("Request new PIN.")
-                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsNewPin)
+                        flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsNewPin)
                     }
                     is EidInteractionEvent.RequestCan -> {
                         logger.debug("PIN and CAN requested.")
-                        flowStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsCan)
+                        flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsCan)
                     }
                     is EidInteractionEvent.RequestPuk -> {
                         _scanInProgress.value = false
-                        flowStateMachine.transition(PinManagementStateMachine.Event.Error(IdCardInteractionException.CardBlocked))
+                        flowStateMachine.transition(ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked))
                     }
                     is EidInteractionEvent.Error -> {
                         _scanInProgress.value = false
-                        flowStateMachine.transition(PinManagementStateMachine.Event.Error(event.exception))
+                        flowStateMachine.transition(ChangePinStateMachine.Event.Error(event.exception))
                     }
                     else -> logger.debug("Ignoring event: $event")
                 }

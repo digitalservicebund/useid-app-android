@@ -18,7 +18,7 @@ import de.digitalService.useID.ui.components.Flow
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.NavigationIcon
 import de.digitalService.useID.ui.components.ScreenWithTopBar
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.screens.ScanScreen
 import de.digitalService.useID.ui.screens.destinations.SetupScanDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
@@ -67,7 +67,7 @@ interface SetupScanViewModelInterface {
 
 @HiltViewModel
 class SetupScanViewModel @Inject constructor(
-    private val pinManagementCoordinator: PinManagementCoordinator,
+    private val changePinCoordinator: ChangePinCoordinator,
     private val trackerManager: TrackerManagerType,
     savedStateHandle: SavedStateHandle,
     @Nullable coroutineScope: CoroutineScope? = null
@@ -85,7 +85,7 @@ class SetupScanViewModel @Inject constructor(
         identificationPending = SetupScanDestination.argsFrom(savedStateHandle).identificationPending
 
         viewModelCoroutineScope.launch {
-            pinManagementCoordinator.scanInProgress.collect { shouldShowProgress = it }
+            changePinCoordinator.scanInProgress.collect { shouldShowProgress = it }
         }
     }
 
@@ -99,9 +99,9 @@ class SetupScanViewModel @Inject constructor(
 
     override fun onNavigationButtonClicked() {
         if (backAllowed) {
-            pinManagementCoordinator.onBack()
+            changePinCoordinator.onBack()
         } else {
-            pinManagementCoordinator.cancelPinManagement()
+            changePinCoordinator.cancelPinManagement()
         }
     }
 }

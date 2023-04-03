@@ -185,7 +185,7 @@ class IdentificationCoordinator @Inject constructor(
                     }
                     is EidInteractionEvent.RequestAuthenticationRequestConfirmation -> {
                         logger.debug("Requesting authentication confirmation")
-                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(event.request, event.confirmationCallback))
+//                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(event.request, event.confirmationCallback))
                     }
                     is EidInteractionEvent.RequestPin -> {
                         logger.debug("Requesting PIN")
@@ -203,10 +203,10 @@ class IdentificationCoordinator @Inject constructor(
                         logger.debug("Card removed.")
                         _scanInProgress.value = false
                     }
-                    is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
-                        logger.debug("Process completed successfully.")
-                        flowStateMachine.transition(IdentificationStateMachine.Event.Finish(event.redirectURL))
-                    }
+//                    is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
+//                        logger.debug("Process completed successfully.")
+//                        flowStateMachine.transition(IdentificationStateMachine.Event.Finish(event.redirectURL))
+//                    }
                     is EidInteractionEvent.RequestCan -> {
                         logger.debug("PIN and CAN requested.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsCan)

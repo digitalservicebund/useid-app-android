@@ -15,7 +15,7 @@ import javax.inject.Singleton
 @Singleton
 class SetupCoordinator @Inject constructor(
     private val navigator: Navigator,
-    private val pinManagementCoordinator: PinManagementCoordinator,
+    private val changePinCoordinator: ChangePinCoordinator,
     private val identificationCoordinator: IdentificationCoordinator,
     private val storageManager: StorageManagerType,
     private val flowStateMachine: SetupStateMachine,
@@ -81,7 +81,7 @@ class SetupCoordinator @Inject constructor(
     private fun startPinManagement(identificationPending: Boolean) {
         subFlowCoroutineScope?.cancel()
         subFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-            pinManagementCoordinator.startPinManagement(identificationPending, true).collect { event ->
+            changePinCoordinator.startPinChange(identificationPending, true).collect { event ->
                 when (event) {
                     SubCoordinatorState.CANCELLED -> cancelSetup()
                     SubCoordinatorState.BACKED_DOWN -> flowStateMachine.transition(SetupStateMachine.Event.SubsequentFlowBackedDown)

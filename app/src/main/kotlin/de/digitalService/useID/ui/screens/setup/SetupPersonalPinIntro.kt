@@ -22,7 +22,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.*
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
 import javax.inject.Inject
 
@@ -86,7 +86,7 @@ interface SetupPersonalPinIntroViewModelInterface {
 }
 
 @HiltViewModel
-class SetupPersonalPinIntroViewModel @Inject constructor(private val coordinator: PinManagementCoordinator) :
+class SetupPersonalPinIntroViewModel @Inject constructor(private val coordinator: ChangePinCoordinator) :
     ViewModel(),
     SetupPersonalPinIntroViewModelInterface {
     override fun onContinue() = coordinator.onPersonalPinIntroFinished()

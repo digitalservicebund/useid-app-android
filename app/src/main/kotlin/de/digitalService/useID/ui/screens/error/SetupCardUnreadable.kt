@@ -7,7 +7,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.ScanErrorScreen
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import javax.inject.Inject
 
 @Destination(navArgsDelegate = SetupCardUnreadableNavArgs::class)
@@ -25,11 +25,11 @@ fun SetupCardUnreadable(viewModel: SetupCardUnreadableViewModel = hiltViewModel(
 
 @HiltViewModel
 class SetupCardUnreadableViewModel @Inject constructor(
-    private val pinManagementCoordinator: PinManagementCoordinator
+    private val changePinCoordinator: ChangePinCoordinator
 ) : ViewModel() {
 
     fun onRetryClicked() {
-        pinManagementCoordinator.confirmCardUnreadableError()
+        changePinCoordinator.confirmCardUnreadableError()
     }
 }
 
