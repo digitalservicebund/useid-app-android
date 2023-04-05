@@ -171,12 +171,12 @@ class CanCoordinator @Inject constructor(
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-                    is EidInteractionEvent.RequestCan -> {
+                    is EidInteractionEvent.CanRequested -> {
                         flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForPinManagement(identificationPending, pin, newPin, shortFlow))
                     }
-                    is EidInteractionEvent.RequestPin -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPin(identificationPending, pin, newPin, shortFlow))
-                    is EidInteractionEvent.RequestNewPin -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsNewPin(identificationPending, pin, newPin, shortFlow))
-                    is EidInteractionEvent.ChangingPinSucceeded -> finishCanFlow()
+                    is EidInteractionEvent.PinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPin(identificationPending, pin, newPin, shortFlow))
+                    is EidInteractionEvent.NewPinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsNewPin(identificationPending, pin, newPin, shortFlow))
+                    is EidInteractionEvent.PinChangeSucceeded -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")
                 }

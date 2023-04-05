@@ -137,7 +137,7 @@ class SetupCancelledTransportPinIncorrectTest {
         setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.assertIsDisplayed()

@@ -62,7 +62,7 @@ fun runSetupUpToCanAfterSomeTime(withWrongTransportPin: Boolean, testRule: Compo
     setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.assertIsDisplayed()

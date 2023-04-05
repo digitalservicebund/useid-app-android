@@ -117,7 +117,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrectTest {
         setupCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
@@ -138,7 +138,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrectTest {
         setupCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.setProgress(false).assertIsDisplayed()

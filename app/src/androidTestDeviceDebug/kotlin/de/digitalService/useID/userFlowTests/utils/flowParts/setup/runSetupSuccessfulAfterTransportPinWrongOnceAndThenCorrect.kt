@@ -62,7 +62,7 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.assertIsDisplayed()
@@ -87,7 +87,7 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     setupTransportPin.transportPinField.assertLength(transportPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()

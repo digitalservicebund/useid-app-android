@@ -1,27 +1,26 @@
 package de.digitalService.useID.idCardInterface
 
-import de.governikus.ausweisapp2.sdkwrapper.card.core.CertificateDescription
 
 sealed class EidInteractionEvent {
     object Idle : EidInteractionEvent()
     class Error(val exception: IdCardInteractionException) : EidInteractionEvent()
 
-    object RequestCardInsertion : EidInteractionEvent()
-    object CardInteractionComplete : EidInteractionEvent() //todo remove
+    object CardInsertionRequested : EidInteractionEvent()
+    object CardInteractionCompleted : EidInteractionEvent() //todo remove
     object CardRecognized : EidInteractionEvent()
     object CardRemoved : EidInteractionEvent()
-    object RequestCan : EidInteractionEvent()
-    class RequestPin(val attempts: Int?) : EidInteractionEvent()
-    object RequestPuk : EidInteractionEvent()
+    object CanRequested : EidInteractionEvent()
+    class PinRequested(val attempts: Int?) : EidInteractionEvent()
+    class NewPinRequested(val attempts: Int?) : EidInteractionEvent()
+    object PukRequested : EidInteractionEvent()
 
     object AuthenticationStarted : EidInteractionEvent()
-    class RequestAuthenticationRequestConfirmation(val request: AuthenticationRequest) : EidInteractionEvent()
-    class AuthenticationCertificate(val certification: de.digitalService.useID.idCardInterface.CertificateDescription) : EidInteractionEvent()
+    class AuthenticationRequestConfirmationRequested(val request: AuthenticationRequest) : EidInteractionEvent()
+    class CertificateDescriptionReceived(val certificateDescription: CertificateDescription) : EidInteractionEvent()
     class AuthenticationSucceededWithRedirect(val redirectURL: String?) : EidInteractionEvent()
 
-    object ChangingPinStarted : EidInteractionEvent()
-    class RequestNewPin(val attempts: Int?) : EidInteractionEvent()
-    object ChangingPinSucceeded : EidInteractionEvent()
+    object PinChangeStarted : EidInteractionEvent()
+    object PinChangeSucceeded : EidInteractionEvent()
 
 //    val redacted: RedactedEidInteractionEvent
 //        get() = when (this) {

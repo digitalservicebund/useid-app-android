@@ -167,7 +167,7 @@ class IdCardManager @Inject constructor(
 
             if (accessRights.effectiveRights == accessRights.requiredRights) {
                 val authenticationRequest = AuthenticationRequest(accessRights.requiredRights, accessRights.transactionInfo)
-                _eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(authenticationRequest)
+                _eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(authenticationRequest)
             } else {
                 workflowController.setAccessRights(listOf())
             }
@@ -194,7 +194,7 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onCertificate(certificateDescription: CertificateDescription) {
-            _eidFlow.value = EidInteractionEvent.AuthenticationCertificate(
+            _eidFlow.value = EidInteractionEvent.CertificateDescriptionReceived(
                 CertificateDescription(
                     certificateDescription.issuerName,
                     certificateDescription.issuerUrl,
@@ -211,7 +211,7 @@ class IdCardManager @Inject constructor(
         override fun onChangePinCompleted(changePinResult: ChangePinResult) {
             if (changePinResult.success) {
                 logger.debug("New PIN has been set successfully.")
-                _eidFlow.value = EidInteractionEvent.ChangingPinSucceeded
+                _eidFlow.value = EidInteractionEvent.PinChangeSucceeded
             } else {
                 logger.error("Changing PIN failed.")
                 _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ChangingPinFailed)
@@ -219,27 +219,28 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onChangePinStarted() {
-            _eidFlow.value = EidInteractionEvent.ChangingPinStarted
+            _eidFlow.value = EidInteractionEvent.PinChangeStarted
         }
 
         override fun onEnterCan(error: String?, reader: Reader) {
             error?.let { logger.error(it) }
-            _eidFlow.value = EidInteractionEvent.RequestCan
+            _eidFlow.value = EidInteractionEvent.CanRequested
         }
 
         override fun onEnterNewPin(error: String?, reader: Reader) {
             error?.let { logger.error(it) }
-            _eidFlow.value = EidInteractionEvent.RequestNewPin(reader.card?.pinRetryCounter)
+            _eidFlow.value = EidInteractionEvent.NewPinRequested(reader.card?.pinRetryCounter)
         }
 
         override fun onEnterPin(error: String?, reader: Reader) {
             error?.let { logger.error(it) }
-            _eidFlow.value = EidInteractionEvent.RequestPin(reader.card?.pinRetryCounter)
+            logger.debug("pin retry counter: ${reader.card?.pinRetryCounter}")
+            _eidFlow.value = EidInteractionEvent.PinRequested(reader.card?.pinRetryCounter)
         }
 
         override fun onEnterPuk(error: String?, reader: Reader) {
             error?.let { logger.error(it) }
-            _eidFlow.value = EidInteractionEvent.RequestPuk
+            _eidFlow.value = EidInteractionEvent.PukRequested
         }
 
         override fun onInfo(versionInfo: VersionInfo) {
@@ -248,7 +249,7 @@ class IdCardManager @Inject constructor(
 
         override fun onInsertCard(error: String?) {
             error?.let { logger.error(it) }
-            _eidFlow.value = EidInteractionEvent.RequestCardInsertion
+            _eidFlow.value = EidInteractionEvent.CardInsertionRequested
         }
 
         override fun onInternalError(error: String) {

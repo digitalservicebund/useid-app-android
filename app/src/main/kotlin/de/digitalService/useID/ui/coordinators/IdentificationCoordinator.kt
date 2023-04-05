@@ -183,15 +183,15 @@ class IdentificationCoordinator @Inject constructor(
                         logger.debug("Authentication started.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.StartedFetchingMetadata)
                     }
-                    is EidInteractionEvent.RequestAuthenticationRequestConfirmation -> {
+                    is EidInteractionEvent.AuthenticationRequestConfirmationRequested -> {
                         logger.debug("Requesting authentication confirmation")
 //                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(event.request, event.confirmationCallback))
                     }
-                    is EidInteractionEvent.RequestPin -> {
+                    is EidInteractionEvent.PinRequested -> {
                         logger.debug("Requesting PIN")
 //                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsPin(event.pinCallback))
                     }
-                    EidInteractionEvent.RequestCardInsertion -> {
+                    EidInteractionEvent.CardInsertionRequested -> {
                         logger.debug("Card insertion requested.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.RequestCardInsertion)
                     }
@@ -207,11 +207,11 @@ class IdentificationCoordinator @Inject constructor(
 //                        logger.debug("Process completed successfully.")
 //                        flowStateMachine.transition(IdentificationStateMachine.Event.Finish(event.redirectURL))
 //                    }
-                    is EidInteractionEvent.RequestCan -> {
+                    is EidInteractionEvent.CanRequested -> {
                         logger.debug("PIN and CAN requested.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsCan)
                     }
-                    is EidInteractionEvent.RequestPuk -> {
+                    is EidInteractionEvent.PukRequested -> {
                         logger.debug("PUK requested.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.Error(IdCardInteractionException.CardBlocked))
                     }

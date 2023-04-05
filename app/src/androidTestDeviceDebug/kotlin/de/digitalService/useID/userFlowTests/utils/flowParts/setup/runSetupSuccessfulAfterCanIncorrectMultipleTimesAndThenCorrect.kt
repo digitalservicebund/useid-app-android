@@ -68,7 +68,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     setupTransportPin.transportPinField.assertLength(transportPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
@@ -91,7 +91,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     setupCanInput.canEntryField.assertLength(wrongCan.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.setProgress(false).assertIsDisplayed()
@@ -114,7 +114,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     setupCanInput.canEntryField.assertLength(can.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.setProgress(false).assertIsDisplayed()

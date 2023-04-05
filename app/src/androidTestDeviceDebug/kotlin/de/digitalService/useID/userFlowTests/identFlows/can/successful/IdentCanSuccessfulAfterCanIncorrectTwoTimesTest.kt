@@ -154,7 +154,7 @@ class IdentCanSuccessfulAfterCanIncorrectTwoTimesTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan
@@ -181,7 +181,7 @@ class IdentCanSuccessfulAfterCanIncorrectTwoTimesTest {
         identificationCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan
@@ -208,7 +208,7 @@ class IdentCanSuccessfulAfterCanIncorrectTwoTimesTest {
         identificationCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan

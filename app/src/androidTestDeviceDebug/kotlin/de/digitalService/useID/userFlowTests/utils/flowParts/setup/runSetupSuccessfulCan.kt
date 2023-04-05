@@ -66,7 +66,7 @@ fun runSetupSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
     setupTransportPin.transportPinField.assertLength(transportPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()

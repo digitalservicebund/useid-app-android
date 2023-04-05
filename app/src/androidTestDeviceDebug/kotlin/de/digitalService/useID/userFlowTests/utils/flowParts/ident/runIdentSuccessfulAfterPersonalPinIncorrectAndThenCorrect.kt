@@ -35,7 +35,7 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
 
     identificationFetchMetaData.assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+    eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
         EidAuthenticationRequest(
             TestScreen.IdentificationAttributeConsent.RequestData.issuer,
             TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -47,8 +47,8 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
             TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
         )
     ) {
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+            eidFlow.value =  EidInteractionEvent.CardInsertionRequested
         })
     }
 
@@ -74,7 +74,7 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+    eidFlow.value = EidInteractionEvent.PinRequested(attempts = 2, pinCallback = {})
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -86,7 +86,7 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
     identificationPersonalPin.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     identificationScan.setProgress(false).assertIsDisplayed() // TODO: when this flow is ran after the setup flow, a progress indicator is shown here but shouldn be! Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907

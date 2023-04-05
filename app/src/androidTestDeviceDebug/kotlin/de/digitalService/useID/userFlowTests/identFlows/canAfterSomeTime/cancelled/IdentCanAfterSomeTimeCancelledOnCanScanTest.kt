@@ -127,7 +127,7 @@ class IdentCanAfterSomeTimeCancelledOnCanScanTest {
         identificationCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan

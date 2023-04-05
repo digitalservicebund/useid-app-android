@@ -190,10 +190,10 @@ class ChangePinCoordinator @Inject constructor(
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-                    EidInteractionEvent.RequestCardInsertion -> {
+                    EidInteractionEvent.CardInsertionRequested -> {
                         logger.debug("Card insertion requested.")
                     }
-                    EidInteractionEvent.ChangingPinStarted -> logger.debug("PIN management started.")
+                    EidInteractionEvent.PinChangeStarted -> logger.debug("PIN management started.")
                     EidInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized.")
                         _scanInProgress.value = true
@@ -202,14 +202,14 @@ class ChangePinCoordinator @Inject constructor(
                         logger.debug("Card removed.")
                         _scanInProgress.value = false
                     }
-                    EidInteractionEvent.CardInteractionComplete -> {
+                    EidInteractionEvent.CardInteractionCompleted -> {
                         logger.debug("Card interaction complete.")
                     }
-                    EidInteractionEvent.ChangingPinSucceeded -> {
+                    EidInteractionEvent.PinChangeSucceeded -> {
                         logger.debug("Process completed successfully.")
                         flowStateMachine.transition(ChangePinStateMachine.Event.Finish)
                     }
-                    is EidInteractionEvent.RequestPin -> {
+                    is EidInteractionEvent.PinRequested -> {
                         logger.debug("Request PIN.")
                         if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
                             logger.debug("Ignoring event because CAN flow is active.")
@@ -217,7 +217,7 @@ class ChangePinCoordinator @Inject constructor(
                         }
                         flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsPin)
                     }
-                    is EidInteractionEvent.RequestNewPin -> {
+                    is EidInteractionEvent.NewPinRequested -> {
                         logger.debug("Request new PIN.")
                         if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
                             logger.debug("Ignoring event because CAN flow is active.")
@@ -225,7 +225,7 @@ class ChangePinCoordinator @Inject constructor(
                         }
                         flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsNewPin)
                     }
-                    is EidInteractionEvent.RequestCan -> {
+                    is EidInteractionEvent.CanRequested -> {
                         logger.debug("CAN requested.")
                         if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
                             logger.debug("Ignoring event because CAN flow is active.")
@@ -233,7 +233,7 @@ class ChangePinCoordinator @Inject constructor(
                         }
                         flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsCan)
                     }
-                    is EidInteractionEvent.RequestPuk -> {
+                    is EidInteractionEvent.PukRequested -> {
                         _scanInProgress.value = false
                         flowStateMachine.transition(ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked))
                     }

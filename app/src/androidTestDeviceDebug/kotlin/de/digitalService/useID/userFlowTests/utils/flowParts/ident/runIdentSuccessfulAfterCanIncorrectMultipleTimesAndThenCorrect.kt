@@ -39,7 +39,7 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     identificationFetchMetaData.assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+    eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
         EidAuthenticationRequest(
             TestScreen.IdentificationAttributeConsent.RequestData.issuer,
             TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -51,7 +51,7 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
             TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
         )
     ) {
-        eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        eidFlow.value =  EidInteractionEvent.CardInsertionRequested
     }
 
     runIdentUpToCan(
@@ -86,7 +86,7 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     identificationPersonalPin.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     identificationScan
@@ -113,7 +113,7 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     identificationCanInput.canEntryField.assertLength(wrongCan.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     identificationScan
@@ -140,7 +140,7 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     identificationCanInput.canEntryField.assertLength(can.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     identificationScan

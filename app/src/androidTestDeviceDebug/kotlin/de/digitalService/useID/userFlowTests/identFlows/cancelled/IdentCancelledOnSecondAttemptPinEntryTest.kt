@@ -114,7 +114,7 @@ class IdentCancelledOnSecondAttemptPinEntryTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -126,8 +126,8 @@ class IdentCancelledOnSecondAttemptPinEntryTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.CardInsertionRequested
             })
         }
 
@@ -153,7 +153,7 @@ class IdentCancelledOnSecondAttemptPinEntryTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {})
+        eidFlow.value = EidInteractionEvent.PinRequested(attempts = 2, pinCallback = {})
         advanceUntilIdle()
 
         identificationPersonalPin.setAttemptsLeft(2).assertIsDisplayed()

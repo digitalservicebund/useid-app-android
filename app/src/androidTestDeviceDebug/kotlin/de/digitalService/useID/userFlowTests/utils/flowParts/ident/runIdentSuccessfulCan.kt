@@ -61,7 +61,7 @@ fun runIdentSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
     identificationPersonalPin.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     identificationScan

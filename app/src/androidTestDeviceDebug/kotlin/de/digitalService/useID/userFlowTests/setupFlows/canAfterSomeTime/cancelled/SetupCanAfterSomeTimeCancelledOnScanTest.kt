@@ -114,7 +114,7 @@ class SetupCanAfterSomeTimeCancelledOnScanTest {
         setupCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()

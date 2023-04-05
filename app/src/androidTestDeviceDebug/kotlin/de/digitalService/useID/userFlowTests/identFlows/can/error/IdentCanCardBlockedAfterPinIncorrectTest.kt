@@ -145,7 +145,7 @@ class IdentCanCardBlockedAfterPinIncorrectTest {
         identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan

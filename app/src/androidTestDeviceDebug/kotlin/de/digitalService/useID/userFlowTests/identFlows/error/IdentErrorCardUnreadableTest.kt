@@ -1,14 +1,9 @@
 package de.digitalService.useID.userFlowTests.identFlows.error
 
-import android.app.Activity
-import android.app.Instrumentation
-import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -34,7 +29,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -122,7 +116,7 @@ class IdentErrorCardUnreadableTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -134,8 +128,8 @@ class IdentErrorCardUnreadableTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.CardInsertionRequested
             })
         }
 

@@ -146,7 +146,7 @@ class SetupSuccessfulTest {
 
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.assertIsDisplayed()
@@ -244,7 +244,7 @@ class SetupSuccessfulTest {
 
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.assertIsDisplayed()

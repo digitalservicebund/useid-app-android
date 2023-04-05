@@ -130,7 +130,7 @@ class IdentCanAfterSomeTimeCardBlockedAfterCanAndPinIncorrectTest {
         identificationCanInput.canEntryField.assertLength(wrongCan.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan
@@ -157,7 +157,7 @@ class IdentCanAfterSomeTimeCardBlockedAfterCanAndPinIncorrectTest {
         identificationCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan

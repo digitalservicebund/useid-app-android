@@ -64,7 +64,7 @@ fun runSetupSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.assertIsDisplayed()

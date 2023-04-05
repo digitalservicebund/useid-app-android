@@ -61,7 +61,7 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.assertIsDisplayed()
@@ -87,7 +87,7 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()

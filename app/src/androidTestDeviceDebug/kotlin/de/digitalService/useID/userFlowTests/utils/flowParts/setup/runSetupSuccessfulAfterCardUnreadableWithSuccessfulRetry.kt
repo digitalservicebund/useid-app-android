@@ -56,7 +56,7 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.assertIsDisplayed()
@@ -82,7 +82,7 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     errorCardUnreadable.assertIsDisplayed()
     errorCardUnreadable.closeBtn.click()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     setupScan.setProgress(false).setBackAllowed(true).assertIsDisplayed() // TODO: navigating back should be possible here. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907

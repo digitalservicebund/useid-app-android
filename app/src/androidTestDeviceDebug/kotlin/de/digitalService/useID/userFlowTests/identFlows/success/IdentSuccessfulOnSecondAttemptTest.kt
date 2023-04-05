@@ -124,7 +124,7 @@ class IdentSuccessfulOnSecondAttemptTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -136,8 +136,8 @@ class IdentSuccessfulOnSecondAttemptTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value =  EidInteractionEvent.CardInsertionRequested
             })
         }
 
@@ -163,8 +163,8 @@ class IdentSuccessfulOnSecondAttemptTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-            eidFlow.value =  EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+            eidFlow.value =  EidInteractionEvent.CardInsertionRequested
         })
         advanceUntilIdle()
 

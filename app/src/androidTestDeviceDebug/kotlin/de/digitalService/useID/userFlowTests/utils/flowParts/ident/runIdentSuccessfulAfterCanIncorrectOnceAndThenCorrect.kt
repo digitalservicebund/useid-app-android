@@ -63,7 +63,7 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     identificationPersonalPin.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     identificationScan
@@ -90,7 +90,7 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
     identificationCanInput.canEntryField.assertLength(can.length)
     testRule.pressReturn()
 
-    eidFlow.value = EidInteractionEvent.RequestCardInsertion
+    eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
     identificationScan

@@ -139,7 +139,7 @@ class SetupSuccessfulOnSecondAttemptTest {
         setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.assertIsDisplayed()
@@ -164,7 +164,7 @@ class SetupSuccessfulOnSecondAttemptTest {
         setupTransportPin.transportPinField.assertLength(transportPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()

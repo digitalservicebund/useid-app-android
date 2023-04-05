@@ -132,7 +132,7 @@ class SetupCanAfterSomeTimeSuccessfulNavigationTest {
         composeTestRule.pressReturn()
 
         // ENTER CORRECT TRANSPORT PIN
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
@@ -168,7 +168,7 @@ class SetupCanAfterSomeTimeSuccessfulNavigationTest {
         setupCanInput.canEntryField.assertLength(can.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         setupScan.setProgress(false).assertIsDisplayed()

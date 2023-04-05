@@ -257,7 +257,7 @@ class UserTrackingTest {
 
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -369,7 +369,7 @@ class UserTrackingTest {
         composeTestRule.performPinInput(transportPin)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
@@ -387,7 +387,7 @@ class UserTrackingTest {
         composeTestRule.performPinInput(can)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
@@ -452,7 +452,7 @@ class UserTrackingTest {
         composeTestRule.performPinInput(personalPin)
         composeTestRule.pressReturn()
         advanceUntilIdle()
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
@@ -511,7 +511,7 @@ class UserTrackingTest {
         composeTestRule.performPinInput(personalPin)
         composeTestRule.pressReturn()
         advanceUntilIdle()
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
@@ -570,7 +570,7 @@ class UserTrackingTest {
         composeTestRule.performPinInput(personalPin)
         composeTestRule.pressReturn()
         advanceUntilIdle()
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
@@ -710,7 +710,7 @@ class UserTrackingTest {
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -722,8 +722,8 @@ class UserTrackingTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value = EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value = EidInteractionEvent.CardInsertionRequested
             })
         }
 
@@ -849,7 +849,7 @@ class UserTrackingTest {
         composeTestRule.performPinInput(personalPin)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -868,7 +868,7 @@ class UserTrackingTest {
         composeTestRule.performPinInput(can)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -934,7 +934,7 @@ class UserTrackingTest {
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -946,8 +946,8 @@ class UserTrackingTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value = EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value = EidInteractionEvent.CardInsertionRequested
             })
         }
 
@@ -1002,7 +1002,7 @@ class UserTrackingTest {
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -1014,8 +1014,8 @@ class UserTrackingTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value = EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value = EidInteractionEvent.CardInsertionRequested
             })
         }
 
@@ -1070,7 +1070,7 @@ class UserTrackingTest {
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -1082,8 +1082,8 @@ class UserTrackingTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value = EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value = EidInteractionEvent.CardInsertionRequested
             })
         }
 

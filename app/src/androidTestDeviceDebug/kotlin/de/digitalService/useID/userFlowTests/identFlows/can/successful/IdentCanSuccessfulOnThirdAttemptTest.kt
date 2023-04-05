@@ -128,7 +128,7 @@ class IdentCanSuccessfulOnThirdAttemptTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestAuthenticationRequestConfirmation(
+        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
             EidAuthenticationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.issuer,
                 TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
@@ -140,8 +140,8 @@ class IdentCanSuccessfulOnThirdAttemptTest {
                 TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
             )
         ) {
-            eidFlow.value = EidInteractionEvent.RequestPin(attempts = null, pinCallback = {
-                eidFlow.value = EidInteractionEvent.RequestCardInsertion
+            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
+                eidFlow.value = EidInteractionEvent.CardInsertionRequested
             })
         }
 
@@ -159,7 +159,7 @@ class IdentCanSuccessfulOnThirdAttemptTest {
         identificationPersonalPin.personalPinField.assertLength(wrongPersonalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan.setIdentPending(true).setBackAllowed(false).assertIsDisplayed()
@@ -169,8 +169,8 @@ class IdentCanSuccessfulOnThirdAttemptTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPin(attempts = 2, pinCallback = {
-            eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.PinRequested(attempts = 2, pinCallback = {
+            eidFlow.value = EidInteractionEvent.CardInsertionRequested
         })
         advanceUntilIdle()
 
@@ -224,7 +224,7 @@ class IdentCanSuccessfulOnThirdAttemptTest {
         identificationPersonalPin.personalPinField.assertLength(personalPin.length)
         composeTestRule.pressReturn()
 
-        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
         identificationScan
