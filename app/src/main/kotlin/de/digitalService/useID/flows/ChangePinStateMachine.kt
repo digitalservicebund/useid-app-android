@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-typealias PinManagementCallback = (String, String) -> Unit
-
 @Singleton
 class ChangePinStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
     @Inject constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
@@ -33,9 +31,8 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
         class NewPinIntro(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String) : State()
         class NewPinInput(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String) : State()
         class NewPinConfirmation(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
-        class ReadyForScan(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
-        class WaitingForFirstCardAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
-        class WaitingForCardReAttachment(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
+        class StartIdCardInteraction(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
+        class ReadyForSubsequentScan(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
         class FrameworkReadyForPinInput(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
         class FrameworkReadyForNewPinInput(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String) : State()
         class CanRequested(val identificationPending: Boolean, val transportPin: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : State()
@@ -57,7 +54,6 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
         data class EnterNewPin(val newPin: String) : Event()
         data class ConfirmNewPin(val newPin: String) : Event()
         object RetryNewPinConfirmation : Event()
-        object RequestCardInsertion : Event()
         object FrameworkRequestsPin : Event()
         object FrameworkRequestsNewPin : Event()
         object FrameworkRequestsCan : Event()
@@ -97,8 +93,8 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
                 when (val currentState = state.value.second) {
                     is State.OldTransportPinInput -> State.NewPinIntro(currentState.identificationPending, true, event.oldPin)
                     is State.OldPersonalPinInput -> State.NewPinIntro(false, false, event.oldPin)
-                    is State.OldTransportPinRetry -> State.FrameworkReadyForPinInput(currentState.identificationPending, true, event.oldPin, currentState.newPin)
-                    is State.OldPersonalPinRetry -> State.FrameworkReadyForPinInput(false, false, event.oldPin, currentState.newPin)
+                    is State.OldTransportPinRetry -> State.ReadyForSubsequentScan(currentState.identificationPending, true, event.oldPin, currentState.newPin)
+                    is State.OldPersonalPinRetry -> State.ReadyForSubsequentScan(false, false, event.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -126,26 +122,16 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
 
             is Event.ConfirmNewPin -> {
                 when (val currentState = state.value.second) {
-                    is State.NewPinConfirmation -> if (event.newPin == currentState.newPin) State.ReadyForScan(currentState.identificationPending, currentState.transportPin, currentState.oldPin, event.newPin) else throw Error.PinConfirmationFailed
-                    else -> throw IllegalArgumentException()
-                }
-            }
-
-            is Event.RequestCardInsertion -> {
-                when (val currentState = state.value.second) {
-                    is State.ReadyForScan -> State.WaitingForFirstCardAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-                    is State.FrameworkReadyForPinInput -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-                    is State.FrameworkReadyForNewPinInput -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-                    is State.CanRequested -> State.WaitingForCardReAttachment(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-                    is State.WaitingForFirstCardAttachment -> currentState
+                    is State.NewPinConfirmation -> if (event.newPin == currentState.newPin) State.StartIdCardInteraction(currentState.identificationPending, currentState.transportPin, currentState.oldPin, event.newPin) else throw Error.PinConfirmationFailed
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.FrameworkRequestsPin -> {
                 when (val currentState = state.value.second) {
-                    is State.WaitingForFirstCardAttachment -> State.FrameworkReadyForPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+                    is State.StartIdCardInteraction -> State.FrameworkReadyForPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     is State.FrameworkReadyForPinInput -> if (currentState.transportPin) State.OldTransportPinRetry(currentState.identificationPending, currentState.newPin) else State.OldPersonalPinRetry(currentState.newPin)
+                    is State.ReadyForSubsequentScan -> State.FrameworkReadyForPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -153,31 +139,30 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
             is Event.FrameworkRequestsNewPin -> {
                 when (val currentState = state.value.second) {
                     is State.FrameworkReadyForPinInput -> State.FrameworkReadyForNewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
-                    is State.WaitingForCardReAttachment -> State.FrameworkReadyForNewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
+                    is State.ReadyForSubsequentScan -> State.FrameworkReadyForNewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.FrameworkRequestsCan -> {
                 when (val currentState = state.value.second) {
-                    is State.WaitingForFirstCardAttachment -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
-                    is State.WaitingForCardReAttachment -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
-//                    is State.FrameworkReadyForPinManagement -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
+                    is State.StartIdCardInteraction -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
+                    is State.ReadyForSubsequentScan -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
+                    is State.FrameworkReadyForPinInput -> State.CanRequested(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.Finish -> {
                 when (state.value.second) {
-//                    is State.FrameworkReadyForPinManagement, is State.WaitingForFirstCardAttachment, is State.WaitingForCardReAttachment, is State.CanRequested -> State.Finished
-                    is State.FrameworkReadyForNewPinInput -> State.Finished
+                    is State.StartIdCardInteraction, is State.ReadyForSubsequentScan, is State.CanRequested, is State.FrameworkReadyForNewPinInput -> State.Finished
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.ProceedAfterError -> {
                 when (val currentState = state.value.second) {
-                    is State.ProcessFailed -> if (currentState.firstScan) State.ReadyForScan(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin) else State.Cancelled
+                    is State.ProcessFailed -> if (currentState.firstScan) State.StartIdCardInteraction(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin) else State.Cancelled
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -187,15 +172,16 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
                     return when (event.exception) {
                         is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
                         is IdCardInteractionException.CardBlocked -> State.CardBlocked
-//                        is IdCardInteractionException.ProcessFailed -> State.ProcessFailed(identificationPending, transportPin, oldPin, newPin, firstScan)
+                        is IdCardInteractionException.ProcessFailed -> State.ProcessFailed(identificationPending, transportPin, oldPin, newPin, firstScan)
                         else -> State.UnknownError
                     }
                 }
 
                 when (val currentState = state.value.second) {
-//                    is State.FrameworkReadyForPinManagement -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
-                    is State.WaitingForFirstCardAttachment -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
-                    is State.WaitingForCardReAttachment -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
+                    is State.FrameworkReadyForPinInput -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
+                    is State.CanRequested -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
+                    is State.StartIdCardInteraction -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, true)
+                    is State.ReadyForSubsequentScan -> nextState(currentState.identificationPending, currentState.transportPin, currentState.oldPin, currentState.newPin, false)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -207,7 +193,7 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
                     is State.NewPinIntro -> if (currentState.transportPin) State.OldTransportPinInput(currentState.identificationPending) else State.OldPersonalPinInput
                     is State.NewPinInput -> State.NewPinIntro(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
                     is State.NewPinConfirmation -> State.NewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
-                    is State.WaitingForFirstCardAttachment -> State.NewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
+                    is State.StartIdCardInteraction -> State.NewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
                     else -> throw IllegalArgumentException()
                 }
             }

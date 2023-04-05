@@ -72,9 +72,14 @@ class ChangePinCoordinator @Inject constructor(
                         is ChangePinStateMachine.State.NewPinIntro -> navigator.navigate(SetupPersonalPinIntroDestination)
                         is ChangePinStateMachine.State.NewPinInput -> if (eventAndPair.first is ChangePinStateMachine.Event.RetryNewPinConfirmation) navigator.pop() else navigator.navigate(SetupPersonalPinInputDestination)
                         is ChangePinStateMachine.State.NewPinConfirmation -> navigator.navigate(SetupPersonalPinConfirmDestination)
-                        is ChangePinStateMachine.State.ReadyForScan -> executePinChange()
-                        is ChangePinStateMachine.State.WaitingForFirstCardAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
-                        is ChangePinStateMachine.State.WaitingForCardReAttachment -> navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
+                        is ChangePinStateMachine.State.StartIdCardInteraction -> {
+                            executePinChange()
+                            navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
+                        }
+                        is ChangePinStateMachine.State.ReadyForSubsequentScan -> {
+                            idCardManager.providePin(state.oldPin)
+                            navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
+                        }
                         is ChangePinStateMachine.State.FrameworkReadyForPinInput -> idCardManager.providePin(state.oldPin)
                         is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.oldPin)
                         is ChangePinStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin, state.shortFlow)
@@ -144,7 +149,7 @@ class ChangePinCoordinator @Inject constructor(
     private fun startCanFlow(identificationPending: Boolean, oldPin: String, newPin: String, shortFlow: Boolean) {
         if (canCoordinator.stateFlow.value != SubCoordinatorState.ACTIVE) {
             canEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-                canCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, shortFlow).collect { state ->
+                canCoordinator.startPinChangeCanFlow(identificationPending, oldPin, newPin, shortFlow).collect { state ->
                     when (state) {
                         SubCoordinatorState.CANCELLED -> cancelPinManagement()
                         SubCoordinatorState.SKIPPED -> skipPinManagement()
@@ -187,7 +192,6 @@ class ChangePinCoordinator @Inject constructor(
                 when (event) {
                     EidInteractionEvent.RequestCardInsertion -> {
                         logger.debug("Card insertion requested.")
-                        flowStateMachine.transition(ChangePinStateMachine.Event.RequestCardInsertion)
                     }
                     EidInteractionEvent.ChangingPinStarted -> logger.debug("PIN management started.")
                     EidInteractionEvent.CardRecognized -> {
@@ -207,14 +211,26 @@ class ChangePinCoordinator @Inject constructor(
                     }
                     is EidInteractionEvent.RequestPin -> {
                         logger.debug("Request PIN.")
+                        if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
+                            logger.debug("Ignoring event because CAN flow is active.")
+                            return@collect
+                        }
                         flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsPin)
                     }
                     is EidInteractionEvent.RequestNewPin -> {
                         logger.debug("Request new PIN.")
+                        if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
+                            logger.debug("Ignoring event because CAN flow is active.")
+                            return@collect
+                        }
                         flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsNewPin)
                     }
                     is EidInteractionEvent.RequestCan -> {
-                        logger.debug("PIN and CAN requested.")
+                        logger.debug("CAN requested.")
+                        if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
+                            logger.debug("Ignoring event because CAN flow is active.")
+                            return@collect
+                        }
                         flowStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsCan)
                     }
                     is EidInteractionEvent.RequestPuk -> {

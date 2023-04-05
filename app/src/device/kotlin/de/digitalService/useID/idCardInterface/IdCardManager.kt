@@ -321,6 +321,8 @@ class IdCardManager @Inject constructor(
         logger.debug("Stopping workflow controller.")
         workflowController.unregisterCallbacks(workflowCallbacks)
         workflowController.stop()
+        workflowControllerStarted.value = false
+        _eidFlow.value = EidInteractionEvent.Idle
     }
 
     fun providePin(pin: String) {
@@ -339,5 +341,14 @@ class IdCardManager @Inject constructor(
         }
 
         workflowController.setNewPin(newPin)
+    }
+
+    fun provideCan(can: String) {
+        if (!workflowController.isStarted) {
+            logger.error("No task running.")
+            return
+        }
+
+        workflowController.setCan(can)
     }
 }
