@@ -47,21 +47,30 @@
 \n
 \nInternet:\\
 \n[www.schlichtungsstelle-bgg.de ↗](https://www.schlichtungsstelle-bgg.de)</string>
-    <string name="cardAttribute_ageVerification">Comparative birth date for age verification</string>
+    <string name="cardAttribute_addressVerification">Address verification</string>
+    <string name="cardAttribute_ageVerification">Age verification</string>
+    <string name="cardAttribute_canAllowed">CAN allowed</string>
     <string name="cardAttribute_dg01">Document type</string>
     <string name="cardAttribute_dg02">Issuing country</string>
     <string name="cardAttribute_dg03">Expiration date</string>
-    <string name="cardAttribute_dg04">First name(s)</string>
-    <string name="cardAttribute_dg05">Last name</string>
-    <string name="cardAttribute_dg06">Order name/artist name</string>
-    <string name="cardAttribute_dg07">Dr.</string>
+    <string name="cardAttribute_dg04">Given name(s)</string>
+    <string name="cardAttribute_dg05">Family name</string>
+    <string name="cardAttribute_dg06">Religious name/artistic name</string>
+    <string name="cardAttribute_dg07">Doctoral degree</string>
     <string name="cardAttribute_dg08">Date of birth</string>
-    <string name="cardAttribute_dg09">Birthplace</string>
+    <string name="cardAttribute_dg09">Place of birth</string>
     <string name="cardAttribute_dg10">Nationality</string>
     <string name="cardAttribute_dg13">Birth name</string>
     <string name="cardAttribute_dg17">Address</string>
-    <string name="cardAttribute_dg19">Collateral clauses I</string>
-    <string name="cardAttribute_restrictedIdentification">Provider and card-specific identifier</string>
+    <string name="cardAttribute_dg18">Community ID</string>
+    <string name="cardAttribute_dg19">Residence permit I</string>
+    <string name="cardAttribute_dg20">Residence permit II</string>
+    <string name="cardAttribute_pinManagement">PIN Management</string>
+    <string name="cardAttribute_pseudonym">Pseudonym</string>
+    <string name="cardAttribute_write_dg17">Address (write access)</string>
+    <string name="cardAttribute_write_dg18">Community ID (write access)</string>
+    <string name="cardAttribute_write_dg19">Residence permit I (write access)</string>
+    <string name="cardAttribute_write_dg20">Residence permit II (write access)</string>
     <string name="firstTimeUser_alreadySetupConfirmation_box">**Please note:** To identify yourself with your ID card on the Internet, you need your personal PIN. Go to the website of the service for which you want to identify yourself. From there you can start identification.</string>
     <string name="firstTimeUser_alreadySetupConfirmation_close">Got it</string>
     <string name="firstTimeUser_alreadySetupConfirmation_title">You are ready to go!</string>

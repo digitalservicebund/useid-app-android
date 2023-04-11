@@ -10,14 +10,14 @@ sealed class EidInteractionEvent {
     object CardRecognized : EidInteractionEvent()
     object CardRemoved : EidInteractionEvent()
     object CanRequested : EidInteractionEvent()
-    class PinRequested(val attempts: Int?) : EidInteractionEvent()
+    class PinRequested(val attempts: Int) : EidInteractionEvent()
     class NewPinRequested(val attempts: Int?) : EidInteractionEvent()
     object PukRequested : EidInteractionEvent()
 
     object AuthenticationStarted : EidInteractionEvent()
     class AuthenticationRequestConfirmationRequested(val request: AuthenticationRequest) : EidInteractionEvent()
     class CertificateDescriptionReceived(val certificateDescription: CertificateDescription) : EidInteractionEvent()
-    class AuthenticationSucceededWithRedirect(val redirectURL: String?) : EidInteractionEvent()
+    class AuthenticationSucceededWithRedirect(val redirectURL: String) : EidInteractionEvent()
 
     object PinChangeStarted : EidInteractionEvent()
     object PinChangeSucceeded : EidInteractionEvent()

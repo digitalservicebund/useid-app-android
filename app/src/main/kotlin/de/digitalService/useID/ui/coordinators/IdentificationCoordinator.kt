@@ -13,14 +13,17 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.IdentificationAttributes
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -67,14 +70,17 @@ class IdentificationCoordinator @Inject constructor(
                         is IdentificationStateMachine.State.StartIdentification -> executeIdentification(state.tcTokenUrl)
                         is IdentificationStateMachine.State.FetchingMetadata -> navigator.popUpToOrNavigate(IdentificationFetchMetadataDestination(state.backingDownAllowed), false)
                         is IdentificationStateMachine.State.FetchingMetadataFailed -> navigator.navigate(IdentificationOtherErrorDestination)
-                        is IdentificationStateMachine.State.RequestAttributeConfirmation -> navigator.navigatePopping(IdentificationAttributeConsentDestination(state.request, state.backingDownAllowed))
-                        is IdentificationStateMachine.State.SubmitAttributeConfirmation -> state.confirmationCallback(state.request.readAttributes.filterValues { it })
+                        is IdentificationStateMachine.State.RequestCertificate -> idCardManager.getCertificate()
+                        is IdentificationStateMachine.State.CertificateDescriptionReceived ->
+                            navigator.navigatePopping(IdentificationAttributeConsentDestination(IdentificationAttributes(state.authenticationRequest.requiredAttributes, state.certificateDescription), state.backingDownAllowed))
                         is IdentificationStateMachine.State.PinInput -> navigator.navigate(IdentificationPersonalPinDestination(false))
                         is IdentificationStateMachine.State.PinInputRetry -> navigator.navigate(IdentificationPersonalPinDestination(true))
-                        is IdentificationStateMachine.State.RevisitAttributes -> navigator.pop()
-                        is IdentificationStateMachine.State.PinEntered -> state.callback(state.pin)
+                        is IdentificationStateMachine.State.PinEntered -> {
+                            navigator.popUpToOrNavigate(IdentificationScanDestination, false)
+                            if (state.firstTime) idCardManager.acceptAccessRights() else idCardManager.providePin(state.pin)
+                        }
                         is IdentificationStateMachine.State.CanRequested -> startCanFlow(state.pin)
-                        is IdentificationStateMachine.State.WaitingForCardAttachment -> navigator.popUpToOrNavigate(IdentificationScanDestination, false)
+                        is IdentificationStateMachine.State.PinRequested -> idCardManager.providePin(state.pin)
                         is IdentificationStateMachine.State.Finished -> finishIdentification(state.redirectUrl)
 
                         is IdentificationStateMachine.State.CardDeactivated -> navigator.navigate(IdentificationCardDeactivatedDestination)
@@ -99,9 +105,8 @@ class IdentificationCoordinator @Inject constructor(
             .appendPath("eID-Client")
             .appendQueryParameter("tcTokenURL", tcTokenUrl)
             .build()
-            .toString()
 
-        flowStateMachine.transition(IdentificationStateMachine.Event.Initialize(setupSkipped, normalizedTcTokenUrl))
+        flowStateMachine.transition(IdentificationStateMachine.Event.Initialize(setupSkipped, Uri.parse(tcTokenUrl)))
         canStateMachine.transition(CanStateMachine.Event.Invalidate)
     }
 
@@ -168,7 +173,7 @@ class IdentificationCoordinator @Inject constructor(
         flowStateMachine.transition(IdentificationStateMachine.Event.Invalidate)
     }
 
-    private fun executeIdentification(tcTokenUrl: String) {
+    private fun executeIdentification(tcTokenUrl: Uri) {
         eIdEventFlowCoroutineScope?.cancel()
         idCardManager.cancelTask()
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
@@ -183,17 +188,24 @@ class IdentificationCoordinator @Inject constructor(
                         logger.debug("Authentication started.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.StartedFetchingMetadata)
                     }
+                    is EidInteractionEvent.CertificateDescriptionReceived -> {
+                        logger.debug("Certificate description received")
+                        flowStateMachine.transition(IdentificationStateMachine.Event.CertificateDescriptionReceived(event.certificateDescription))
+                    }
                     is EidInteractionEvent.AuthenticationRequestConfirmationRequested -> {
                         logger.debug("Requesting authentication confirmation")
-//                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(event.request, event.confirmationCallback))
+                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(event.request))
                     }
                     is EidInteractionEvent.PinRequested -> {
                         logger.debug("Requesting PIN")
-//                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsPin(event.pinCallback))
+                        if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
+                            logger.debug("Ignoring event because CAN flow is active.")
+                            return@collect
+                        }
+                        flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsPin(event.attempts == 3))
                     }
                     EidInteractionEvent.CardInsertionRequested -> {
                         logger.debug("Card insertion requested.")
-                        flowStateMachine.transition(IdentificationStateMachine.Event.RequestCardInsertion)
                     }
                     EidInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized.")
@@ -203,12 +215,16 @@ class IdentificationCoordinator @Inject constructor(
                         logger.debug("Card removed.")
                         _scanInProgress.value = false
                     }
-//                    is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
-//                        logger.debug("Process completed successfully.")
-//                        flowStateMachine.transition(IdentificationStateMachine.Event.Finish(event.redirectURL))
-//                    }
+                    is EidInteractionEvent.AuthenticationSucceededWithRedirect -> {
+                        logger.debug("Process completed successfully.")
+                        flowStateMachine.transition(IdentificationStateMachine.Event.Finish(event.redirectURL))
+                    }
                     is EidInteractionEvent.CanRequested -> {
                         logger.debug("PIN and CAN requested.")
+                        if (canCoordinator.stateFlow.value == SubCoordinatorState.ACTIVE) {
+                            logger.debug("Ignoring event because CAN flow is active.")
+                            return@collect
+                        }
                         flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsCan)
                     }
                     is EidInteractionEvent.PukRequested -> {

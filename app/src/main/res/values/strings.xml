@@ -47,9 +47,11 @@
 \n
 \nInternet:\\
 \n[www.schlichtungsstelle-bgg.de ↗](https://www.schlichtungsstelle-bgg.de)</string>
-    <string name="cardAttribute_ageVerification">Vergleichsgeburtsdatum für Altersverifikation</string>
-    <string name="cardAttribute_dg01">Dokumententyp</string>
-    <string name="cardAttribute_dg02">Ausgebender Staat</string>
+    <string name="cardAttribute_addressVerification">Wohnortbestätigung</string>
+    <string name="cardAttribute_ageVerification">Altersbestätigung</string>
+    <string name="cardAttribute_canAllowed">CAN Rechte</string>
+    <string name="cardAttribute_dg01">Dokumentenart</string>
+    <string name="cardAttribute_dg02">Ausstellender Staat</string>
     <string name="cardAttribute_dg03">Ablaufdatum</string>
     <string name="cardAttribute_dg04">Vorname(n)</string>
     <string name="cardAttribute_dg05">Familienname</string>
@@ -59,9 +61,16 @@
     <string name="cardAttribute_dg09">Geburtsort</string>
     <string name="cardAttribute_dg10">Staatsangehörigkeit</string>
     <string name="cardAttribute_dg13">Geburtsname</string>
-    <string name="cardAttribute_dg17">Adresse</string>
-    <string name="cardAttribute_dg19">Nebenbestimmungen I</string>
-    <string name="cardAttribute_restrictedIdentification">Anbieter- und kartenspezifische Kennung</string>
+    <string name="cardAttribute_dg17">Anschrift</string>
+    <string name="cardAttribute_dg18">Wohnort-ID</string>
+    <string name="cardAttribute_dg19">Aufenthaltstitel I</string>
+    <string name="cardAttribute_dg20">Aufenthaltstitel II</string>
+    <string name="cardAttribute_pinManagement">PIN Management</string>
+    <string name="cardAttribute_pseudonym">Pseudonym</string>
+    <string name="cardAttribute_write_dg17">Adresse (Schreibrechte)</string>
+    <string name="cardAttribute_write_dg18">Wohnort-ID (Schreibrechte)</string>
+    <string name="cardAttribute_write_dg19">Aufenthaltstitel I (Schreibrechte)</string>
+    <string name="cardAttribute_write_dg20">Aufenthaltstitel II (Schreibrechte)</string>
     <string name="firstTimeUser_confirmEnd_confirm">Beenden</string>
     <string name="firstTimeUser_confirmEnd_deny">Abbrechen</string>
     <string name="firstTimeUser_confirmEnd_message">Möchten Sie die Einrichtung der Online‑Ausweisfunktion abbrechen\?

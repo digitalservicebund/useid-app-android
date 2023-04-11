@@ -1,17 +1,15 @@
 package de.digitalService.useID.flows
 
+import android.net.Uri
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
-import de.digitalService.useID.idCardInterface.IdCardAttribute
+import de.digitalService.useID.idCardInterface.AuthenticationRequest
+import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
-
-typealias AttributeConfirmationCallback = (Map<IdCardAttribute, Boolean>) -> Unit
-typealias PinCallback = (String) -> Unit
 
 @Singleton
 class IdentificationStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
@@ -29,17 +27,16 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         get() = _state
 
     sealed class State {
-        class StartIdentification(val backingDownAllowed: Boolean, val tcTokenUrl: String) : State()
-        class FetchingMetadata(val backingDownAllowed: Boolean, val tcTokenUrl: String) : State()
-        class FetchingMetadataFailed(val backingDownAllowed: Boolean, val tcTokenUrl: String) : State()
-        class RequestAttributeConfirmation(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback) : State()
-        class SubmitAttributeConfirmation(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback) : State()
-        class RevisitAttributes(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val pinCallback: PinCallback) : State()
-        class PinInput(val backingDownAllowed: Boolean, val request: EidAuthenticationRequest, val callback: PinCallback) : State()
-        class PinInputRetry(val callback: PinCallback) : State()
-        class PinEntered(val pin: String, val secondTime: Boolean, val callback: PinCallback) : State()
+        class StartIdentification(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : State()
+        class FetchingMetadata(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : State()
+        class FetchingMetadataFailed(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : State()
+        class RequestCertificate(val backingDownAllowed: Boolean, val request: AuthenticationRequest) : State()
+        class CertificateDescriptionReceived(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
+        class PinInput(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
+        object PinInputRetry : State()
+        class PinEntered(val pin: String, val firstAttempt: Boolean) : State()
+        class PinRequested(val pin: String) : State()
         class CanRequested(val pin: String?) : State()
-        class WaitingForCardAttachment(val pin: String?) : State()
         class Finished(val redirectUrl: String) : State()
 
         object CardDeactivated : State()
@@ -50,14 +47,14 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
     }
 
     sealed class Event {
-        data class Initialize(val backingDownAllowed: Boolean, val tcTokenUrl: String) : Event()
+        data class Initialize(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : Event()
         object StartedFetchingMetadata : Event()
-        data class FrameworkRequestsAttributeConfirmation(val request: EidAuthenticationRequest, val confirmationCallback: AttributeConfirmationCallback) : Event()
+        data class CertificateDescriptionReceived(val certificateDescription: CertificateDescription) : Event()
+        data class FrameworkRequestsAttributeConfirmation(val authenticationRequest: AuthenticationRequest) : Event()
         object ConfirmAttributes : Event()
-        data class FrameworkRequestsPin(val callback: PinCallback) : Event()
+        data class FrameworkRequestsPin(val firstAttempt: Boolean) : Event()
         data class EnterPin(val pin: String) : Event()
         object FrameworkRequestsCan : Event()
-        object RequestCardInsertion : Event()
         object RetryAfterError : Event()
         data class Finish(val redirectUrl: String) : Event()
 
@@ -90,62 +87,61 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                 }
             }
 
+            is Event.CertificateDescriptionReceived -> {
+                when (val currentState = state.value.second) {
+                    is State.RequestCertificate -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.request, event.certificateDescription)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
             is Event.FrameworkRequestsAttributeConfirmation -> {
                 when (val currentState = state.value.second) {
-                    is State.FetchingMetadata -> State.RequestAttributeConfirmation(currentState.backingDownAllowed, event.request, event.confirmationCallback)
+                    is State.FetchingMetadata -> State.RequestCertificate(currentState.backingDownAllowed, event.authenticationRequest)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.ConfirmAttributes -> {
                 when (val currentState = state.value.second) {
-                    is State.RequestAttributeConfirmation -> State.SubmitAttributeConfirmation(currentState.backingDownAllowed, currentState.request, currentState.confirmationCallback)
-                    is State.RevisitAttributes -> State.PinInput(currentState.backingDownAllowed, currentState.request, currentState.pinCallback)
+                    is State.CertificateDescriptionReceived -> State.PinInput(currentState.backingDownAllowed, currentState.authenticationRequest, currentState.certificateDescription)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.FrameworkRequestsPin -> {
                 when (val currentState = state.value.second) {
-                    is State.SubmitAttributeConfirmation -> State.PinInput(currentState.backingDownAllowed, currentState.request, event.callback)
-                    is State.WaitingForCardAttachment -> State.PinInputRetry(event.callback)
+                    is State.PinRequested -> if (!event.firstAttempt) State.PinInputRetry else State.PinRequested(currentState.pin)
+                    is State.PinEntered -> State.PinRequested(currentState.pin)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.EnterPin -> {
                 when (val currentState = state.value.second) {
-                    is State.PinInput -> State.PinEntered(event.pin, false, currentState.callback)
-                    is State.PinInputRetry -> State.PinEntered(event.pin, true, currentState.callback)
+                    is State.PinInput -> State.PinEntered(event.pin, true)
+                    is State.PinInputRetry -> State.PinEntered(event.pin, false)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.FrameworkRequestsCan -> {
                 when (val currentState = state.value.second) {
-                    is State.WaitingForCardAttachment -> State.CanRequested(currentState.pin)
-                    else -> throw IllegalArgumentException()
-                }
-            }
-
-            is Event.RequestCardInsertion -> {
-                when (val currentState = state.value.second) {
-                    is State.PinEntered -> State.WaitingForCardAttachment(currentState.pin.takeIf { !currentState.secondTime })
-                    is State.CanRequested -> State.WaitingForCardAttachment(currentState.pin)
+                    is State.PinEntered -> State.CanRequested(currentState.pin)
+                    is State.PinRequested -> State.CanRequested(currentState.pin)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.Finish -> {
                 when (val currentState = state.value.second) {
-                    is State.WaitingForCardAttachment -> State.Finished(event.redirectUrl)
+                    is State.PinEntered -> State.Finished(event.redirectUrl)
                     is State.CanRequested -> State.Finished(event.redirectUrl)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.Error -> {
-                fun nextState(): IdentificationStateMachine.State {
+                fun nextState(): State {
                     return when (event.exception) {
                         is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
                         is IdCardInteractionException.CardBlocked -> State.CardBlocked
@@ -174,8 +170,8 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
 
             is Event.Back -> {
                 when (val currentState = state.value.second) {
-                    is State.FetchingMetadata, is State.RequestAttributeConfirmation -> State.Invalid
-                    is State.PinInput -> State.RevisitAttributes(currentState.backingDownAllowed, currentState.request, currentState.callback)
+                    is State.FetchingMetadata, is State.RequestCertificate -> State.Invalid
+                    is State.PinInput -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.authenticationRequest, currentState.certificateDescription)
                     else -> throw IllegalArgumentException()
                 }
             }

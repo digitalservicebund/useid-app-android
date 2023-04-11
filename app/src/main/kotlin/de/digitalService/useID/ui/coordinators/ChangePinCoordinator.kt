@@ -81,7 +81,7 @@ class ChangePinCoordinator @Inject constructor(
                             navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
                         }
                         is ChangePinStateMachine.State.FrameworkReadyForPinInput -> idCardManager.providePin(state.oldPin)
-                        is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.oldPin)
+                        is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.newPin)
                         is ChangePinStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin, state.shortFlow)
                         is ChangePinStateMachine.State.OldTransportPinRetry -> navigator.navigate(SetupTransportPinDestination(true, state.identificationPending))
                         is ChangePinStateMachine.State.OldPersonalPinRetry -> throw NotImplementedError()

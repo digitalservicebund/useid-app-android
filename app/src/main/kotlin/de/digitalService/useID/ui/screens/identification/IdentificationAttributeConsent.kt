@@ -29,9 +29,7 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.idCardInterface.AuthenticationTerms
-import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
-import de.digitalService.useID.idCardInterface.IdCardAttribute
+import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.ui.components.*
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.screens.destinations.IdentificationAttributeConsentDestination
@@ -224,7 +222,7 @@ private fun InfoDialog(content: ProviderInfoDialogContent, onDismissalRequest: (
 }
 
 data class IdentificationAttributeConsentNavArgs(
-    val request: EidAuthenticationRequest,
+    val identificationAttributes: IdentificationAttributes,
     val backAllowed: Boolean
 )
 
@@ -235,12 +233,12 @@ data class ProviderInfoDialogContent(
     val subjectURL: String,
     val terms: String
 ) {
-    constructor(request: EidAuthenticationRequest) : this(
-        request.issuer,
-        request.issuerURL,
-        request.subject,
-        request.subjectURL,
-        (request.terms as AuthenticationTerms.Text).text
+    constructor(request: CertificateDescription) : this(
+        request.issuerName,
+        request.issuerUrl.toString(),
+        request.subjectName,
+        request.subjectUrl.toString(),
+        request.termsOfUsage
     )
 }
 
@@ -278,14 +276,11 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
 
         backAllowed = args.backAllowed
 
-        val request = args.request
-        identificationProvider = request.subject
-        requiredReadAttributes = request
-            .readAttributes
-            .filterValues { it }
-            .keys
+        val identificationAttributes = args.identificationAttributes
+        identificationProvider = identificationAttributes.certificateDescription.subjectName
+        requiredReadAttributes = identificationAttributes.requiredAttributes
             .map { attributeDescriptionID(it) }
-        infoDialogContent = ProviderInfoDialogContent(request)
+        infoDialogContent = ProviderInfoDialogContent(identificationAttributes.certificateDescription)
     }
 
     override fun onInfoButtonClicked() {
@@ -308,7 +303,7 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         }
     }
 
-    private fun attributeDescriptionID(attribute: IdCardAttribute): Int = when (attribute) {
+    private fun attributeDescriptionID(idCardAttribute: IdCardAttribute): Int = when (idCardAttribute) {
         IdCardAttribute.DG01 -> R.string.cardAttribute_dg01
         IdCardAttribute.DG02 -> R.string.cardAttribute_dg02
         IdCardAttribute.DG03 -> R.string.cardAttribute_dg03
@@ -321,9 +316,18 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         IdCardAttribute.DG10 -> R.string.cardAttribute_dg10
         IdCardAttribute.DG13 -> R.string.cardAttribute_dg13
         IdCardAttribute.DG17 -> R.string.cardAttribute_dg17
+        IdCardAttribute.DG18 -> R.string.cardAttribute_dg18
         IdCardAttribute.DG19 -> R.string.cardAttribute_dg19
-        IdCardAttribute.RESTRICTED_IDENTIFICATION -> R.string.cardAttribute_restrictedIdentification
+        IdCardAttribute.DG20 -> R.string.cardAttribute_dg20
+        IdCardAttribute.PSEUDONYM -> R.string.cardAttribute_pseudonym
         IdCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
+        IdCardAttribute.ADDRESS_VERIFICATION -> R.string.cardAttribute_addressVerification
+        IdCardAttribute.WRITE_DG17 -> R.string.cardAttribute_write_dg17
+        IdCardAttribute.WRITE_DG18 -> R.string.cardAttribute_write_dg18
+        IdCardAttribute.WRITE_DG19 -> R.string.cardAttribute_write_dg19
+        IdCardAttribute.WRITE_DG20 -> R.string.cardAttribute_write_dg20
+        IdCardAttribute.CAN_ALLOWED -> R.string.cardAttribute_canAllowed
+        IdCardAttribute.PIN_MANAGEMENT -> R.string.cardAttribute_pinManagement
     }
 }
 
@@ -357,8 +361,7 @@ private fun previewIdentificationAttributeConsentViewModel(infoDialog: Boolean):
             R.string.cardAttribute_dg10,
             R.string.cardAttribute_dg13,
             R.string.cardAttribute_dg17,
-            R.string.cardAttribute_dg19,
-            R.string.cardAttribute_restrictedIdentification
+            R.string.cardAttribute_dg19
         ),
         shouldShowInfoDialog = infoDialog,
         infoDialogContent = ProviderInfoDialogContent(

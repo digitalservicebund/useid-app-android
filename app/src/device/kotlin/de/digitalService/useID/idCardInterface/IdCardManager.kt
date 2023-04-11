@@ -1,6 +1,8 @@
 package de.digitalService.useID.idCardInterface
 
+//import de.governikus.ausweisapp2.sdkwrapper.card.core.WorkflowController
 import android.content.Context
+import android.net.Uri
 import android.nfc.Tag
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.getLogger
@@ -8,10 +10,11 @@ import de.digitalService.useID.util.CoroutineContextProvider
 import de.governikus.ausweisapp2.sdkwrapper.SDKWrapper.workflowController
 import de.governikus.ausweisapp2.sdkwrapper.card.core.*
 import de.governikus.ausweisapp2.sdkwrapper.card.core.CertificateDescription
-//import de.governikus.ausweisapp2.sdkwrapper.card.core.WorkflowController
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -145,7 +148,7 @@ import javax.inject.Singleton
 class IdCardManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val coroutineContextProvider: CoroutineContextProvider
-){
+) {
     private val logger by getLogger()
 
     private val _eidFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
@@ -166,7 +169,7 @@ class IdCardManager @Inject constructor(
             }
 
             if (accessRights.effectiveRights == accessRights.requiredRights) {
-                val authenticationRequest = AuthenticationRequest(accessRights.requiredRights, accessRights.transactionInfo)
+                val authenticationRequest = AuthenticationRequest(accessRights.requiredRights.map { IdCardAttribute.fromAccessRight(it) }, accessRights.transactionInfo)
                 _eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(authenticationRequest)
             } else {
                 workflowController.setAccessRights(listOf())
@@ -178,7 +181,17 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onAuthenticationCompleted(authResult: AuthResult) {
-            TODO("Not yet implemented")
+            logger.debug("Authentication completed")
+            logger.error(authResult.result?.major)
+            logger.error(authResult.result?.minor)
+            logger.error(authResult.result?.reason)
+            if (authResult.result?.major != "http://www.bsi.bund.de/ecard/api/1.1/resultmajor#error") {
+                authResult.url?.let {
+                    _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(it.toString())
+                }
+            } else {
+                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed)
+            }
         }
 
         override fun onAuthenticationStartFailed(error: String) {
@@ -197,13 +210,11 @@ class IdCardManager @Inject constructor(
             _eidFlow.value = EidInteractionEvent.CertificateDescriptionReceived(
                 CertificateDescription(
                     certificateDescription.issuerName,
-                    certificateDescription.issuerUrl,
+                    certificateDescription.issuerUrl?.toString(),
                     certificateDescription.purpose,
                     certificateDescription.subjectName,
-                    certificateDescription.subjectUrl,
+                    certificateDescription.subjectUrl?.toString(),
                     certificateDescription.termsOfUsage,
-                    certificateDescription.validity.effectiveDate,
-                    certificateDescription.validity.expirationDate
                 )
             )
         }
@@ -235,7 +246,11 @@ class IdCardManager @Inject constructor(
         override fun onEnterPin(error: String?, reader: Reader) {
             error?.let { logger.error(it) }
             logger.debug("pin retry counter: ${reader.card?.pinRetryCounter}")
-            _eidFlow.value = EidInteractionEvent.PinRequested(reader.card?.pinRetryCounter)
+            reader.card?.let {
+                _eidFlow.value = EidInteractionEvent.PinRequested(it.pinRetryCounter)
+            } ?: run {
+                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Framework requests PIN without card"))
+            }
         }
 
         override fun onEnterPuk(error: String?, reader: Reader) {
@@ -282,7 +297,7 @@ class IdCardManager @Inject constructor(
         }
 
         override fun onStatus(workflowProgress: WorkflowProgress) {
-            logger.trace("onStatus with state ${ workflowProgress.state } and progress ${ workflowProgress.progress }")
+            logger.trace("onStatus with state ${workflowProgress.state} and progress ${workflowProgress.progress}")
         }
 
         override fun onWrapperError(error: WrapperError) {
@@ -291,7 +306,7 @@ class IdCardManager @Inject constructor(
         }
     }
 
-    fun handleNfcTag(tag: Tag)  {
+    fun handleNfcTag(tag: Tag) {
         if (!workflowController.isStarted) {
             logger.error("No task running.")
             return
@@ -300,7 +315,23 @@ class IdCardManager @Inject constructor(
         workflowController.onNfcTagDetected(tag)
     }
 
-    fun identify(context: Context, url: String) { }
+    fun identify(context: Context, tcTokenUrl: Uri) {
+        logger.debug("Starting workflow controller.")
+        workflowController.registerCallbacks(workflowCallbacks)
+
+        CoroutineScope(coroutineContextProvider.Default).launch {
+            workflowControllerStarted.collect { started ->
+                if (started) {
+                    logger.debug("Start authentication")
+                    workflowController.startAuthentication(tcTokenUrl)
+                    cancel()
+                }
+            }
+        }
+
+        workflowController.start(context)
+    }
+
     fun changePin(context: Context) {
         logger.debug("Starting workflow controller.")
         workflowController.registerCallbacks(workflowCallbacks)
@@ -351,5 +382,23 @@ class IdCardManager @Inject constructor(
         }
 
         workflowController.setCan(can)
+    }
+
+    fun getCertificate() {
+        if (!workflowController.isStarted) {
+            logger.error("No task running.")
+            return
+        }
+
+        workflowController.getCertificate()
+    }
+
+    fun acceptAccessRights() {
+        if (!workflowController.isStarted) {
+            logger.error("No task running.")
+            return
+        }
+
+        workflowController.accept()
     }
 }

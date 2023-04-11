@@ -1,15 +1,13 @@
 package de.digitalService.useID.idCardInterface
 
-import android.net.Uri
-import java.util.*
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class CertificateDescription(
     val issuerName: String,
-    val issuerUrl: Uri?,
+    val issuerUrl: String?,
     val purpose: String,
     val subjectName: String,
-    val subjectUrl: Uri?,
-    val termsOfUsage: String,
-    val effectiveDate: Date,
-    val expirationDate: Date
+    val subjectUrl: String?,
+    val termsOfUsage: String
 )
