@@ -7,8 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-typealias PinCanCallback = (String, String) -> Unit
-
 @Singleton
 class CanStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
     @Inject constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
@@ -45,6 +43,7 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
             class CanInputRetry(val pin: String) : Ident()
             class PinInput(val can: String) : Ident()
             class CanAndPinEntered(val can: String, val pin: String) : Ident()
+            class FrameworkReadyForPinInput(val pin: String): Ident()
         }
     }
 
@@ -55,10 +54,11 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
         object ResetPin : Event()
         object ConfirmCanIntro : Event()
 
-        data class FrameworkRequestsCanForPinManagement(val identificationPending: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : Event()
-        data class FrameworkRequestsCanForIdent(val pin: String?, val callback: PinCanCallback) : Event()
+        data class FrameworkRequestsCanForPinChange(val identificationPending: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : Event()
+        data class FrameworkRequestsCanForIdent(val pin: String?) : Event()
 
-        data class FrameworkRequestsPin(val identificationPending: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : Event()
+        data class FrameworkRequestsPinForPinChange(val identificationPending: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : Event()
+        data class FrameworkRequestsPinForIdent(val pin: String?) : Event()
 
         data class FrameworkRequestsNewPin(val identificationPending: Boolean, val oldPin: String, val newPin: String, val shortFlow: Boolean) : Event()
 
@@ -81,7 +81,7 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
 
     private fun nextState(event: Event): State {
         return when (event) {
-            is Event.FrameworkRequestsCanForPinManagement -> {
+            is Event.FrameworkRequestsCanForPinChange -> {
                 when (val currentState = state.value.second) {
                     is State.Invalid -> if (event.shortFlow) State.ChangePin.CanIntro(event.identificationPending, event.oldPin, event.newPin, true) else State.ChangePin.Intro(event.identificationPending, event.oldPin, event.newPin)
                     is State.ChangePin.CanAndPinEntered -> State.ChangePin.CanInputRetry(currentState.identificationPending, currentState.oldPin, currentState.newPin)
@@ -97,9 +97,16 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
                 }
             }
 
-            is Event.FrameworkRequestsPin -> {
+            is Event.FrameworkRequestsPinForPinChange -> {
                 when(val currentState = state.value.second) {
                     is State.ChangePin.CanAndPinEntered -> State.ChangePin.FrameworkReadyForPinInput(currentState.identificationPending, currentState.oldPin, currentState.newPin)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
+            is Event.FrameworkRequestsPinForIdent -> {
+                when(val currentState = state.value.second) {
+                    is State.Ident.CanAndPinEntered -> State.Ident.FrameworkReadyForPinInput(currentState.pin)
                     else -> throw IllegalArgumentException()
                 }
             }

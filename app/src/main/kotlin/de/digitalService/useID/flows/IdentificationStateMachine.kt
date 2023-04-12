@@ -34,7 +34,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         class CertificateDescriptionReceived(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
         class PinInput(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
         object PinInputRetry : State()
-        class PinEntered(val pin: String, val firstAttempt: Boolean) : State()
+        class PinEntered(val pin: String, val firstTime : Boolean) : State()
         class PinRequested(val pin: String) : State()
         class CanRequested(val pin: String?) : State()
         class Finished(val redirectUrl: String) : State()
@@ -126,7 +126,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
 
             is Event.FrameworkRequestsCan -> {
                 when (val currentState = state.value.second) {
-                    is State.PinEntered -> State.CanRequested(currentState.pin)
+                    is State.PinEntered -> State.CanRequested(currentState.pin.takeIf { currentState.firstTime })
                     is State.PinRequested -> State.CanRequested(currentState.pin)
                     else -> throw IllegalArgumentException()
                 }
@@ -136,6 +136,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                 when (val currentState = state.value.second) {
                     is State.PinEntered -> State.Finished(event.redirectUrl)
                     is State.CanRequested -> State.Finished(event.redirectUrl)
+                    is State.PinRequested -> State.Finished(event.redirectUrl)
                     else -> throw IllegalArgumentException()
                 }
             }

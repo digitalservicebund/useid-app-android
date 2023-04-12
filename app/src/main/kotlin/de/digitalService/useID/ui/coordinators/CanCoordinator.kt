@@ -70,8 +70,11 @@ class CanCoordinator @Inject constructor(
                             navigator.navigate(CanInputDestination(true))
                         }
                         is CanStateMachine.State.Ident.PinInput -> navigator.navigate(IdentificationCanPinInputDestination)
-                        is CanStateMachine.State.Ident.CanAndPinEntered -> idCardManager.provideCan(state.can)
-
+                        is CanStateMachine.State.Ident.CanAndPinEntered -> {
+                            navigator.popUpToOrNavigate(IdentificationScanDestination, true)
+                            idCardManager.provideCan(state.can)
+                        }
+                        is CanStateMachine.State.Ident.FrameworkReadyForPinInput -> idCardManager.providePin(state.pin)
                         CanStateMachine.State.Invalid -> logger.debug("Ignoring transition to state INVALID.")
                     }
                 }
@@ -153,9 +156,8 @@ class CanCoordinator @Inject constructor(
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-//                    is EidInteractionEvent.RequestPinAndCan -> {
-//                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForIdent(pin, event.pinCanCallback))
-//                    }
+                    is EidInteractionEvent.CanRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForIdent(pin))
+                    is EidInteractionEvent.PinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPinForIdent(pin))
                     is EidInteractionEvent.AuthenticationSucceededWithRedirect -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")
@@ -171,10 +173,8 @@ class CanCoordinator @Inject constructor(
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
-                    is EidInteractionEvent.CanRequested -> {
-                        flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForPinManagement(identificationPending, pin, newPin, shortFlow))
-                    }
-                    is EidInteractionEvent.PinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPin(identificationPending, pin, newPin, shortFlow))
+                    is EidInteractionEvent.CanRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForPinChange(identificationPending, pin, newPin, shortFlow))
+                    is EidInteractionEvent.PinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPinForPinChange(identificationPending, pin, newPin, shortFlow))
                     is EidInteractionEvent.NewPinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsNewPin(identificationPending, pin, newPin, shortFlow))
                     is EidInteractionEvent.PinChangeSucceeded -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
