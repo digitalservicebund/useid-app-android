@@ -132,10 +132,10 @@
     <string name="home_setup_body">Assign your personal ID PIN. After you have done this, you can use your ID card to identify yourself online.</string>
     <string name="home_setup_setup">Set up online ID card</string>
     <string name="home_setup_setupVariation">Set up online ID card</string>
-    <string name="identification_attributeConsent_title">Grant release for »%1s«.</string>
+    <string name="identification_attributeConsent_title">Share data with »%1s«.</string>
     <string name="identification_attributeConsent_body">The service provider would like to access the following data from your ID card:</string>
     <string name="identification_attributeConsent_button_additionalInformation">More information</string>
-    <string name="identification_attributeConsent_continue">Grant release</string>
+    <string name="identification_attributeConsent_continue">Confirm</string>
     <string name="identification_attributeConsentInfo_issuer">Issuer of the authorization certificate</string>
     <string name="identification_attributeConsentInfo_provider">Provider</string>
     <string name="identification_attributeConsentInfo_providerInfo">Provider information</string>
