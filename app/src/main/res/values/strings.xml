@@ -288,7 +288,7 @@
 \nIhre E‑Mails und Kontaktaufnahmen speichern wir so lange, wie es zur Bearbeitung Ihrer Anfrage erforderlich ist und speichern Sie anschließend maximal für den Zeitraum von 12 Monaten, falls Sie sich bezugnehmend auf Ihre ursprüngliche Frage noch einmal an uns wenden.
 \n
 \n### Werden Appanalyse-Dienste eingesetzt\?
-\nUm die App weiterzuentwickeln und zu analysieren, nutzen wir die Software zur Anwendungsüberwachung und Fehlerverfolgung sentry. Diese erhebt keine personenbezogenen Daten, noch kommen dabei Cookies zum Einsatz. Gemessen werden Abstürze und Fehler der App. Dafür verarbeitet sentry folgende Daten:
+\nUm die App weiterzuentwickeln und zu analysieren, nutzen wir die Software zur Anwendungsüberwachung und Fehlerverfolgung sentry. Diese erhebt weder personenbezogenen Daten, noch kommen Cookies zum Einsatz. Gemessen werden Abstürze und Fehler der App. Dafür verarbeitet sentry folgende Daten:
 \n
 \n- Gerätetyp
 \n- Betriebssystemversion
@@ -299,14 +299,14 @@
 \n
 \n[sentry.io/privacy ↗](https://sentry.io/privacy/)
 \n
-\nWir benutzen Matomo (ehemals Piwik) zur Analyse der Benutzer:innenfreundlichkeit, ein Dienst der InnoCraft Ltd., 150 Willis St, 6011 Wellington, New Zealand, NZBN 6106769, („Matomo“) mittels Cookie‑Technologie. Der Dienst Matomo dient ausschließlich dafür, die BundesIdent App zu optimieren, um eine bessere Benutzer:innenfreundlichkeit zu gewährleisten. Dafür verwenden wir folgende anonymisierte Informationen die ausschließlich im europäischen Wirtschaftsraum gespeichert werden:
+\nWir benutzen Matomo (ehemals Piwik) zur Analyse der Benutzer:innenfreundlichkeit, ein Dienst der InnoCraft Ltd., 150 Willis St, 6011 Wellington, New Zealand, NZBN 6106769, („Matomo“) mittels Cookie‑Technologie. Der Dienst Matomo dient ausschließlich dafür, die BundesIdent App zu optimieren, um eine bessere Benutzer:innenfreundlichkeit zu gewährleisten. Dafür verwenden wir folgende anonymisierte Informationen, die ausschließlich im europäischen Wirtschaftsraum gespeichert werden:
 \n
-\nFolgende Daten verarbeitet Matomo innerhalb der App:
+\nFolgende Daten verarbeitet Matomo innerhalb der App
 \n
 \n- Eine zufallsgenerierte Benutzererkennung (user ID), die je Session neu erstellt wird. Eine neue Session startet nach 30 Minuten Inaktivität des Benutzers
 \n- Informationen über angezeigte Screens in der App
-\n- Information über das Betriebssystem, Geräte- und Anwendungsinformationen (Version, Modell, Bildschirmauflösung, etc.) für eine optimierte Anwendung und Gewährleistung der Datensicherheit
-\n- Informationen, ob ein Ereignis erfolgreich abgeschlossen wurde sowie Fehlerereignisse (z. B. inkorrekte Pin eingegeben, Ausweis deaktiviert)
+\n- Informationen über das Betriebssystem, Geräte- und Anwendungsinformationen (Version, Modell, Bildschirmauflösung, etc.) für eine optimierte Anwendung und Gewährleistung der Datensicherheit
+\n- Informationen, ob ein Ereignis erfolgreich abgeschlossen wurde, sowie zu Fehlerereignissen (z. B. inkorrekte Pin eingegeben, Ausweis deaktiviert)
 \n- Weitere Informationen zu den Nutzungsbedingungen von Matomo und den datenschutzrechtlichen Regelungen finden Sie unter:
 \n
 \n[matomo.org/privacy ↗](https://matomo.org/privacy/)
