@@ -152,7 +152,7 @@ class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTwoTimesTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+        eidFlow.value = EidInteractionEvent.CanRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
@@ -179,7 +179,7 @@ class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTwoTimesTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+        eidFlow.value = EidInteractionEvent.CanRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
@@ -206,6 +206,9 @@ class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTwoTimesTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
+        eidFlow.value = EidInteractionEvent.PinRequested(1)
+        advanceUntilIdle()
+
         intending(allOf(
             hasAction(Intent.ACTION_VIEW),
             hasData(redirectUrl),
@@ -217,7 +220,7 @@ class IdentCanAfterSomeTimeSuccessfulAfterCanIncorrectTwoTimesTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

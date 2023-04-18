@@ -143,13 +143,13 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
 
             is Event.Error -> {
                 fun nextState(): State {
-                    return when (event.exception) {
+                    return when (val exception = event.exception) {
                         is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
                         is IdCardInteractionException.CardBlocked -> State.CardBlocked
                         is IdCardInteractionException.ProcessFailed -> {
                             when (val currentState = state.value.second) {
                                 is State.CardBlocked, is State.CardDeactivated -> currentState
-                                else -> State.CardUnreadable(null)
+                                else -> State.CardUnreadable(exception.redirectUrl)
                             }
                         }
                         else -> throw IllegalArgumentException()

@@ -1,6 +1,5 @@
 package de.digitalService.useID.idCardInterface
 
-//import org.openecard.mobile.activation.ActivationResultCode
 import kotlin.coroutines.cancellation.CancellationException
 
 sealed class IdCardInteractionException(message: String? = null) : CancellationException(message) {
@@ -9,7 +8,7 @@ sealed class IdCardInteractionException(message: String? = null) : CancellationE
     object CardBlocked : IdCardInteractionException()
     object CardDeactivated : IdCardInteractionException()
     object UnknownReader : IdCardInteractionException()
-    object ProcessFailed : IdCardInteractionException()
+    class ProcessFailed(val redirectUrl: String? = null) : IdCardInteractionException()
     object ChangingPinFailed : IdCardInteractionException()
 
     val redacted: RedactedIDCardInteractionException?

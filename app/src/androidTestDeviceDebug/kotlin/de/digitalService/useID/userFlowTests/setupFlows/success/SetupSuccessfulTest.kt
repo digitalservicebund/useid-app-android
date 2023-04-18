@@ -156,7 +156,7 @@ class SetupSuccessfulTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()
@@ -254,7 +254,7 @@ class SetupSuccessfulTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()

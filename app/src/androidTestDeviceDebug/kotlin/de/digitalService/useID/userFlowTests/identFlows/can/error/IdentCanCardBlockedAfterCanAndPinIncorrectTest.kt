@@ -162,7 +162,7 @@ class IdentCanCardBlockedAfterCanAndPinIncorrectTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+        eidFlow.value = EidInteractionEvent.CanRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved

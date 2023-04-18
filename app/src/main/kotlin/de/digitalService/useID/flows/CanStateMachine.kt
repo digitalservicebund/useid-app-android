@@ -37,12 +37,11 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
         sealed class Ident : State() {
             class Intro(val pin: String?) : Ident()
             class PinReset(val pin: String?) : Ident()
-            class CanIntro(val pin: String?) : Ident()
-            class CanIntroWithoutFlowIntro(val pin: String?) : Ident()
-            class CanInput(val pin: String?) : Ident()
-            class CanInputRetry(val pin: String) : Ident()
-            class PinInput(val can: String) : Ident()
-            class CanAndPinEntered(val can: String, val pin: String) : Ident()
+            class CanIntro(val pin: String?, val shortFlow: Boolean) : Ident()
+            class CanInput(val pin: String?, val shortFlow: Boolean) : Ident()
+            class CanInputRetry(val pin: String, val shortFlow: Boolean) : Ident()
+            class PinInput(val can: String, val shortFlow: Boolean) : Ident()
+            class CanAndPinEntered(val can: String, val pin: String, val shortFlow: Boolean) : Ident()
             class FrameworkReadyForPinInput(val pin: String): Ident()
         }
     }
@@ -91,8 +90,8 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
 
             is Event.FrameworkRequestsCanForIdent -> {
                 when (val currentState = state.value.second) {
-                    is State.Invalid -> if (event.pin != null) State.Ident.CanIntro(event.pin) else State.Ident.Intro(null)
-                    is State.Ident.CanAndPinEntered -> State.Ident.CanInputRetry(currentState.pin)
+                    is State.Invalid -> if (event.pin != null) State.Ident.CanIntro(event.pin, true) else State.Ident.Intro(null)
+                    is State.Ident.CanAndPinEntered -> State.Ident.CanInputRetry(currentState.pin, currentState.shortFlow)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -121,7 +120,7 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
             is Event.AgreeToThirdAttempt -> {
                 when (val currentState = state.value.second) {
                     is State.ChangePin.Intro -> State.ChangePin.CanIntro(currentState.identificationPending, currentState.oldPin, currentState.newPin, false)
-                    is State.Ident.Intro -> State.Ident.CanIntro(currentState.pin)
+                    is State.Ident.Intro -> State.Ident.CanIntro(currentState.pin, false)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -144,7 +143,7 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
             is Event.ConfirmCanIntro -> {
                 when (val currentState = state.value.second) {
                     is State.ChangePin.CanIntro -> State.ChangePin.CanInput(currentState.identificationPending, currentState.oldPin, currentState.newPin, currentState.shortFlow)
-                    is State.Ident.CanIntro -> State.Ident.CanInput(currentState.pin)
+                    is State.Ident.CanIntro -> State.Ident.CanInput(currentState.pin, currentState.shortFlow)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -154,8 +153,8 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
                     is State.ChangePin.CanInput -> if (currentState.shortFlow) State.ChangePin.CanAndPinEntered(currentState.identificationPending, currentState.oldPin, event.can, currentState.newPin) else State.ChangePin.PinInput(currentState.identificationPending, currentState.oldPin, event.can, currentState.newPin)
                     is State.ChangePin.CanInputRetry -> State.ChangePin.CanAndPinEntered(currentState.identificationPending, currentState.oldPin, event.can, currentState.newPin)
 
-                    is State.Ident.CanInput -> if (currentState.pin != null) State.Ident.CanAndPinEntered(event.can, currentState.pin) else State.Ident.PinInput(event.can)
-                    is State.Ident.CanInputRetry -> State.Ident.CanAndPinEntered(event.can, currentState.pin)
+                    is State.Ident.CanInput -> if (currentState.pin != null) State.Ident.CanAndPinEntered(event.can, currentState.pin, currentState.shortFlow) else State.Ident.PinInput(event.can, currentState.shortFlow)
+                    is State.Ident.CanInputRetry -> State.Ident.CanAndPinEntered(event.can, currentState.pin, currentState.shortFlow)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -163,7 +162,7 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
             is Event.EnterPin -> {
                 when (val currentState = state.value.second) {
                     is State.ChangePin.PinInput -> State.ChangePin.CanAndPinEntered(currentState.identificationPending, event.pin, currentState.can, currentState.newPin)
-                    is State.Ident.PinInput -> State.Ident.CanAndPinEntered(currentState.can, event.pin)
+                    is State.Ident.PinInput -> State.Ident.CanAndPinEntered(currentState.can, event.pin, currentState.shortFlow)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -179,9 +178,9 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
 
                     is State.Ident.PinReset -> State.Ident.Intro(currentState.pin)
                     is State.Ident.CanIntro -> State.Ident.Intro(currentState.pin)
-                    is State.Ident.CanInput -> State.Ident.CanIntro(currentState.pin)
-                    is State.Ident.CanInputRetry -> State.Ident.CanIntro(currentState.pin)
-                    is State.Ident.PinInput -> State.Ident.CanInput(null)
+                    is State.Ident.CanInput -> State.Ident.CanIntro(currentState.pin, currentState.shortFlow)
+                    is State.Ident.CanInputRetry -> State.Ident.CanIntro(currentState.pin, currentState.shortFlow)
+                    is State.Ident.PinInput -> State.Ident.CanInput(null, currentState.shortFlow)
 
                     else -> throw IllegalArgumentException()
                 }

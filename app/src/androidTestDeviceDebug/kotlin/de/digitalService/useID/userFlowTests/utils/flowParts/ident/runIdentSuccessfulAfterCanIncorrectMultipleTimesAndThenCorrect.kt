@@ -5,9 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import de.digitalService.useID.idCardInterface.AuthenticationTerms
-import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
-import de.digitalService.useID.idCardInterface.EidInteractionEvent
+import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCan
 import de.digitalService.useID.util.ComposeTestRule
@@ -27,32 +25,11 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     val wrongCan = "222222"
 
     // Define screens to be tested
-    val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(testRule)
     val identificationPersonalPin = TestScreen.IdentificationPersonalPin(testRule)
     val identificationScan = TestScreen.Scan(testRule)
     val identificationCanPinForgotten = TestScreen.IdentificationCanPinForgotten(testRule)
     val identificationCanIntro = TestScreen.CanIntro(testRule)
     val identificationCanInput = TestScreen.CanInput(testRule)
-
-    eidFlow.value = EidInteractionEvent.AuthenticationStarted
-    testScope.advanceUntilIdle()
-
-    identificationFetchMetaData.assertIsDisplayed()
-
-    eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-        EidAuthenticationRequest(
-            TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-            TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-            TestScreen.IdentificationAttributeConsent.RequestData.subject,
-            TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-            TestScreen.IdentificationAttributeConsent.RequestData.validity,
-            AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-            TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-            TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
-        )
-    ) {
-        eidFlow.value =  EidInteractionEvent.CardInsertionRequested
-    }
 
     runIdentUpToCan(
         testRule = testRule,
@@ -100,7 +77,7 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+    eidFlow.value = EidInteractionEvent.CanRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -127,7 +104,7 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+    eidFlow.value = EidInteractionEvent.CanRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -154,6 +131,9 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
+    eidFlow.value = EidInteractionEvent.PinRequested(1)
+    testScope.advanceUntilIdle()
+
     Intents.intending(
         Matchers.allOf(
             IntentMatchers.hasAction(Intent.ACTION_VIEW),
@@ -167,6 +147,6 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
         )
     )
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+    eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
     testScope.advanceUntilIdle()
 }

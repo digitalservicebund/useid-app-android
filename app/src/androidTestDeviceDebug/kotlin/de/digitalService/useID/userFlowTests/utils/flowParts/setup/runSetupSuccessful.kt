@@ -74,9 +74,15 @@ fun runSetupSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) { _, _ -> }
+    eidFlow.value = EidInteractionEvent.PinRequested(3)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CardRemoved
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.PinChangeSucceeded
     testScope.advanceUntilIdle()
 }

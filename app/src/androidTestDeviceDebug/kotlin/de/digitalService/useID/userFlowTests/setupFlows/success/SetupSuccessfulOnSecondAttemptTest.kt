@@ -149,10 +149,10 @@ class SetupSuccessfulOnSecondAttemptTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+        eidFlow.value = EidInteractionEvent.PinRequested(3)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+        eidFlow.value = EidInteractionEvent.PinRequested(2)
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
@@ -167,14 +167,17 @@ class SetupSuccessfulOnSecondAttemptTest {
         eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
-        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+        eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+        advanceUntilIdle()
+
+        setupScan.setProgress(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        setupScan.setBackAllowed(false).setProgress(true).assertIsDisplayed()
+        setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()

@@ -33,7 +33,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 
@@ -144,13 +143,10 @@ class IdentCanAfterSomeTimeCardUnreadableAfterCanEntryTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(
-            IdCardInteractionException.ProcessFailed(
-                resultCode = ActivationResultCode.INTERNAL_ERROR,
-                redirectUrl = null,
-                resultMinor = null
-            )
-        )
+        eidFlow.value = EidInteractionEvent.PinRequested(1)
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
         advanceUntilIdle()
 
         errorCardUnreadable.setIdentPending(true).setRedirectUrlPresent(false).assertIsDisplayed()

@@ -10,7 +10,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
-import org.openecard.mobile.activation.ActivationResultCode
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInteractionEvent>, testScope: TestScope) {
@@ -29,6 +28,7 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
 
     setupIntro.assertIsDisplayed()
     setupIntro.setupIdBtn.click()
+    testScope.advanceUntilIdle()
 
     setupPinLetter.assertIsDisplayed()
     setupPinLetter.letterPresentBtn.click()
@@ -40,21 +40,25 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     testRule.performPinInput(wrongTransportPin)
     setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
     testRule.pressReturn()
+    testScope.advanceUntilIdle()
 
     setupPersonalPinIntro.assertIsDisplayed()
     setupPersonalPinIntro.continueBtn.click()
+    testScope.advanceUntilIdle()
 
     setupPersonalPinInput.assertIsDisplayed()
     setupPersonalPinInput.personalPinField.assertLength(0)
     testRule.performPinInput(personalPin)
     setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
+    testScope.advanceUntilIdle()
 
     setupPersonalPinConfirm.assertIsDisplayed()
     setupPersonalPinConfirm.personalPinField.assertLength(0)
     testRule.performPinInput(personalPin)
     setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
     testRule.pressReturn()
+    testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
@@ -69,13 +73,7 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.Error(
-        IdCardInteractionException.ProcessFailed(
-            resultCode = ActivationResultCode.CLIENT_ERROR,
-            redirectUrl = null,
-            resultMinor = null
-        )
-    )
+    eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
 
     testScope.advanceUntilIdle()
 
@@ -85,16 +83,19 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
-    setupScan.setProgress(false).setBackAllowed(true).assertIsDisplayed() // TODO: navigating back should be possible here. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
+    setupScan.setProgress(false).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+    eidFlow.value = EidInteractionEvent.PinRequested(3)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.PinChangeSucceeded
     testScope.advanceUntilIdle()
 }

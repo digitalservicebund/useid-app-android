@@ -78,7 +78,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+    eidFlow.value = EidInteractionEvent.CanRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -101,7 +101,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+    eidFlow.value = EidInteractionEvent.CanRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -124,6 +124,12 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    eidFlow.value = EidInteractionEvent.PinRequested(1)
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.PinChangeSucceeded
     testScope.advanceUntilIdle()
 }

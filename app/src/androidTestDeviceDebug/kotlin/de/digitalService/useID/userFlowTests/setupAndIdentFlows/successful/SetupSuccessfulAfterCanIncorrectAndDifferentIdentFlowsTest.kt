@@ -72,7 +72,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
     }
 
     @BindValue
-    val mockNfcInterfaceManager: NfcInterfaceManagerType = mockk(relaxed = true){
+    val mockNfcInterfaceManager: NfcInterfaceManagerType = mockk(relaxed = true) {
         every { nfcAvailability } returns MutableStateFlow(NfcAvailability.Available)
     }
 

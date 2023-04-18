@@ -142,7 +142,7 @@ class SetupCanAfterSomeTimeSuccessfulNavigationTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        eidFlow.value = EidInteractionEvent.CanRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
@@ -178,7 +178,7 @@ class SetupCanAfterSomeTimeSuccessfulNavigationTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()

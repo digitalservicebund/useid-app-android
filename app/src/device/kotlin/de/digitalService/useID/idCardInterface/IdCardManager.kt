@@ -146,7 +146,7 @@ import javax.inject.Singleton
 
 @Singleton
 class IdCardManager @Inject constructor(
-    @ApplicationContext private val context: Context,
+//    @ApplicationContext private val context: Context,
     private val coroutineContextProvider: CoroutineContextProvider
 ) {
     private val logger by getLogger()
@@ -190,7 +190,7 @@ class IdCardManager @Inject constructor(
                     _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(it.toString())
                 }
             } else {
-                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed)
+                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(authResult.url?.toString()))
             }
         }
 

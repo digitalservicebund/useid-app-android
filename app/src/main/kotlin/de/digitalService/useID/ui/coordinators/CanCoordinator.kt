@@ -61,12 +61,11 @@ class CanCoordinator @Inject constructor(
                         is CanStateMachine.State.ChangePin.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.newPin)
 
                         is CanStateMachine.State.Ident.Intro -> navigator.navigate(IdentificationCanPinForgottenDestination)
-                        is CanStateMachine.State.Ident.CanIntro -> navigator.navigate(IdentificationCanIntroDestination(state.pin == null))
-                        is CanStateMachine.State.Ident.CanIntroWithoutFlowIntro -> navigator.navigate(IdentificationCanIntroDestination(false))
+                        is CanStateMachine.State.Ident.CanIntro -> navigator.navigate(IdentificationCanIntroDestination(!state.shortFlow))
                         is CanStateMachine.State.Ident.CanInput -> navigator.navigate(CanInputDestination(false))
                         is CanStateMachine.State.Ident.CanInputRetry -> {
                             navigator.navigate(IdentificationCanPinForgottenDestination)
-                            navigator.navigate(IdentificationCanIntroDestination(true))
+                            navigator.navigate(IdentificationCanIntroDestination(!state.shortFlow))
                             navigator.navigate(CanInputDestination(true))
                         }
                         is CanStateMachine.State.Ident.PinInput -> navigator.navigate(IdentificationCanPinInputDestination)

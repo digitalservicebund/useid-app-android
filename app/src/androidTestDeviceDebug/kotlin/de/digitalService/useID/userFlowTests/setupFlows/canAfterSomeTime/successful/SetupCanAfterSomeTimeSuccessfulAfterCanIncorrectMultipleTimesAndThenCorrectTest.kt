@@ -125,7 +125,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        eidFlow.value = EidInteractionEvent.CanRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
@@ -146,7 +146,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        eidFlow.value = EidInteractionEvent.CanRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
@@ -169,7 +169,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrec
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()

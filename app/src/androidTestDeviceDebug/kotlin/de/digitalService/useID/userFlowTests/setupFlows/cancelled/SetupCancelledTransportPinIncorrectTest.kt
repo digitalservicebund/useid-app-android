@@ -147,10 +147,10 @@ class SetupCancelledTransportPinIncorrectTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+        eidFlow.value = EidInteractionEvent.PinRequested(3)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+        eidFlow.value = EidInteractionEvent.PinRequested(3)
         advanceUntilIdle()
 
         setupTransportPin.setAttemptsLeft(2).assertIsDisplayed()

@@ -74,11 +74,11 @@ class ChangePinCoordinator @Inject constructor(
                         is ChangePinStateMachine.State.NewPinConfirmation -> navigator.navigate(SetupPersonalPinConfirmDestination)
                         is ChangePinStateMachine.State.StartIdCardInteraction -> {
                             executePinChange()
-                            navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
+                            navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
                         }
                         is ChangePinStateMachine.State.ReadyForSubsequentScan -> {
                             idCardManager.providePin(state.oldPin)
-                            navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
+                            navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
                         }
                         is ChangePinStateMachine.State.FrameworkReadyForPinInput -> idCardManager.providePin(state.oldPin)
                         is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.newPin)

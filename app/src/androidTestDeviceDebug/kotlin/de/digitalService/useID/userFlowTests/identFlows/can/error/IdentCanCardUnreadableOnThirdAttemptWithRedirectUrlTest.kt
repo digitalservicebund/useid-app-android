@@ -39,7 +39,6 @@ import org.hamcrest.Matchers
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 
@@ -168,13 +167,7 @@ class IdentCanCardUnreadableOnThirdAttemptWithRedirectUrlTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(
-            IdCardInteractionException.ProcessFailed(
-                resultCode = ActivationResultCode.INTERNAL_ERROR,
-                redirectUrl = redirectUrl,
-                resultMinor = null
-            )
-        )
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
         advanceUntilIdle()
 
         Intents.intending(

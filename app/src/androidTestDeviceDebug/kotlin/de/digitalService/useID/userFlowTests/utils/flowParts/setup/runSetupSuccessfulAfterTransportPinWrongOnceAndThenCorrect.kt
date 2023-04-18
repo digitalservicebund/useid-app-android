@@ -72,10 +72,10 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+    eidFlow.value = EidInteractionEvent.PinRequested(3)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+    eidFlow.value = EidInteractionEvent.PinRequested(2)
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -90,13 +90,16 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
-    setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+    setupScan.setProgress(false).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()
 
-    setupScan.setBackAllowed(false).setProgress(true).assertIsDisplayed()
+    setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.PinChangeSucceeded
     testScope.advanceUntilIdle()
 }

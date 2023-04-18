@@ -75,6 +75,9 @@ fun runIdentSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
+    eidFlow.value = EidInteractionEvent.CanRequested
+    testScope.advanceUntilIdle()
+
     Intents.intending(
         Matchers.allOf(
             IntentMatchers.hasAction(Intent.ACTION_VIEW),
@@ -88,6 +91,6 @@ fun runIdentSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
         )
     )
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+    eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
     testScope.advanceUntilIdle()
 }

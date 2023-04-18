@@ -169,7 +169,7 @@ class SetupSuccessfulPinsDontMatchTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()

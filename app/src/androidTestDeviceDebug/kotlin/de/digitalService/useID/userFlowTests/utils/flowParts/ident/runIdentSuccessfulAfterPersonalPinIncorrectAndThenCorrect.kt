@@ -5,9 +5,7 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import de.digitalService.useID.idCardInterface.AuthenticationTerms
-import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
-import de.digitalService.useID.idCardInterface.EidInteractionEvent
+import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
 import de.digitalService.useID.util.ComposeTestRule
 import de.digitalService.useID.util.performPinInput
@@ -36,21 +34,24 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
     identificationFetchMetaData.assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-        EidAuthenticationRequest(
-            TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-            TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-            TestScreen.IdentificationAttributeConsent.RequestData.subject,
-            TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-            TestScreen.IdentificationAttributeConsent.RequestData.validity,
-            AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-            TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-            TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+        AuthenticationRequest(
+            TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
+            TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
         )
-    ) {
-        eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
-            eidFlow.value =  EidInteractionEvent.CardInsertionRequested
-        })
-    }
+    )
+
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.CertificateDescriptionReceived(
+        CertificateDescription(
+            TestScreen.IdentificationAttributeConsent.CertificateDescription.issuerName,
+            TestScreen.IdentificationAttributeConsent.CertificateDescription.issuerUrl,
+            TestScreen.IdentificationAttributeConsent.CertificateDescription.purpose,
+            TestScreen.IdentificationAttributeConsent.CertificateDescription.subjectName,
+            TestScreen.IdentificationAttributeConsent.CertificateDescription.subjectUrl,
+            TestScreen.IdentificationAttributeConsent.CertificateDescription.termsOfUsage,
+        )
+    )
 
     testScope.advanceUntilIdle()
 
@@ -74,7 +75,10 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.PinRequested(attempts = 2, pinCallback = {})
+    eidFlow.value = EidInteractionEvent.PinRequested(3)
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.PinRequested(2)
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -109,6 +113,6 @@ fun runIdentSuccessfulAfterPersonalPinIncorrectAndThenCorrect(testRule: ComposeT
         )
     )
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+    eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
     testScope.advanceUntilIdle()
 }

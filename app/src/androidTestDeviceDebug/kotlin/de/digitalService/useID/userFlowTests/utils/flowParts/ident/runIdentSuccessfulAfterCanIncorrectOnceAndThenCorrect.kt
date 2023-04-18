@@ -77,7 +77,7 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestPinAndCan { _, _ -> }
+    eidFlow.value = EidInteractionEvent.CanRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -104,6 +104,9 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
+    eidFlow.value = EidInteractionEvent.PinRequested(1)
+    testScope.advanceUntilIdle()
+
     Intents.intending(
         Matchers.allOf(
             IntentMatchers.hasAction(Intent.ACTION_VIEW),
@@ -117,6 +120,6 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
         )
     )
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+    eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
     testScope.advanceUntilIdle()
 }

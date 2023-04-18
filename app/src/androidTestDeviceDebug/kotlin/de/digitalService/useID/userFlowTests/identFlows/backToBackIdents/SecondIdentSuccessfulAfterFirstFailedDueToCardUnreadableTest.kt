@@ -38,7 +38,6 @@ import org.hamcrest.Matchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 
@@ -127,21 +126,24 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
         identificationFetchMetaData.assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            EidAuthenticationRequest(
-                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.subject,
-                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.validity,
-                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+            AuthenticationRequest(
+                TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
+                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
-        ) {
-            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.CardInsertionRequested
-            })
-        }
+        )
+
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CertificateDescriptionReceived(
+            CertificateDescription(
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.issuerName,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.issuerUrl,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.purpose,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.subjectName,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.subjectUrl,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.termsOfUsage,
+            )
+        )
 
         advanceUntilIdle()
 
@@ -165,13 +167,7 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(
-            IdCardInteractionException.ProcessFailed(
-                resultCode = ActivationResultCode.INTERNAL_ERROR,
-                redirectUrl = null,
-                resultMinor = null
-            )
-        )
+        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
         advanceUntilIdle()
 
         errorCardUnreadable.setIdentPending(true).setRedirectUrlPresent(false).assertIsDisplayed()
@@ -195,21 +191,24 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
         identificationFetchMetaData.assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            EidAuthenticationRequest(
-                TestScreen.IdentificationAttributeConsent.RequestData.issuer,
-                TestScreen.IdentificationAttributeConsent.RequestData.issuerURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.subject,
-                TestScreen.IdentificationAttributeConsent.RequestData.subjectURL,
-                TestScreen.IdentificationAttributeConsent.RequestData.validity,
-                AuthenticationTerms.Text(TestScreen.IdentificationAttributeConsent.RequestData.authenticationTerms),
-                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo,
-                TestScreen.IdentificationAttributeConsent.RequestData.readAttributes
+            AuthenticationRequest(
+                TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
+                TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
-        ) {
-            eidFlow.value = EidInteractionEvent.PinRequested(attempts = null, pinCallback = {
-                eidFlow.value =  EidInteractionEvent.CardInsertionRequested
-            })
-        }
+        )
+
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CertificateDescriptionReceived(
+            CertificateDescription(
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.issuerName,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.issuerUrl,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.purpose,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.subjectName,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.subjectUrl,
+                TestScreen.IdentificationAttributeConsent.CertificateDescription.termsOfUsage,
+            )
+        )
 
         advanceUntilIdle()
 
@@ -244,7 +243,7 @@ class SecondIdentSuccessfulAfterFirstFailedDueToCardUnreadableTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

@@ -706,15 +706,42 @@ sealed class TestScreen {
         }
 
         object RequestData {
-            val issuer = "issuer"
-            val issuerURL = "issueURL"
-            val subject = "subject"
-            val subjectURL = "subjectURL"
-            val validity = "validity"
-            val authenticationTerms =
-                "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            val requiredAttributes = listOf(
+                IdCardAttribute.DG01,
+                IdCardAttribute.DG02,
+                IdCardAttribute.DG03,
+                IdCardAttribute.DG04,
+                IdCardAttribute.DG05,
+                IdCardAttribute.DG06,
+                IdCardAttribute.DG07,
+                IdCardAttribute.DG08,
+                IdCardAttribute.DG09,
+                IdCardAttribute.DG10,
+                IdCardAttribute.DG13,
+                IdCardAttribute.DG17,
+                IdCardAttribute.DG19,
+                IdCardAttribute.AGE_VERIFICATION,
+                IdCardAttribute.DG18,
+                IdCardAttribute.DG20,
+                IdCardAttribute.PSEUDONYM,
+                IdCardAttribute.ADDRESS_VERIFICATION,
+                IdCardAttribute.WRITE_DG17,
+                IdCardAttribute.WRITE_DG18,
+                IdCardAttribute.WRITE_DG19,
+                IdCardAttribute.WRITE_DG20,
+                IdCardAttribute.CAN_ALLOWED,
+                IdCardAttribute.PIN_MANAGEMENT
+            )
             val transactionInfo = "transactionInfo"
-            val readAttributes = IdCardAttribute.values().associateWith { true }
+        }
+
+        object CertificateDescription {
+            val issuerName = "issuer"
+            val issuerUrl = "issuerUrl"
+            val purpose = "purpose"
+            val subjectName = "subject"
+            val subjectUrl = "subjectURL"
+            val termsOfUsage = "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat."
         }
 
         private fun attributeDescriptionID(attribute: IdCardAttribute): Int = when (attribute) {
@@ -731,14 +758,23 @@ sealed class TestScreen {
             IdCardAttribute.DG13 -> R.string.cardAttribute_dg13
             IdCardAttribute.DG17 -> R.string.cardAttribute_dg17
             IdCardAttribute.DG19 -> R.string.cardAttribute_dg19
-            IdCardAttribute.RESTRICTED_IDENTIFICATION -> R.string.cardAttribute_restrictedIdentification
             IdCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
+            IdCardAttribute.DG18 -> R.string.cardAttribute_dg18
+            IdCardAttribute.DG20 -> R.string.cardAttribute_dg20
+            IdCardAttribute.PSEUDONYM -> R.string.cardAttribute_pseudonym
+            IdCardAttribute.ADDRESS_VERIFICATION -> R.string.cardAttribute_addressVerification
+            IdCardAttribute.WRITE_DG17 -> R.string.cardAttribute_dg17
+            IdCardAttribute.WRITE_DG18 -> R.string.cardAttribute_write_dg18
+            IdCardAttribute.WRITE_DG19 -> R.string.cardAttribute_write_dg19
+            IdCardAttribute.WRITE_DG20 -> R.string.cardAttribute_dg20
+            IdCardAttribute.CAN_ALLOWED -> R.string.cardAttribute_canAllowed
+            IdCardAttribute.PIN_MANAGEMENT -> R.string.cardAttribute_pinManagement
         }
 
         private val title = TestElement.Text(
             testRule,
             resourceId = R.string.identification_attributeConsent_title,
-            formatArg = RequestData.subject
+            formatArg = CertificateDescription.subjectName
         )
         private val body = TestElement.Text(testRule, resourceId = R.string.identification_attributeConsent_body)
         private val readAttributes = IdCardAttribute.values().map {

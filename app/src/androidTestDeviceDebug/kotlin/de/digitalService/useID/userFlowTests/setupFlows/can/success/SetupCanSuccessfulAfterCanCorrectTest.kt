@@ -146,6 +146,9 @@ class SetupCanSuccessfulAfterCanCorrectTest {
         eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
+        eidFlow.value = EidInteractionEvent.PinRequested(1)
+        advanceUntilIdle()
+
         setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
@@ -153,7 +156,7 @@ class SetupCanSuccessfulAfterCanCorrectTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
         advanceUntilIdle()
 
         setupFinish.assertIsDisplayed()

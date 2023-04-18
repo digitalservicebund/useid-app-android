@@ -71,10 +71,10 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) { _, _ -> }
+    eidFlow.value = EidInteractionEvent.PinRequested(3)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) { _, _ -> }
+    eidFlow.value = EidInteractionEvent.PinRequested(2)
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -90,14 +90,14 @@ fun runSetupUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
     eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
-    setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+    setupScan.setProgress(false).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()
 
-    setupScan.setBackAllowed(false).setProgress(true).assertIsDisplayed()
+    setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+    eidFlow.value = EidInteractionEvent.CanRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved

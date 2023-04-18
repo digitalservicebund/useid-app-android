@@ -76,6 +76,6 @@ fun runSetupSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    eidFlow.value = EidInteractionEvent.PinChangeSucceeded
     testScope.advanceUntilIdle()
 }

@@ -143,7 +143,7 @@ class SetupCanCancelledOnCanIntroAfterCanWrongTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+        eidFlow.value = EidInteractionEvent.CanRequested
         advanceUntilIdle()
 
         setupCanInput.setRetry(true).assertIsDisplayed()

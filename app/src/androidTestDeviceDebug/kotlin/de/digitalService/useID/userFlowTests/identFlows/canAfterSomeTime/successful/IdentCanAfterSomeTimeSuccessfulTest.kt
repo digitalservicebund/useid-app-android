@@ -150,6 +150,9 @@ class IdentCanAfterSomeTimeSuccessfulTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
+        eidFlow.value = EidInteractionEvent.PinRequested(1)
+        advanceUntilIdle()
+
         intending(allOf(
             hasAction(Intent.ACTION_VIEW),
             hasData(redirectUrl),
@@ -161,7 +164,7 @@ class IdentCanAfterSomeTimeSuccessfulTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

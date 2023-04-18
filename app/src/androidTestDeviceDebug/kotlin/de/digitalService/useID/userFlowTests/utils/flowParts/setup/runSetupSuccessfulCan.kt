@@ -1,4 +1,4 @@
-package de.digitalService.useID.userFlowTests.utils.flowParts
+package de.digitalService.useID.userFlowTests.utils.flowParts.setup
 
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
@@ -76,9 +76,12 @@ fun runSetupSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-//    eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
-//    testScope.advanceUntilIdle()
+    eidFlow.value = EidInteractionEvent.PinRequested(1)
+    testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+    eidFlow.value = EidInteractionEvent.NewPinRequested(1)
+    testScope.advanceUntilIdle()
+
+    eidFlow.value = EidInteractionEvent.PinChangeSucceeded
     testScope.advanceUntilIdle()
 }
