@@ -77,7 +77,7 @@ fun runSetupSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     eidFlow.value = EidInteractionEvent.PinRequested(3)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    eidFlow.value = EidInteractionEvent.NewPinRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved

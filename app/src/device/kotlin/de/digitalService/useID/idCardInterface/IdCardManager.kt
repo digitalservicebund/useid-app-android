@@ -4,12 +4,19 @@ package de.digitalService.useID.idCardInterface
 import android.content.Context
 import android.net.Uri
 import android.nfc.Tag
-import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.governikus.ausweisapp2.sdkwrapper.SDKWrapper.workflowController
-import de.governikus.ausweisapp2.sdkwrapper.card.core.*
+import de.governikus.ausweisapp2.sdkwrapper.card.core.AccessRights
+import de.governikus.ausweisapp2.sdkwrapper.card.core.ApiLevel
+import de.governikus.ausweisapp2.sdkwrapper.card.core.AuthResult
 import de.governikus.ausweisapp2.sdkwrapper.card.core.CertificateDescription
+import de.governikus.ausweisapp2.sdkwrapper.card.core.ChangePinResult
+import de.governikus.ausweisapp2.sdkwrapper.card.core.Reader
+import de.governikus.ausweisapp2.sdkwrapper.card.core.VersionInfo
+import de.governikus.ausweisapp2.sdkwrapper.card.core.WorkflowCallbacks
+import de.governikus.ausweisapp2.sdkwrapper.card.core.WorkflowProgress
+import de.governikus.ausweisapp2.sdkwrapper.card.core.WrapperError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
@@ -185,13 +192,25 @@ class IdCardManager @Inject constructor(
             logger.error(authResult.result?.major)
             logger.error(authResult.result?.minor)
             logger.error(authResult.result?.reason)
-            if (authResult.result?.major != "http://www.bsi.bund.de/ecard/api/1.1/resultmajor#error") {
-                authResult.url?.let {
-                    _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(it.toString())
+
+            authResult.result?.let { result ->
+                val majorCode = result.major.split("#").last()
+                val minorCode = result.minor?.split("#")?.last()
+
+                val redirectUrl = authResult.url?.let { url ->
+                    val uriBuilder = url.buildUpon()
+                    majorCode.let { uriBuilder.appendQueryParameter("ResultMajor", it) }
+                    minorCode?.let { uriBuilder.appendQueryParameter("ResultMinor", it) }
+                    result.reason?.let { uriBuilder.appendQueryParameter("ResultMessage", it) }
+                    uriBuilder.build().toString()
                 }
-            } else {
-                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(authResult.url?.toString()))
-            }
+
+                if (majorCode != "error") {
+                    redirectUrl?.let { _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(it) }
+                } else {
+                    _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
+                }
+            } ?: run { _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed()) }
         }
 
         override fun onAuthenticationStartFailed(error: String) {
@@ -235,12 +254,12 @@ class IdCardManager @Inject constructor(
 
         override fun onEnterCan(error: String?, reader: Reader) {
             error?.let { logger.error(it) }
-            _eidFlow.value = EidInteractionEvent.CanRequested
+            _eidFlow.value = EidInteractionEvent.CanRequested()
         }
 
         override fun onEnterNewPin(error: String?, reader: Reader) {
             error?.let { logger.error(it) }
-            _eidFlow.value = EidInteractionEvent.NewPinRequested(reader.card?.pinRetryCounter)
+            _eidFlow.value = EidInteractionEvent.NewPinRequested
         }
 
         override fun onEnterPin(error: String?, reader: Reader) {

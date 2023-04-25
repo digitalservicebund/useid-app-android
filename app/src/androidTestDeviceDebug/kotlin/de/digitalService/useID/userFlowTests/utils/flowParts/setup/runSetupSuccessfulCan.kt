@@ -79,7 +79,7 @@ fun runSetupSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
     eidFlow.value = EidInteractionEvent.PinRequested(1)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.NewPinRequested(1)
+    eidFlow.value = EidInteractionEvent.NewPinRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.PinChangeSucceeded

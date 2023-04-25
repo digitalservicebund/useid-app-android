@@ -171,7 +171,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
 
             is Event.Back -> {
                 when (val currentState = state.value.second) {
-                    is State.FetchingMetadata, is State.RequestCertificate -> State.Invalid
+                    is State.FetchingMetadata, is State.RequestCertificate, is State.CertificateDescriptionReceived -> State.Invalid
                     is State.PinInput -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.authenticationRequest, currentState.certificateDescription)
                     else -> throw IllegalArgumentException()
                 }

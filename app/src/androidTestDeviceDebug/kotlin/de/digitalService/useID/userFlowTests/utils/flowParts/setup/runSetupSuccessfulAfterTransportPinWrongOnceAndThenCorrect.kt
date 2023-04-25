@@ -97,7 +97,7 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    eidFlow.value = EidInteractionEvent.NewPinRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.PinChangeSucceeded

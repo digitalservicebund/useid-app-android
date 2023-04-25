@@ -175,7 +175,6 @@ class IdentificationCoordinator @Inject constructor(
 
     private fun executeIdentification(tcTokenUrl: Uri) {
         eIdEventFlowCoroutineScope?.cancel()
-        idCardManager.cancelTask()
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             idCardManager.eidFlow.catch { exception ->
                 logger.error("Error: $exception")

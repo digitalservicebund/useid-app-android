@@ -93,7 +93,7 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     eidFlow.value = EidInteractionEvent.PinRequested(3)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    eidFlow.value = EidInteractionEvent.NewPinRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.PinChangeSucceeded

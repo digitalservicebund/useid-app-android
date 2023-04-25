@@ -231,7 +231,7 @@ class SetupCanSuccessfulNavigationTest {
         eidFlow.value = EidInteractionEvent.PinRequested(1)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+        eidFlow.value = EidInteractionEvent.NewPinRequested
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.PinChangeSucceeded

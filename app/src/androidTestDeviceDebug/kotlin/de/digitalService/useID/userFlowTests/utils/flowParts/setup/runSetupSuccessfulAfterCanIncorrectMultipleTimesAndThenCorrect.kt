@@ -127,7 +127,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
     eidFlow.value = EidInteractionEvent.PinRequested(1)
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.NewPinRequested(null)
+    eidFlow.value = EidInteractionEvent.NewPinRequested
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.PinChangeSucceeded
