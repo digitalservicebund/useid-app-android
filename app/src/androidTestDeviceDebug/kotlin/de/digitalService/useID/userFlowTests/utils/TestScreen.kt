@@ -1,12 +1,11 @@
-package de.digitalService.useID.userFlowTests.setupFlows
+package de.digitalService.useID.userFlowTests.utils
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Dangerous
 import androidx.compose.material.icons.filled.Info
 import de.digitalService.useID.R
-import de.digitalService.useID.idCardInterface.IdCardAttribute
+import de.digitalService.useID.idCardInterface.EidAttribute
 import de.digitalService.useID.ui.components.NavigationIcon
-import de.digitalService.useID.userFlowTests.utils.TestElement
 import de.digitalService.useID.util.ComposeTestRule
 
 sealed class TestScreen {
@@ -707,30 +706,30 @@ sealed class TestScreen {
 
         object RequestData {
             val requiredAttributes = listOf(
-                IdCardAttribute.DG01,
-                IdCardAttribute.DG02,
-                IdCardAttribute.DG03,
-                IdCardAttribute.DG04,
-                IdCardAttribute.DG05,
-                IdCardAttribute.DG06,
-                IdCardAttribute.DG07,
-                IdCardAttribute.DG08,
-                IdCardAttribute.DG09,
-                IdCardAttribute.DG10,
-                IdCardAttribute.DG13,
-                IdCardAttribute.DG17,
-                IdCardAttribute.DG19,
-                IdCardAttribute.AGE_VERIFICATION,
-                IdCardAttribute.DG18,
-                IdCardAttribute.DG20,
-                IdCardAttribute.PSEUDONYM,
-                IdCardAttribute.ADDRESS_VERIFICATION,
-                IdCardAttribute.WRITE_DG17,
-                IdCardAttribute.WRITE_DG18,
-                IdCardAttribute.WRITE_DG19,
-                IdCardAttribute.WRITE_DG20,
-                IdCardAttribute.CAN_ALLOWED,
-                IdCardAttribute.PIN_MANAGEMENT
+                EidAttribute.DG01,
+                EidAttribute.DG02,
+                EidAttribute.DG03,
+                EidAttribute.DG04,
+                EidAttribute.DG05,
+                EidAttribute.DG06,
+                EidAttribute.DG07,
+                EidAttribute.DG08,
+                EidAttribute.DG09,
+                EidAttribute.DG10,
+                EidAttribute.DG13,
+                EidAttribute.DG17,
+                EidAttribute.DG19,
+                EidAttribute.AGE_VERIFICATION,
+                EidAttribute.DG18,
+                EidAttribute.DG20,
+                EidAttribute.PSEUDONYM,
+                EidAttribute.ADDRESS_VERIFICATION,
+                EidAttribute.WRITE_DG17,
+                EidAttribute.WRITE_DG18,
+                EidAttribute.WRITE_DG19,
+                EidAttribute.WRITE_DG20,
+                EidAttribute.CAN_ALLOWED,
+                EidAttribute.PIN_MANAGEMENT
             )
             val transactionInfo = "transactionInfo"
         }
@@ -744,31 +743,31 @@ sealed class TestScreen {
             val termsOfUsage = "Lorem ipsum dolor sit amet, consectetur adipisici elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat."
         }
 
-        private fun attributeDescriptionID(attribute: IdCardAttribute): Int = when (attribute) {
-            IdCardAttribute.DG01 -> R.string.cardAttribute_dg01
-            IdCardAttribute.DG02 -> R.string.cardAttribute_dg02
-            IdCardAttribute.DG03 -> R.string.cardAttribute_dg03
-            IdCardAttribute.DG04 -> R.string.cardAttribute_dg04
-            IdCardAttribute.DG05 -> R.string.cardAttribute_dg05
-            IdCardAttribute.DG06 -> R.string.cardAttribute_dg06
-            IdCardAttribute.DG07 -> R.string.cardAttribute_dg07
-            IdCardAttribute.DG08 -> R.string.cardAttribute_dg08
-            IdCardAttribute.DG09 -> R.string.cardAttribute_dg09
-            IdCardAttribute.DG10 -> R.string.cardAttribute_dg10
-            IdCardAttribute.DG13 -> R.string.cardAttribute_dg13
-            IdCardAttribute.DG17 -> R.string.cardAttribute_dg17
-            IdCardAttribute.DG19 -> R.string.cardAttribute_dg19
-            IdCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
-            IdCardAttribute.DG18 -> R.string.cardAttribute_dg18
-            IdCardAttribute.DG20 -> R.string.cardAttribute_dg20
-            IdCardAttribute.PSEUDONYM -> R.string.cardAttribute_pseudonym
-            IdCardAttribute.ADDRESS_VERIFICATION -> R.string.cardAttribute_addressVerification
-            IdCardAttribute.WRITE_DG17 -> R.string.cardAttribute_dg17
-            IdCardAttribute.WRITE_DG18 -> R.string.cardAttribute_write_dg18
-            IdCardAttribute.WRITE_DG19 -> R.string.cardAttribute_write_dg19
-            IdCardAttribute.WRITE_DG20 -> R.string.cardAttribute_dg20
-            IdCardAttribute.CAN_ALLOWED -> R.string.cardAttribute_canAllowed
-            IdCardAttribute.PIN_MANAGEMENT -> R.string.cardAttribute_pinManagement
+        private fun attributeDescriptionID(attribute: EidAttribute): Int = when (attribute) {
+            EidAttribute.DG01 -> R.string.cardAttribute_dg01
+            EidAttribute.DG02 -> R.string.cardAttribute_dg02
+            EidAttribute.DG03 -> R.string.cardAttribute_dg03
+            EidAttribute.DG04 -> R.string.cardAttribute_dg04
+            EidAttribute.DG05 -> R.string.cardAttribute_dg05
+            EidAttribute.DG06 -> R.string.cardAttribute_dg06
+            EidAttribute.DG07 -> R.string.cardAttribute_dg07
+            EidAttribute.DG08 -> R.string.cardAttribute_dg08
+            EidAttribute.DG09 -> R.string.cardAttribute_dg09
+            EidAttribute.DG10 -> R.string.cardAttribute_dg10
+            EidAttribute.DG13 -> R.string.cardAttribute_dg13
+            EidAttribute.DG17 -> R.string.cardAttribute_dg17
+            EidAttribute.DG19 -> R.string.cardAttribute_dg19
+            EidAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
+            EidAttribute.DG18 -> R.string.cardAttribute_dg18
+            EidAttribute.DG20 -> R.string.cardAttribute_dg20
+            EidAttribute.PSEUDONYM -> R.string.cardAttribute_pseudonym
+            EidAttribute.ADDRESS_VERIFICATION -> R.string.cardAttribute_addressVerification
+            EidAttribute.WRITE_DG17 -> R.string.cardAttribute_dg17
+            EidAttribute.WRITE_DG18 -> R.string.cardAttribute_write_dg18
+            EidAttribute.WRITE_DG19 -> R.string.cardAttribute_write_dg19
+            EidAttribute.WRITE_DG20 -> R.string.cardAttribute_dg20
+            EidAttribute.CAN_ALLOWED -> R.string.cardAttribute_canAllowed
+            EidAttribute.PIN_MANAGEMENT -> R.string.cardAttribute_pinManagement
         }
 
         private val title = TestElement.Text(
@@ -777,7 +776,7 @@ sealed class TestScreen {
             formatArg = CertificateDescription.subjectName
         )
         private val body = TestElement.Text(testRule, resourceId = R.string.identification_attributeConsent_body)
-        private val readAttributes = IdCardAttribute.values().map {
+        private val readAttributes = EidAttribute.values().map {
             TestElement.Text(testRule, text = "\u2022 ${testRule.activity.getString(attributeDescriptionID(it))}")
         }
 

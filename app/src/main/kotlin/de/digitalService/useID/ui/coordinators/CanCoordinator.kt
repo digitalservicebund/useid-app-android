@@ -3,7 +3,7 @@ package de.digitalService.useID.ui.coordinators
 import de.digitalService.useID.flows.CanStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @Singleton
 class CanCoordinator @Inject constructor(
     private val navigator: Navigator,
-    private val idCardManager: IdCardManager,
+    private val eidInteractionManager: EidInteractionManager,
     private val flowStateMachine: CanStateMachine,
     private val coroutineContextProvider: CoroutineContextProviderType
 ) {
@@ -55,10 +55,10 @@ class CanCoordinator @Inject constructor(
                         is CanStateMachine.State.ChangePin.PinInput -> navigator.navigate(SetupCanTransportPinDestination(state.identificationPending))
                         is CanStateMachine.State.ChangePin.CanAndPinEntered -> {
                             navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
-                            idCardManager.provideCan(state.can)
+                            eidInteractionManager.provideCan(state.can)
                         }
-                        is CanStateMachine.State.ChangePin.FrameworkReadyForPinInput -> idCardManager.providePin(state.pin)
-                        is CanStateMachine.State.ChangePin.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.newPin)
+                        is CanStateMachine.State.ChangePin.FrameworkReadyForPinInput -> eidInteractionManager.providePin(state.pin)
+                        is CanStateMachine.State.ChangePin.FrameworkReadyForNewPinInput -> eidInteractionManager.provideNewPin(state.newPin)
 
                         is CanStateMachine.State.Ident.Intro -> navigator.navigate(IdentificationCanPinForgottenDestination)
                         is CanStateMachine.State.Ident.CanIntro -> navigator.navigate(IdentificationCanIntroDestination(!state.shortFlow))
@@ -71,9 +71,9 @@ class CanCoordinator @Inject constructor(
                         is CanStateMachine.State.Ident.PinInput -> navigator.navigate(IdentificationCanPinInputDestination)
                         is CanStateMachine.State.Ident.CanAndPinEntered -> {
                             navigator.popUpToOrNavigate(IdentificationScanDestination, true)
-                            idCardManager.provideCan(state.can)
+                            eidInteractionManager.provideCan(state.can)
                         }
-                        is CanStateMachine.State.Ident.FrameworkReadyForPinInput -> idCardManager.providePin(state.pin)
+                        is CanStateMachine.State.Ident.FrameworkReadyForPinInput -> eidInteractionManager.providePin(state.pin)
                         CanStateMachine.State.Invalid -> logger.debug("Ignoring transition to state INVALID.")
                     }
                 }
@@ -151,7 +151,7 @@ class CanCoordinator @Inject constructor(
     private fun handleEidEventsForIdent(pin: String?) {
         eIdEventFlowCoroutineScope?.cancel()
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-            idCardManager.eidFlow.catch { exception ->
+            eidInteractionManager.eidFlow.catch { exception ->
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
@@ -168,7 +168,7 @@ class CanCoordinator @Inject constructor(
     private fun handleEidEventsForPinChange(identificationPending: Boolean, pin: String, newPin: String, shortFlow: Boolean) {
         eIdEventFlowCoroutineScope?.cancel()
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-            idCardManager.eidFlow.catch { exception ->
+            eidInteractionManager.eidFlow.catch { exception ->
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {

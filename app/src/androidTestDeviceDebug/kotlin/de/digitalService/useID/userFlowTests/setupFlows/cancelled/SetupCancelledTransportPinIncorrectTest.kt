@@ -12,11 +12,11 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.TestScreen
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -48,7 +48,7 @@ class SetupCancelledTransportPinIncorrectTest {
     lateinit var trackerManager: TrackerManagerType
 
     @BindValue
-    val mockIdCardManager: IdCardManager = mockk(relaxed = true)
+    val mockEidInteractionManager: EidInteractionManager = mockk(relaxed = true)
 
     @BindValue
     val mockStorageManager: StorageManager = mockk(relaxed = true) {
@@ -72,7 +72,7 @@ class SetupCancelledTransportPinIncorrectTest {
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
+        every { mockEidInteractionManager.eidFlow } returns eidFlow
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(

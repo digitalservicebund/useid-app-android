@@ -4,7 +4,7 @@ import de.governikus.ausweisapp2.sdkwrapper.card.core.AccessRight
 
 // TR-03110 (Part 4), Section 2.2.3
 // TR-03127 (Anhang C)
-enum class IdCardAttribute {
+enum class EidAttribute {
     DG01,
     DG02,
     DG03,

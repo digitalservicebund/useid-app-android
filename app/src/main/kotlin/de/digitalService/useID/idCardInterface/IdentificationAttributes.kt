@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class IdentificationAttributes(
-    val requiredAttributes: List<IdCardAttribute>,
+    val requiredAttributes: List<EidAttribute>,
     val certificateDescription: CertificateDescription
 )

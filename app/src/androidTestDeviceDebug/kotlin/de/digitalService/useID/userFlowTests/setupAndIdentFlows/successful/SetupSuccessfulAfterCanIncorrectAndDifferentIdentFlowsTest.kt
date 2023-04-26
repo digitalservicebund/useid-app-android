@@ -14,12 +14,12 @@ import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.NfcInterfaceMangerModule
 import de.digitalService.useID.hilt.SingletonModule
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.*
 import de.digitalService.useID.userFlowTests.utils.flowParts.setup.runSetupSuccessfulAfterCanIncorrectOnceAndThenCorrect
 import de.digitalService.useID.util.*
@@ -59,7 +59,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
     lateinit var appCoordinator: AppCoordinatorType
 
     @BindValue
-    val mockIdCardManager: IdCardManager = mockk(relaxed = true)
+    val mockEidInteractionManager: EidInteractionManager = mockk(relaxed = true)
 
     @BindValue
     val mockStorageManager: StorageManager = mockk(relaxed = true) {
@@ -90,7 +90,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
+        every { mockEidInteractionManager.eidFlow } returns eidFlow
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(
@@ -130,7 +130,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
+        every { mockEidInteractionManager.eidFlow } returns eidFlow
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(
@@ -170,7 +170,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
+        every { mockEidInteractionManager.eidFlow } returns eidFlow
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(
@@ -210,7 +210,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
+        every { mockEidInteractionManager.eidFlow } returns eidFlow
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(
@@ -250,7 +250,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
+        every { mockEidInteractionManager.eidFlow } returns eidFlow
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(

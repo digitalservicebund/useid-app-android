@@ -7,7 +7,7 @@ import de.digitalService.useID.flows.ChangePinStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
 import de.digitalService.useID.util.CoroutineContextProviderType
@@ -26,7 +26,7 @@ class ChangePinCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     private val canCoordinator: CanCoordinator,
     private val navigator: Navigator,
-    private val idCardManager: IdCardManager,
+    private val eidInteractionManager: EidInteractionManager,
     private val flowStateMachine: ChangePinStateMachine,
     private val canStateMachine: CanStateMachine,
     private val coroutineContextProvider: CoroutineContextProviderType
@@ -77,11 +77,11 @@ class ChangePinCoordinator @Inject constructor(
                             navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
                         }
                         is ChangePinStateMachine.State.ReadyForSubsequentScan -> {
-                            idCardManager.providePin(state.oldPin)
+                            eidInteractionManager.providePin(state.oldPin)
                             navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
                         }
-                        is ChangePinStateMachine.State.FrameworkReadyForPinInput -> idCardManager.providePin(state.oldPin)
-                        is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> idCardManager.provideNewPin(state.newPin)
+                        is ChangePinStateMachine.State.FrameworkReadyForPinInput -> eidInteractionManager.providePin(state.oldPin)
+                        is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> eidInteractionManager.provideNewPin(state.newPin)
                         is ChangePinStateMachine.State.CanRequested -> startCanFlow(state.identificationPending, state.oldPin, state.newPin, state.shortFlow)
                         is ChangePinStateMachine.State.OldTransportPinRetry -> navigator.navigate(SetupTransportPinDestination(true, state.identificationPending))
                         is ChangePinStateMachine.State.OldPersonalPinRetry -> throw NotImplementedError()
@@ -178,15 +178,15 @@ class ChangePinCoordinator @Inject constructor(
         _scanInProgress.value = false
         eIdEventFlowCoroutineScope?.cancel()
         canEventFlowCoroutineScope?.cancel()
-        idCardManager.cancelTask()
+        eidInteractionManager.cancelTask()
     }
 
     private fun executePinChange() {
         eIdEventFlowCoroutineScope?.cancel()
-        idCardManager.cancelTask()
+        eidInteractionManager.cancelTask()
 
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-            idCardManager.eidFlow.catch { exception ->
+            eidInteractionManager.eidFlow.catch { exception ->
                 logger.error("Error: $exception")
             }.collect { event ->
                 when (event) {
@@ -201,9 +201,6 @@ class ChangePinCoordinator @Inject constructor(
                     EidInteractionEvent.CardRemoved -> {
                         logger.debug("Card removed.")
                         _scanInProgress.value = false
-                    }
-                    EidInteractionEvent.CardInteractionCompleted -> {
-                        logger.debug("Card interaction complete.")
                     }
                     EidInteractionEvent.PinChangeSucceeded -> {
                         logger.debug("Process completed successfully.")
@@ -246,6 +243,6 @@ class ChangePinCoordinator @Inject constructor(
             }
         }
 
-        idCardManager.changePin(context)
+        eidInteractionManager.changePin(context)
     }
 }

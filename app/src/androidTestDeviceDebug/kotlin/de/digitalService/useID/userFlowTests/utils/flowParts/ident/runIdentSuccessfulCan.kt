@@ -6,7 +6,7 @@ import android.content.Intent
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCan
 import de.digitalService.useID.util.ComposeTestRule
 import de.digitalService.useID.util.performPinInput

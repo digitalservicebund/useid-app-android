@@ -12,7 +12,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.ConfigModule
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
     private val logger by getLogger()
 
     @Inject
-    lateinit var idCardManager: IdCardManager
+    lateinit var eidInteractionManager: EidInteractionManager
 
     @Inject
     lateinit var appCoordinator: AppCoordinatorType
@@ -121,7 +121,7 @@ class MainActivity : ComponentActivity() {
             NfcAdapter.ACTION_TAG_DISCOVERED -> {
                 intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)?.let {
                     try {
-                        idCardManager.handleNfcTag(it)
+                        eidInteractionManager.handleNfcTag(it)
                     } catch (e: IOException) {
                         logger.error("IDCardManager failed to handle NFC tag.")
                     }

@@ -6,7 +6,6 @@ sealed class EidInteractionEvent {
     class Error(val exception: IdCardInteractionException) : EidInteractionEvent()
 
     object CardInsertionRequested : EidInteractionEvent()
-    object CardInteractionCompleted : EidInteractionEvent() //todo remove
     object CardRecognized : EidInteractionEvent()
     object CardRemoved : EidInteractionEvent()
     class CanRequested : EidInteractionEvent() // this needs to be class so that it can be posted to the same flow multiple times in a row

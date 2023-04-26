@@ -12,7 +12,7 @@ import de.digitalService.useID.flows.IdentificationStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.idCardInterface.IdentificationAttributes
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
@@ -32,7 +32,7 @@ class IdentificationCoordinator @Inject constructor(
     @ApplicationContext private val context: Context,
     private val canCoordinator: CanCoordinator,
     private val navigator: Navigator,
-    private val idCardManager: IdCardManager,
+    private val eidInteractionManager: EidInteractionManager,
     private val storageManager: StorageManagerType,
     private val trackerManager: TrackerManagerType,
     private val flowStateMachine: IdentificationStateMachine,
@@ -70,17 +70,17 @@ class IdentificationCoordinator @Inject constructor(
                         is IdentificationStateMachine.State.StartIdentification -> executeIdentification(state.tcTokenUrl)
                         is IdentificationStateMachine.State.FetchingMetadata -> navigator.popUpToOrNavigate(IdentificationFetchMetadataDestination(state.backingDownAllowed), false)
                         is IdentificationStateMachine.State.FetchingMetadataFailed -> navigator.navigate(IdentificationOtherErrorDestination)
-                        is IdentificationStateMachine.State.RequestCertificate -> idCardManager.getCertificate()
+                        is IdentificationStateMachine.State.RequestCertificate -> eidInteractionManager.getCertificate()
                         is IdentificationStateMachine.State.CertificateDescriptionReceived ->
                             navigator.navigatePopping(IdentificationAttributeConsentDestination(IdentificationAttributes(state.authenticationRequest.requiredAttributes, state.certificateDescription), state.backingDownAllowed))
                         is IdentificationStateMachine.State.PinInput -> navigator.navigate(IdentificationPersonalPinDestination(false))
                         is IdentificationStateMachine.State.PinInputRetry -> navigator.navigate(IdentificationPersonalPinDestination(true))
                         is IdentificationStateMachine.State.PinEntered -> {
                             navigator.popUpToOrNavigate(IdentificationScanDestination, false)
-                            if (state.firstTime) idCardManager.acceptAccessRights() else idCardManager.providePin(state.pin)
+                            if (state.firstTime) eidInteractionManager.acceptAccessRights() else eidInteractionManager.providePin(state.pin)
                         }
                         is IdentificationStateMachine.State.CanRequested -> startCanFlow(state.pin)
-                        is IdentificationStateMachine.State.PinRequested -> idCardManager.providePin(state.pin)
+                        is IdentificationStateMachine.State.PinRequested -> eidInteractionManager.providePin(state.pin)
                         is IdentificationStateMachine.State.Finished -> finishIdentification(state.redirectUrl)
 
                         is IdentificationStateMachine.State.CardDeactivated -> navigator.navigate(IdentificationCardDeactivatedDestination)
@@ -169,17 +169,17 @@ class IdentificationCoordinator @Inject constructor(
         _scanInProgress.value = false
         eIdEventFlowCoroutineScope?.cancel()
         canEventFlowCoroutineScope?.cancel()
-        idCardManager.cancelTask()
+        eidInteractionManager.cancelTask()
         flowStateMachine.transition(IdentificationStateMachine.Event.Invalidate)
     }
 
     private fun executeIdentification(tcTokenUrl: Uri) {
         eIdEventFlowCoroutineScope?.cancel()
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
-            idCardManager.eidFlow.catch { exception ->
+            eidInteractionManager.eidFlow.catch { exception ->
                 logger.error("Error: $exception")
                 _scanInProgress.value = false
-                idCardManager.cancelTask()
+                eidInteractionManager.cancelTask()
                 navigator.navigate(IdentificationOtherErrorDestination)
             }.collect { event ->
                 when (event) {
@@ -239,6 +239,6 @@ class IdentificationCoordinator @Inject constructor(
             }
         }
 
-        idCardManager.identify(context, tcTokenUrl)
+        eidInteractionManager.identify(context, tcTokenUrl)
     }
 }

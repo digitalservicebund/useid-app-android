@@ -19,7 +19,7 @@ import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.TestScreen
 import de.digitalService.useID.userFlowTests.utils.flowParts.ident.helper.runIdentUpToCanAfterSomeTime
 import de.digitalService.useID.util.*
 import io.mockk.every
@@ -56,7 +56,7 @@ class IdentCanAfterSomeTimeCardBlockedAfterCanAndPinIncorrectTest {
     lateinit var appCoordinator: AppCoordinatorType
 
     @BindValue
-    val mockIdCardManager: IdCardManager = mockk(relaxed = true)
+    val mockEidInteractionManager: EidInteractionManager = mockk(relaxed = true)
 
     @BindValue
     val mockStorageManager: StorageManager = mockk(relaxed = true) {
@@ -85,7 +85,7 @@ class IdentCanAfterSomeTimeCardBlockedAfterCanAndPinIncorrectTest {
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
         val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
-        every { mockIdCardManager.eidFlow } returns eidFlow
+        every { mockEidInteractionManager.eidFlow } returns eidFlow
 
         composeTestRule.activity.setContentUsingUseIdTheme {
             UseIDApp(

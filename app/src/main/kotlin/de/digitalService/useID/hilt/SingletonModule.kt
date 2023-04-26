@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import de.digitalService.useID.idCardInterface.IdCardManager
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.util.CoroutineContextProvider
 import javax.inject.Singleton
 
@@ -13,5 +13,5 @@ import javax.inject.Singleton
 class SingletonModule {
     @Provides
     @Singleton
-    fun provideIDCardManager(coroutineContextProvider: CoroutineContextProvider) = IdCardManager(coroutineContextProvider)
+    fun provideIDCardManager(coroutineContextProvider: CoroutineContextProvider) = EidInteractionManager(coroutineContextProvider)
 }

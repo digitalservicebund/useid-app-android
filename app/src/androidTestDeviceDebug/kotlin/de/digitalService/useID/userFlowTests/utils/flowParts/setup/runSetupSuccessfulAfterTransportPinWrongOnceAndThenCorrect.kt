@@ -1,7 +1,7 @@
 package de.digitalService.useID.userFlowTests.utils.flowParts.setup
 
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+import de.digitalService.useID.userFlowTests.utils.TestScreen
 import de.digitalService.useID.util.ComposeTestRule
 import de.digitalService.useID.util.performPinInput
 import de.digitalService.useID.util.pressReturn

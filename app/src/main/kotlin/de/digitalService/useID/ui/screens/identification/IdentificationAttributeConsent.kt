@@ -303,31 +303,31 @@ class IdentificationAttributeConsentViewModel @Inject constructor(
         }
     }
 
-    private fun attributeDescriptionID(idCardAttribute: IdCardAttribute): Int = when (idCardAttribute) {
-        IdCardAttribute.DG01 -> R.string.cardAttribute_dg01
-        IdCardAttribute.DG02 -> R.string.cardAttribute_dg02
-        IdCardAttribute.DG03 -> R.string.cardAttribute_dg03
-        IdCardAttribute.DG04 -> R.string.cardAttribute_dg04
-        IdCardAttribute.DG05 -> R.string.cardAttribute_dg05
-        IdCardAttribute.DG06 -> R.string.cardAttribute_dg06
-        IdCardAttribute.DG07 -> R.string.cardAttribute_dg07
-        IdCardAttribute.DG08 -> R.string.cardAttribute_dg08
-        IdCardAttribute.DG09 -> R.string.cardAttribute_dg09
-        IdCardAttribute.DG10 -> R.string.cardAttribute_dg10
-        IdCardAttribute.DG13 -> R.string.cardAttribute_dg13
-        IdCardAttribute.DG17 -> R.string.cardAttribute_dg17
-        IdCardAttribute.DG18 -> R.string.cardAttribute_dg18
-        IdCardAttribute.DG19 -> R.string.cardAttribute_dg19
-        IdCardAttribute.DG20 -> R.string.cardAttribute_dg20
-        IdCardAttribute.PSEUDONYM -> R.string.cardAttribute_pseudonym
-        IdCardAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
-        IdCardAttribute.ADDRESS_VERIFICATION -> R.string.cardAttribute_addressVerification
-        IdCardAttribute.WRITE_DG17 -> R.string.cardAttribute_write_dg17
-        IdCardAttribute.WRITE_DG18 -> R.string.cardAttribute_write_dg18
-        IdCardAttribute.WRITE_DG19 -> R.string.cardAttribute_write_dg19
-        IdCardAttribute.WRITE_DG20 -> R.string.cardAttribute_write_dg20
-        IdCardAttribute.CAN_ALLOWED -> R.string.cardAttribute_canAllowed
-        IdCardAttribute.PIN_MANAGEMENT -> R.string.cardAttribute_pinManagement
+    private fun attributeDescriptionID(eidAttribute: EidAttribute): Int = when (eidAttribute) {
+        EidAttribute.DG01 -> R.string.cardAttribute_dg01
+        EidAttribute.DG02 -> R.string.cardAttribute_dg02
+        EidAttribute.DG03 -> R.string.cardAttribute_dg03
+        EidAttribute.DG04 -> R.string.cardAttribute_dg04
+        EidAttribute.DG05 -> R.string.cardAttribute_dg05
+        EidAttribute.DG06 -> R.string.cardAttribute_dg06
+        EidAttribute.DG07 -> R.string.cardAttribute_dg07
+        EidAttribute.DG08 -> R.string.cardAttribute_dg08
+        EidAttribute.DG09 -> R.string.cardAttribute_dg09
+        EidAttribute.DG10 -> R.string.cardAttribute_dg10
+        EidAttribute.DG13 -> R.string.cardAttribute_dg13
+        EidAttribute.DG17 -> R.string.cardAttribute_dg17
+        EidAttribute.DG18 -> R.string.cardAttribute_dg18
+        EidAttribute.DG19 -> R.string.cardAttribute_dg19
+        EidAttribute.DG20 -> R.string.cardAttribute_dg20
+        EidAttribute.PSEUDONYM -> R.string.cardAttribute_pseudonym
+        EidAttribute.AGE_VERIFICATION -> R.string.cardAttribute_ageVerification
+        EidAttribute.ADDRESS_VERIFICATION -> R.string.cardAttribute_addressVerification
+        EidAttribute.WRITE_DG17 -> R.string.cardAttribute_write_dg17
+        EidAttribute.WRITE_DG18 -> R.string.cardAttribute_write_dg18
+        EidAttribute.WRITE_DG19 -> R.string.cardAttribute_write_dg19
+        EidAttribute.WRITE_DG20 -> R.string.cardAttribute_write_dg20
+        EidAttribute.CAN_ALLOWED -> R.string.cardAttribute_canAllowed
+        EidAttribute.PIN_MANAGEMENT -> R.string.cardAttribute_pinManagement
     }
 }
 

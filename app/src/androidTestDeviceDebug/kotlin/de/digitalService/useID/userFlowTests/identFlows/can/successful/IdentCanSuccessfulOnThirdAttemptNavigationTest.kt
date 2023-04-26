@@ -24,7 +24,7 @@
 //import de.digitalService.useID.ui.UseIDApp
 //import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 //import de.digitalService.useID.ui.navigation.Navigator
-//import de.digitalService.useID.userFlowTests.setupFlows.TestScreen
+//import de.digitalService.useID.userFlowTests.utils.TestScreen
 //import de.digitalService.useID.util.*
 //import io.mockk.every
 //import io.mockk.mockk
