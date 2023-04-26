@@ -69,6 +69,7 @@
 //    @Test
 //    fun testSetupSuccessfulNavigation() = runTest {
 //        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+//        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 //
 //        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
 //        every { mockIdCardManager.eidFlow } returns eidFlow
@@ -97,34 +98,39 @@
 //        val resetPersonalPin = TestScreen.ResetPersonalPin(composeTestRule)
 //
 //        home.assertIsDisplayed()
-//        home.setupIdBtn.click()
+//        home.setupButton.click()
+//        advanceUntilIdle()
 //
 //        setupIntro.assertIsDisplayed()
 //        setupIntro.setupIdBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPinLetter.assertIsDisplayed()
 //        setupPinLetter.back.click()
+//        advanceUntilIdle()
 //
 //        setupIntro.assertIsDisplayed()
 //        setupIntro.setupIdBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPinLetter.assertIsDisplayed()
 //        setupPinLetter.noLetterBtn.click()
+//        advanceUntilIdle()
 //
 //        resetPersonalPin.assertIsDisplayed()
 //        resetPersonalPin.back.click()
+//        advanceUntilIdle()
 //
 //        setupPinLetter.assertIsDisplayed()
 //        setupPinLetter.letterPresentBtn.click()
-//
 //        advanceUntilIdle()
 //
 //        setupTransportPin.assertIsDisplayed()
 //        setupTransportPin.back.click()
+//        advanceUntilIdle()
 //
 //        setupPinLetter.assertIsDisplayed()
 //        setupPinLetter.letterPresentBtn.click()
-//
 //        advanceUntilIdle()
 //
 //        setupTransportPin.assertIsDisplayed()
@@ -132,10 +138,10 @@
 //        composeTestRule.performPinInput(transportPin)
 //        setupTransportPin.transportPinField.assertLength(transportPin.length)
 //        setupTransportPin.back.click()
+//        advanceUntilIdle()
 //
 //        setupPinLetter.assertIsDisplayed()
 //        setupPinLetter.letterPresentBtn.click()
-//
 //        advanceUntilIdle()
 //
 //        setupTransportPin.assertIsDisplayed()
@@ -143,82 +149,103 @@
 //        composeTestRule.performPinInput(transportPin)
 //        setupTransportPin.transportPinField.assertLength(transportPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinIntro.assertIsDisplayed()
 //        setupPersonalPinIntro.back.click()
+//        advanceUntilIdle()
 //
 //        setupTransportPin.assertIsDisplayed()
 //        setupTransportPin.transportPinField.assertLength(transportPin.length) // TODO: Input should be stored. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinIntro.assertIsDisplayed()
 //        setupPersonalPinIntro.continueBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinInput.assertIsDisplayed()
 //        setupPersonalPinInput.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
 //        setupPersonalPinInput.back.click()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinIntro.assertIsDisplayed()
 //        setupPersonalPinIntro.continueBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinInput.assertIsDisplayed()
 //        setupPersonalPinInput.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinConfirm.assertIsDisplayed()
 //        setupPersonalPinConfirm.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
 //        setupPersonalPinConfirm.back.click()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinInput.assertIsDisplayed()
 //        setupPersonalPinInput.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinConfirm.assertIsDisplayed()
 //        setupPersonalPinConfirm.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+//        eidFlow.value = EidInteractionEvent.CardInsertionRequested
 //        advanceUntilIdle()
 //
 //        setupScan.assertIsDisplayed()
 //
 //        setupScan.back.click()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinInput.assertIsDisplayed()
 //        setupPersonalPinInput.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinConfirm.assertIsDisplayed()
 //        setupPersonalPinConfirm.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+//        eidFlow.value = EidInteractionEvent.CardInsertionRequested
 //        advanceUntilIdle()
 //
 //        setupScan.assertIsDisplayed()
 //
 //        setupScan.nfcHelpBtn.click()
+//        advanceUntilIdle()
+//
 //        setupScan.nfcDialog.assertIsDisplayed()
 //        setupScan.nfcDialog.dismiss()
+//        advanceUntilIdle()
+//
 //        setupScan.assertIsDisplayed()
 //
 //        setupScan.scanHelpBtn.click()
+//        advanceUntilIdle()
+//
 //        setupScan.helpDialog.assertIsDisplayed()
 //        setupScan.helpDialog.dismiss()
+//        advanceUntilIdle()
+//
 //        setupScan.assertIsDisplayed()
 //
 //        eidFlow.value = EidInteractionEvent.CardRecognized
@@ -226,14 +253,18 @@
 //
 //        setupScan.setProgress(true).assertIsDisplayed()
 //
-//        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+//        eidFlow.value = EidInteractionEvent.PinRequested(3)
 //        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+//        eidFlow.value = EidInteractionEvent.NewPinRequested
+//        advanceUntilIdle()
+//
+//        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
 //        advanceUntilIdle()
 //
 //        setupFinish.assertIsDisplayed()
 //        setupFinish.cancel.click()
+//        advanceUntilIdle()
 //
 //        home.assertIsDisplayed()
 //    }

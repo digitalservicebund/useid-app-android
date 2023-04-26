@@ -125,7 +125,7 @@ class SetupCanAfterSomeTimeSuccessfulAfterCanIncorrectAndThenCorrectTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CanRequested
+        eidFlow.value = EidInteractionEvent.CanRequested()
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved

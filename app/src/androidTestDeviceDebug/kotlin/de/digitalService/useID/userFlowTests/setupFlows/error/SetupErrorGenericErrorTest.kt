@@ -70,6 +70,7 @@
 //    @Test
 //    fun testSetupErrorGenericError() = runTest {
 //        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+//        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 //
 //        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
 //        every { mockIdCardManager.eidFlow } returns eidFlow
@@ -98,14 +99,15 @@
 //        val home = TestScreen.Home(composeTestRule)
 //
 //        home.assertIsDisplayed()
-//        home.setupIdBtn.click()
+//        home.setupButton.click()
+//        advanceUntilIdle()
 //
 //        setupIntro.assertIsDisplayed()
 //        setupIntro.setupIdBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPinLetter.assertIsDisplayed()
 //        setupPinLetter.letterPresentBtn.click()
-//
 //        advanceUntilIdle()
 //
 //        setupTransportPin.assertIsDisplayed()
@@ -113,23 +115,27 @@
 //        composeTestRule.performPinInput(transportPin)
 //        setupTransportPin.transportPinField.assertLength(transportPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinIntro.assertIsDisplayed()
 //        setupPersonalPinIntro.continueBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinInput.assertIsDisplayed()
 //        setupPersonalPinInput.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinConfirm.assertIsDisplayed()
 //        setupPersonalPinConfirm.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+//        eidFlow.value = EidInteractionEvent.CardInsertionRequested
 //        advanceUntilIdle()
 //
 //        setupScan.assertIsDisplayed()
@@ -144,8 +150,9 @@
 //
 //        errorGenericError.assertIsDisplayed() // TODO: This should be displayed. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
 //        errorGenericError.closeBtn.click()
+//        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+//        eidFlow.value = EidInteractionEvent.CardInsertionRequested
 //        advanceUntilIdle()
 //
 //        setupScan.setProgress(false).setBackAllowed(false).assertIsDisplayed()
@@ -160,8 +167,9 @@
 //
 //        errorGenericError.assertIsDisplayed()
 //        errorGenericError.cancel.click()
+//        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+//        eidFlow.value = EidInteractionEvent.CardInsertionRequested
 //        advanceUntilIdle()
 //
 //        setupScan.setProgress(false).assertIsDisplayed()
@@ -171,14 +179,18 @@
 //
 //        setupScan.setProgress(true).assertIsDisplayed()
 //
-//        eidFlow.value = EidInteractionEvent.RequestChangedPin(null) {_, _ -> }
+//        eidFlow.value = EidInteractionEvent.PinRequested(3)
 //        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
+//        eidFlow.value = EidInteractionEvent.NewPinRequested
+//        advanceUntilIdle()
+//
+//        eidFlow.value = EidInteractionEvent.PinChangeSucceeded
 //        advanceUntilIdle()
 //
 //        setupFinish.assertIsDisplayed()
 //        setupFinish.finishSetupBtn.click()
+//        advanceUntilIdle()
 //
 //        home.assertIsDisplayed()
 //    }

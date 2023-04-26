@@ -155,7 +155,7 @@ class SetupCanErrorCardBlockedAfterTransportPinAndCanIncorrectTest {
         eidFlow.value = EidInteractionEvent.CardRemoved
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.CanRequested
+        eidFlow.value = EidInteractionEvent.CanRequested()
         advanceUntilIdle()
 
         // ENTER CORRECT CAN
@@ -181,7 +181,7 @@ class SetupCanErrorCardBlockedAfterTransportPinAndCanIncorrectTest {
         eidFlow.value = EidInteractionEvent.PukRequested
         advanceUntilIdle()
 
-        setupErrorCardBlocked.assertIsDisplayed() // TODO: This error screen should be displayed. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
+        setupErrorCardBlocked.assertIsDisplayed()
         setupErrorCardBlocked.cancel.click()
         advanceUntilIdle()
 

@@ -75,7 +75,7 @@ fun runIdentSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.CanRequested
+    eidFlow.value = EidInteractionEvent.CanRequested()
     testScope.advanceUntilIdle()
 
     Intents.intending(

@@ -72,7 +72,7 @@ fun runSetupUpToCanAfterSomeTime(withWrongTransportPin: Boolean, testRule: Compo
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.CanRequested
+    eidFlow.value = EidInteractionEvent.CanRequested()
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved

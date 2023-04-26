@@ -171,7 +171,7 @@ class IdentCanSuccessfulAfterNavigatingBackOnCanRetryTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.CanRequested
+        eidFlow.value = EidInteractionEvent.CanRequested()
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved

@@ -71,6 +71,7 @@
 //    @Test
 //    fun testSetupErrorCardUnreadable() = runTest {
 //        every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
+//        every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 //
 //        val eidFlow = MutableStateFlow<EidInteractionEvent>(EidInteractionEvent.Idle)
 //        every { mockIdCardManager.eidFlow } returns eidFlow
@@ -99,14 +100,15 @@
 //        val home = TestScreen.Home(composeTestRule)
 //
 //        home.assertIsDisplayed()
-//        home.setupIdBtn.click()
+//        home.setupButton.click()
+//        advanceUntilIdle()
 //
 //        setupIntro.assertIsDisplayed()
 //        setupIntro.setupIdBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPinLetter.assertIsDisplayed()
 //        setupPinLetter.letterPresentBtn.click()
-//
 //        advanceUntilIdle()
 //
 //        setupTransportPin.assertIsDisplayed()
@@ -114,23 +116,27 @@
 //        composeTestRule.performPinInput(transportPin)
 //        setupTransportPin.transportPinField.assertLength(transportPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinIntro.assertIsDisplayed()
 //        setupPersonalPinIntro.continueBtn.click()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinInput.assertIsDisplayed()
 //        setupPersonalPinInput.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinInput.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
 //        setupPersonalPinConfirm.assertIsDisplayed()
 //        setupPersonalPinConfirm.personalPinField.assertLength(0)
 //        composeTestRule.performPinInput(personalPin)
 //        setupPersonalPinConfirm.personalPinField.assertLength(personalPin.length)
 //        composeTestRule.pressReturn()
+//        advanceUntilIdle()
 //
-//        eidFlow.value = EidInteractionEvent.RequestCardInsertion
+//        eidFlow.value = EidInteractionEvent.CardInsertionRequested
 //        advanceUntilIdle()
 //
 //        setupScan.assertIsDisplayed()

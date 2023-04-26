@@ -95,7 +95,7 @@ fun runIdentUpToCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidInte
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.CanRequested
+    eidFlow.value = EidInteractionEvent.CanRequested()
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved

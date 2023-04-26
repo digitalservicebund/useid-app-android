@@ -69,7 +69,7 @@ fun runIdentUpToCanAfterSomeTime(withWrongPersonalPin: Boolean, testRule: Compos
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.CanRequested
+    eidFlow.value = EidInteractionEvent.CanRequested()
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved

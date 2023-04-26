@@ -142,7 +142,7 @@ class SetupCanErrorCardBlockedAfterTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.CardInsertionRequested
         advanceUntilIdle()
 
-        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed() //todo should show back button, not cancel button, right?
+        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
@@ -152,7 +152,7 @@ class SetupCanErrorCardBlockedAfterTransportPinIncorrectTest {
         eidFlow.value = EidInteractionEvent.PukRequested
         advanceUntilIdle()
 
-        setupErrorCardBlocked.assertIsDisplayed() // TODO: This error screen should be displayed. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
+        setupErrorCardBlocked.assertIsDisplayed()
         setupErrorCardBlocked.closeBtn.click()
         advanceUntilIdle()
 

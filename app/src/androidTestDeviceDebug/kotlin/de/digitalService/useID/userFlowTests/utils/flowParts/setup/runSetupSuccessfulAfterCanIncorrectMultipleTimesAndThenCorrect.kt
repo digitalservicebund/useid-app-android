@@ -78,7 +78,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.CanRequested
+    eidFlow.value = EidInteractionEvent.CanRequested()
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
@@ -101,7 +101,7 @@ fun runSetupSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
 
     setupScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.CanRequested
+    eidFlow.value = EidInteractionEvent.CanRequested()
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved

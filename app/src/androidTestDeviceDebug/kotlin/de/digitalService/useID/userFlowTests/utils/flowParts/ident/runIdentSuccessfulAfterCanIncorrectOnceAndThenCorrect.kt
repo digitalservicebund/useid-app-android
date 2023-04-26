@@ -77,7 +77,7 @@ fun runIdentSuccessfulAfterCanIncorrectOnceAndThenCorrect(testRule: ComposeTestR
 
     identificationScan.setProgress(true).assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.CanRequested
+    eidFlow.value = EidInteractionEvent.CanRequested()
     testScope.advanceUntilIdle()
 
     eidFlow.value = EidInteractionEvent.CardRemoved
