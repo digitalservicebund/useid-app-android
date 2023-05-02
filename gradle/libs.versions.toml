@@ -53,7 +53,7 @@ junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", vers
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
 kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
-logback-android = "com.github.tony19:logback-android:2.0.1"
+logback-android = "com.github.tony19:logback-android:3.0.0"
 lottie-compose = "com.airbnb.android:lottie-compose:6.0.0"
 matomo-sdk-android = "com.github.matomo-org:matomo-sdk-android:5c6b715"
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
@@ -62,7 +62,7 @@ mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
 openecard-android = "org.openecard.clients:android-lib:2.1.6"
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry" }
 sentry-compose-android = { module = "io.sentry:sentry-compose-android", version.ref = "sentry" }
-slf4j-api = "org.slf4j:slf4j-api:2.0.6"
+slf4j-api = "org.slf4j:slf4j-api:2.0.7"
 unleash = "io.getunleash:unleash-android-proxy-sdk:0.5.0"
 xerces = "xerces:xercesImpl:2.12.2"
 
