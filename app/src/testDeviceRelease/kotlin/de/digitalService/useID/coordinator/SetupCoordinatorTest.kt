@@ -32,7 +32,7 @@ class SetupCoordinatorTest {
     lateinit var mockNavigator: Navigator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockPinManagementCoordinator: PinManagementCoordinator
+    lateinit var mockPinManagementCoordinator: ChangePinCoordinator
 
     @MockK(relaxUnitFun = true)
     lateinit var mockIdentificationCoordinator: IdentificationCoordinator
@@ -79,7 +79,7 @@ class SetupCoordinatorTest {
     fun singleStateObservation() = runTest {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -102,7 +102,7 @@ class SetupCoordinatorTest {
         private fun testTransition(event: SetupStateMachine.Event, state: SetupStateMachine.State, testScope: TestScope) {
             val setupCoordinator = SetupCoordinator(
                 navigator = mockNavigator,
-                pinManagementCoordinator = mockPinManagementCoordinator,
+                changePinCoordinator = mockPinManagementCoordinator,
                 identificationCoordinator = mockIdentificationCoordinator,
                 storageManager = mockStorageManager,
                 flowStateMachine = mockSetupStateMachine,
@@ -159,7 +159,7 @@ class SetupCoordinatorTest {
             testTransition(SetupStateMachine.Event.Invalidate, newState, this)
             advanceUntilIdle()
 
-            verify { mockPinManagementCoordinator.startPinManagement(true, true) }
+            verify { mockPinManagementCoordinator.startPinChange(true, true) }
         }
 
         @Test
@@ -169,7 +169,7 @@ class SetupCoordinatorTest {
             testTransition(SetupStateMachine.Event.Invalidate, newState, this)
             advanceUntilIdle()
 
-            verify { mockPinManagementCoordinator.startPinManagement(false, true) }
+            verify { mockPinManagementCoordinator.startPinChange(false, true) }
         }
 
         @Test
@@ -236,7 +236,7 @@ class SetupCoordinatorTest {
 
             val setupCoordinator = SetupCoordinator(
                 navigator = mockNavigator,
-                pinManagementCoordinator = mockPinManagementCoordinator,
+                changePinCoordinator = mockPinManagementCoordinator,
                 identificationCoordinator = mockIdentificationCoordinator,
                 storageManager = mockStorageManager,
                 flowStateMachine = mockSetupStateMachine,
@@ -277,7 +277,7 @@ class SetupCoordinatorTest {
     fun `show setup intro with ident`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -298,7 +298,7 @@ class SetupCoordinatorTest {
     fun `start setup ID card`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -314,7 +314,7 @@ class SetupCoordinatorTest {
     fun `start PIN management`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -330,7 +330,7 @@ class SetupCoordinatorTest {
     fun `handle PIN management cancelled`() = runTest {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -339,7 +339,7 @@ class SetupCoordinatorTest {
         setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.CANCELLED)
-        every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow
+        every { mockPinManagementCoordinator.startPinChange(any(), any()) } returns subCoordinatorStateFlow
 
         val newState = SetupStateMachine.State.PinManagement(null)
         stateFlow.value = Pair(SetupStateMachine.Event.Invalidate, newState)
@@ -355,7 +355,7 @@ class SetupCoordinatorTest {
     fun `handle PIN management backed down`() = runTest {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -364,7 +364,7 @@ class SetupCoordinatorTest {
         setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.BACKED_DOWN)
-        every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow
+        every { mockPinManagementCoordinator.startPinChange(any(), any()) } returns subCoordinatorStateFlow
 
         val newState = SetupStateMachine.State.PinManagement(null)
         stateFlow.value = Pair(SetupStateMachine.Event.Invalidate, newState)
@@ -377,7 +377,7 @@ class SetupCoordinatorTest {
     fun `handle PIN management finished`() = runTest {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -386,7 +386,7 @@ class SetupCoordinatorTest {
         setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.FINISHED)
-        every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow
+        every { mockPinManagementCoordinator.startPinChange(any(), any()) } returns subCoordinatorStateFlow
 
         val newState = SetupStateMachine.State.PinManagement(null)
         stateFlow.value = Pair(SetupStateMachine.Event.Invalidate, newState)
@@ -399,7 +399,7 @@ class SetupCoordinatorTest {
     fun `handle PIN management skipped`() = runTest {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -408,7 +408,7 @@ class SetupCoordinatorTest {
         setupCoordinator.showSetupIntro(null)
 
         val subCoordinatorStateFlow = MutableStateFlow(SubCoordinatorState.SKIPPED)
-        every { mockPinManagementCoordinator.startPinManagement(any(), any()) } returns subCoordinatorStateFlow
+        every { mockPinManagementCoordinator.startPinChange(any(), any()) } returns subCoordinatorStateFlow
 
         val newState = SetupStateMachine.State.PinManagement(null)
         stateFlow.value = Pair(SetupStateMachine.Event.Invalidate, newState)
@@ -424,7 +424,7 @@ class SetupCoordinatorTest {
     fun `setup without PIN letter`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -440,7 +440,7 @@ class SetupCoordinatorTest {
     fun `on back`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -456,7 +456,7 @@ class SetupCoordinatorTest {
     fun `skip setup`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -472,7 +472,7 @@ class SetupCoordinatorTest {
     fun `confirm already set up`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -488,7 +488,7 @@ class SetupCoordinatorTest {
     fun `confirmed finished setup`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,
@@ -504,7 +504,7 @@ class SetupCoordinatorTest {
     fun `cancel setup`() {
         val setupCoordinator = SetupCoordinator(
             navigator = mockNavigator,
-            pinManagementCoordinator = mockPinManagementCoordinator,
+            changePinCoordinator = mockPinManagementCoordinator,
             identificationCoordinator = mockIdentificationCoordinator,
             storageManager = mockStorageManager,
             flowStateMachine = mockSetupStateMachine,

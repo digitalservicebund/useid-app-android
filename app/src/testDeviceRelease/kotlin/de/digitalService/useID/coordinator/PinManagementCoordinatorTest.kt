@@ -3,13 +3,12 @@ package de.digitalService.useID.coordinator
 import android.content.Context
 import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
-import de.digitalService.useID.analytics.IssueTrackerManager
 import de.digitalService.useID.flows.*
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
-import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.coordinators.SubCoordinatorState
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
@@ -30,11 +29,10 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import org.openecard.mobile.activation.ActivationResultCode
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MockKExtension::class)
-class PinManagementCoordinatorTest {
+class ChangePinCoordinatorTest {
 
     @MockK(relaxUnitFun = true)
     lateinit var mockContext: Context
@@ -46,10 +44,10 @@ class PinManagementCoordinatorTest {
     lateinit var mockNavigator: Navigator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockIdCardManager: IdCardManager
+    lateinit var mockEidInteractionManager: EidInteractionManager
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockPinManagementStateMachine: PinManagementStateMachine
+    lateinit var mockChangePinStateMachine: ChangePinStateMachine
 
     @MockK(relaxUnitFun = true)
     lateinit var mockCanStateMachine: CanStateMachine
@@ -64,11 +62,11 @@ class PinManagementCoordinatorTest {
     private val navigationPoppingDestinationSlot = slot<Direction>()
     private val navigationPopUpToOrNavigateDestinationSlot = slot<Direction>()
 
-    val stateFlow: MutableStateFlow<Pair<PinManagementStateMachine.Event, PinManagementStateMachine.State>> = MutableStateFlow(Pair(
-        PinManagementStateMachine.Event.Invalidate, PinManagementStateMachine.State.Invalid))
-
-    val pinManagementCallback: PinManagementCallback = mockk()
-    val pinManagementCanCallback: PinManagementCanCallback = mockk()
+    val stateFlow: MutableStateFlow<Pair<ChangePinStateMachine.Event, ChangePinStateMachine.State>> = MutableStateFlow(
+        Pair(
+            ChangePinStateMachine.Event.Invalidate, ChangePinStateMachine.State.Invalid
+        )
+    )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @BeforeEach
@@ -87,95 +85,95 @@ class PinManagementCoordinatorTest {
         every { Uri.encode(any()) } answers { value }
         every { Uri.decode(any()) } answers { value }
 
-        every { mockPinManagementStateMachine.state } returns stateFlow
+        every { mockChangePinStateMachine.state } returns stateFlow
     }
 
     @Test
     fun singleStateObservation() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
-        pinManagementCoordinator.startPinManagement(false, false)
+        changePinCoordinator.startPinChange(false, false)
         advanceUntilIdle()
 
-        verify(exactly = 1) { mockPinManagementStateMachine.state }
+        verify(exactly = 1) { mockChangePinStateMachine.state }
 
-        pinManagementCoordinator.startPinManagement(false, false)
+        changePinCoordinator.startPinChange(false, false)
         advanceUntilIdle()
 
-        verify(exactly = 1) { mockPinManagementStateMachine.state }
+        verify(exactly = 1) { mockChangePinStateMachine.state }
     }
 
     @Nested
     inner class PinManagementStateChangeHandling {
-        private fun testTransition(event: PinManagementStateMachine.Event, state: PinManagementStateMachine.State, testScope: TestScope) {
-            val pinManagementCoordinator = PinManagementCoordinator(
+        private fun testTransition(event: ChangePinStateMachine.Event, state: ChangePinStateMachine.State, testScope: TestScope) {
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
             stateFlow.value = Pair(event, state)
             testScope.advanceUntilIdle()
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = [] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = PinManagementStateFactory::class)
-        fun back(state: PinManagementStateMachine.State) = runTest {
-            testTransition(PinManagementStateMachine.Event.Back, state, this)
+        @SealedClassesSource(names = [], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = PinManagementStateFactory::class)
+        fun back(state: ChangePinStateMachine.State) = runTest {
+            testTransition(ChangePinStateMachine.Event.Back, state, this)
 
             verify { mockNavigator.pop() }
         }
 
         @Test
         fun `back from scan screen`() = runTest {
-            val state = PinManagementStateMachine.State.NewPinInput(false, false, "")
-            testTransition(PinManagementStateMachine.Event.Back, state, this)
+            val state = ChangePinStateMachine.State.NewPinInput(false, false, "")
+            testTransition(ChangePinStateMachine.Event.Back, state, this)
 
             verify { mockNavigator.pop() }
-            verify { mockIdCardManager.cancelTask() }
+            verify { mockEidInteractionManager.cancelTask() }
         }
 
         @Test
         fun `backing down`() = runTest {
-            val state = PinManagementStateMachine.State.Invalid
+            val state = ChangePinStateMachine.State.Invalid
 
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Back, state)
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Back, state)
             advanceUntilIdle()
 
             verify { mockNavigator.pop() }
-            verify { mockIdCardManager.cancelTask() }
-            Assertions.assertEquals(SubCoordinatorState.BACKED_DOWN, pinManagementCoordinator.stateFlow.value)
+            verify { mockEidInteractionManager.cancelTask() }
+            Assertions.assertEquals(SubCoordinatorState.BACKED_DOWN, changePinCoordinator.stateFlow.value)
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
         fun `old transport PIN input`(identificationPending: Boolean) = runTest {
-            val state = PinManagementStateMachine.State.OldTransportPinInput(identificationPending)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.OldTransportPinInput(identificationPending)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(any()) }
 
@@ -184,71 +182,76 @@ class PinManagementCoordinatorTest {
 
         @Test
         fun `new PIN intro`() = runTest {
-            val state = PinManagementStateMachine.State.NewPinIntro(false, true, "12345")
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.NewPinIntro(false, true, "12345")
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(SetupPersonalPinIntroDestination) }
         }
 
         @Test
         fun `new PIN input with retry event`() = runTest {
-            val state = PinManagementStateMachine.State.NewPinInput(false, true, "12345")
-            testTransition(PinManagementStateMachine.Event.RetryNewPinConfirmation, state, this)
+            val state = ChangePinStateMachine.State.NewPinInput(false, true, "12345")
+            testTransition(ChangePinStateMachine.Event.RetryNewPinConfirmation, state, this)
 
             verify { mockNavigator.pop() }
         }
 
         @Test
         fun `new PIN input with first visit`() = runTest {
-            val state = PinManagementStateMachine.State.NewPinInput(false, true, "12345")
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.NewPinInput(false, true, "12345")
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(SetupPersonalPinInputDestination) }
         }
 
         @Test
-        fun `ready for scan`() = runTest {
-            val state = PinManagementStateMachine.State.ReadyForScan(false, true, "12345", "000000")
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+        fun `start id card interaction`() = runTest {
+            val state = ChangePinStateMachine.State.StartIdCardInteraction(false, true, "12345", "000000")
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify { mockIdCardManager.cancelTask() }
-            verify { mockIdCardManager.eidFlow }
-            verify { mockIdCardManager.changePin(mockContext) }
+            verify { mockEidInteractionManager.cancelTask() }
+            verify { mockEidInteractionManager.eidFlow }
+            verify { mockEidInteractionManager.changePin(mockContext) }
+            verify { mockNavigator.popUpToOrNavigate(any(), true) }
+            Assertions.assertEquals(SetupScanDestination(true, false).route, navigationPopUpToOrNavigateDestinationSlot.captured.route)
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
-        fun `waiting for first card attachment`(identificationPending: Boolean) = runTest {
-            val state = PinManagementStateMachine.State.WaitingForFirstCardAttachment(identificationPending, true, "12345", "000000")
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+        fun `ready for subsequent scan`(identificationPending: Boolean) = runTest {
+            val oldPin = "12345"
+            val state = ChangePinStateMachine.State.ReadyForSubsequentScan(identificationPending, true, oldPin, "000000")
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.popUpToOrNavigate(any(), true) }
 
+            verify { mockEidInteractionManager.providePin(oldPin) }
             Assertions.assertEquals(SetupScanDestination(true, identificationPending).route, navigationPopUpToOrNavigateDestinationSlot.captured.route)
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
-        fun `waiting for card re-attachment`(identificationPending: Boolean) = runTest {
-            val state = PinManagementStateMachine.State.WaitingForCardReAttachment(identificationPending, true, "12345", "000000")
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+        fun `framework ready for PIN input`(identificationPending: Boolean) = runTest {
+            val oldPin = "123456"
+            val newPin = "000000"
 
-            verify { mockNavigator.popUpToOrNavigate(any(), true) }
+            val state = ChangePinStateMachine.State.FrameworkReadyForPinInput(identificationPending, true, oldPin, newPin)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
-            Assertions.assertEquals(SetupScanDestination(false, identificationPending).route, navigationPopUpToOrNavigateDestinationSlot.captured.route)
+            verify { mockEidInteractionManager.providePin(oldPin) }
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
-        fun `framework ready for PIN management`(identificationPending: Boolean) = runTest {
+        fun `framework ready for new PIN input`(identificationPending: Boolean) = runTest {
             val oldPin = "123456"
             val newPin = "000000"
 
-            val state = PinManagementStateMachine.State.FrameworkReadyForPinManagement(identificationPending, true, oldPin, newPin, pinManagementCallback)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.FrameworkReadyForNewPinInput(identificationPending, true, oldPin, newPin)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
-            verify { pinManagementCallback(oldPin, newPin) }
+            verify { mockEidInteractionManager.provideNewPin(newPin) }
         }
 
         @ParameterizedTest
@@ -259,11 +262,11 @@ class PinManagementCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
 
-            val state = PinManagementStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, true)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, true)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, true) }
+            verify { mockCanCoordinator.startPinChangeCanFlow(identificationPending, oldPin, newPin, true) }
         }
 
         @ParameterizedTest
@@ -274,11 +277,11 @@ class PinManagementCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
 
-            val state = PinManagementStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, false)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, false)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, false) }
+            verify { mockCanCoordinator.startPinChangeCanFlow(identificationPending, oldPin, newPin, false) }
         }
 
         @ParameterizedTest
@@ -289,11 +292,11 @@ class PinManagementCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.ACTIVE)
 
-            val state = PinManagementStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, true)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, true)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify(exactly = 0) { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, true) }
+            verify(exactly = 0) { mockCanCoordinator.startPinChangeCanFlow(identificationPending, oldPin, newPin, true) }
         }
 
         @ParameterizedTest
@@ -304,21 +307,18 @@ class PinManagementCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.ACTIVE)
 
-            val state = PinManagementStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, false)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, false)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
 
-            verify(exactly = 0) { mockCanCoordinator.startPinManagementCanFlow(identificationPending, oldPin, newPin, false) }
+            verify(exactly = 0) { mockCanCoordinator.startPinChangeCanFlow(identificationPending, oldPin, newPin, false) }
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
         fun `old transport PIN retry`(identificationPending: Boolean) = runTest {
-            val oldPin = "123456"
-            val newPin = "000000"
-
-            val state = PinManagementStateMachine.State.OldTransportPinRetry(identificationPending, "000000", pinManagementCallback)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.OldTransportPinRetry(identificationPending, "000000")
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(any()) }
 
@@ -327,70 +327,70 @@ class PinManagementCoordinatorTest {
 
         @Test
         fun finished() = runTest {
-            val state = PinManagementStateMachine.State.Finished
+            val state = ChangePinStateMachine.State.Finished
 
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, state)
             advanceUntilIdle()
 
-            Assertions.assertEquals(SubCoordinatorState.FINISHED, pinManagementCoordinator.stateFlow.value)
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Invalidate) }
-            verify { mockIdCardManager.cancelTask() }
+            Assertions.assertEquals(SubCoordinatorState.FINISHED, changePinCoordinator.stateFlow.value)
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Invalidate) }
+            verify { mockEidInteractionManager.cancelTask() }
         }
 
         @Test
         fun cancelled() = runTest {
-            val state = PinManagementStateMachine.State.Cancelled
+            val state = ChangePinStateMachine.State.Cancelled
 
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, state)
             advanceUntilIdle()
 
-            Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementCoordinator.stateFlow.value)
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Invalidate) }
-            verify { mockIdCardManager.cancelTask() }
+            Assertions.assertEquals(SubCoordinatorState.CANCELLED, changePinCoordinator.stateFlow.value)
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Invalidate) }
+            verify { mockEidInteractionManager.cancelTask() }
         }
 
         @Test
         fun `card deactivated`() = runTest {
-            val state = PinManagementStateMachine.State.CardDeactivated
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.CardDeactivated
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(SetupCardDeactivatedDestination) }
         }
 
         @Test
         fun `card blocked`() = runTest {
-            val state = PinManagementStateMachine.State.CardBlocked
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.CardBlocked
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(SetupCardBlockedDestination) }
         }
 
         @Test
         fun `card unreadable`() = runTest {
-            val state = PinManagementStateMachine.State.ProcessFailed(false, true, "12345", "000000", true)
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.ProcessFailed(false, true, "12345", "000000", true)
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(any()) }
 
@@ -399,8 +399,8 @@ class PinManagementCoordinatorTest {
 
         @Test
         fun `unknown error`() = runTest {
-            val state = PinManagementStateMachine.State.UnknownError
-            testTransition(PinManagementStateMachine.Event.Invalidate, state, this)
+            val state = ChangePinStateMachine.State.UnknownError
+            testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(SetupOtherErrorDestination) }
         }
@@ -409,419 +409,425 @@ class PinManagementCoordinatorTest {
     @Nested
     inner class EidEventHandling {
         @Test
-        fun `request card insertion`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
-                mockContext,
-                mockCanCoordinator,
-                mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
-                mockCanStateMachine,
-                mockCoroutineContextProvider
-            )
-            pinManagementCoordinator.startPinManagement(false, false)
-
-            val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestCardInsertion)
-            every { mockIdCardManager.eidFlow} returns eIdFlow
-
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
-            advanceUntilIdle()
-
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.RequestCardInsertion) }
-        }
-
-        @Test
         fun `card recognized and removed`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.CardRecognized)
-            every { mockIdCardManager.eidFlow} returns eIdFlow
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            Assertions.assertTrue(pinManagementCoordinator.scanInProgress.value)
+            Assertions.assertTrue(changePinCoordinator.scanInProgress.value)
 
             eIdFlow.value = EidInteractionEvent.CardRemoved
             advanceUntilIdle()
 
-            Assertions.assertFalse(pinManagementCoordinator.scanInProgress.value)
+            Assertions.assertFalse(changePinCoordinator.scanInProgress.value)
         }
 
         @Test
-        fun `process completed successfully`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+        fun `PIN change succeeded`() = runTest {
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            val eIdFlow = MutableStateFlow(EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult)
-            every { mockIdCardManager.eidFlow} returns eIdFlow
+            val eIdFlow = MutableStateFlow(EidInteractionEvent.PinChangeSucceeded)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Finish) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Finish) }
         }
 
         @Test
-        fun `request changed PIN`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+        fun `PIN requested`() = runTest {
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestChangedPin(null, pinManagementCallback))
-            every { mockIdCardManager.eidFlow} returns eIdFlow
+            val eIdFlow = MutableStateFlow(EidInteractionEvent.PinRequested(3))
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
+            every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
+
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsChangedPin(pinManagementCallback)) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsPin) }
         }
 
         @Test
-        fun `request changed PIN and CAN`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+        fun `new PIN requested`() = runTest {
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestCanAndChangedPin(pinManagementCanCallback))
-            every { mockIdCardManager.eidFlow} returns eIdFlow
+            val eIdFlow = MutableStateFlow(EidInteractionEvent.NewPinRequested)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
+            every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
+
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.FrameworkRequestsCan) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsNewPin) }
+        }
+
+        @Test
+        fun `request CAN`() = runTest {
+            val changePinCoordinator = ChangePinCoordinator(
+                mockContext,
+                mockCanCoordinator,
+                mockNavigator,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
+                mockCanStateMachine,
+                mockCoroutineContextProvider
+            )
+            changePinCoordinator.startPinChange(false, false)
+
+            val eIdFlow = MutableStateFlow(EidInteractionEvent.CanRequested())
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
+
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
+            advanceUntilIdle()
+
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.FrameworkRequestsCan) }
         }
 
         @Test
         fun `request PUK`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            val eIdFlow = MutableStateFlow(EidInteractionEvent.RequestPuk({_ -> }))
-            every { mockIdCardManager.eidFlow} returns eIdFlow
+            val eIdFlow = MutableStateFlow(EidInteractionEvent.PukRequested)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Error(IdCardInteractionException.CardBlocked)) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked)) }
         }
 
         @Test
         fun `card deactivated`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
             val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated))
-            every { mockIdCardManager.eidFlow} returns eIdFlow
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)) }
         }
 
         @Test
         fun `process failed`() = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
-            val exception = IdCardInteractionException.ProcessFailed(ActivationResultCode.INTERRUPTED, null, null)
+            val exception = IdCardInteractionException.ProcessFailed()
             val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(exception))
-            every { mockIdCardManager.eidFlow} returns eIdFlow
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val newState = PinManagementStateMachine.State.ReadyForScan(false, false, "12345", "000000")
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, newState)
+            val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Error(exception)) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(exception)) }
         }
     }
 
     @ParameterizedTest
     @ValueSource(booleans = [true, false])
     fun `start PIN management`(identificationPending: Boolean) = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
-        pinManagementCoordinator.startPinManagement(identificationPending, true)
+        changePinCoordinator.startPinChange(identificationPending, true)
 
-        Assertions.assertEquals(SubCoordinatorState.ACTIVE, pinManagementCoordinator.stateFlow.value)
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.StartPinManagement(identificationPending, true)) }
+        Assertions.assertEquals(SubCoordinatorState.ACTIVE, changePinCoordinator.stateFlow.value)
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.StartPinChange(identificationPending, true)) }
         verify { mockCanStateMachine.transition(CanStateMachine.Event.Invalidate) }
     }
 
     @Test
     fun `old PIN entered`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
         val oldPin = "123456"
-        pinManagementCoordinator.onOldPinEntered(oldPin)
+        changePinCoordinator.onOldPinEntered(oldPin)
 
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.EnterOldPin(oldPin)) }
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.EnterOldPin(oldPin)) }
     }
 
     @Test
     fun `personal PIN intro finished`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
         val oldPin = "123456"
-        pinManagementCoordinator.onPersonalPinIntroFinished()
+        changePinCoordinator.onPersonalPinIntroFinished()
 
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPinIntro) }
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.ConfirmNewPinIntro) }
     }
 
     @Test
     fun `confirm matching PIN`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
         val newPin = "000000"
-        val matching = pinManagementCoordinator.confirmNewPin(newPin)
+        val matching = changePinCoordinator.confirmNewPin(newPin)
 
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPin(newPin)) }
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.ConfirmNewPin(newPin)) }
         Assertions.assertTrue(matching)
     }
 
     @Test
     fun `confirm PIN not matching`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
         val newPin = "000000"
-        every { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPin(newPin)) } throws PinManagementStateMachine.Error.PinConfirmationFailed
-        val matching = pinManagementCoordinator.confirmNewPin(newPin)
+        every { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.ConfirmNewPin(newPin)) } throws ChangePinStateMachine.Error.PinConfirmationFailed
+        val matching = changePinCoordinator.confirmNewPin(newPin)
 
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.ConfirmNewPin(newPin)) }
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.ConfirmNewPin(newPin)) }
         Assertions.assertFalse(matching)
     }
 
     @Test
     fun `confirm PIN mismatch error`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
-        pinManagementCoordinator.onConfirmPinMismatchError()
+        changePinCoordinator.onConfirmPinMismatchError()
 
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.RetryNewPinConfirmation) }
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.RetryNewPinConfirmation) }
     }
 
     @Test
     fun `on back`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
-        pinManagementCoordinator.onBack()
+        changePinCoordinator.onBack()
 
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Back) }
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Back) }
     }
 
     @Test
     fun `cancel PIN management`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
-        pinManagementCoordinator.cancelPinManagement()
+        changePinCoordinator.cancelPinManagement()
 
-        Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementCoordinator.stateFlow.value)
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Invalidate) }
-        verify { mockIdCardManager.cancelTask() }
+        Assertions.assertEquals(SubCoordinatorState.CANCELLED, changePinCoordinator.stateFlow.value)
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Invalidate) }
+        verify { mockEidInteractionManager.cancelTask() }
     }
 
     @Test
     fun `confirm card unreadable`() = runTest {
-        val pinManagementCoordinator = PinManagementCoordinator(
+        val changePinCoordinator = ChangePinCoordinator(
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
-            mockPinManagementStateMachine,
+            mockEidInteractionManager,
+            mockChangePinStateMachine,
             mockCanStateMachine,
             mockCoroutineContextProvider
         )
 
-        pinManagementCoordinator.confirmCardUnreadableError()
+        changePinCoordinator.confirmCardUnreadableError()
 
-        verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.ProceedAfterError) }
+        verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.ProceedAfterError) }
     }
 
     @Nested
-    inner class CanEventHandling{
+    inner class CanEventHandling {
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
         fun cancelled(shortFlow: Boolean) = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
             val oldPin = "123456"
             val newPin = "000000"
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
-            every { mockCanCoordinator.startPinManagementCanFlow(false, oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.CANCELLED)
+            every { mockCanCoordinator.startPinChangeCanFlow(false, oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.CANCELLED)
 
-            val state = PinManagementStateMachine.State.CanRequested(false, true, oldPin, newPin, shortFlow)
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)
+            val state = ChangePinStateMachine.State.CanRequested(false, true, oldPin, newPin, shortFlow)
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, state)
             advanceUntilIdle()
 
-            Assertions.assertEquals(SubCoordinatorState.CANCELLED, pinManagementCoordinator.stateFlow.value)
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Invalidate) }
-            verify { mockIdCardManager.cancelTask() }
+            Assertions.assertEquals(SubCoordinatorState.CANCELLED, changePinCoordinator.stateFlow.value)
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Invalidate) }
+            verify { mockEidInteractionManager.cancelTask() }
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
         fun skipped(shortFlow: Boolean) = runTest {
-            val pinManagementCoordinator = PinManagementCoordinator(
+            val changePinCoordinator = ChangePinCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
-                mockPinManagementStateMachine,
+                mockEidInteractionManager,
+                mockChangePinStateMachine,
                 mockCanStateMachine,
                 mockCoroutineContextProvider
             )
-            pinManagementCoordinator.startPinManagement(false, false)
+            changePinCoordinator.startPinChange(false, false)
 
             val oldPin = "123456"
             val newPin = "000000"
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
-            every { mockCanCoordinator.startPinManagementCanFlow(false, oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.SKIPPED)
+            every { mockCanCoordinator.startPinChangeCanFlow(false, oldPin, newPin, shortFlow) } returns MutableStateFlow(SubCoordinatorState.SKIPPED)
 
-            val state = PinManagementStateMachine.State.CanRequested(false, true, oldPin, newPin, shortFlow)
-            stateFlow.value = Pair(PinManagementStateMachine.Event.Invalidate, state)
+            val state = ChangePinStateMachine.State.CanRequested(false, true, oldPin, newPin, shortFlow)
+            stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, state)
             advanceUntilIdle()
 
-            Assertions.assertEquals(SubCoordinatorState.SKIPPED, pinManagementCoordinator.stateFlow.value)
-            verify { mockPinManagementStateMachine.transition(PinManagementStateMachine.Event.Invalidate) }
-            verify { mockIdCardManager.cancelTask() }
+            Assertions.assertEquals(SubCoordinatorState.SKIPPED, changePinCoordinator.stateFlow.value)
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Invalidate) }
+            verify { mockEidInteractionManager.cancelTask() }
         }
     }
 }

@@ -9,14 +9,16 @@ class CanPinManagementStateFactory: DefaultTypeFactory() {
         return when (what) {
             CanStateMachine.State.Invalid::class -> CanStateMachine.State.Invalid
 
-            CanStateMachine.State.PinManagement.Intro::class -> CanStateMachine.State.PinManagement.Intro(false, { _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.IdAlreadySetup::class -> CanStateMachine.State.PinManagement.IdAlreadySetup(false, { _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.PinReset::class -> CanStateMachine.State.PinManagement.PinReset(false, { _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.CanIntro::class -> CanStateMachine.State.PinManagement.CanIntro(false, { _, _, _ -> }, "", "", false)
-            CanStateMachine.State.PinManagement.CanInput::class -> CanStateMachine.State.PinManagement.CanInput(false, { _, _, _ -> }, "", "", false)
-            CanStateMachine.State.PinManagement.CanInputRetry::class -> CanStateMachine.State.PinManagement.CanInputRetry(false, { _, _, _ -> }, "", "")
-            CanStateMachine.State.PinManagement.PinInput::class -> CanStateMachine.State.PinManagement.PinInput(false, { _, _, _ -> }, "", "", "")
-            CanStateMachine.State.PinManagement.CanAndPinEntered::class -> CanStateMachine.State.PinManagement.CanAndPinEntered(false, { _, _, _ -> }, "", "", "")
+            CanStateMachine.State.ChangePin.Intro::class -> CanStateMachine.State.ChangePin.Intro(false, "", "")
+            CanStateMachine.State.ChangePin.IdAlreadySetup::class -> CanStateMachine.State.ChangePin.IdAlreadySetup(false, "", "")
+            CanStateMachine.State.ChangePin.PinReset::class -> CanStateMachine.State.ChangePin.PinReset(false, "", "")
+            CanStateMachine.State.ChangePin.CanIntro::class -> CanStateMachine.State.ChangePin.CanIntro(false, "", "", false)
+            CanStateMachine.State.ChangePin.CanInput::class -> CanStateMachine.State.ChangePin.CanInput(false, "", "", false)
+            CanStateMachine.State.ChangePin.CanInputRetry::class -> CanStateMachine.State.ChangePin.CanInputRetry(false, "", "")
+            CanStateMachine.State.ChangePin.PinInput::class -> CanStateMachine.State.ChangePin.PinInput(false, "", "", "")
+            CanStateMachine.State.ChangePin.CanAndPinEntered::class -> CanStateMachine.State.ChangePin.CanAndPinEntered(false, "", "", "")
+            CanStateMachine.State.ChangePin.FrameworkReadyForPinInput::class -> CanStateMachine.State.ChangePin.FrameworkReadyForPinInput(false, "", "")
+            CanStateMachine.State.ChangePin.FrameworkReadyForNewPinInput::class -> CanStateMachine.State.ChangePin.FrameworkReadyForNewPinInput(false, "", "")
 
             else -> throw IllegalArgumentException()
         }
@@ -28,14 +30,14 @@ class CanIdentStateFactory: DefaultTypeFactory() {
         return when (what) {
             CanStateMachine.State.Invalid::class -> CanStateMachine.State.Invalid
 
-            CanStateMachine.State.Ident.Intro::class -> CanStateMachine.State.Ident.Intro({ _, _ -> }, null)
-            CanStateMachine.State.Ident.PinReset::class -> CanStateMachine.State.Ident.PinReset({ _, _ -> }, null)
-            CanStateMachine.State.Ident.CanIntro::class -> CanStateMachine.State.Ident.CanIntro({ _, _ -> }, null)
-            CanStateMachine.State.Ident.CanIntroWithoutFlowIntro::class -> CanStateMachine.State.Ident.CanIntroWithoutFlowIntro({ _, _ -> }, null)
-            CanStateMachine.State.Ident.CanInput::class -> CanStateMachine.State.Ident.CanInput({ _, _ -> }, null)
-            CanStateMachine.State.Ident.CanInputRetry::class -> CanStateMachine.State.Ident.CanInputRetry({ _, _ -> }, "")
-            CanStateMachine.State.Ident.PinInput::class -> CanStateMachine.State.Ident.PinInput({ _, _ -> }, "")
-            CanStateMachine.State.Ident.CanAndPinEntered::class -> CanStateMachine.State.Ident.CanAndPinEntered({ _, _ -> }, "", "")
+            CanStateMachine.State.Ident.Intro::class -> CanStateMachine.State.Ident.Intro(null)
+            CanStateMachine.State.Ident.PinReset::class -> CanStateMachine.State.Ident.PinReset(null)
+            CanStateMachine.State.Ident.CanIntro::class -> CanStateMachine.State.Ident.CanIntro(null, false)
+            CanStateMachine.State.Ident.CanInput::class -> CanStateMachine.State.Ident.CanInput(null, false)
+            CanStateMachine.State.Ident.CanInputRetry::class -> CanStateMachine.State.Ident.CanInputRetry("", false)
+            CanStateMachine.State.Ident.PinInput::class -> CanStateMachine.State.Ident.PinInput("", false)
+            CanStateMachine.State.Ident.CanAndPinEntered::class -> CanStateMachine.State.Ident.CanAndPinEntered("", "", false)
+            CanStateMachine.State.Ident.FrameworkReadyForPinInput::class -> CanStateMachine.State.Ident.FrameworkReadyForPinInput("")
 
             else -> throw IllegalArgumentException()
         }

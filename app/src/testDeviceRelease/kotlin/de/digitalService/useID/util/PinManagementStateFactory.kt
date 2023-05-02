@@ -1,33 +1,33 @@
 package de.digitalService.useID.util
 
-import de.digitalService.useID.flows.PinManagementStateMachine
+import de.digitalService.useID.flows.ChangePinStateMachine
 import de.jodamob.junit5.DefaultTypeFactory
 import kotlin.reflect.KClass
 
-class PinManagementStateFactory: DefaultTypeFactory() {
-    override fun create(what: KClass<*>): PinManagementStateMachine.State {
+class PinManagementStateFactory : DefaultTypeFactory() {
+    override fun create(what: KClass<*>): ChangePinStateMachine.State {
         return when (what) {
-            PinManagementStateMachine.State.Invalid::class -> PinManagementStateMachine.State.Invalid
+            ChangePinStateMachine.State.Invalid::class -> ChangePinStateMachine.State.Invalid
 
-            PinManagementStateMachine.State.OldTransportPinInput::class -> PinManagementStateMachine.State.OldTransportPinInput(false)
-            PinManagementStateMachine.State.OldPersonalPinInput::class -> PinManagementStateMachine.State.OldPersonalPinInput
-            PinManagementStateMachine.State.NewPinIntro::class -> PinManagementStateMachine.State.NewPinIntro(false, false, "")
-            PinManagementStateMachine.State.NewPinInput::class -> PinManagementStateMachine.State.NewPinInput(false, false, "")
-            PinManagementStateMachine.State.NewPinConfirmation::class -> PinManagementStateMachine.State.NewPinConfirmation(false, false, "", "")
-            PinManagementStateMachine.State.ReadyForScan::class -> PinManagementStateMachine.State.ReadyForScan(false, false, "", "")
-            PinManagementStateMachine.State.WaitingForFirstCardAttachment::class -> PinManagementStateMachine.State.WaitingForFirstCardAttachment(false, false, "", "")
-            PinManagementStateMachine.State.WaitingForCardReAttachment::class -> PinManagementStateMachine.State.WaitingForCardReAttachment(false, false, "", "")
-            PinManagementStateMachine.State.FrameworkReadyForPinManagement::class -> PinManagementStateMachine.State.FrameworkReadyForPinManagement(false, false, "", "", {_, _ -> })
-            PinManagementStateMachine.State.CanRequested::class -> PinManagementStateMachine.State.CanRequested(false, false, "", "", false)
-            PinManagementStateMachine.State.Finished::class -> PinManagementStateMachine.State.Finished
-            PinManagementStateMachine.State.Cancelled::class -> PinManagementStateMachine.State.Cancelled
-            PinManagementStateMachine.State.OldTransportPinRetry::class -> PinManagementStateMachine.State.OldTransportPinRetry(false, "", {_, _ -> })
-            PinManagementStateMachine.State.OldPersonalPinRetry::class -> PinManagementStateMachine.State.OldPersonalPinRetry("", {_, _ -> })
+            ChangePinStateMachine.State.OldTransportPinInput::class -> ChangePinStateMachine.State.OldTransportPinInput(false)
+            ChangePinStateMachine.State.OldPersonalPinInput::class -> ChangePinStateMachine.State.OldPersonalPinInput
+            ChangePinStateMachine.State.NewPinIntro::class -> ChangePinStateMachine.State.NewPinIntro(false, false, "")
+            ChangePinStateMachine.State.NewPinInput::class -> ChangePinStateMachine.State.NewPinInput(false, false, "")
+            ChangePinStateMachine.State.NewPinConfirmation::class -> ChangePinStateMachine.State.NewPinConfirmation(false, false, "", "")
+            ChangePinStateMachine.State.StartIdCardInteraction::class -> ChangePinStateMachine.State.StartIdCardInteraction(false, false, "", "")
+            ChangePinStateMachine.State.ReadyForSubsequentScan::class -> ChangePinStateMachine.State.ReadyForSubsequentScan(false, false, "", "")
+            ChangePinStateMachine.State.FrameworkReadyForPinInput::class -> ChangePinStateMachine.State.FrameworkReadyForPinInput(false, false, "", "")
+            ChangePinStateMachine.State.FrameworkReadyForNewPinInput::class -> ChangePinStateMachine.State.FrameworkReadyForNewPinInput(false, false, "", "")
+            ChangePinStateMachine.State.CanRequested::class -> ChangePinStateMachine.State.CanRequested(false, false, "", "", false)
+            ChangePinStateMachine.State.Finished::class -> ChangePinStateMachine.State.Finished
+            ChangePinStateMachine.State.Cancelled::class -> ChangePinStateMachine.State.Cancelled
+            ChangePinStateMachine.State.OldTransportPinRetry::class -> ChangePinStateMachine.State.OldTransportPinRetry(false, "")
+            ChangePinStateMachine.State.OldPersonalPinRetry::class -> ChangePinStateMachine.State.OldPersonalPinRetry("")
 
-            PinManagementStateMachine.State.CardDeactivated::class -> PinManagementStateMachine.State.CardDeactivated
-            PinManagementStateMachine.State.CardBlocked::class -> PinManagementStateMachine.State.CardBlocked
-            PinManagementStateMachine.State.ProcessFailed::class -> PinManagementStateMachine.State.ProcessFailed(false, false, "", "", false)
-            PinManagementStateMachine.State.UnknownError::class -> PinManagementStateMachine.State.UnknownError
+            ChangePinStateMachine.State.CardDeactivated::class -> ChangePinStateMachine.State.CardDeactivated
+            ChangePinStateMachine.State.CardBlocked::class -> ChangePinStateMachine.State.CardBlocked
+            ChangePinStateMachine.State.ProcessFailed::class -> ChangePinStateMachine.State.ProcessFailed(false, false, "", "", false)
+            ChangePinStateMachine.State.UnknownError::class -> ChangePinStateMachine.State.UnknownError
 
             else -> throw IllegalArgumentException()
         }

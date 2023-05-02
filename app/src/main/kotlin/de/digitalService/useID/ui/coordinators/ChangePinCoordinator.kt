@@ -193,7 +193,9 @@ class ChangePinCoordinator @Inject constructor(
                     EidInteractionEvent.CardInsertionRequested -> {
                         logger.debug("Card insertion requested.")
                     }
-                    EidInteractionEvent.PinChangeStarted -> logger.debug("PIN management started.")
+                    EidInteractionEvent.PinChangeStarted -> {
+                        logger.debug("PIN management started.")
+                    }
                     EidInteractionEvent.CardRecognized -> {
                         logger.debug("Card recognized.")
                         _scanInProgress.value = true

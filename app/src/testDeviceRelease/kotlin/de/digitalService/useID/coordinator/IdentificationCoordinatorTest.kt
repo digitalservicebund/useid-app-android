@@ -11,7 +11,6 @@ import de.digitalService.useID.flows.*
 import de.digitalService.useID.idCardInterface.*
 import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
 import de.digitalService.useID.ui.coordinators.SubCoordinatorState
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
@@ -44,7 +43,7 @@ class IdentificationCoordinatorTest {
     lateinit var mockNavigator: Navigator
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockIdCardManager: IdCardManager
+    lateinit var mockEidInteractionManager: EidInteractionManager
 
     @MockK(relaxUnitFun = true)
     lateinit var mockStorageManager: StorageManager
@@ -69,14 +68,16 @@ class IdentificationCoordinatorTest {
     private val navigationPopUpToOrNavigateDestinationSlot = slot<Direction>()
 
     private val testTokenUrl = "https://token"
-    private val testUrl = "bundesident://127.0.0.1/eID-Client?tokenURL="
+    private val testTokenUri = mockk<Uri>()
 
-    private val pinCallback: PinCallback = mockk()
-    private val request: EidAuthenticationRequest = mockk()
-    private val attributeConfirmationCallback: AttributeConfirmationCallback = mockk()
+    private val request: AuthenticationRequest = mockk()
+    val certificateDescription: CertificateDescription = mockk()
 
-    private val stateFlow: MutableStateFlow<Pair<IdentificationStateMachine.Event, IdentificationStateMachine.State>> = MutableStateFlow(Pair(
-        IdentificationStateMachine.Event.Invalidate, IdentificationStateMachine.State.Invalid))
+    private val stateFlow: MutableStateFlow<Pair<IdentificationStateMachine.Event, IdentificationStateMachine.State>> = MutableStateFlow(
+        Pair(
+            IdentificationStateMachine.Event.Invalidate, IdentificationStateMachine.State.Invalid
+        )
+    )
 
     @BeforeEach
     fun setup() {
@@ -91,33 +92,17 @@ class IdentificationCoordinatorTest {
 
         every { mockIdentificationStateMachine.state } returns stateFlow
 
-        mockkStatic(Uri::class)
-
-        val mockUriBuilder = mockk<Uri.Builder>()
-
-        mockkConstructor(Uri.Builder::class)
-
-        every {
-            anyConstructed<Uri.Builder>()
-                .scheme("http")
-                .encodedAuthority("127.0.0.1:24727")
-                .appendPath("eID-Client")
-                .appendQueryParameter("tcTokenURL", testTokenUrl)
-        } returns mockUriBuilder
-
-        val normalizedUri = mockk<Uri>()
-
-        every { mockUriBuilder.build() } returns normalizedUri
-        every { normalizedUri.toString() } returns testUrl
-
         // For supporting destinations with String nav arguments
-        mockkStatic("android.net.Uri")
+        mockkStatic(Uri::class)
         every { Uri.encode(any()) } answers { value }
         every { Uri.decode(any()) } answers { value }
+
+        every { Uri.parse(testTokenUrl) } returns testTokenUri
     }
 
     @AfterEach
     fun tearDown() {
+        clearStaticMockk(Uri::class)
         Dispatchers.resetMain()
     }
 
@@ -127,7 +112,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -153,7 +138,7 @@ class IdentificationCoordinatorTest {
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
+                mockEidInteractionManager,
                 mockStorageManager,
                 mockTrackerManager,
                 mockIdentificationStateMachine,
@@ -167,7 +152,7 @@ class IdentificationCoordinatorTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = [] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
+        @SealedClassesSource(names = [], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun back(state: IdentificationStateMachine.State) = runTest {
             testTransition(IdentificationStateMachine.Event.Back, state, this)
 
@@ -179,19 +164,19 @@ class IdentificationCoordinatorTest {
             testTransition(IdentificationStateMachine.Event.Back, IdentificationStateMachine.State.Invalid, this)
 
             verify { mockNavigator.pop() }
-            verify { mockIdCardManager.cancelTask() }
+            verify { mockEidInteractionManager.cancelTask() }
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Invalidate) }
         }
 
         @Test
         fun `start identification`() = runTest {
-            val state = IdentificationStateMachine.State.StartIdentification(false, testTokenUrl)
+            val state = IdentificationStateMachine.State.StartIdentification(false, testTokenUri)
 
             val identificationCoordinator = IdentificationCoordinator(
                 mockContext,
                 mockCanCoordinator,
                 mockNavigator,
-                mockIdCardManager,
+                mockEidInteractionManager,
                 mockStorageManager,
                 mockTrackerManager,
                 mockIdentificationStateMachine,
@@ -200,19 +185,18 @@ class IdentificationCoordinatorTest {
             )
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
 
-            every { mockIdCardManager.eidFlow } returns flowOf(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns flowOf(EidInteractionEvent.Idle)
 
             stateFlow.value = Pair(IdentificationStateMachine.Event.Invalidate, state)
             advanceUntilIdle()
 
-            verify { mockIdCardManager.cancelTask() }
-            verify { mockIdCardManager.identify(mockContext, testTokenUrl) }
+            verify { mockEidInteractionManager.identify(mockContext, testTokenUri) }
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
         fun `fetching metadata`(backingDownAllowed: Boolean) = runTest {
-            val state = IdentificationStateMachine.State.FetchingMetadata(backingDownAllowed, testTokenUrl)
+            val state = IdentificationStateMachine.State.FetchingMetadata(backingDownAllowed, testTokenUri)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.popUpToOrNavigate(any(), false) }
@@ -223,7 +207,7 @@ class IdentificationCoordinatorTest {
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
         fun `fetching metadata failed`(backingDownAllowed: Boolean) = runTest {
-            val state = IdentificationStateMachine.State.FetchingMetadataFailed(backingDownAllowed, testTokenUrl)
+            val state = IdentificationStateMachine.State.FetchingMetadataFailed(backingDownAllowed, testTokenUri)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(IdentificationOtherErrorDestination) }
@@ -231,37 +215,33 @@ class IdentificationCoordinatorTest {
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
-        fun `request attribute confirmation`(backingDownAllowed: Boolean) = runTest {
-            mockkStatic("android.util.Base64")
-            every { Base64.encodeToString(any(), any()) } returns "serializedBase64"
-
-            val request = EidAuthenticationRequest("issuer", "issuerUrl", "subject", "subjectUrl", "validity", AuthenticationTerms.Text(""), null, mapOf())
-            val state = IdentificationStateMachine.State.RequestAttributeConfirmation(backingDownAllowed, request, attributeConfirmationCallback)
+        fun `request certificate`(backingDownAllowed: Boolean) = runTest {
+            val state = IdentificationStateMachine.State.RequestCertificate(false, request)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
-            verify { mockNavigator.navigatePopping(any()) }
-
-            Assertions.assertEquals(IdentificationAttributeConsentDestination(request, backingDownAllowed).route, destinationPoppingSlot.captured.route)
+            verify { mockEidInteractionManager.getCertificate() }
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
-        fun `confirm attributes`(backingDownAllowed: Boolean) = runTest {
-            val readAttributes: Map<IdCardAttribute, Boolean> = mapOf(Pair(IdCardAttribute.DG01, true), Pair(IdCardAttribute.DG02, false))
-            every { request.readAttributes } returns readAttributes
+        fun `request certificate description received`(backingDownAllowed: Boolean) = runTest {
+            mockkStatic("android.util.Base64")
+            every { Base64.encodeToString(any(), any()) } returns "serializedBase64"
 
-            every { attributeConfirmationCallback(any()) } returns Unit
-
-            val state = IdentificationStateMachine.State.SubmitAttributeConfirmation(backingDownAllowed, request, attributeConfirmationCallback)
+            val request = AuthenticationRequest(emptyList(), "")
+            val certificateDescription = CertificateDescription("", "", "", "", "", "")
+            val state = IdentificationStateMachine.State.CertificateDescriptionReceived(backingDownAllowed, request, certificateDescription)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
-            verify { attributeConfirmationCallback(readAttributes.filterValues { it }) }
+            verify { mockNavigator.navigatePopping(any()) }
+
+            Assertions.assertEquals(IdentificationAttributeConsentDestination(IdentificationAttributes(request.requiredAttributes, certificateDescription), backingDownAllowed).route, destinationPoppingSlot.captured.route)
         }
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
         fun `input PIN`(backingDownAllowed: Boolean) = runTest {
-            val state = IdentificationStateMachine.State.PinInput(backingDownAllowed, request, pinCallback)
+            val state = IdentificationStateMachine.State.PinInput(backingDownAllowed, request, certificateDescription)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(any()) }
@@ -271,7 +251,7 @@ class IdentificationCoordinatorTest {
 
         @Test
         fun `input PIN retrying`() = runTest {
-            val state = IdentificationStateMachine.State.PinInputRetry(pinCallback)
+            val state = IdentificationStateMachine.State.PinInputRetry
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(any()) }
@@ -279,22 +259,24 @@ class IdentificationCoordinatorTest {
             Assertions.assertEquals(IdentificationPersonalPinDestination(true).route, destinationSlot.captured.route)
         }
 
-        @ParameterizedTest
-        @ValueSource(booleans = [true, false])
-        fun `revisit attributes`(backingDownAllowed: Boolean) = runTest {
-            val state = IdentificationStateMachine.State.RevisitAttributes(backingDownAllowed, request, pinCallback)
+        @Test
+        fun `PIN entered first time`() = runTest {
+            val pin = "123456"
+            val state = IdentificationStateMachine.State.PinEntered(pin, true)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
-            verify { mockNavigator.pop() }
+            verify { mockNavigator.popUpToOrNavigate(IdentificationScanDestination, false) }
+            verify { mockEidInteractionManager.acceptAccessRights() }
         }
 
         @Test
-        fun `PIN entered`() = runTest {
+        fun `PIN entered not first time`() = runTest {
             val pin = "123456"
-            val state = IdentificationStateMachine.State.PinEntered(pin, false, pinCallback)
+            val state = IdentificationStateMachine.State.PinEntered(pin, false)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
-            verify { pinCallback(pin) }
+            verify { mockNavigator.popUpToOrNavigate(IdentificationScanDestination, false) }
+            verify { mockEidInteractionManager.providePin(pin) }
         }
 
         @Test
@@ -344,11 +326,12 @@ class IdentificationCoordinatorTest {
         }
 
         @Test
-        fun `waiting for card attachment`() = runTest {
-            val state = IdentificationStateMachine.State.WaitingForCardAttachment(null)
+        fun `PIN requested`() = runTest {
+            val pin = "123456"
+            val state = IdentificationStateMachine.State.PinRequested(pin)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
-            verify { mockNavigator.popUpToOrNavigate(IdentificationScanDestination, false) }
+            verify { mockEidInteractionManager.providePin(pin) }
         }
 
         @Test
@@ -370,7 +353,7 @@ class IdentificationCoordinatorTest {
             verify { mockNavigator.popToRoot() }
             verify { mockTrackerManager.trackEvent("identification", "success", "") }
 
-            verify { mockIdCardManager.cancelTask() }
+            verify { mockEidInteractionManager.cancelTask() }
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Invalidate) }
         }
 
@@ -419,7 +402,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -429,12 +412,11 @@ class IdentificationCoordinatorTest {
 
         Assertions.assertEquals(SubCoordinatorState.FINISHED, identificationCoordinator.stateFlow.value)
 
-        val tcTokenUrl = "tcTokenUrl"
         identificationCoordinator.startIdentificationProcess(testTokenUrl, setupSkipped)
 
         Assertions.assertEquals(SubCoordinatorState.ACTIVE, identificationCoordinator.stateFlow.value)
 
-        verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Initialize(setupSkipped, testUrl)) }
+        verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Initialize(setupSkipped, testTokenUri)) }
         verify { mockCanStateMachine.transition(CanStateMachine.Event.Invalidate) }
     }
 
@@ -444,7 +426,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -463,7 +445,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -483,7 +465,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -510,7 +492,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -529,7 +511,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -548,7 +530,7 @@ class IdentificationCoordinatorTest {
             mockContext,
             mockCanCoordinator,
             mockNavigator,
-            mockIdCardManager,
+            mockEidInteractionManager,
             mockStorageManager,
             mockTrackerManager,
             mockIdentificationStateMachine,
@@ -561,5 +543,210 @@ class IdentificationCoordinatorTest {
         verify { mockNavigator.popToRoot() }
         verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Invalidate) }
         Assertions.assertEquals(SubCoordinatorState.CANCELLED, identificationCoordinator.stateFlow.value)
+    }
+
+    @Nested
+    inner class IdentificationEidEvent {
+        @Test
+        fun `handling authentication started`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.AuthenticationStarted
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.StartedFetchingMetadata) }
+        }
+
+        @Test
+        fun `handling certificate description received`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            val certificateDescription = mockk<CertificateDescription>()
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.CertificateDescriptionReceived(certificateDescription)
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.CertificateDescriptionReceived(certificateDescription)) }
+        }
+
+        @Test
+        fun `handling authentication request confirmation requested`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            val request = mockk<AuthenticationRequest>()
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(request)
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(request)) }
+        }
+
+        @Test
+        fun `handling PIN requested`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.PinRequested(3)
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsPin(true)) }
+        }
+
+        @Test
+        fun `not handling PIN requested when in CAN flow`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.ACTIVE)
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.PinRequested(3)
+            advanceUntilIdle()
+
+            verify(exactly = 0) { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsPin(true)) }
+        }
+
+        @Test
+        fun `handling authentication succeeded with redirect`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            val redirectUrl = ""
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Finish(redirectUrl)) }
+        }
+
+        @Test
+        fun `handling CAN requested`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.CanRequested()
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsCan) }
+        }
+
+        @Test
+        fun `not handling CAN requested when in CAN flow`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.ACTIVE)
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.CanRequested()
+            advanceUntilIdle()
+
+            verify(exactly = 0) { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsCan) }
+        }
+
+        @Test
+        fun `handling PUK requested`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.PukRequested
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Error(IdCardInteractionException.CardBlocked)) }
+        }
+
+        @Test
+        fun `handling error`() = runTest {
+            every { mockIdentificationStateMachine.state } returns MutableStateFlow(Pair(IdentificationStateMachine.Event.Initialize(false, testTokenUri), IdentificationStateMachine.State.StartIdentification(false, testTokenUri)))
+
+            val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
+            every { mockEidInteractionManager.eidFlow } returns eIdFlow
+
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            advanceUntilIdle()
+
+            val exception = IdCardInteractionException.FrameworkError("message")
+            identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
+            advanceUntilIdle()
+
+            eIdFlow.value = EidInteractionEvent.Error(exception)
+            advanceUntilIdle()
+
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Error(exception)) }
+        }
     }
 }

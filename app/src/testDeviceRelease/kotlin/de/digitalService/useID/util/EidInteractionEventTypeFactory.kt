@@ -1,7 +1,7 @@
 package de.digitalService.useID.util
 
-import de.digitalService.useID.idCardInterface.AuthenticationTerms
-import de.digitalService.useID.idCardInterface.EidAuthenticationRequest
+import de.digitalService.useID.idCardInterface.AuthenticationRequest
+import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.jodamob.junit5.DefaultTypeFactory
@@ -12,23 +12,19 @@ class EidInteractionEventTypeFactory: DefaultTypeFactory() {
         return when (what) {
             EidInteractionEvent.Idle::class -> EidInteractionEvent.Idle
             EidInteractionEvent.Error::class -> EidInteractionEvent.Error(exception = IdCardInteractionException.CardDeactivated)
-            EidInteractionEvent.RequestCardInsertion::class -> EidInteractionEvent.RequestCardInsertion
-            EidInteractionEvent.CardInteractionComplete::class -> EidInteractionEvent.CardInteractionComplete
+            EidInteractionEvent.CardInsertionRequested::class -> EidInteractionEvent.CardInsertionRequested
             EidInteractionEvent.CardRecognized::class -> EidInteractionEvent.CardRecognized
             EidInteractionEvent.CardRemoved::class -> EidInteractionEvent.CardRemoved
-            EidInteractionEvent.RequestCan::class -> EidInteractionEvent.RequestCan { }
-            EidInteractionEvent.RequestPin::class -> EidInteractionEvent.RequestPin(null) { }
-            EidInteractionEvent.RequestPinAndCan::class -> EidInteractionEvent.RequestPinAndCan { _, _ -> }
-            EidInteractionEvent.RequestPuk::class -> EidInteractionEvent.RequestPuk { }
-            EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult::class -> EidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-            EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect::class -> EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect("")
+            EidInteractionEvent.CanRequested::class -> EidInteractionEvent.CanRequested()
+            EidInteractionEvent.PinRequested::class -> EidInteractionEvent.PinRequested(3)
+            EidInteractionEvent.NewPinRequested::class -> EidInteractionEvent.NewPinRequested
+            EidInteractionEvent.PukRequested::class -> EidInteractionEvent.PukRequested
             EidInteractionEvent.AuthenticationStarted::class -> EidInteractionEvent.AuthenticationStarted
-            EidInteractionEvent.RequestAuthenticationRequestConfirmation::class -> EidInteractionEvent.RequestAuthenticationRequestConfirmation(
-                EidAuthenticationRequest("", "", "", "", "", AuthenticationTerms.Text(""), null, mapOf()), { })
-            EidInteractionEvent.AuthenticationSuccessful::class -> EidInteractionEvent.AuthenticationSuccessful
-            EidInteractionEvent.PinManagementStarted::class -> EidInteractionEvent.PinManagementStarted
-            EidInteractionEvent.RequestChangedPin::class -> EidInteractionEvent.RequestChangedPin(null) { _, _ -> }
-            EidInteractionEvent.RequestCanAndChangedPin::class -> EidInteractionEvent.RequestCanAndChangedPin { _, _, _ -> }
+            EidInteractionEvent.AuthenticationRequestConfirmationRequested::class -> EidInteractionEvent.AuthenticationRequestConfirmationRequested(AuthenticationRequest(emptyList(), ""))
+            EidInteractionEvent.CertificateDescriptionReceived::class -> EidInteractionEvent.CertificateDescriptionReceived(CertificateDescription("", "", "", "", "", ""))
+            EidInteractionEvent.AuthenticationSucceededWithRedirect::class -> EidInteractionEvent.AuthenticationSucceededWithRedirect("")
+            EidInteractionEvent.PinChangeStarted::class -> EidInteractionEvent.PinChangeStarted
+            EidInteractionEvent.PinChangeSucceeded::class -> EidInteractionEvent.PinChangeSucceeded
             else -> throw IllegalArgumentException()
         }
     }

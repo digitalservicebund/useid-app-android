@@ -65,7 +65,7 @@ class CanCoordinator @Inject constructor(
                         is CanStateMachine.State.Ident.CanInput -> navigator.navigate(CanInputDestination(false))
                         is CanStateMachine.State.Ident.CanInputRetry -> {
                             navigator.navigate(IdentificationCanPinForgottenDestination)
-                            navigator.navigate(IdentificationCanIntroDestination(!state.shortFlow))
+                            navigator.navigate(IdentificationCanIntroDestination(true))
                             navigator.navigate(CanInputDestination(true))
                         }
                         is CanStateMachine.State.Ident.PinInput -> navigator.navigate(IdentificationCanPinInputDestination)

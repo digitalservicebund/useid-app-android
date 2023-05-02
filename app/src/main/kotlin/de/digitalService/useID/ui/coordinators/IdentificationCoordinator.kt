@@ -98,14 +98,6 @@ class IdentificationCoordinator @Inject constructor(
         collectStateMachineEvents()
         _stateFlow.value = SubCoordinatorState.ACTIVE
 
-        val normalizedTcTokenUrl = Uri
-            .Builder()
-            .scheme("http")
-            .encodedAuthority("127.0.0.1:24727")
-            .appendPath("eID-Client")
-            .appendQueryParameter("tcTokenURL", tcTokenUrl)
-            .build()
-
         flowStateMachine.transition(IdentificationStateMachine.Event.Initialize(setupSkipped, Uri.parse(tcTokenUrl)))
         canStateMachine.transition(CanStateMachine.Event.Invalidate)
     }
