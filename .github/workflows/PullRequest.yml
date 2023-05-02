@@ -29,7 +29,7 @@ jobs:
         run: bundle exec fastlane lint
       - name: Upload lint report
         if: failure()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: lint_report-${{ github.sha }}
           path: app/build/reports
