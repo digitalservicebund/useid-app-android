@@ -227,7 +227,7 @@ class ChangePinCoordinatorTest {
             verify { mockNavigator.popUpToOrNavigate(any(), true) }
 
             verify { mockEidInteractionManager.providePin(oldPin) }
-            Assertions.assertEquals(SetupScanDestination(true, identificationPending).route, navigationPopUpToOrNavigateDestinationSlot.captured.route)
+            Assertions.assertEquals(SetupScanDestination(false, identificationPending).route, navigationPopUpToOrNavigateDestinationSlot.captured.route)
         }
 
         @ParameterizedTest

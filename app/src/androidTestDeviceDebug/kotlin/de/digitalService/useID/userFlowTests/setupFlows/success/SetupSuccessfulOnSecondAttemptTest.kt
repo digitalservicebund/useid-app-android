@@ -170,7 +170,7 @@ class SetupSuccessfulOnSecondAttemptTest {
         eidFlow.value = EidInteractionEvent.NewPinRequested
         advanceUntilIdle()
 
-        setupScan.setProgress(false).assertIsDisplayed()
+        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()

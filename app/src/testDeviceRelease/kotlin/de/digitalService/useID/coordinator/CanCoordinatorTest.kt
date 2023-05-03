@@ -334,9 +334,8 @@ class CanCoordinatorTest {
                 testTransition(CanStateMachine.Event.Invalidate, newState, this)
 
                 verify { mockAppNavigator.navigate(any()) }
-                Assertions.assertEquals(IdentificationCanPinForgottenDestination.route, navigationDestinationSlots[0].route)
-                Assertions.assertEquals(IdentificationCanIntroDestination(true).route, navigationDestinationSlots[1].route)
-                Assertions.assertEquals(CanInputDestination(true).route, navigationDestinationSlots[2].route)
+                Assertions.assertEquals(IdentificationCanIntroDestination(false).route, navigationDestinationSlots.first().route)
+                Assertions.assertEquals(CanInputDestination(true).route, navigationDestinationSlots.last().route)
             }
 
             @Test

@@ -90,7 +90,7 @@ fun runSetupSuccessfulAfterTransportPinWrongOnceAndThenCorrect(testRule: Compose
     eidFlow.value = EidInteractionEvent.CardInsertionRequested
     testScope.advanceUntilIdle()
 
-    setupScan.setProgress(false).assertIsDisplayed()
+    setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
 
     eidFlow.value = EidInteractionEvent.CardRecognized
     testScope.advanceUntilIdle()

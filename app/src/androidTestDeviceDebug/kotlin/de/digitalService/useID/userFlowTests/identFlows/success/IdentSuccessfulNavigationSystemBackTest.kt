@@ -126,8 +126,11 @@ class IdentSuccessfulNavigationSystemBackTest {
         identificationFetchMetaData.cancel.click()
         identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
         identificationFetchMetaData.navigationConfirmDialog.dismiss()
-//        Espresso.pressBack() // TODO: This should have no effect! Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
-        //why though? I don't think we should disable the default system back behaviour, this might even be accessibility relevant
+
+        identificationFetchMetaData.assertIsDisplayed()
+        Espresso.pressBack()
+        identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
+        identificationFetchMetaData.navigationConfirmDialog.dismiss()
         identificationFetchMetaData.assertIsDisplayed()
 
         eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
@@ -157,19 +160,18 @@ class IdentSuccessfulNavigationSystemBackTest {
         identificationAttributeConsent.infoDialog.assertIsDisplayed()
         identificationAttributeConsent.infoDialogCloseBtn.click()
 
-        advanceUntilIdle()
-
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.cancel.click()
         identificationAttributeConsent.navigationConfirmDialog.assertIsDisplayed()
         identificationAttributeConsent.navigationConfirmDialog.dismiss()
 
         identificationAttributeConsent.assertIsDisplayed()
-//        Espresso.pressBack() // TODO: This should have no effect. Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
+        Espresso.pressBack()
+        identificationAttributeConsent.navigationConfirmDialog.assertIsDisplayed()
+        identificationAttributeConsent.navigationConfirmDialog.dismiss()
+
         identificationAttributeConsent.assertIsDisplayed()
         identificationAttributeConsent.continueBtn.click()
-
-//        eidFlow.value = EidInteractionEvent.PinRequested(3)
         advanceUntilIdle()
 
         identificationPersonalPin.assertIsDisplayed()
@@ -224,8 +226,11 @@ class IdentSuccessfulNavigationSystemBackTest {
         identificationScan.cancel.click()
         identificationScan.navigationConfirmDialog.assertIsDisplayed()
         identificationScan.navigationConfirmDialog.dismiss()
-//        Espresso.pressBack() // TODO: This should have no effect! Ticket: https://digitalservicebund.atlassian.net/browse/USEID-907
-        advanceUntilIdle()
+
+        identificationScan.assertIsDisplayed()
+        Espresso.pressBack()
+        identificationScan.navigationConfirmDialog.assertIsDisplayed()
+        identificationScan.navigationConfirmDialog.dismiss()
 
         identificationScan.assertIsDisplayed()
 

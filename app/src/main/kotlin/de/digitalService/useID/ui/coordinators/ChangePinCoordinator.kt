@@ -78,7 +78,7 @@ class ChangePinCoordinator @Inject constructor(
                         }
                         is ChangePinStateMachine.State.ReadyForSubsequentScan -> {
                             eidInteractionManager.providePin(state.oldPin)
-                            navigator.popUpToOrNavigate(SetupScanDestination(true, state.identificationPending), true)
+                            navigator.popUpToOrNavigate(SetupScanDestination(false, state.identificationPending), true)
                         }
                         is ChangePinStateMachine.State.FrameworkReadyForPinInput -> eidInteractionManager.providePin(state.oldPin)
                         is ChangePinStateMachine.State.FrameworkReadyForNewPinInput -> eidInteractionManager.provideNewPin(state.newPin)

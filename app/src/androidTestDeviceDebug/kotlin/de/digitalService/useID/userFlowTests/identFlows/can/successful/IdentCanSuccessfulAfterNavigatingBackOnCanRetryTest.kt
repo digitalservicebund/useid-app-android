@@ -182,13 +182,13 @@ class IdentCanSuccessfulAfterNavigatingBackOnCanRetryTest {
 
         advanceUntilIdle()
 
-        identificationCanIntro.setBackAllowed(true).setIdentPending(true).assertIsDisplayed()
-        identificationCanIntro.back.click()
+        identificationCanIntro.setBackAllowed(false).setIdentPending(true).assertIsDisplayed()
+        identificationCanIntro.cancel.click()
 
         advanceUntilIdle()
 
-        identificationCanPinForgotten.assertIsDisplayed()
-        identificationCanPinForgotten.tryAgainBtn.click()
+        identificationCanIntro.navigationConfirmDialog.assertIsDisplayed()
+        identificationCanIntro.navigationConfirmDialog.dismiss()
 
         advanceUntilIdle()
 
