@@ -1,17 +1,13 @@
 package de.digitalService.useID.viewModel
 
 import androidx.lifecycle.SavedStateHandle
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
-import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupTransportPinDestination
-import de.digitalService.useID.ui.screens.identification.IdentificationPersonalPinNavArgs
 import de.digitalService.useID.ui.screens.setup.SetupTransportPinNavArgs
 import de.digitalService.useID.ui.screens.setup.SetupTransportPinViewModel
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions
@@ -25,7 +21,7 @@ import org.junit.jupiter.params.provider.ValueSource
 class SetupTransportPinViewModelTest {
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockPinManagementCoordinator: PinManagementCoordinator
+    lateinit var mockChangePinCoordinator: ChangePinCoordinator
 
     @MockK(relaxUnitFun = true)
     lateinit var mockSaveStateHandle: SavedStateHandle
@@ -48,7 +44,7 @@ class SetupTransportPinViewModelTest {
         every { mockNavArgs.identificationPending } returns flag
 
         val viewModel = SetupTransportPinViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockSaveStateHandle
         )
 
@@ -59,14 +55,14 @@ class SetupTransportPinViewModelTest {
     @Test
     fun testOnDone() {
         val viewModel = SetupTransportPinViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockSaveStateHandle
         )
 
         val pin = "111111"
         viewModel.onDoneClicked(pin)
 
-        verify(exactly = 1) { mockPinManagementCoordinator.onOldPinEntered(pin) }
+        verify(exactly = 1) { mockChangePinCoordinator.onOldPinEntered(pin) }
     }
 
     @Test
@@ -74,7 +70,7 @@ class SetupTransportPinViewModelTest {
         every { mockNavArgs.retry } returns false
 
         val viewModel = SetupTransportPinViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockSaveStateHandle
         )
 
@@ -82,8 +78,8 @@ class SetupTransportPinViewModelTest {
         viewModel.onDoneClicked(pin)
 
         viewModel.onNavigationButtonClicked()
-        verify(exactly = 1) { mockPinManagementCoordinator.onBack() }
-        verify(exactly = 0) { mockPinManagementCoordinator.cancelPinManagement() }
+        verify(exactly = 1) { mockChangePinCoordinator.onBack() }
+        verify(exactly = 0) { mockChangePinCoordinator.cancelPinManagement() }
     }
 
     @Test
@@ -91,7 +87,7 @@ class SetupTransportPinViewModelTest {
         every { mockNavArgs.retry } returns true
 
         val viewModel = SetupTransportPinViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockSaveStateHandle
         )
 
@@ -99,7 +95,7 @@ class SetupTransportPinViewModelTest {
         viewModel.onDoneClicked(pin)
 
         viewModel.onNavigationButtonClicked()
-        verify(exactly = 0) { mockPinManagementCoordinator.onBack() }
-        verify(exactly = 1) { mockPinManagementCoordinator.cancelPinManagement() }
+        verify(exactly = 0) { mockChangePinCoordinator.onBack() }
+        verify(exactly = 1) { mockChangePinCoordinator.cancelPinManagement() }
     }
 }

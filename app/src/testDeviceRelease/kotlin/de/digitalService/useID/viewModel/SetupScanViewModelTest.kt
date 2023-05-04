@@ -2,9 +2,7 @@ package de.digitalService.useID.viewModel
 
 import androidx.lifecycle.SavedStateHandle
 import de.digitalService.useID.analytics.TrackerManagerType
-import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
-import de.digitalService.useID.ui.coordinators.SetupCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.screens.destinations.SetupScanDestination
 import de.digitalService.useID.ui.screens.setup.SetupScanNavArgs
 import de.digitalService.useID.ui.screens.setup.SetupScanViewModel
@@ -27,7 +25,7 @@ import org.junit.jupiter.params.provider.ValueSource
 @ExtendWith(MockKExtension::class)
 class SetupScanViewModelTest {
     @MockK(relaxUnitFun = true)
-    lateinit var mockPinManagementCoordinator: PinManagementCoordinator
+    lateinit var mockChangePinCoordinator: ChangePinCoordinator
 
     @MockK(relaxUnitFun = true)
     lateinit var mockTrackerManager: TrackerManagerType
@@ -63,7 +61,7 @@ class SetupScanViewModelTest {
         every { mockNavArgs.backAllowed } returns flag
 
         val viewModel = SetupScanViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockTrackerManager,
             mockSaveStateHandle
         )
@@ -75,10 +73,10 @@ class SetupScanViewModelTest {
     @Test
     fun testProgressEventCollection() = runTest {
         val scanInProgressFlow = MutableStateFlow(false)
-        every { mockPinManagementCoordinator.scanInProgress } returns scanInProgressFlow
+        every { mockChangePinCoordinator.scanInProgress } returns scanInProgressFlow
 
         val viewModel = SetupScanViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockTrackerManager,
             mockSaveStateHandle
         )
@@ -95,10 +93,10 @@ class SetupScanViewModelTest {
     @Test
     fun testOnHelpButtonClicked() = runTest {
 
-        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
+        every { mockChangePinCoordinator.scanInProgress } returns mockk()
 
         val viewModel = SetupScanViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockTrackerManager,
             mockSaveStateHandle
         )
@@ -111,10 +109,10 @@ class SetupScanViewModelTest {
     @Test
     fun testOnNfcButtonClicked() = runTest {
 
-        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
+        every { mockChangePinCoordinator.scanInProgress } returns mockk()
 
         val viewModel = SetupScanViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockTrackerManager,
             mockSaveStateHandle
         )
@@ -127,34 +125,34 @@ class SetupScanViewModelTest {
     @Test
     fun testOnNavigationButtonClickedBackAllowed() = runTest {
 
-        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
+        every { mockChangePinCoordinator.scanInProgress } returns mockk()
         every { mockNavArgs.backAllowed } returns true
 
         val viewModel = SetupScanViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockTrackerManager,
             mockSaveStateHandle
         )
 
         viewModel.onNavigationButtonClicked()
 
-        verify { mockPinManagementCoordinator.onBack() }
+        verify { mockChangePinCoordinator.onBack() }
     }
 
     @Test
     fun testOnNavigationButtonClickedBackNotAllowed() = runTest {
 
-        every { mockPinManagementCoordinator.scanInProgress } returns mockk()
+        every { mockChangePinCoordinator.scanInProgress } returns mockk()
         every { mockNavArgs.backAllowed } returns false
 
         val viewModel = SetupScanViewModel(
-            mockPinManagementCoordinator,
+            mockChangePinCoordinator,
             mockTrackerManager,
             mockSaveStateHandle
         )
 
         viewModel.onNavigationButtonClicked()
 
-        verify { mockPinManagementCoordinator.cancelPinManagement() }
+        verify { mockChangePinCoordinator.cancelPinManagement() }
     }
 }

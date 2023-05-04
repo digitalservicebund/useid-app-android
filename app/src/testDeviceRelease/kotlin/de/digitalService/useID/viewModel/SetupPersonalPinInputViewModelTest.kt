@@ -1,6 +1,6 @@
 package de.digitalService.useID.viewModel
 
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.screens.setup.SetupPersonalPinInputViewModel
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -13,24 +13,24 @@ import org.junit.jupiter.api.extension.ExtendWith
 class SetupPersonalPinInputViewModelTest {
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockPinManagementCoordinator: PinManagementCoordinator
+    lateinit var mockChangePinCoordinator: ChangePinCoordinator
 
     @Test
     fun testOnDoneClicked() {
-        val viewModel = SetupPersonalPinInputViewModel(pinManagementCoordinator = mockPinManagementCoordinator)
+        val viewModel = SetupPersonalPinInputViewModel(changePinCoordinator = mockChangePinCoordinator)
 
         val pin = "111111"
         viewModel.onDoneClicked(pin)
 
-        verify(exactly = 1) { mockPinManagementCoordinator.onNewPinEntered(pin) }
+        verify(exactly = 1) { mockChangePinCoordinator.onNewPinEntered(pin) }
     }
 
     @Test
     fun testOnBackClicked() {
-        val viewModel = SetupPersonalPinInputViewModel(pinManagementCoordinator = mockPinManagementCoordinator)
+        val viewModel = SetupPersonalPinInputViewModel(changePinCoordinator = mockChangePinCoordinator)
 
         viewModel.onBack()
 
-        verify(exactly = 1) { mockPinManagementCoordinator.onBack() }
+        verify(exactly = 1) { mockChangePinCoordinator.onBack() }
     }
 }

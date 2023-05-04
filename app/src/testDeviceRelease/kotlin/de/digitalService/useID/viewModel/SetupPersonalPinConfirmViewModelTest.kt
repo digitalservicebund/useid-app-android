@@ -1,6 +1,6 @@
 package de.digitalService.useID.viewModel
 
-import de.digitalService.useID.ui.coordinators.PinManagementCoordinator
+import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.screens.setup.SetupPersonalPinConfirmViewModel
 import io.mockk.*
 import io.mockk.impl.annotations.MockK
@@ -13,49 +13,49 @@ import org.junit.jupiter.api.extension.ExtendWith
 class SetupPersonalPinConfirmViewModelTest {
 
     @MockK(relaxUnitFun = true)
-    lateinit var mockPinManagementCoordinator: PinManagementCoordinator
+    lateinit var mockChangePinCoordinator: ChangePinCoordinator
 
     @Test
     fun testShouldShowErrorFalse() {
 
-        val viewModel = SetupPersonalPinConfirmViewModel(mockPinManagementCoordinator)
+        val viewModel = SetupPersonalPinConfirmViewModel(mockChangePinCoordinator)
 
         val pin = "111111"
-        every { mockPinManagementCoordinator.confirmNewPin(pin) } returns true
+        every { mockChangePinCoordinator.confirmNewPin(pin) } returns true
 
         viewModel.onDoneClicked(pin)
-        verify(exactly = 1) { mockPinManagementCoordinator.confirmNewPin(pin) }
+        verify(exactly = 1) { mockChangePinCoordinator.confirmNewPin(pin) }
         Assertions.assertFalse(viewModel.shouldShowError)
     }
 
     @Test
     fun testShouldShowErrorTrue() {
 
-        val viewModel = SetupPersonalPinConfirmViewModel(mockPinManagementCoordinator)
+        val viewModel = SetupPersonalPinConfirmViewModel(mockChangePinCoordinator)
 
         val pin = "111111"
-        every { mockPinManagementCoordinator.confirmNewPin(pin) } returns false
+        every { mockChangePinCoordinator.confirmNewPin(pin) } returns false
 
         viewModel.onDoneClicked(pin)
-        verify(exactly = 1) { mockPinManagementCoordinator.confirmNewPin(pin) }
+        verify(exactly = 1) { mockChangePinCoordinator.confirmNewPin(pin) }
         Assertions.assertTrue(viewModel.shouldShowError)
     }
 
     @Test
     fun testOnErrorDialogButtonClicked() {
 
-        val viewModel = SetupPersonalPinConfirmViewModel(mockPinManagementCoordinator)
+        val viewModel = SetupPersonalPinConfirmViewModel(mockChangePinCoordinator)
 
         viewModel.onErrorDialogButtonClicked()
-        verify(exactly = 1) { mockPinManagementCoordinator.onConfirmPinMismatchError() }
+        verify(exactly = 1) { mockChangePinCoordinator.onConfirmPinMismatchError() }
     }
 
     @Test
     fun testOnBackClicked() {
 
-        val viewModel = SetupPersonalPinConfirmViewModel(mockPinManagementCoordinator)
+        val viewModel = SetupPersonalPinConfirmViewModel(mockChangePinCoordinator)
 
         viewModel.onBack()
-        verify(exactly = 1) { mockPinManagementCoordinator.onBack() }
+        verify(exactly = 1) { mockChangePinCoordinator.onBack() }
     }
 }
