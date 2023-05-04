@@ -3,7 +3,6 @@ package de.digitalService.useID.stateMachines
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.SetupStateMachine
 import de.digitalService.useID.util.SetupStateFactory
-import de.jodamob.junit5.DefaultTypeFactory
 import de.jodamob.junit5.SealedClassesSource
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -14,14 +13,12 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.ValueSource
-import kotlin.reflect.KClass
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SetupStateMachineTest {
 
     private val issueTrackerManager = mockk<IssueTrackerManagerType>(relaxUnitFun = true)
-    private inline fun <reified NewState: SetupStateMachine.State> transition(initialState: SetupStateMachine.State, event: SetupStateMachine.Event, testScope: TestScope): NewState {
+    private inline fun <reified NewState : SetupStateMachine.State> transition(initialState: SetupStateMachine.State, event: SetupStateMachine.Event, testScope: TestScope): NewState {
         val stateMachine = SetupStateMachine(initialState, issueTrackerManager)
         Assertions.assertEquals(stateMachine.state.value.second, initialState)
 
@@ -271,7 +268,7 @@ class SetupStateMachineTest {
     }
 
     @ParameterizedTest
-    @SealedClassesSource(names = [] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+    @SealedClassesSource(names = [], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
     fun invalidate(oldState: SetupStateMachine.State) = runTest {
         val event = SetupStateMachine.Event.Invalidate
 
@@ -285,7 +282,7 @@ class SetupStateMachineTest {
     @Nested
     inner class InvalidTransitions {
         @ParameterizedTest
-        @SealedClassesSource(names = ["Invalid"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["Invalid"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `offer setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.OfferSetup(null)
 
@@ -296,7 +293,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["Intro", "SkippingToIdentRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["Intro", "SkippingToIdentRequested"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `skip setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.SkipSetup
 
@@ -307,7 +304,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["AlreadySetUpConfirmation"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["AlreadySetUpConfirmation"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `confirm already set up`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.ConfirmAlreadySetUp
 
@@ -318,7 +315,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["Intro", "SkippingToIdentRequested"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["Intro", "SkippingToIdentRequested"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `start setup`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.StartSetup
 
@@ -329,7 +326,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["StartSetup"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["StartSetup"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `PIN reset`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.ResetPin
 
@@ -340,7 +337,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["PinManagement", "PinManagementFinished"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["PinManagement", "PinManagementFinished"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `finish PIN management`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.FinishPinManagement
 
@@ -351,7 +348,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["PinManagementFinished"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["PinManagementFinished"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `confirm finish`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.ConfirmFinish
 
@@ -362,7 +359,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["PinManagement", "PinManagementFinished"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["PinManagement", "PinManagementFinished"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun `subsequent flow backed down`(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.SubsequentFlowBackedDown
 
@@ -373,7 +370,7 @@ class SetupStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["StartSetup", "PinReset", "AlreadySetUpConfirmation"] , mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
+        @SealedClassesSource(names = ["StartSetup", "PinReset", "AlreadySetUpConfirmation"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = SetupStateFactory::class)
         fun back(oldState: SetupStateMachine.State) = runTest {
             val event = SetupStateMachine.Event.Back
 
