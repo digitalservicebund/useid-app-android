@@ -69,7 +69,10 @@ class IdentificationCoordinator @Inject constructor(
                     when (val state = eventAndPair.second) {
                         is IdentificationStateMachine.State.StartIdentification -> executeIdentification(state.tcTokenUrl)
                         is IdentificationStateMachine.State.FetchingMetadata -> navigator.popUpToOrNavigate(IdentificationFetchMetadataDestination(state.backingDownAllowed), false)
-                        is IdentificationStateMachine.State.FetchingMetadataFailed -> navigator.navigate(IdentificationOtherErrorDestination)
+                        is IdentificationStateMachine.State.FetchingMetadataFailed -> {
+                            eidInteractionManager.cancelTask()
+                            navigator.navigate(IdentificationOtherErrorDestination)
+                        }
                         is IdentificationStateMachine.State.RequestCertificate -> eidInteractionManager.getCertificate()
                         is IdentificationStateMachine.State.CertificateDescriptionReceived ->
                             navigator.navigatePopping(IdentificationAttributeConsentDestination(IdentificationAttributes(state.authenticationRequest.requiredAttributes, state.certificateDescription), state.backingDownAllowed))

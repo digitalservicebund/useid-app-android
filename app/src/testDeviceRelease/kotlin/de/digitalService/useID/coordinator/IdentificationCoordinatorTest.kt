@@ -211,6 +211,7 @@ class IdentificationCoordinatorTest {
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
             verify { mockNavigator.navigate(IdentificationOtherErrorDestination) }
+            verify { mockEidInteractionManager.cancelTask() }
         }
 
         @ParameterizedTest
