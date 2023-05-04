@@ -43,7 +43,7 @@ fun NumberEntryField(
                         .semantics { invisibleToUser() }
                 )
                 NumberEntryTextField(
-                    digitCount = 6,
+                    digitCount = 5,
                     obfuscation = false,
                     spacerPosition = null,
                     focusRequester = focusRequester,

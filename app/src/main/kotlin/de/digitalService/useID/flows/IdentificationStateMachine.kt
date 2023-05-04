@@ -13,7 +13,8 @@ import javax.inject.Singleton
 
 @Singleton
 class IdentificationStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
-    @Inject constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
+    @Inject
+    constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
 
     private val logger by getLogger()
 
@@ -34,7 +35,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         class CertificateDescriptionReceived(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
         class PinInput(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
         object PinInputRetry : State()
-        class PinEntered(val pin: String, val firstTime : Boolean) : State()
+        class PinEntered(val pin: String, val firstTime: Boolean) : State()
         class PinRequested(val pin: String) : State()
         class CanRequested(val pin: String?) : State()
         class Finished(val redirectUrl: String) : State()
@@ -152,6 +153,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                                 else -> State.CardUnreadable(exception.redirectUrl)
                             }
                         }
+
                         else -> throw IllegalArgumentException()
                     }
                 }

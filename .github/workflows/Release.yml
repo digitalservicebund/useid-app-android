@@ -66,31 +66,31 @@ jobs:
           UNLEASH_API_KEY: ${{ secrets.UNLEASH_API_KEY_PRODUCTION }}
           UNLEASH_HOST: ${{ secrets.UNLEASH_HOST }}
 
-  preview:
-    runs-on: [self-hosted, ARM64]
-    needs: bumpVersion
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ needs.bumpVersion.outputs.gitTag }}
-      - name: Build
-        uses: ./.github/actions/release
-        with:
-          gitTag: ${{ needs.bumpVersion.outputs.gitTag }}
-          stage: preview
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          FASTLANE_API_KEY: ${{ secrets.FASTLANE_API_KEY }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
-          MATOMO_HOST: ${{ secrets.MATOMO_HOST_PREVIEW }}
-          MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID_PREVIEW }}
-          SENTRY_PUBLIC_KEY: ${{ secrets.SENTRY_PUBLIC_KEY_PREVIEW }}
-          SENTRY_PROJECT_ID: ${{ secrets.SENTRY_PROJECT_ID_PREVIEW }}
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_PROJECT: useid-preview-android
-          UNLEASH_API_KEY: ${{ secrets.UNLEASH_API_KEY_PREVIEW }}
-          UNLEASH_HOST: ${{ secrets.UNLEASH_HOST }}
+#  preview:
+#    runs-on: [self-hosted, ARM64]
+#    needs: bumpVersion
+#    steps:
+#      - name: Check out repository code
+#        uses: actions/checkout@v3
+#        with:
+#          ref: ${{ needs.bumpVersion.outputs.gitTag }}
+#      - name: Build
+#        uses: ./.github/actions/release
+#        with:
+#          gitTag: ${{ needs.bumpVersion.outputs.gitTag }}
+#          stage: preview
+#          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+#          FASTLANE_API_KEY: ${{ secrets.FASTLANE_API_KEY }}
+#          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+#          UPLOAD_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+#          MATOMO_HOST: ${{ secrets.MATOMO_HOST_PREVIEW }}
+#          MATOMO_SITE_ID: ${{ secrets.MATOMO_SITE_ID_PREVIEW }}
+#          SENTRY_PUBLIC_KEY: ${{ secrets.SENTRY_PUBLIC_KEY_PREVIEW }}
+#          SENTRY_PROJECT_ID: ${{ secrets.SENTRY_PROJECT_ID_PREVIEW }}
+#          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#          SENTRY_PROJECT: useid-preview-android
+#          UNLEASH_API_KEY: ${{ secrets.UNLEASH_API_KEY_PREVIEW }}
+#          UNLEASH_HOST: ${{ secrets.UNLEASH_HOST }}
 
   github:
     runs-on: [self-hosted, ARM64]

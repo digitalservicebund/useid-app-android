@@ -9,7 +9,8 @@ import javax.inject.Singleton
 
 @Singleton
 class CanStateMachine(initialState: State, private val issueTrackerManager: IssueTrackerManagerType) {
-    @Inject constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
+    @Inject
+    constructor(issueTrackerManager: IssueTrackerManagerType) : this(State.Invalid, issueTrackerManager)
 
     private val logger by getLogger()
 
@@ -22,13 +23,13 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
 
         sealed class ChangePin(val identificationPending: Boolean, val oldPin: String, val newPin: String) : State() {
             class Intro(identificationPending: Boolean, oldPin: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
-            class IdAlreadySetup(identificationPending: Boolean,  oldPin: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
-            class PinReset(identificationPending: Boolean,  oldPin: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
-            class CanIntro(identificationPending: Boolean,  oldPin: String, newPin: String, val shortFlow: Boolean) : ChangePin(identificationPending, oldPin, newPin)
-            class CanInput(identificationPending: Boolean,  oldPin: String, newPin: String, val shortFlow: Boolean) : ChangePin(identificationPending, oldPin, newPin)
-            class CanInputRetry(identificationPending: Boolean,  oldPin: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
-            class PinInput(identificationPending: Boolean,  oldPin: String, val can: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
-            class CanAndPinEntered(identificationPending: Boolean,  oldPin: String, val can: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
+            class IdAlreadySetup(identificationPending: Boolean, oldPin: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
+            class PinReset(identificationPending: Boolean, oldPin: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
+            class CanIntro(identificationPending: Boolean, oldPin: String, newPin: String, val shortFlow: Boolean) : ChangePin(identificationPending, oldPin, newPin)
+            class CanInput(identificationPending: Boolean, oldPin: String, newPin: String, val shortFlow: Boolean) : ChangePin(identificationPending, oldPin, newPin)
+            class CanInputRetry(identificationPending: Boolean, oldPin: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
+            class PinInput(identificationPending: Boolean, oldPin: String, val can: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
+            class CanAndPinEntered(identificationPending: Boolean, oldPin: String, val can: String, newPin: String) : ChangePin(identificationPending, oldPin, newPin)
 
             class FrameworkReadyForPinInput(identificationPending: Boolean, val pin: String, newPin: String) : ChangePin(identificationPending, pin, newPin)
             class FrameworkReadyForNewPinInput(identificationPending: Boolean, val pin: String, newPin: String) : ChangePin(identificationPending, pin, newPin)
@@ -42,7 +43,7 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
             class CanInputRetry(val pin: String, val shortFlow: Boolean) : Ident()
             class PinInput(val can: String, val shortFlow: Boolean) : Ident()
             class CanAndPinEntered(val can: String, val pin: String, val shortFlow: Boolean) : Ident()
-            class FrameworkReadyForPinInput(val pin: String): Ident()
+            class FrameworkReadyForPinInput(val pin: String) : Ident()
         }
     }
 
@@ -97,21 +98,21 @@ class CanStateMachine(initialState: State, private val issueTrackerManager: Issu
             }
 
             is Event.FrameworkRequestsPinForPinChange -> {
-                when(val currentState = state.value.second) {
+                when (val currentState = state.value.second) {
                     is State.ChangePin.CanAndPinEntered -> State.ChangePin.FrameworkReadyForPinInput(currentState.identificationPending, currentState.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.FrameworkRequestsPinForIdent -> {
-                when(val currentState = state.value.second) {
+                when (val currentState = state.value.second) {
                     is State.Ident.CanAndPinEntered -> State.Ident.FrameworkReadyForPinInput(currentState.pin)
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.FrameworkRequestsNewPin -> {
-                when(val currentState = state.value.second) {
+                when (val currentState = state.value.second) {
                     is State.ChangePin.FrameworkReadyForPinInput -> State.ChangePin.FrameworkReadyForNewPinInput(currentState.identificationPending, currentState.oldPin, currentState.newPin)
                     else -> throw IllegalArgumentException()
                 }

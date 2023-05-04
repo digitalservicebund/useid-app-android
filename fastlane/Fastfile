@@ -30,7 +30,7 @@ platform :android do
 
   desc "Run Android linter and ktlint"
   lane :lint do
-    gradle(tasks: ["clean", "lintKotlinMain", "lintDeviceDebug", "lintPreviewDebug"])
+    gradle(tasks: ["clean", "lintKotlinMain", "lintDeviceDebug"])
   end
 
   desc 'Bump version'
@@ -66,10 +66,12 @@ platform :android do
   lane :release do |options|
     skip_docs
     
+=begin
     if options[:stage] == 'preview' then
       previewRelease()
       next
     end
+=end
 
     if options[:stage] == 'production' then
       productionRelease()
@@ -82,11 +84,13 @@ platform :android do
     end
   end
 
+=begin
   desc "Create new Playstore preview build and submit to Google Play Store"
   lane :previewRelease do
     skip_docs
     buildAndSubmit(flavor: 'preview', package_name: 'de.digitalService.useID.Preview')
   end
+=end
 
   desc "Create new Playstore production build and submit to Google Play Store"
   lane :productionRelease do

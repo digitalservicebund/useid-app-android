@@ -1,6 +1,5 @@
 package de.digitalService.useID.idCardInterface
 
-
 sealed class EidInteractionEvent {
     object Idle : EidInteractionEvent()
     class Error(val exception: IdCardInteractionException) : EidInteractionEvent()
@@ -43,7 +42,7 @@ sealed class EidInteractionEvent {
 //        }
 }
 
-//sealed class RedactedEidInteractionEvent : Exception() {
+//  sealed class RedactedEidInteractionEvent : Exception() {
 //    object Idle : RedactedEidInteractionEvent()
 //    object Error : RedactedEidInteractionEvent()
 //    object RequestCardInsertion : RedactedEidInteractionEvent()
@@ -64,4 +63,4 @@ sealed class EidInteractionEvent {
 //    object PinManagementStarted : RedactedEidInteractionEvent()
 //    object RequestChangedPin : RedactedEidInteractionEvent()
 //    object RequestCanAndChangedPin : RedactedEidInteractionEvent()
-//}
+//  }

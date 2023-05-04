@@ -85,7 +85,7 @@ class SetupSuccessfulAfterCardUnreadableRetryAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCardUnreadableRetryFollowedSuccessfulIdent() = runTest {
+    fun testSuccessfulSetupAfterCardUnreadableRetryAndSuccessfulIdent() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -125,7 +125,7 @@ class SetupSuccessfulAfterCardUnreadableRetryAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCardUnreadableRetryFollowedSuccessfulIdentAfterPersonalPinIncorrectAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCardUnreadableRetryAndSuccessfulIdentAfterPersonalPinIncorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -165,7 +165,7 @@ class SetupSuccessfulAfterCardUnreadableRetryAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCardUnreadableRetryFollowedSuccessfulIdentAfterPersonalPinIncorrectTwiceAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCardUnreadableRetryAndSuccessfulIdentAfterPersonalPinIncorrectTwice() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -205,7 +205,7 @@ class SetupSuccessfulAfterCardUnreadableRetryAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCardUnreadableRetryFollowedSuccessfulIdentAfterCanIncorrectAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCardUnreadableRetryAndSuccessfulIdentAfterCanIncorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -245,7 +245,7 @@ class SetupSuccessfulAfterCardUnreadableRetryAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCardUnreadableRetryFollowedSuccessfulIdentAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCardUnreadableRetryAndSuccessfulIdentAfterCanIncorrectMultipleTimes() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 

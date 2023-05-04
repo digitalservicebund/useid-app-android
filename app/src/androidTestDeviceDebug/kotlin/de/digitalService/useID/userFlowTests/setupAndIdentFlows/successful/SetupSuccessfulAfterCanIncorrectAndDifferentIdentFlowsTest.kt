@@ -85,7 +85,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulAfterCanIncorrectAndThenCorrectSetupFollowedSuccessfulIdent() = runTest {
+    fun testSuccessfulAfterCanIncorrectSetupAndSuccessfulIdent() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -125,7 +125,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCanIncorrectAndThenCorrectFollowedSuccessfulIdentAfterPersonalPinIncorrectAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCanIncorrectAndSuccessfulIdentAfterPersonalPinIncorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -165,7 +165,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCanIncorrectAndThenCorrectFollowedSuccessfulIdentAfterPersonalPinIncorrectTwiceAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCanIncorrectAndSuccessfulIdentAfterPersonalPinIncorrectTwice() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -205,7 +205,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCanIncorrectAndThenCorrectFollowedSuccessfulIdentAfterCanIncorrectAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCanIncorrectAndSuccessfulIdentAfterCanIncorrect() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -245,7 +245,7 @@ class SetupSuccessfulAfterCanIncorrectAndDifferentIdentFlowsTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testSuccessfulSetupAfterCanIncorrectAndThenCorrectFollowedSuccessfulIdentAfterCanIncorrectMultipleTimesAndThenCorrect() = runTest {
+    fun testSuccessfulSetupAfterCanIncorrectAndSuccessfulIdentAfterCanIncorrectMultipleTimes() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
