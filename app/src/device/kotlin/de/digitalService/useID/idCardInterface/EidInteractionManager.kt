@@ -166,8 +166,7 @@ class EidInteractionManager @Inject constructor(
         override fun onReader(reader: Reader?) {
             logger.trace("onReader")
             if (reader == null) {
-                logger.error("Unknown reader.")
-                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.UnknownReader)
+                logger.debug("No reader available.")
                 return
             }
 

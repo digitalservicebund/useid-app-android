@@ -7,7 +7,6 @@ sealed class IdCardInteractionException(message: String? = null) : CancellationE
     class UnexpectedReadAttribute(message: String? = null) : IdCardInteractionException(message)
     object CardBlocked : IdCardInteractionException()
     object CardDeactivated : IdCardInteractionException()
-    object UnknownReader : IdCardInteractionException()
     class ProcessFailed(val redirectUrl: String? = null) : IdCardInteractionException()
     object ChangingPinFailed : IdCardInteractionException()
 
