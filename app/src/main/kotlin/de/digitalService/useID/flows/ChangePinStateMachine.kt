@@ -194,6 +194,7 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
                     is State.NewPinInput -> State.NewPinIntro(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
                     is State.NewPinConfirmation -> State.NewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
                     is State.StartIdCardInteraction -> State.NewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
+                    is State.FrameworkReadyForPinInput -> State.NewPinInput(currentState.identificationPending, currentState.transportPin, currentState.oldPin)
                     else -> throw IllegalArgumentException()
                 }
             }

@@ -709,7 +709,7 @@ class ChangePinStateMachineTest {
 
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["OldTransportPinInput", "OldPersonalPinInput", "NewPinIntro", "NewPinInput", "NewPinConfirmation", "StartIdCardInteraction"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = PinManagementStateFactory::class)
+        @SealedClassesSource(names = ["OldTransportPinInput", "OldPersonalPinInput", "NewPinIntro", "NewPinInput", "NewPinConfirmation", "StartIdCardInteraction", "FrameworkReadyForPinInput"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = PinManagementStateFactory::class)
         fun back(oldState: ChangePinStateMachine.State) = runTest {
             val event = ChangePinStateMachine.Event.Back
 
