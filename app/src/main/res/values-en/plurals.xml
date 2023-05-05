@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <plurals name="firstTimeUser_transportPIN_remainingAttempts">
-        <item quantity="one">You have one more attempt.</item>
+        <item quantity="one">You have one 1 attempt.</item>
         <item quantity="other">You still have %d attempts.</item>
     </plurals>
     <plurals name="identification_personalPIN_remainingAttempts">
-        <item quantity="one">You have one more attempt.</item>
+        <item quantity="one">You have 1 more attempt.</item>
         <item quantity="other">You still have %d attempts.</item>
     </plurals>
 </resources>
