@@ -2,10 +2,10 @@
 <resources>
     <plurals name="firstTimeUser_transportPIN_remainingAttempts">
         <item quantity="one">Sie haben noch 1 Versuch.</item>
-        <item quantity="other">Sie haben noch %d Versuche</item>
+        <item quantity="other">Sie haben noch %d Versuche.</item>
     </plurals>
     <plurals name="identification_personalPIN_remainingAttempts">
-        <item quantity="one">Sie haben noch einen Versuch</item>
-        <item quantity="other">Sie haben noch %d Versuche</item>
+        <item quantity="one">Sie haben noch 1 Versuch.</item>
+        <item quantity="other">Sie haben noch %d Versuche.</item>
     </plurals>
 </resources>
