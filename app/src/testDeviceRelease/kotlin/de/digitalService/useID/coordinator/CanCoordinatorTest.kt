@@ -453,7 +453,7 @@ class CanCoordinatorTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["PinChangeSucceeded", "Error"], factoryClass = EidInteractionEventTypeFactory::class)
+        @SealedClassesSource(names = ["PinChangeSucceeded", "Error", "PukRequested"], factoryClass = EidInteractionEventTypeFactory::class)
         fun `handling finishing events`(event: EidInteractionEvent) = runTest {
             every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
 
@@ -577,7 +577,7 @@ class CanCoordinatorTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["AuthenticationSucceededWithRedirect", "Error"], factoryClass = EidInteractionEventTypeFactory::class)
+        @SealedClassesSource(names = ["AuthenticationSucceededWithRedirect", "Error", "PukRequested"], factoryClass = EidInteractionEventTypeFactory::class)
         fun `handling finishing events`(event: EidInteractionEvent) = runTest {
             every { mockCanStateMachine.state } returns MutableStateFlow(Pair(CanStateMachine.Event.Invalidate, CanStateMachine.State.Invalid))
 

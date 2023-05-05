@@ -1,10 +1,9 @@
-package de.digitalService.useID.userFlowTests.identFlows.error
+package de.digitalService.useID.userFlowTests.setupFlows.success
 
-import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
+import androidx.test.espresso.intent.rule.IntentsTestRule
 import dagger.hilt.android.testing.BindValue
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -21,6 +20,8 @@ import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.userFlowTests.utils.TestScreen
+import de.digitalService.useID.userFlowTests.utils.flowParts.setup.helper.runSetupUpToCan
+import de.digitalService.useID.userFlowTests.utils.flowParts.setup.runSetupSuccessful
 import de.digitalService.useID.util.*
 import io.mockk.every
 import io.mockk.mockk
@@ -38,12 +39,15 @@ import javax.inject.Inject
 
 @UninstallModules(SingletonModule::class, CoroutineContextProviderModule::class, NfcInterfaceMangerModule::class)
 @HiltAndroidTest
-class IdentErrorFetchMetaDataTest {
+class SetupSuccessfulAfterBlockingCardTest {
 
     @get:Rule(order = 0)
     var hiltRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
+    val intentsTestRule = IntentsTestRule(MainActivity::class.java)
+
+    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
@@ -80,7 +84,7 @@ class IdentErrorFetchMetaDataTest {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testIdentErrorDuringFetchMetaData() = runTest {
+    fun testSetupSuccessfulAfterCardBlockedError() = runTest {
         every { mockCoroutineContextProvider.IO } returns StandardTestDispatcher(testScheduler)
         every { mockCoroutineContextProvider.Default } returns StandardTestDispatcher(testScheduler)
 
@@ -95,46 +99,87 @@ class IdentErrorFetchMetaDataTest {
             )
         }
 
-        val deepLink = Uri.parse("bundesident://127.0.0.1:24727/eID-Client?tcTokenURL=https%3A%2F%2Feid.digitalservicebund.de%2Fapi%2Fv1%2Fidentification%2Fsessions%2F30d20d97-cf31-4f01-ab27-35dea918bb83%2Ftc-token")
+        val wrongTransportPin = "11111"
+        val can = "654321"
 
         // Define screens to be tested
-        val identificationFetchMetaData = TestScreen.IdentificationFetchMetaData(composeTestRule)
-        val errorGenericError = TestScreen.ErrorGenericError(composeTestRule)
+        val setupTransportPin = TestScreen.SetupTransportPin(composeTestRule)
+        val setupScan = TestScreen.Scan(composeTestRule)
+        val setupCanConfirmTransportPin = TestScreen.SetupCanConfirmTransportPin(composeTestRule)
+        val setupCanAlreadySetup = TestScreen.SetupCanAlreadySetup(composeTestRule)
+        val setupCanIntro = TestScreen.CanIntro(composeTestRule)
+        val setupCanInput = TestScreen.CanInput(composeTestRule)
+        val setupErrorCardBlocked = TestScreen.ErrorCardBlocked(composeTestRule)
         val home = TestScreen.Home(composeTestRule)
 
-        composeTestRule.waitForIdle()
-
-        appCoordinator.handleDeepLink(deepLink)
+        home.assertIsDisplayed()
+        home.setupButton.click()
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        runSetupUpToCan(
+            testRule = composeTestRule,
+            eidFlow = eidFlow,
+            testScope = this
+        )
+
+        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+        setupCanConfirmTransportPin.inputCorrectBtn.click()
         advanceUntilIdle()
 
-        identificationFetchMetaData.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        setupCanAlreadySetup.assertIsDisplayed()
+        setupCanAlreadySetup.back.click()
         advanceUntilIdle()
 
-        errorGenericError.setIdentPending(true).assertIsDisplayed()
-        errorGenericError.tryAgainBtn.click()
-
-        eidFlow.value = EidInteractionEvent.Idle
+        setupCanConfirmTransportPin.setTransportPin(wrongTransportPin).assertIsDisplayed()
+        setupCanConfirmTransportPin.retryInputBtn.click()
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        setupCanIntro.setBackAllowed(true).assertIsDisplayed()
+        setupCanIntro.enterCanNowBtn.click()
         advanceUntilIdle()
 
-        identificationFetchMetaData.assertIsDisplayed()
-
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        // ENTER CORRECT CAN
+        setupCanInput.assertIsDisplayed()
+        setupCanInput.canEntryField.assertLength(0)
+        composeTestRule.performPinInput(can)
+        setupCanInput.canEntryField.assertLength(can.length)
+        composeTestRule.pressReturn()
         advanceUntilIdle()
 
-        errorGenericError.setIdentPending(true).assertIsDisplayed()
-        Espresso.pressBack()
-        errorGenericError.confirmationDialog.assertIsDisplayed()
-        errorGenericError.confirmationDialog.confirm()
+        // ENTER WRONG TRANSPORT PIN THIRD TIME
+        setupTransportPin.setAttemptsLeft(1).assertIsDisplayed()
+        setupTransportPin.transportPinField.assertLength(0)
+        composeTestRule.performPinInput(wrongTransportPin)
+        setupTransportPin.transportPinField.assertLength(wrongTransportPin.length)
+        composeTestRule.pressReturn()
+
+        advanceUntilIdle()
+
+        eidFlow.value = EidInteractionEvent.CardInsertionRequested
+        advanceUntilIdle()
+
+        setupScan.setBackAllowed(false).setProgress(false).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.CardRecognized
+        advanceUntilIdle()
+
+        setupScan.setProgress(true).assertIsDisplayed()
+
+        eidFlow.value = EidInteractionEvent.PukRequested
+        advanceUntilIdle()
+
+        setupErrorCardBlocked.assertIsDisplayed()
+        setupErrorCardBlocked.closeBtn.click()
         advanceUntilIdle()
 
         home.assertIsDisplayed()
+        home.setupButton.click()
+        advanceUntilIdle()
+
+        runSetupSuccessful(
+            testRule = composeTestRule,
+            eidFlow = eidFlow,
+            testScope = this
+        )
     }
 }

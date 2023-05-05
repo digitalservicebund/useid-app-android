@@ -157,6 +157,7 @@ class CanCoordinator @Inject constructor(
                     is EidInteractionEvent.CanRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForIdent(pin))
                     is EidInteractionEvent.PinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPinForIdent(pin))
                     is EidInteractionEvent.AuthenticationSucceededWithRedirect -> finishCanFlow()
+                    is EidInteractionEvent.PukRequested -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")
                 }
@@ -175,6 +176,7 @@ class CanCoordinator @Inject constructor(
                     is EidInteractionEvent.PinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPinForPinChange(identificationPending, pin, newPin, shortFlow))
                     is EidInteractionEvent.NewPinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsNewPin(identificationPending, pin, newPin, shortFlow))
                     is EidInteractionEvent.PinChangeSucceeded -> finishCanFlow()
+                    is EidInteractionEvent.PukRequested -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")
                 }
