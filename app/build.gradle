@@ -178,6 +178,7 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.android.codescanner)
     implementation(libs.compose.destinations.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.security.crypto.ktx)

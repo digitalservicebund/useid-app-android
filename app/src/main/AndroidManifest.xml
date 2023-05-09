@@ -52,6 +52,8 @@
                 <data android:pathPattern="/eID-Client" />
             </intent-filter>
         </activity>
+        <meta-data android:name="com.google.mlkit.vision.DEPENDENCIES" android:value="barcode_ui"/>
+
         <meta-data android:name="sentryPublicKey" android:value="${sentryPublicKey}" />
         <meta-data android:name="sentryProjectId" android:value="${sentryProjectId}" />
         <meta-data android:name="matomoHost" android:value="${matomoHost}" />

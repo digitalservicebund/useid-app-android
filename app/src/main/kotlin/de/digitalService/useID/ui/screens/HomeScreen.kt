@@ -1,5 +1,7 @@
 package de.digitalService.useID.ui.screens
 
+import android.content.Context
+import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
@@ -22,6 +25,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import com.google.mlkit.vision.barcode.common.Barcode.BarcodeFormat
+import com.google.mlkit.vision.barcode.common.Barcode.FORMAT_QR_CODE
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanner
+import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
+import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +37,9 @@ import de.digitalService.useID.BuildConfig
 import de.digitalService.useID.R
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
+import de.digitalService.useID.ui.components.BundButton
 import de.digitalService.useID.ui.components.BundInformationButton
+import de.digitalService.useID.ui.components.ButtonType
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
@@ -124,6 +134,10 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
         ) {
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
+            QrCodeScanCardBox(viewModel)
+
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
+
             SetupUseIdCardBox(viewModel)
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
@@ -160,6 +174,20 @@ private fun CardBox(content: @Composable ColumnScope.() -> Unit) {
             ),
         content = content
     )
+}
+
+@Composable
+private fun QrCodeScanCardBox(viewModel: HomeScreenViewModelInterface) {
+    val context = LocalContext.current
+
+    CardBox {
+        BundButton(
+            type = ButtonType.PRIMARY,
+            onClick = { viewModel.onQrScanButtonClicked(context) },
+            label = "QR",
+            modifier = Modifier.padding(UseIdTheme.spaces.s)
+        )
+    }
 }
 
 @Composable
@@ -262,6 +290,7 @@ interface HomeScreenViewModelInterface {
     val showVariation: Boolean
     fun setupOnlineId()
     fun homeScreenLaunched()
+    fun onQrScanButtonClicked(context: Context)
     fun onPrivacyButtonClicked()
     fun onImprintButtonClicked()
     fun onAccessibilityButtonClicked()
@@ -289,6 +318,35 @@ class HomeScreenViewModel @Inject constructor(
         appCoordinator.offerIdSetup(null)
     }
 
+    override fun onQrScanButtonClicked(context: Context) {
+        val scannerOptions = GmsBarcodeScannerOptions.Builder()
+            .setBarcodeFormats(FORMAT_QR_CODE)
+            .build()
+
+        val scanner = GmsBarcodeScanning.getClient(context, scannerOptions)
+
+        scanner.startScan()
+            .addOnSuccessListener { barcode ->
+                val rawValue = barcode.rawValue ?: run {
+                    logger.debug("Barcode result not available.")
+                    return@addOnSuccessListener
+                }
+                val uri = Uri.parse(rawValue)
+
+                logger.debug("Scan finished successfully: $rawValue")
+                appCoordinator.handleDeepLink(uri)
+            }
+            .addOnCompleteListener {
+                logger.debug("Scan completed.")
+            }
+            .addOnCanceledListener {
+                logger.debug("Cancelled")
+            }
+            .addOnFailureListener { error ->
+                logger.error("Error: $error")
+            }
+    }
+
     override fun onPrivacyButtonClicked() {
         appNavigator.navigate(PrivacyScreenDestination)
     }
@@ -314,6 +372,7 @@ private class PreviewViewModel : HomeScreenViewModelInterface {
     override val showVariation = true
     override fun setupOnlineId() {}
     override fun homeScreenLaunched() {}
+    override fun onQrScanButtonClicked(context: Context) {}
     override fun onPrivacyButtonClicked() {}
     override fun onImprintButtonClicked() {}
     override fun onAccessibilityButtonClicked() {}

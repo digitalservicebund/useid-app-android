@@ -83,7 +83,7 @@ class AppCoordinator @Inject constructor(
         }
     }
 
-    private fun handleTcTokenUrl(url: String) {
+    fun handleTcTokenUrl(url: String) {
         navigator.popToRoot()
 
         if (nfcInterfaceManager.nfcAvailability.value != NfcAvailability.Available) {
