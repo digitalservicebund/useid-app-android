@@ -1,7 +1,7 @@
 package de.digitalService.useID.userFlowTests.utils.flowParts.setup
 
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.userFlowTests.utils.TestScreen
 import de.digitalService.useID.util.ComposeTestRule
 import de.digitalService.useID.util.performPinInput
@@ -73,7 +73,7 @@ fun runSetupSuccessfulAfterCardUnreadableWithSuccessfulRetry(testRule: ComposeTe
     eidFlow.value = EidInteractionEvent.CardRemoved
     testScope.advanceUntilIdle()
 
-    eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+    eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
 
     testScope.advanceUntilIdle()
 

@@ -112,7 +112,7 @@ class IdentErrorFetchMetaDataTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
         advanceUntilIdle()
 
         errorGenericError.setIdentPending(true).assertIsDisplayed()
@@ -126,7 +126,7 @@ class IdentErrorFetchMetaDataTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
         advanceUntilIdle()
 
         errorGenericError.setIdentPending(true).assertIsDisplayed()

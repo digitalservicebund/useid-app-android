@@ -2,7 +2,7 @@ package de.digitalService.useID.idCardInterface
 
 sealed class EidInteractionEvent {
     object Idle : EidInteractionEvent()
-    class Error(val exception: IdCardInteractionException) : EidInteractionEvent()
+    class Error(val exception: EidInteractionException) : EidInteractionEvent()
 
     object CardInsertionRequested : EidInteractionEvent()
     object CardRecognized : EidInteractionEvent()

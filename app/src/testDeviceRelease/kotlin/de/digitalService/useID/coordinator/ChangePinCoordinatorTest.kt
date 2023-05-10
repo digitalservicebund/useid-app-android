@@ -6,7 +6,7 @@ import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.flows.*
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.EidInteractionManager
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.ui.coordinators.CanCoordinator
 import de.digitalService.useID.ui.coordinators.ChangePinCoordinator
 import de.digitalService.useID.ui.coordinators.SubCoordinatorState
@@ -554,7 +554,7 @@ class ChangePinCoordinatorTest {
             stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked)) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked)) }
         }
 
         @Test
@@ -570,14 +570,14 @@ class ChangePinCoordinatorTest {
             )
             changePinCoordinator.startPinChange(false, false)
 
-            val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated))
+            val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(EidInteractionException.CardDeactivated))
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
             val newState = ChangePinStateMachine.State.StartIdCardInteraction(false, false, "12345", "000000")
             stateFlow.value = Pair(ChangePinStateMachine.Event.Invalidate, newState)
             advanceUntilIdle()
 
-            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)) }
+            verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(EidInteractionException.CardDeactivated)) }
         }
 
         @Test
@@ -593,7 +593,7 @@ class ChangePinCoordinatorTest {
             )
             changePinCoordinator.startPinChange(false, false)
 
-            val exception = IdCardInteractionException.ProcessFailed()
+            val exception = EidInteractionException.ProcessFailed()
             val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(exception))
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 

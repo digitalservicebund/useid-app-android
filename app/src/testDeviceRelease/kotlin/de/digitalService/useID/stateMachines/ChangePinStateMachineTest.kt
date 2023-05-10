@@ -2,7 +2,7 @@ package de.digitalService.useID.stateMachines
 
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.ChangePinStateMachine
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.util.PinManagementStateFactory
 import de.jodamob.junit5.SealedClassesSource
 import io.mockk.mockk
@@ -346,7 +346,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardDeactivated)
             val oldState = ChangePinStateMachine.State.FrameworkReadyForPinInput(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.CardDeactivated = transition(oldState, event, this)
         }
@@ -357,7 +357,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked)
             val oldState = ChangePinStateMachine.State.FrameworkReadyForPinInput(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.CardBlocked = transition(oldState, event, this)
         }
@@ -368,7 +368,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.ProcessFailed())
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.ProcessFailed())
             val oldState = ChangePinStateMachine.State.FrameworkReadyForPinInput(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.ProcessFailed = transition(oldState, event, this)
 
@@ -384,7 +384,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardDeactivated)
             val oldState = ChangePinStateMachine.State.StartIdCardInteraction(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.CardDeactivated = transition(oldState, event, this)
         }
@@ -395,7 +395,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked)
             val oldState = ChangePinStateMachine.State.StartIdCardInteraction(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.CardBlocked = transition(oldState, event, this)
         }
@@ -406,7 +406,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.ProcessFailed())
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.ProcessFailed())
             val oldState = ChangePinStateMachine.State.StartIdCardInteraction(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.ProcessFailed = transition(oldState, event, this)
 
@@ -422,7 +422,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardDeactivated)
             val oldState = ChangePinStateMachine.State.ReadyForSubsequentScan(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.CardDeactivated = transition(oldState, event, this)
         }
@@ -433,7 +433,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked)
             val oldState = ChangePinStateMachine.State.ReadyForSubsequentScan(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.CardBlocked = transition(oldState, event, this)
         }
@@ -444,7 +444,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.ProcessFailed())
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.ProcessFailed())
             val oldState = ChangePinStateMachine.State.ReadyForSubsequentScan(identificationPending, true, oldPin, newPin)
             val newState: ChangePinStateMachine.State.ProcessFailed = transition(oldState, event, this)
 
@@ -460,7 +460,7 @@ class ChangePinStateMachineTest {
             val oldPin = "12345"
             val newPin = "000000"
 
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.ProcessFailed())
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.ProcessFailed())
             val oldState = ChangePinStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, true)
             val newState: ChangePinStateMachine.State.ProcessFailed = transition(oldState, event, this)
 
@@ -676,7 +676,7 @@ class ChangePinStateMachineTest {
         @ParameterizedTest
         @SealedClassesSource(names = ["FrameworkReadyForPinInput", "StartIdCardInteraction", "ReadyForSubsequentScan", "CanRequested"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = PinManagementStateFactory::class)
         fun `card deactivated`(oldState: ChangePinStateMachine.State) = runTest {
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardDeactivated)
 
             val stateMachine = ChangePinStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
@@ -687,7 +687,7 @@ class ChangePinStateMachineTest {
         @ParameterizedTest
         @SealedClassesSource(names = ["FrameworkReadyForPinInput", "StartIdCardInteraction", "ReadyForSubsequentScan", "CanRequested"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = PinManagementStateFactory::class)
         fun `card blocked`(oldState: ChangePinStateMachine.State) = runTest {
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked)
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked)
 
             val stateMachine = ChangePinStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)
@@ -699,7 +699,7 @@ class ChangePinStateMachineTest {
         @ParameterizedTest
         @SealedClassesSource(names = ["FrameworkReadyForPinInput", "StartIdCardInteraction", "ReadyForSubsequentScan", "CanRequested"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = PinManagementStateFactory::class)
         fun `process failed`(oldState: ChangePinStateMachine.State) = runTest {
-            val event = ChangePinStateMachine.Event.Error(IdCardInteractionException.ProcessFailed())
+            val event = ChangePinStateMachine.Event.Error(EidInteractionException.ProcessFailed())
 
             val stateMachine = ChangePinStateMachine(oldState, issueTrackerManager)
             Assertions.assertEquals(stateMachine.state.value.second, oldState)

@@ -157,7 +157,7 @@ class IdentCancelledOnCardUnreadableTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
         advanceUntilIdle()
 
         errorCardUnreadable.setIdentPending(true).setRedirectUrlPresent(false).assertIsDisplayed()

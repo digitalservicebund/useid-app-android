@@ -166,7 +166,7 @@ class IdentCancelledOnCardUnreadableWithRedirectTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed(redirectUrl))
         advanceUntilIdle()
 
         Intents.intending(

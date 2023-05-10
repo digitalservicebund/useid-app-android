@@ -146,7 +146,7 @@ class IdentCanAfterSomeTimeCardUnreadableAfterCanEntryTest {
         eidFlow.value = EidInteractionEvent.PinRequested(1)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
         advanceUntilIdle()
 
         errorCardUnreadable.setIdentPending(true).setRedirectUrlPresent(false).assertIsDisplayed()

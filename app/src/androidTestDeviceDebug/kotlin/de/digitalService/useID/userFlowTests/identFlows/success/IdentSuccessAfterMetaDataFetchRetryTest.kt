@@ -124,7 +124,7 @@ class IdentSuccessAfterMetaDataFetchRetryTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.FrameworkError())
         advanceUntilIdle()
 
         errorGeneric.setIdentPending(true).assertIsDisplayed()

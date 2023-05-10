@@ -3,7 +3,7 @@ package de.digitalService.useID.util
 import de.digitalService.useID.idCardInterface.AuthenticationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.jodamob.junit5.DefaultTypeFactory
 import kotlin.reflect.KClass
 
@@ -11,7 +11,7 @@ class EidInteractionEventTypeFactory: DefaultTypeFactory() {
     override fun create(what: KClass<*>): EidInteractionEvent {
         return when (what) {
             EidInteractionEvent.Idle::class -> EidInteractionEvent.Idle
-            EidInteractionEvent.Error::class -> EidInteractionEvent.Error(exception = IdCardInteractionException.CardDeactivated)
+            EidInteractionEvent.Error::class -> EidInteractionEvent.Error(exception = EidInteractionException.CardDeactivated)
             EidInteractionEvent.CardInsertionRequested::class -> EidInteractionEvent.CardInsertionRequested
             EidInteractionEvent.CardRecognized::class -> EidInteractionEvent.CardRecognized
             EidInteractionEvent.CardRemoved::class -> EidInteractionEvent.CardRemoved

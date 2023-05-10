@@ -2,7 +2,7 @@ package de.digitalService.useID.flows
 
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -59,7 +59,7 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
         object FrameworkRequestsCan : Event()
         object Finish : Event()
 
-        data class Error(val exception: IdCardInteractionException) : Event()
+        data class Error(val exception: EidInteractionException) : Event()
         object ProceedAfterError : Event()
 
         object Back : Event()
@@ -170,9 +170,9 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
             is Event.Error -> {
                 fun nextState(identificationPending: Boolean, transportPin: Boolean, oldPin: String, newPin: String, firstScan: Boolean): State {
                     return when (event.exception) {
-                        is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
-                        is IdCardInteractionException.CardBlocked -> State.CardBlocked
-                        is IdCardInteractionException.ProcessFailed -> State.ProcessFailed(identificationPending, transportPin, oldPin, newPin, firstScan)
+                        is EidInteractionException.CardDeactivated -> State.CardDeactivated
+                        is EidInteractionException.CardBlocked -> State.CardBlocked
+                        is EidInteractionException.ProcessFailed -> State.ProcessFailed(identificationPending, transportPin, oldPin, newPin, firstScan)
                         else -> State.UnknownError
                     }
                 }

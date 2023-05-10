@@ -2,13 +2,13 @@ package de.digitalService.useID.idCardInterface
 
 import kotlin.coroutines.cancellation.CancellationException
 
-sealed class IdCardInteractionException(message: String? = null) : CancellationException(message) {
-    class FrameworkError(message: String? = null) : IdCardInteractionException(message)
-    class UnexpectedReadAttribute(message: String? = null) : IdCardInteractionException(message)
-    object CardBlocked : IdCardInteractionException()
-    object CardDeactivated : IdCardInteractionException()
-    class ProcessFailed(val redirectUrl: String? = null) : IdCardInteractionException()
-    object ChangingPinFailed : IdCardInteractionException()
+sealed class EidInteractionException(message: String? = null) : CancellationException(message) {
+    class FrameworkError(message: String? = null) : EidInteractionException(message)
+    class UnexpectedReadAttribute(message: String? = null) : EidInteractionException(message)
+    object CardBlocked : EidInteractionException()
+    object CardDeactivated : EidInteractionException()
+    class ProcessFailed(val redirectUrl: String? = null) : EidInteractionException()
+    object ChangingPinFailed : EidInteractionException()
 
     val redacted: RedactedIDCardInteractionException?
         get() = when (this) {

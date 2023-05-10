@@ -159,7 +159,7 @@ class IdentCanCardBlockedAfterPinIncorrectTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardBlocked)
         advanceUntilIdle()
 
         errorCardBlocked.assertIsDisplayed()

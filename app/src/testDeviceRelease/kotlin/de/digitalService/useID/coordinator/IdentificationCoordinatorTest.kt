@@ -727,7 +727,7 @@ class IdentificationCoordinatorTest {
             eIdFlow.value = EidInteractionEvent.PukRequested
             advanceUntilIdle()
 
-            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Error(IdCardInteractionException.CardBlocked)) }
+            verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Error(EidInteractionException.CardBlocked)) }
         }
 
         @Test
@@ -740,7 +740,7 @@ class IdentificationCoordinatorTest {
             val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
             advanceUntilIdle()
 
-            val exception = IdCardInteractionException.FrameworkError("message")
+            val exception = EidInteractionException.FrameworkError("message")
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
             advanceUntilIdle()
 

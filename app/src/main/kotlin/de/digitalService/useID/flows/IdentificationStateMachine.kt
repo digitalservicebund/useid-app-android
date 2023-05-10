@@ -5,7 +5,7 @@ import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.AuthenticationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -59,7 +59,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         object RetryAfterError : Event()
         data class Finish(val redirectUrl: String) : Event()
 
-        data class Error(val exception: IdCardInteractionException) : Event()
+        data class Error(val exception: EidInteractionException) : Event()
 
         object Back : Event()
         object Invalidate : Event()
@@ -145,9 +145,9 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
             is Event.Error -> {
                 fun nextState(): State {
                     return when (val exception = event.exception) {
-                        is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
-                        is IdCardInteractionException.CardBlocked -> State.CardBlocked
-                        is IdCardInteractionException.ProcessFailed -> {
+                        is EidInteractionException.CardDeactivated -> State.CardDeactivated
+                        is EidInteractionException.CardBlocked -> State.CardBlocked
+                        is EidInteractionException.ProcessFailed -> {
                             when (val currentState = state.value.second) {
                                 is State.CardBlocked, is State.CardDeactivated -> currentState
                                 else -> State.CardUnreadable(exception.redirectUrl)

@@ -5,7 +5,7 @@ import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.IdentificationStateMachine
 import de.digitalService.useID.idCardInterface.AuthenticationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.util.IdentificationStateFactory
 import de.jodamob.junit5.SealedClassesSource
 import io.mockk.mockk
@@ -239,7 +239,7 @@ class IdentificationStateMachineTest {
             val tcTokenUrl = mockk<Uri>()
             val redirectUrl = "redirectUrl"
 
-            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
+            val event = IdentificationStateMachine.Event.Error(EidInteractionException.ProcessFailed(redirectUrl))
             val oldState = IdentificationStateMachine.State.FetchingMetadata(backingDownAllowed, tcTokenUrl)
             val newState: IdentificationStateMachine.State.FetchingMetadataFailed = transition(oldState, event, this)
 
@@ -250,14 +250,14 @@ class IdentificationStateMachineTest {
         @ParameterizedTest
         @SealedClassesSource(names = ["FetchingMetadata"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `card deactivated`(oldState: IdentificationStateMachine.State) = runTest {
-            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.CardDeactivated)
+            val event = IdentificationStateMachine.Event.Error(EidInteractionException.CardDeactivated)
             val newState: IdentificationStateMachine.State.CardDeactivated = transition(oldState, event, this)
         }
 
         @ParameterizedTest
         @SealedClassesSource(names = ["FetchingMetadata"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun `card blocked`(oldState: IdentificationStateMachine.State) = runTest {
-            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.CardBlocked)
+            val event = IdentificationStateMachine.Event.Error(EidInteractionException.CardBlocked)
             val newState: IdentificationStateMachine.State.CardBlocked = transition(oldState, event, this)
         }
 
@@ -266,7 +266,7 @@ class IdentificationStateMachineTest {
         fun `process failed`(oldState: IdentificationStateMachine.State) = runTest {
             val redirectUrl = "redirectUrl"
 
-            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
+            val event = IdentificationStateMachine.Event.Error(EidInteractionException.ProcessFailed(redirectUrl))
             val newState: IdentificationStateMachine.State.CardUnreadable = transition(oldState, event, this)
 
             Assertions.assertEquals(redirectUrl, newState.redirectUrl)
@@ -276,7 +276,7 @@ class IdentificationStateMachineTest {
         fun `process failed after card blocked`() = runTest {
             val redirectUrl = "redirectUrl"
 
-            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
+            val event = IdentificationStateMachine.Event.Error(EidInteractionException.ProcessFailed(redirectUrl))
             val oldState = IdentificationStateMachine.State.CardBlocked
             val newState: IdentificationStateMachine.State.CardBlocked = transition(oldState, event, this)
         }
@@ -285,7 +285,7 @@ class IdentificationStateMachineTest {
         fun `process failed after card deactivated`() = runTest {
             val redirectUrl = "redirectUrl"
 
-            val event = IdentificationStateMachine.Event.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
+            val event = IdentificationStateMachine.Event.Error(EidInteractionException.ProcessFailed(redirectUrl))
             val oldState = IdentificationStateMachine.State.CardBlocked
             val newState: IdentificationStateMachine.State.CardBlocked = transition(oldState, event, this)
         }

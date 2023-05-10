@@ -12,7 +12,7 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.hilt.CoroutineContextProviderModule
 import de.digitalService.useID.hilt.SingletonModule
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.UseIDApp
@@ -147,7 +147,7 @@ class SetupErrorCardDeactivatedTest {
 
         setupScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardDeactivated)
         advanceUntilIdle()
 
         errorCardDeactivated.assertIsDisplayed()

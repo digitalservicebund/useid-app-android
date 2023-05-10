@@ -157,7 +157,7 @@ class IdentCancelledOnCardDeactivatedTest {
 
         identificationScan.setProgress(true).assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardDeactivated)
         advanceUntilIdle()
 
         errorDeactivated.assertIsDisplayed()

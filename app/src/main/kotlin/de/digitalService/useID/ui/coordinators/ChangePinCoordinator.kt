@@ -7,7 +7,7 @@ import de.digitalService.useID.flows.ChangePinStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.EidInteractionManager
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.SetupCardBlockedDestination
 import de.digitalService.useID.ui.screens.destinations.SetupCardDeactivatedDestination
@@ -252,7 +252,7 @@ class ChangePinCoordinator @Inject constructor(
 
                     is EidInteractionEvent.PukRequested -> {
                         _scanInProgress.value = false
-                        flowStateMachine.transition(ChangePinStateMachine.Event.Error(IdCardInteractionException.CardBlocked))
+                        flowStateMachine.transition(ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked))
                     }
 
                     is EidInteractionEvent.Error -> {

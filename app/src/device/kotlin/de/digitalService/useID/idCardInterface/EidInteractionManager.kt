@@ -43,7 +43,7 @@ class EidInteractionManager @Inject constructor(
             error?.let { logger.error(it) }
             if (accessRights == null) {
                 logger.error("Access rights missing.")
-                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Access rights missing. ${error ?: "n/a"}"))
+                _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.FrameworkError("Access rights missing. ${error ?: "n/a"}"))
                 return
             }
 
@@ -80,13 +80,13 @@ class EidInteractionManager @Inject constructor(
                 if (majorCode != "error") {
                     redirectUrl?.let { _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(it) }
                 } else {
-                    _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed(redirectUrl))
+                    _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed(redirectUrl))
                 }
-            } ?: run { _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed()) }
+            } ?: run { _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed()) }
         }
 
         override fun onAuthenticationStartFailed(error: String) {
-            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError(error))
+            _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.FrameworkError(error))
         }
 
         override fun onAuthenticationStarted() {
@@ -94,7 +94,7 @@ class EidInteractionManager @Inject constructor(
         }
 
         override fun onBadState(error: String) {
-            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Bad state: $error"))
+            _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.FrameworkError("Bad state: $error"))
         }
 
         override fun onCertificate(certificateDescription: CertificateDescription) {
@@ -116,7 +116,7 @@ class EidInteractionManager @Inject constructor(
                 _eidFlow.value = EidInteractionEvent.PinChangeSucceeded
             } else {
                 logger.error("Changing PIN failed.")
-                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ChangingPinFailed)
+                _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ChangingPinFailed)
             }
         }
 
@@ -140,7 +140,7 @@ class EidInteractionManager @Inject constructor(
             reader.card?.let {
                 _eidFlow.value = EidInteractionEvent.PinRequested(it.pinRetryCounter)
             } ?: run {
-                _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError("Framework requests PIN without card"))
+                _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.FrameworkError("Framework requests PIN without card"))
             }
         }
 
@@ -160,7 +160,7 @@ class EidInteractionManager @Inject constructor(
 
         override fun onInternalError(error: String) {
             logger.error(error)
-            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError(error))
+            _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.FrameworkError(error))
         }
 
         override fun onReader(reader: Reader?) {
@@ -170,11 +170,13 @@ class EidInteractionManager @Inject constructor(
                 return
             }
 
-            if (reader.card == null) {
-                _eidFlow.value = EidInteractionEvent.CardRemoved
-            } else {
-                _eidFlow.value = EidInteractionEvent.CardRecognized
-            }
+            reader.card?.let {
+                if (it.deactivated) {
+                    _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardDeactivated)
+                } else {
+                    _eidFlow.value = EidInteractionEvent.CardRecognized
+                }
+            } ?: run { _eidFlow.value = EidInteractionEvent.CardRemoved }
         }
 
         override fun onReaderList(readers: List<Reader>?) {
@@ -192,7 +194,7 @@ class EidInteractionManager @Inject constructor(
 
         override fun onWrapperError(error: WrapperError) {
             logger.error("${error.error} - ${error.msg}")
-            _eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.FrameworkError(error.msg))
+            _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.FrameworkError(error.msg))
         }
     }
 

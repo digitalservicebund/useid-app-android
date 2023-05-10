@@ -456,7 +456,7 @@ class UserTrackingTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardDeactivated)
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -515,7 +515,7 @@ class UserTrackingTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardBlocked)
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -574,7 +574,7 @@ class UserTrackingTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -965,7 +965,7 @@ class UserTrackingTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardDeactivated)
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardDeactivated)
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -1036,7 +1036,7 @@ class UserTrackingTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.CardBlocked)
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardBlocked)
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -1107,7 +1107,7 @@ class UserTrackingTest {
         eidFlow.value = EidInteractionEvent.CardRecognized
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 

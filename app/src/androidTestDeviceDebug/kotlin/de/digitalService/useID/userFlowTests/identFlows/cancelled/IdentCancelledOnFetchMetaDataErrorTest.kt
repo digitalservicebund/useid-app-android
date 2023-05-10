@@ -112,7 +112,7 @@ class IdentCancelledOnFetchMetaDataErrorTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.Error(IdCardInteractionException.ProcessFailed())
+        eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed())
 
         advanceUntilIdle()
 
