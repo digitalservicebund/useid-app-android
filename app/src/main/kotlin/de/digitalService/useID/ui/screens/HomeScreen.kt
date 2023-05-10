@@ -239,7 +239,7 @@ private fun SelbstauskunftCardBox(viewModel: HomeScreenViewModelInterface) {
         Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
         BundInformationButton(
-            onClick = viewModel::selbstauskunft,
+            onClick = viewModel::checkAusweis,
             label = "Ausweisfunktion testen",
             modifier = Modifier
                 .padding(horizontal = UseIdTheme.spaces.m)
@@ -248,7 +248,6 @@ private fun SelbstauskunftCardBox(viewModel: HomeScreenViewModelInterface) {
         Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
     }
 }
-
 
 @Composable
 private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
@@ -308,7 +307,7 @@ private fun CardButton(
 interface HomeScreenViewModelInterface {
     val showVariation: Boolean
     fun setupOnlineId()
-    fun selbstauskunft()
+    fun checkAusweis()
     fun homeScreenLaunched()
     fun onPrivacyButtonClicked()
     fun onImprintButtonClicked()
@@ -337,8 +336,8 @@ class HomeScreenViewModel @Inject constructor(
         appCoordinator.offerIdSetup(null)
     }
 
-    override fun selbstauskunft() {
-        appCoordinator.selbstauskunft()
+    override fun checkAusweis() {
+        appCoordinator.startCheck()
     }
 
     override fun onPrivacyButtonClicked() {
@@ -365,7 +364,7 @@ class HomeScreenViewModel @Inject constructor(
 private class PreviewViewModel : HomeScreenViewModelInterface {
     override val showVariation = true
     override fun setupOnlineId() {}
-    override fun selbstauskunft() {}
+    override fun checkAusweis() {}
     override fun homeScreenLaunched() {}
     override fun onPrivacyButtonClicked() {}
     override fun onImprintButtonClicked() {}

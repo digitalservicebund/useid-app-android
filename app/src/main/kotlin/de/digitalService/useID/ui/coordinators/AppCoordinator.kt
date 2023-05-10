@@ -19,7 +19,7 @@ import javax.inject.Singleton
 
 interface AppCoordinatorType {
     fun offerIdSetup(tcTokenUrl: String?)
-    fun selbstauskunft()
+    fun startCheck()
     fun homeScreenLaunched()
     fun handleDeepLink(uri: Uri)
 }
@@ -30,6 +30,7 @@ class AppCoordinator @Inject constructor(
     private val navigator: Navigator,
     private val setupCoordinator: SetupCoordinator,
     private val identificationCoordinator: IdentificationCoordinator,
+    private val checkPinCoordinator: CheckPinCoordinator,
     private val storageManager: StorageManagerType,
     private val coroutineContextProvider: CoroutineContextProviderType,
     private val trackerManager: TrackerManagerType
@@ -60,8 +61,8 @@ class AppCoordinator @Inject constructor(
         setupCoordinator.showSetupIntro(tcTokenUrl)
     }
 
-    override fun selbstauskunft() {
-       navigator.navigate(WebViewScreenDestination)
+    override fun startCheck() {
+        checkPinCoordinator.startPinCheck()
     }
 
     override fun homeScreenLaunched() {

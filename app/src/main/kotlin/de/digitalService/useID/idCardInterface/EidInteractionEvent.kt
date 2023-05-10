@@ -7,6 +7,7 @@ sealed class EidInteractionEvent {
     object CardInsertionRequested : EidInteractionEvent()
     object CardRecognized : EidInteractionEvent()
     object CardRemoved : EidInteractionEvent()
+    object CardDeactivated: EidInteractionEvent()
     class CanRequested : EidInteractionEvent() // this needs to be class so that it can be posted to the same flow multiple times in a row
     class PinRequested(val attempts: Int) : EidInteractionEvent()
     object NewPinRequested : EidInteractionEvent()
