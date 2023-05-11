@@ -38,6 +38,7 @@ sealed class EidInteractionEvent {
             is AuthenticationSucceededWithRedirect -> RedactedEidInteractionEvent.AuthenticationSucceededWithRedirect
             is PinChangeStarted -> RedactedEidInteractionEvent.PinChangeStarted
             is PinChangeSucceeded -> RedactedEidInteractionEvent.PinChangeSucceeded
+            CardDeactivated -> TODO()
         }
 }
 

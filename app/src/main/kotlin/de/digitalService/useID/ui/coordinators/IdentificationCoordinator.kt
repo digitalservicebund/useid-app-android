@@ -23,6 +23,8 @@ import de.digitalService.useID.ui.screens.destinations.IdentificationFetchMetada
 import de.digitalService.useID.ui.screens.destinations.IdentificationOtherErrorDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationPersonalPinDestination
 import de.digitalService.useID.ui.screens.destinations.IdentificationScanDestination
+import de.digitalService.useID.ui.screens.destinations.PinBriefSuccessDestination
+import de.digitalService.useID.ui.screens.destinations.WebViewScreenDestination
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -56,6 +58,9 @@ class IdentificationCoordinator @Inject constructor(
     private var eIdEventFlowCoroutineScope: Job? = null
     private var canEventFlowCoroutineScope: Job? = null
 
+    private var prsFlow = false
+    private var webviewFlow = false
+
     private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
@@ -85,7 +90,12 @@ class IdentificationCoordinator @Inject constructor(
                         is IdentificationStateMachine.State.CertificateDescriptionReceived ->
                             navigator.navigatePopping(IdentificationAttributeConsentDestination(IdentificationAttributes(state.authenticationRequest.requiredAttributes, state.certificateDescription), state.backingDownAllowed))
 
-                        is IdentificationStateMachine.State.PinInput -> navigator.navigate(IdentificationPersonalPinDestination(false))
+                        is IdentificationStateMachine.State.PinInput -> {
+                            if (prsFlow) {
+                                flowStateMachine.transition(IdentificationStateMachine.Event.EnterPin("000000"))
+                            }
+                            navigator.navigate(IdentificationPersonalPinDestination(false))
+                        }
                         is IdentificationStateMachine.State.PinInputRetry -> navigator.navigate(IdentificationPersonalPinDestination(true))
                         is IdentificationStateMachine.State.PinEntered -> {
                             navigator.popUpToOrNavigate(IdentificationScanDestination, false)
@@ -107,7 +117,9 @@ class IdentificationCoordinator @Inject constructor(
         }
     }
 
-    fun startIdentificationProcess(tcTokenUrl: String, setupSkipped: Boolean) {
+    fun startIdentificationProcess(tcTokenUrl: String, setupSkipped: Boolean, prs: Boolean = false, webview: Boolean = false) {
+        prsFlow = prs
+        webviewFlow = webview
         collectStateMachineEvents()
         _stateFlow.value = SubCoordinatorState.ACTIVE
 
@@ -156,6 +168,7 @@ class IdentificationCoordinator @Inject constructor(
 
     private fun finishIdentification(redirectUrl: String) {
         logger.debug("Finish identification process.")
+        logger.debug("stay in app $prsFlow")
 
         navigator.popToRoot()
         _stateFlow.value = SubCoordinatorState.FINISHED
@@ -163,9 +176,15 @@ class IdentificationCoordinator @Inject constructor(
         storageManager.setIsNotFirstTimeUser()
         trackerManager.trackEvent(category = "identification", action = "success", name = "")
 
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        ContextCompat.startActivity(context, intent, null)
+        if (prsFlow) {
+            navigator.navigate(PinBriefSuccessDestination(redirectUrl))
+        } else if (webviewFlow) {
+            navigator.navigate(WebViewScreenDestination(redirectUrl))
+        } else {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            ContextCompat.startActivity(context, intent, null)
+        }
 
         resetCoordinatorState()
     }

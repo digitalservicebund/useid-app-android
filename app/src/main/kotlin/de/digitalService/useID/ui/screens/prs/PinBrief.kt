@@ -34,7 +34,7 @@ fun PinBrief(viewModel: PinBriefViewModelInterface = hiltViewModel<PinBriefViewM
         ) {
             StandardStaticComposition(
                 title = stringResource(R.string.firstTimeUser_missingPINLetter_title),
-                body = stringResource(R.string.firstTimeUser_missingPINLetter_body),
+                body = "Ihr Brief mit Aktivierungscode und neuer PIN kommt direkt zu Ihnen nach Hause.",
                 imageId = R.drawable.ic_illustration_pin_letter,
                 imageScaling = ContentScale.FillWidth,
                 modifier = Modifier.padding(top = topPadding)
@@ -56,8 +56,7 @@ class PinBriefViewModel @Inject constructor(private val appCoordinator: AppCoord
     }
 
     override fun onBriefBestellenClicked() {
-//        appCoordinator.handleDeepLink(Uri.parse("eid://127.0.0.1:24727/eID-Client?tcTokenURL=https://www.pin-ruecksetzbrief-bestellen.de/bestellung/tc-token"))
-        appCoordinator.handleDeepLink(Uri.parse("eid://127.0.0.1:24727/eID-Client?tcTokenURL=https://demo.pinreset.bundesdruckerei.de/bestellung/tc-token"))
+        appCoordinator.prsLink("eid://127.0.0.1:24727/eID-Client?tcTokenURL=https://demo.pinreset.bundesdruckerei.de/bestellung/tc-token")
     }
 }
 

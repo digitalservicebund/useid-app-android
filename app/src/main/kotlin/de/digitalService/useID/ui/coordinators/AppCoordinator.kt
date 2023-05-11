@@ -1,14 +1,16 @@
 package de.digitalService.useID.ui.coordinators
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
+import androidx.core.content.ContextCompat
+import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.StorageManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.PinBriefDestination
-import de.digitalService.useID.ui.screens.destinations.WebViewScreenDestination
-import de.digitalService.useID.ui.screens.prs.PinBrief
 import de.digitalService.useID.util.CoroutineContextProviderType
 import de.digitalService.useID.util.NfcInterfaceManagerType
 import kotlinx.coroutines.CoroutineScope
@@ -25,10 +27,14 @@ interface AppCoordinatorType {
     fun homeScreenLaunched()
     fun handleDeepLink(uri: Uri)
     fun prs()
+    fun prsLink(url: String)
+    fun prsSuccess(url: String)
+    fun webviewAuth(url: String)
 }
 
 @Singleton
 class AppCoordinator @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val nfcInterfaceManager: NfcInterfaceManagerType,
     private val navigator: Navigator,
     private val setupCoordinator: SetupCoordinator,
@@ -95,6 +101,23 @@ class AppCoordinator @Inject constructor(
 
     override fun prs() {
         navigator.navigate(PinBriefDestination)
+    }
+
+    override fun prsLink(url: String) {
+        val tcTokenUrl = Uri.parse(url).getQueryParameter("tcTokenURL")!!
+        identificationCoordinator.startIdentificationProcess(tcTokenUrl, false, true)
+    }
+
+    override fun prsSuccess(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        ContextCompat.startActivity(context, intent, null)
+        navigator.popToRoot()
+    }
+
+    override fun webviewAuth(url: String) {
+        val tcTokenUrl = Uri.parse(url).getQueryParameter("tcTokenURL")!!
+        identificationCoordinator.startIdentificationProcess(tcTokenUrl, false, false, true)
     }
 
     private fun handleTcTokenUrl(url: String) {

@@ -71,7 +71,7 @@ fun ScanSuccess(viewModel: ScanSuccessViewModelInterface = hiltViewModel<ScanSuc
                 Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
 
                 Text(
-                    text = "Als nächstes wird ihr PIN geprüft.",
+                    text = "Als nächstes wird ihre PIN geprüft.",
                     style = UseIdTheme.typography.bodyLRegular,
                     textAlign = TextAlign.Center,
                     modifier = Modifier

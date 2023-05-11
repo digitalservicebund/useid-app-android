@@ -238,6 +238,12 @@
     <string name="noNfc_info_title">NFC-Funktion nicht verfügbar</string>
     <string name="noNfc_moreInformation_link">Weitere Informationen</string>
     <string name="noNfc_screen_title"><![CDATA[<strong>Bürger:in</strong> App]]></string>
+    <string name="pinBriefSuccess_body">
+        Ihr neuer PIN-Rücksetzbrief wird
+        \n+ in der Regel innerhalb von 7 Werktagen zugestellt
+        \n+ an Ihre deutsche Meldeadresse versendet
+        \n+ als “POSTIDENT”-Zustellung versendet (halten Sie deshalb bei der Zustellung Ihren Ausweis zur Identifikation bereit)
+    </string>
     <string name="privacy_text">## Datenschutzerklärung
 \n
 \nStand: 09.09.2022

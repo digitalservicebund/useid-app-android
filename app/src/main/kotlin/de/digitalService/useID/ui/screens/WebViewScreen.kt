@@ -82,7 +82,7 @@ class WebViewScreenViewModel @Inject constructor(
     }
 
     override fun startIdentification(url: Uri) {
-        appCoordinator.handleDeepLink(url)
+        appCoordinator.webviewAuth(url.toString())
     }
 }
 
