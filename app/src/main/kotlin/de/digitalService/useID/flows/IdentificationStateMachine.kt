@@ -40,7 +40,12 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         class PinEntered(val pin: String, val secondTime: Boolean, val callback: PinCallback) : State()
         class CanRequested(val pin: String?) : State()
         class WaitingForCardAttachment(val pin: String?) : State()
-        class Finished(val redirectUrl: String) : State()
+        class AskForDeviceSwitch(val redirectUrl: String) : State()
+        class FinishOnSameDevice(val redirectUrl: String) : State()
+
+        class FinishedOnSameDevice(val redirectUrl: String) : State()
+        class ExecuteDeviceSwitch(val redirectUrl: String) : State()
+//        object Finished : State()
 
         object CardDeactivated : State()
         object CardBlocked : State()
@@ -59,7 +64,11 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         object FrameworkRequestsCan : Event()
         object RequestCardInsertion : Event()
         object RetryAfterError : Event()
-        data class Finish(val redirectUrl: String) : Event()
+        data class HandleIdentificationResult(val redirectUrl: String) : Event()
+        object FinishOnSameDevice : Event()
+        object RedirectedOnSameDevice : Event()
+        object DeviceSwitchRequested : Event()
+//        object Finish : Event()
 
         data class Error(val exception: IdCardInteractionException) : Event()
 
@@ -136,13 +145,38 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                 }
             }
 
-            is Event.Finish -> {
+            is Event.HandleIdentificationResult -> {
                 when (val currentState = state.value.second) {
-                    is State.WaitingForCardAttachment -> State.Finished(event.redirectUrl)
-                    is State.CanRequested -> State.Finished(event.redirectUrl)
+                    is State.WaitingForCardAttachment -> State.AskForDeviceSwitch(event.redirectUrl)
+                    is State.CanRequested -> State.AskForDeviceSwitch(event.redirectUrl)
                     else -> throw IllegalArgumentException()
                 }
             }
+
+            is Event.FinishOnSameDevice -> {
+                when (val currentState = state.value.second) {
+                    is State.AskForDeviceSwitch -> State.FinishOnSameDevice(currentState.redirectUrl)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
+            is Event.RedirectedOnSameDevice -> {
+                when (val currentState = state.value.second) {
+                    is State.FinishOnSameDevice -> State.FinishedOnSameDevice(currentState.redirectUrl)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
+            is Event.DeviceSwitchRequested -> {
+                when (val currentState = state.value.second) {
+                    is State.AskForDeviceSwitch -> State.ExecuteDeviceSwitch(currentState.redirectUrl)
+                    else -> throw IllegalArgumentException()
+                }
+            }
+
+//            is Event.Finish -> {
+//                State.Finished
+//            }
 
             is Event.Error -> {
                 fun nextState(): IdentificationStateMachine.State {
@@ -176,6 +210,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                 when (val currentState = state.value.second) {
                     is State.FetchingMetadata, is State.RequestAttributeConfirmation -> State.Invalid
                     is State.PinInput -> State.RevisitAttributes(currentState.backingDownAllowed, currentState.request, currentState.callback)
+                    is State.FinishedOnSameDevice -> State.AskForDeviceSwitch(currentState.redirectUrl)
                     else -> throw IllegalArgumentException()
                 }
             }

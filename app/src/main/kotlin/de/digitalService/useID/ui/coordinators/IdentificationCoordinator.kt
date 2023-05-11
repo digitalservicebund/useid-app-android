@@ -15,6 +15,7 @@ import de.digitalService.useID.idCardInterface.IdCardInteractionException
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.*
+import de.digitalService.useID.ui.screens.identification.IdentificationDeviceSelection
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -75,7 +76,11 @@ class IdentificationCoordinator @Inject constructor(
                         is IdentificationStateMachine.State.PinEntered -> state.callback(state.pin)
                         is IdentificationStateMachine.State.CanRequested -> startCanFlow(state.pin)
                         is IdentificationStateMachine.State.WaitingForCardAttachment -> navigator.popUpToOrNavigate(IdentificationScanDestination, false)
-                        is IdentificationStateMachine.State.Finished -> finishIdentification(state.redirectUrl)
+                        is IdentificationStateMachine.State.AskForDeviceSwitch -> navigator.navigate(IdentificationDeviceSelectionDestination)
+                        is IdentificationStateMachine.State.FinishOnSameDevice -> finishOnSameDevice(state.redirectUrl)
+                        is IdentificationStateMachine.State.ExecuteDeviceSwitch -> handoverToDifferentDevice()
+                        is IdentificationStateMachine.State.FinishedOnSameDevice -> navigator.navigate(IdentificationSuccessDestination)
+                        is IdentificationStateMachine.State.Finished -> finishIdentification()
 
                         is IdentificationStateMachine.State.CardDeactivated -> navigator.navigate(IdentificationCardDeactivatedDestination)
                         is IdentificationStateMachine.State.CardBlocked -> navigator.navigate(IdentificationCardBlockedDestination)
@@ -144,7 +149,32 @@ class IdentificationCoordinator @Inject constructor(
         resetCoordinatorState()
     }
 
-    private fun finishIdentification(redirectUrl: String) {
+    fun redirectOnSameDevice() {
+        flowStateMachine.transition(IdentificationStateMachine.Event.FinishOnSameDevice)
+    }
+
+    fun redirectOnDifferentDevice() {
+        flowStateMachine.transition(IdentificationStateMachine.Event.DeviceSwitchRequested)
+    }
+
+    fun confirmFinish() {
+//        flowStateMachine.transition(IdentificationStateMachine.Event.Finish)
+        finishIdentification()
+    }
+
+    private fun finishOnSameDevice(redirectUrl: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        ContextCompat.startActivity(context, intent, null)
+
+        flowStateMachine.transition(IdentificationStateMachine.Event.RedirectedOnSameDevice)
+    }
+
+    private fun handoverToDifferentDevice() {
+        TODO("WebAuthn")
+    }
+
+    private fun finishIdentification() {
         logger.debug("Finish identification process.")
 
         navigator.popToRoot()
@@ -152,10 +182,6 @@ class IdentificationCoordinator @Inject constructor(
 
         storageManager.setIsNotFirstTimeUser()
         trackerManager.trackEvent(category = "identification", action = "success", name = "")
-
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(redirectUrl))
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        ContextCompat.startActivity(context, intent, null)
 
         resetCoordinatorState()
     }
@@ -205,7 +231,7 @@ class IdentificationCoordinator @Inject constructor(
                     }
                     is EidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect -> {
                         logger.debug("Process completed successfully.")
-                        flowStateMachine.transition(IdentificationStateMachine.Event.Finish(event.redirectURL))
+                        flowStateMachine.transition(IdentificationStateMachine.Event.HandleIdentificationResult(event.redirectURL))
                     }
                     is EidInteractionEvent.RequestPinAndCan -> {
                         logger.debug("PIN and CAN requested.")
