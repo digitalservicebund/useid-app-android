@@ -1,9 +1,25 @@
 package de.digitalService.useID.ui.screens
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import android.net.Uri
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,7 +48,11 @@ import de.digitalService.useID.getLogger
 import de.digitalService.useID.ui.components.BundInformationButton
 import de.digitalService.useID.ui.coordinators.AppCoordinator
 import de.digitalService.useID.ui.navigation.Navigator
-import de.digitalService.useID.ui.screens.destinations.*
+import de.digitalService.useID.ui.screens.destinations.AccessibilityScreenDestination
+import de.digitalService.useID.ui.screens.destinations.DependenciesScreenDestination
+import de.digitalService.useID.ui.screens.destinations.ImprintScreenDestination
+import de.digitalService.useID.ui.screens.destinations.PrivacyScreenDestination
+import de.digitalService.useID.ui.screens.destinations.TermsOfUseScreenDestination
 import de.digitalService.useID.ui.theme.UseIdTheme
 import de.digitalService.useID.util.AbTestManager
 import javax.inject.Inject
@@ -252,6 +272,9 @@ private fun SelbstauskunftCardBox(viewModel: HomeScreenViewModelInterface) {
 @Composable
 private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
     CardBox {
+        CardButton(text = "PIN Rücksetzbrief bestellen", onClick = viewModel::onPinRücksetzbrief)
+        StyledDivider()
+
         CardButton(text = stringResource(R.string.home_more_privacy), onClick = viewModel::onPrivacyButtonClicked)
         StyledDivider()
 
@@ -309,6 +332,7 @@ interface HomeScreenViewModelInterface {
     fun setupOnlineId()
     fun checkAusweis()
     fun homeScreenLaunched()
+    fun onPinRücksetzbrief()
     fun onPrivacyButtonClicked()
     fun onImprintButtonClicked()
     fun onAccessibilityButtonClicked()
@@ -340,6 +364,10 @@ class HomeScreenViewModel @Inject constructor(
         appCoordinator.startCheck()
     }
 
+    override fun onPinRücksetzbrief() {
+        appCoordinator.prs()
+    }
+
     override fun onPrivacyButtonClicked() {
         appNavigator.navigate(PrivacyScreenDestination)
     }
@@ -366,6 +394,7 @@ private class PreviewViewModel : HomeScreenViewModelInterface {
     override fun setupOnlineId() {}
     override fun checkAusweis() {}
     override fun homeScreenLaunched() {}
+    override fun onPinRücksetzbrief() {}
     override fun onPrivacyButtonClicked() {}
     override fun onImprintButtonClicked() {}
     override fun onAccessibilityButtonClicked() {}

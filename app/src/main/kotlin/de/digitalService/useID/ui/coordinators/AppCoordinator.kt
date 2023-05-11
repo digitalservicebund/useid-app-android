@@ -6,7 +6,9 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.navigation.Navigator
+import de.digitalService.useID.ui.screens.destinations.PinBriefDestination
 import de.digitalService.useID.ui.screens.destinations.WebViewScreenDestination
+import de.digitalService.useID.ui.screens.prs.PinBrief
 import de.digitalService.useID.util.CoroutineContextProviderType
 import de.digitalService.useID.util.NfcInterfaceManagerType
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +24,7 @@ interface AppCoordinatorType {
     fun startCheck()
     fun homeScreenLaunched()
     fun handleDeepLink(uri: Uri)
+    fun prs()
 }
 
 @Singleton
@@ -88,6 +91,10 @@ class AppCoordinator @Inject constructor(
         } ?: run {
             logger.info("URL does not contain tcTokenUrl parameter.")
         }
+    }
+
+    override fun prs() {
+        navigator.navigate(PinBriefDestination)
     }
 
     private fun handleTcTokenUrl(url: String) {

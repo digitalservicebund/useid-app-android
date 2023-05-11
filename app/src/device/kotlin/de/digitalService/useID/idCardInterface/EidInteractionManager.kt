@@ -47,12 +47,14 @@ class EidInteractionManager @Inject constructor(
                 return
             }
 
-            if (accessRights.effectiveRights == accessRights.requiredRights) {
-                val authenticationRequest = AuthenticationRequest(accessRights.requiredRights.map { EidAttribute.fromAccessRight(it) }, accessRights.transactionInfo)
-                _eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(authenticationRequest)
-            } else {
-                workflowController.setAccessRights(listOf())
-            }
+//            if (accessRights.effectiveRights == accessRights.requiredRights) {
+//                val authenticationRequest = AuthenticationRequest(accessRights.requiredRights.map { EidAttribute.fromAccessRight(it) }, accessRights.transactionInfo)
+//                _eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(authenticationRequest)
+//            } else {
+//                workflowController.setAccessRights(listOf())
+//            }
+            val authenticationRequest = AuthenticationRequest(accessRights.effectiveRights.map { EidAttribute.fromAccessRight(it) }, accessRights.transactionInfo)
+            _eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(authenticationRequest)
         }
 
         override fun onApiLevel(error: String?, apiLevel: ApiLevel?) {
@@ -169,7 +171,8 @@ class EidInteractionManager @Inject constructor(
 
             reader.card?.let {
                 if (it.deactivated) {
-                    _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardDeactivated)
+//                    _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.CardDeactivated)
+                    _eidFlow.value = EidInteractionEvent.CardRecognized
                 } else {
                     _eidFlow.value = EidInteractionEvent.CardRecognized
                 }
