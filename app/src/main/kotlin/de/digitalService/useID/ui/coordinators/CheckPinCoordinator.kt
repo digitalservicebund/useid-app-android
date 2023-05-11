@@ -7,7 +7,7 @@ import de.digitalService.useID.flows.CheckPinStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.EidInteractionManager
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.CheckCardDeactivatedDestination
 import de.digitalService.useID.ui.screens.destinations.CheckPersonalPinDestination
@@ -19,6 +19,7 @@ import de.digitalService.useID.ui.screens.destinations.ScanSuccessDestination
 import de.digitalService.useID.ui.screens.destinations.SetupCardBlockedDestination
 import de.digitalService.useID.ui.screens.destinations.SetupCardUnreadableDestination
 import de.digitalService.useID.ui.screens.destinations.SetupOtherErrorDestination
+import de.digitalService.useID.ui.screens.destinations.WebViewScreenDestination
 import de.digitalService.useID.util.CoroutineContextProviderType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -94,7 +95,7 @@ class CheckPinCoordinator @Inject constructor(
                         is CheckPinStateMachine.State.CanRequested -> startCanFlow(state.pin, state.pin, state.shortFlow)
                         CheckPinStateMachine.State.Success -> navigator.navigate(CheckSuccessDestination)
                         CheckPinStateMachine.State.Finished -> {
-                            navigator.popUpToOrNavigate(HomeScreenDestination, true)
+//                            navigator.popUpToOrNavigate(HomeScreenDestination, true)
                             finishPinManagement()
                         }
 
@@ -129,9 +130,26 @@ class CheckPinCoordinator @Inject constructor(
 
     fun onFinish() {
         flowStateMachine.transition(CheckPinStateMachine.Event.Finish)
+        navigator.popUpToOrNavigate(HomeScreenDestination, true)
+    }
+
+    fun selbstauskunft() {
+        flowStateMachine.transition(CheckPinStateMachine.Event.Finish)
+        navigator.navigate(WebViewScreenDestination("https://demo.useid.dev.ds4g.net/?view=app"))
+    }
+
+    fun flensburg() {
+        flowStateMachine.transition(CheckPinStateMachine.Event.Finish)
+        navigator.navigate(WebViewScreenDestination("https://www.kba-online.de/registerauskunft/ora/web/?#/faer"))
+    }
+
+    fun rente() {
+        flowStateMachine.transition(CheckPinStateMachine.Event.Finish)
+        navigator.navigate(WebViewScreenDestination("https://www.eservice-drv.de/OnlineDiensteWeb/init.do?npa=true#"))
     }
 
     fun onBack() {
+        flowStateMachine.transition(CheckPinStateMachine.Event.Finish)
         flowStateMachine.transition(CheckPinStateMachine.Event.Back)
     }
 
@@ -247,7 +265,7 @@ class CheckPinCoordinator @Inject constructor(
 
                     is EidInteractionEvent.PukRequested -> {
                         _scanInProgress.value = false
-                        flowStateMachine.transition(CheckPinStateMachine.Event.Error(IdCardInteractionException.CardBlocked))
+                        flowStateMachine.transition(CheckPinStateMachine.Event.Error(EidInteractionException.CardBlocked))
                     }
 
                     is EidInteractionEvent.Error -> {

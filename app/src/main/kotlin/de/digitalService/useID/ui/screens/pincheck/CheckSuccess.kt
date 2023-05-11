@@ -1,11 +1,13 @@
 package de.digitalService.useID.ui.screens.pincheck
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -21,11 +23,15 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.R
-import de.digitalService.useID.ui.components.*
+import de.digitalService.useID.ui.components.BundButton
+import de.digitalService.useID.ui.components.BundButtonConfig
+import de.digitalService.useID.ui.components.ButtonType
+import de.digitalService.useID.ui.components.NavigationButton
+import de.digitalService.useID.ui.components.NavigationIcon
+import de.digitalService.useID.ui.components.ScreenWithTopBar
+import de.digitalService.useID.ui.components.StandardButtonScreen
 import de.digitalService.useID.ui.coordinators.CheckPinCoordinator
 import de.digitalService.useID.ui.theme.UseIdTheme
-import de.digitalService.useID.util.markDownResource
-import dev.jeziellago.compose.markdowntext.MarkdownText
 import javax.inject.Inject
 
 @Destination
@@ -68,12 +74,12 @@ fun CheckSuccess(viewModel: CheckSuccessViewModelInterface = hiltViewModel<Check
                         .semantics { heading() }
                 )
 
-                Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
+                Spacer(modifier = Modifier.height(UseIdTheme.spaces.xxxl))
 
                 Text(
                     text = "Nutzen Sie die Online Ausweisfunktion mit einem Service.",
-                    style = UseIdTheme.typography.bodyLRegular,
-                    textAlign = TextAlign.Center,
+                    style = UseIdTheme.typography.bodyLBold,
+                    textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
                         .semantics { heading() }
@@ -83,26 +89,26 @@ fun CheckSuccess(viewModel: CheckSuccessViewModelInterface = hiltViewModel<Check
 
                 BundButton(
                     type = ButtonType.SECONDARY,
-                    onClick = viewModel::onConfirmationButtonClicked,
+                    onClick = viewModel::onSelbstAuskunftClicked,
                     label = "Selbstauskunft",
                     modifier = Modifier
-                        .padding(UseIdTheme.spaces.s)
+                        .padding(vertical = UseIdTheme.spaces.s)
                 )
 
                 BundButton(
                     type = ButtonType.SECONDARY,
-                    onClick = viewModel::onConfirmationButtonClicked,
+                    onClick = viewModel::onFlensburgClicked,
                     label = "Flensburg",
                     modifier = Modifier
-                        .padding(UseIdTheme.spaces.s)
+                        .padding(vertical = UseIdTheme.spaces.s)
                 )
 
                 BundButton(
                     type = ButtonType.SECONDARY,
-                    onClick = viewModel::onConfirmationButtonClicked,
+                    onClick = viewModel::onRenteClicked,
                     label = "Rentenkonto",
                     modifier = Modifier
-                        .padding(UseIdTheme.spaces.s)
+                        .padding(vertical = UseIdTheme.spaces.s)
                 )
             }
         }
@@ -111,6 +117,9 @@ fun CheckSuccess(viewModel: CheckSuccessViewModelInterface = hiltViewModel<Check
 
 interface CheckSuccessViewModelInterface {
     fun onConfirmationButtonClicked()
+    fun onSelbstAuskunftClicked()
+    fun onFlensburgClicked()
+    fun onRenteClicked()
     fun onBackButtonClicked()
 }
 
@@ -119,12 +128,24 @@ class CheckSuccessViewModel @Inject constructor(private val coordinator: CheckPi
     ViewModel(),
     CheckSuccessViewModelInterface {
     override fun onConfirmationButtonClicked() = coordinator.onFinish()
+    override fun onSelbstAuskunftClicked() = coordinator.selbstauskunft()
+
+    override fun onFlensburgClicked() = coordinator.flensburg()
+
+    override fun onRenteClicked() = coordinator.rente()
+
     override fun onBackButtonClicked() = coordinator.onBack()
 }
 
 //region Preview
 private class PreviewCheckSuccessScreenViewModel : CheckSuccessViewModelInterface {
     override fun onConfirmationButtonClicked() {}
+    override fun onSelbstAuskunftClicked() {}
+
+    override fun onFlensburgClicked() {}
+
+    override fun onRenteClicked() {}
+
     override fun onBackButtonClicked() {}
 }
 

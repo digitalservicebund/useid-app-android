@@ -2,7 +2,7 @@ package de.digitalService.useID.flows
 
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.idCardInterface.IdCardInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
@@ -55,7 +55,7 @@ class CheckPinStateMachine(initialState: State, private val issueTrackerManager:
         object Success : Event()
         object Finish: Event()
 
-        data class Error(val exception: IdCardInteractionException) : Event()
+        data class Error(val exception: EidInteractionException) : Event()
         object ProceedAfterError : Event()
 
         object Back : Event()
@@ -95,21 +95,21 @@ class CheckPinStateMachine(initialState: State, private val issueTrackerManager:
             }
 
             is Event.CardDeactivated -> {
-                when (val currentState = state.value.second) {
+                when (state.value.second) {
                     is State.StartIdCardInteraction -> State.CardDeactivated
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.EnterPin -> {
-                when (val currentState = state.value.second) {
+                when (state.value.second) {
                     is State.ScanSuccess -> State.PinInput
                     else -> throw IllegalArgumentException()
                 }
             }
 
             is Event.PinEntered -> {
-                when (val currentState = state.value.second) {
+                when (state.value.second) {
                     is State.PinInput -> State.ReadyForSubsequentScan(event.pin)
                     else -> throw IllegalArgumentException()
                 }
@@ -141,6 +141,8 @@ class CheckPinStateMachine(initialState: State, private val issueTrackerManager:
             is Event.Finish -> {
                 when (state.value.second) {
                     is State.Success -> State.Finished
+                    is State.Finished -> State.Finished
+                    is State.Invalid -> State.Invalid
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -155,9 +157,9 @@ class CheckPinStateMachine(initialState: State, private val issueTrackerManager:
             is Event.Error -> {
                 fun nextState(pin: String?, firstScan: Boolean): State {
                     return when (event.exception) {
-                        is IdCardInteractionException.CardDeactivated -> State.CardDeactivated
-                        is IdCardInteractionException.CardBlocked -> State.CardBlocked
-                        is IdCardInteractionException.ProcessFailed -> State.ProcessFailed(pin, firstScan)
+                        is EidInteractionException.CardDeactivated -> State.CardDeactivated
+                        is EidInteractionException.CardBlocked -> State.CardBlocked
+                        is EidInteractionException.ProcessFailed -> State.ProcessFailed(pin, firstScan)
                         else -> State.UnknownError
                     }
                 }
