@@ -128,6 +128,11 @@ fun HomeScreen(viewModel: HomeScreenViewModelInterface = hiltViewModel<HomeScree
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
 
+            SelbstauskunftCardBox(viewModel = viewModel)
+
+            Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
+
+
             MoreSettingsCardBox(viewModel)
 
             Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
@@ -204,6 +209,48 @@ private fun SetupUseIdCardBox(viewModel: HomeScreenViewModelInterface) {
 }
 
 @Composable
+private fun SelbstauskunftCardBox(viewModel: HomeScreenViewModelInterface) {
+    CardBox {
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
+
+        Text(
+            text = "Ausweisfunktion testen",
+            style = UseIdTheme.typography.headingMBold,
+            color = UseIdTheme.colors.black,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = UseIdTheme.spaces.m)
+                .semantics { heading() }
+        )
+
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.xs))
+
+        Text(
+            text = "Überprüfen Sie, ob Ihr Ausweis einsatzbereit ist.",
+            style = UseIdTheme.typography.bodyMRegular,
+            color = UseIdTheme.colors.black,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = UseIdTheme.spaces.m)
+        )
+
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
+
+        BundInformationButton(
+            onClick = viewModel::selbstauskunft,
+            label = "Ausweisfunktion testen",
+            modifier = Modifier
+                .padding(horizontal = UseIdTheme.spaces.m)
+        )
+
+        Spacer(modifier = Modifier.height(UseIdTheme.spaces.m))
+    }
+}
+
+
+@Composable
 private fun MoreSettingsCardBox(viewModel: HomeScreenViewModelInterface) {
     CardBox {
         CardButton(text = stringResource(R.string.home_more_privacy), onClick = viewModel::onPrivacyButtonClicked)
@@ -261,6 +308,7 @@ private fun CardButton(
 interface HomeScreenViewModelInterface {
     val showVariation: Boolean
     fun setupOnlineId()
+    fun selbstauskunft()
     fun homeScreenLaunched()
     fun onPrivacyButtonClicked()
     fun onImprintButtonClicked()
@@ -289,6 +337,10 @@ class HomeScreenViewModel @Inject constructor(
         appCoordinator.offerIdSetup(null)
     }
 
+    override fun selbstauskunft() {
+        appCoordinator.selbstauskunft()
+    }
+
     override fun onPrivacyButtonClicked() {
         appNavigator.navigate(PrivacyScreenDestination)
     }
@@ -313,6 +365,7 @@ class HomeScreenViewModel @Inject constructor(
 private class PreviewViewModel : HomeScreenViewModelInterface {
     override val showVariation = true
     override fun setupOnlineId() {}
+    override fun selbstauskunft() {}
     override fun homeScreenLaunched() {}
     override fun onPrivacyButtonClicked() {}
     override fun onImprintButtonClicked() {}

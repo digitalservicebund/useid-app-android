@@ -6,6 +6,7 @@ import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.models.NfcAvailability
 import de.digitalService.useID.ui.navigation.Navigator
+import de.digitalService.useID.ui.screens.destinations.WebViewScreenDestination
 import de.digitalService.useID.util.CoroutineContextProviderType
 import de.digitalService.useID.util.NfcInterfaceManagerType
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 
 interface AppCoordinatorType {
     fun offerIdSetup(tcTokenUrl: String?)
+    fun selbstauskunft()
     fun homeScreenLaunched()
     fun handleDeepLink(uri: Uri)
 }
@@ -56,6 +58,10 @@ class AppCoordinator @Inject constructor(
         navigator.popToRoot()
         trackerManager.trackEvent("firstTimeUser", "setupIntroOpened", tcTokenUrl?.let { "widget" } ?: "home")
         setupCoordinator.showSetupIntro(tcTokenUrl)
+    }
+
+    override fun selbstauskunft() {
+       navigator.navigate(WebViewScreenDestination)
     }
 
     override fun homeScreenLaunched() {
