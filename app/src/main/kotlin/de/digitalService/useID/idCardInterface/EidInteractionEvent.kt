@@ -20,47 +20,40 @@ sealed class EidInteractionEvent {
     object PinChangeStarted : EidInteractionEvent()
     object PinChangeSucceeded : EidInteractionEvent()
 
-//    val redacted: RedactedEidInteractionEvent
-//        get() = when (this) {
-//            is Idle -> RedactedEidInteractionEvent.Idle
-//            is Error -> RedactedEidInteractionEvent.Error
-//            is RequestCardInsertion -> RedactedEidInteractionEvent.RequestCardInsertion
-//            is CardInteractionComplete -> RedactedEidInteractionEvent.CardInteractionComplete
-//            is CardRecognized -> RedactedEidInteractionEvent.CardRecognized
-//            is CardRemoved -> RedactedEidInteractionEvent.CardRemoved
-//            is RequestCan -> RedactedEidInteractionEvent.RequestCan
-//            is RequestPin -> RedactedEidInteractionEvent.RequestPin
-//            is RequestPuk -> RedactedEidInteractionEvent.RequestPUK
-//            is ProcessCompletedSuccessfullyWithoutResult -> RedactedEidInteractionEvent.ProcessCompletedSuccessfullyWithoutResult
-//            is ProcessCompletedSuccessfullyWithRedirect -> RedactedEidInteractionEvent.ProcessCompletedSuccessfullyWithRedirect
-//            is AuthenticationStarted -> RedactedEidInteractionEvent.AuthenticationStarted
-//            is RequestAuthenticationRequestConfirmation -> RedactedEidInteractionEvent.RequestAuthenticationRequestConfirmation
-//            is AuthenticationSuccessful -> RedactedEidInteractionEvent.AuthenticationSuccessful
-//            is PinManagementStarted -> RedactedEidInteractionEvent.PinManagementStarted
-//            is RequestNewPin -> RedactedEidInteractionEvent.RequestChangedPin
-//            is PinManagementFinished ->
-//        }
+    val redacted: RedactedEidInteractionEvent
+        get() = when (this) {
+            is Idle -> RedactedEidInteractionEvent.Idle
+            is Error -> RedactedEidInteractionEvent.Error
+            is CardInsertionRequested -> RedactedEidInteractionEvent.CardInsertionRequested
+            is CardRecognized -> RedactedEidInteractionEvent.CardRecognized
+            is CardRemoved -> RedactedEidInteractionEvent.CardRemoved
+            is CanRequested -> RedactedEidInteractionEvent.CanRequested
+            is PinRequested -> RedactedEidInteractionEvent.PinRequested
+            is NewPinRequested -> RedactedEidInteractionEvent.NewPinRequested
+            is PukRequested -> RedactedEidInteractionEvent.PukRequested
+            is AuthenticationStarted -> RedactedEidInteractionEvent.AuthenticationStarted
+            is AuthenticationRequestConfirmationRequested -> RedactedEidInteractionEvent.AuthenticationRequestConfirmationRequested
+            is CertificateDescriptionReceived -> RedactedEidInteractionEvent.CertificateDescriptionReceived
+            is AuthenticationSucceededWithRedirect -> RedactedEidInteractionEvent.AuthenticationSucceededWithRedirect
+            is PinChangeStarted -> RedactedEidInteractionEvent.PinChangeStarted
+            is PinChangeSucceeded -> RedactedEidInteractionEvent.PinChangeSucceeded
+        }
 }
 
-//  sealed class RedactedEidInteractionEvent : Exception() {
-//    object Idle : RedactedEidInteractionEvent()
-//    object Error : RedactedEidInteractionEvent()
-//    object RequestCardInsertion : RedactedEidInteractionEvent()
-//    object CardInteractionComplete : RedactedEidInteractionEvent()
-//    object CardRecognized : RedactedEidInteractionEvent()
-//    object CardRemoved : RedactedEidInteractionEvent()
-//    object RequestCan : RedactedEidInteractionEvent()
-//    object RequestPin : RedactedEidInteractionEvent()
-//    object RequestPinAndCan : RedactedEidInteractionEvent()
-//    object RequestPUK : RedactedEidInteractionEvent()
-//    object ProcessCompletedSuccessfullyWithoutResult : RedactedEidInteractionEvent()
-//    object ProcessCompletedSuccessfullyWithRedirect : RedactedEidInteractionEvent()
-//
-//    object AuthenticationStarted : RedactedEidInteractionEvent()
-//    object RequestAuthenticationRequestConfirmation : RedactedEidInteractionEvent()
-//    object AuthenticationSuccessful : RedactedEidInteractionEvent()
-//
-//    object PinManagementStarted : RedactedEidInteractionEvent()
-//    object RequestChangedPin : RedactedEidInteractionEvent()
-//    object RequestCanAndChangedPin : RedactedEidInteractionEvent()
-//  }
+sealed class RedactedEidInteractionEvent : Exception() {
+    object Idle : RedactedEidInteractionEvent()
+    object Error : RedactedEidInteractionEvent()
+    object CardInsertionRequested : RedactedEidInteractionEvent()
+    object CardRecognized : RedactedEidInteractionEvent()
+    object CardRemoved : RedactedEidInteractionEvent()
+    object CanRequested : RedactedEidInteractionEvent()
+    object PinRequested : RedactedEidInteractionEvent()
+    object NewPinRequested : RedactedEidInteractionEvent()
+    object PukRequested : RedactedEidInteractionEvent()
+    object AuthenticationStarted : RedactedEidInteractionEvent()
+    object AuthenticationRequestConfirmationRequested : RedactedEidInteractionEvent()
+    object CertificateDescriptionReceived : RedactedEidInteractionEvent()
+    object AuthenticationSucceededWithRedirect : RedactedEidInteractionEvent()
+    object PinChangeStarted : RedactedEidInteractionEvent()
+    object PinChangeSucceeded : RedactedEidInteractionEvent()
+}

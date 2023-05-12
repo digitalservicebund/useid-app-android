@@ -56,32 +56,29 @@ class EidInteractionManager @Inject constructor(
         }
 
         override fun onApiLevel(error: String?, apiLevel: ApiLevel?) {
-            TODO("Not yet implemented")
+            apiLevel?.let { logger.debug("API level ${it.current}") }
+            error?.let { logger.error("Could not set API level.") }
         }
 
         override fun onAuthenticationCompleted(authResult: AuthResult) {
             logger.debug("Authentication completed")
-            logger.error(authResult.result?.major)
-            logger.error(authResult.result?.minor)
-            logger.error(authResult.result?.reason)
 
             authResult.result?.let { result ->
                 val majorCode = result.major.split("#").last()
                 val minorCode = result.minor?.split("#")?.last()
 
-                val redirectUrl = authResult.url?.let { url ->
-                    val uriBuilder = url.buildUpon()
-                    majorCode.let { uriBuilder.appendQueryParameter("ResultMajor", it) }
-                    minorCode?.let { uriBuilder.appendQueryParameter("ResultMinor", it) }
-                    result.reason?.let { uriBuilder.appendQueryParameter("ResultMessage", it) }
-                    uriBuilder.build().toString()
-                }
-
-                if (majorCode != "error") {
-                    redirectUrl?.let { _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(it) }
-                } else {
-                    _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed(redirectUrl))
-                }
+                authResult.url?.let { url ->
+                    val redirectUrl = url.buildUpon().apply {
+                        appendQueryParameter("ResultMajor", majorCode)
+                        minorCode?.let { appendQueryParameter("ResultMinor", it) }
+                        result.reason?.let { appendQueryParameter("ResultMessage", it) }
+                    }?.build().toString()
+                    if (majorCode != "error") {
+                        _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+                    } else {
+                        _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed(redirectUrl, result.minor, result.reason))
+                    }
+                } ?: run { _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed(resultMinor = result.minor, resultReason = result.reason)) }
             } ?: run { _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed()) }
         }
 

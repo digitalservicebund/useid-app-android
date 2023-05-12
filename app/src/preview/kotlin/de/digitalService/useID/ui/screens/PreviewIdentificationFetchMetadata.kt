@@ -23,7 +23,6 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-//import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 
 @Composable

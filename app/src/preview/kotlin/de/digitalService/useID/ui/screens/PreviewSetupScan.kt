@@ -27,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-//import org.openecard.mobile.activation.ActivationResultCode
 import javax.inject.Inject
 import javax.inject.Singleton
 

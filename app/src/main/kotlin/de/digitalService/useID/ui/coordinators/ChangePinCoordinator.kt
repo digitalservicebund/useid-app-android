@@ -6,8 +6,8 @@ import de.digitalService.useID.flows.CanStateMachine
 import de.digitalService.useID.flows.ChangePinStateMachine
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
-import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.idCardInterface.EidInteractionException
+import de.digitalService.useID.idCardInterface.EidInteractionManager
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.ui.screens.destinations.SetupCardBlockedDestination
 import de.digitalService.useID.ui.screens.destinations.SetupCardDeactivatedDestination
