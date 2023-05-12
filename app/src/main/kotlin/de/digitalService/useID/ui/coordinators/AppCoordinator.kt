@@ -17,7 +17,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 interface AppCoordinatorType {
-    fun offerIdSetup(tcTokenUrl: String?)
+    fun offerIdSetup(tcTokenUrl: String?, widgetSessionId: String?)
     fun homeScreenLaunched()
     fun handleDeepLink(uri: Uri)
 }
@@ -45,17 +45,17 @@ class AppCoordinator @Inject constructor(
             nfcInterfaceManager.nfcAvailability.collect { nfcAvailability ->
                 cachedTcTokenUrl?.let { cachedTcTokenUrl ->
                     if (nfcAvailability == NfcAvailability.Available) {
-                        handleTcTokenUrl(cachedTcTokenUrl)
+                        handleTcTokenUrl(cachedTcTokenUrl, null)
                     }
                 }
             }
         }
     }
 
-    override fun offerIdSetup(tcTokenUrl: String?) {
+    override fun offerIdSetup(tcTokenUrl: String?, widgetSessionId: String?) {
         navigator.popToRoot()
         trackerManager.trackEvent("firstTimeUser", "setupIntroOpened", tcTokenUrl?.let { "widget" } ?: "home")
-        setupCoordinator.showSetupIntro(tcTokenUrl)
+        setupCoordinator.showSetupIntro(tcTokenUrl, widgetSessionId)
     }
 
     override fun homeScreenLaunched() {
@@ -66,24 +66,25 @@ class AppCoordinator @Inject constructor(
 
     override fun handleDeepLink(uri: Uri) {
         Uri.parse(uri.toString()).getQueryParameter("tcTokenURL")?.let { url ->
+            val widgetSessionId = Uri.parse(uri.toString()).getQueryParameter("widgetSessionId")
             if (launchedBarrier.isLocked) {
                 logger.debug("Wait for app launch to be completed.")
                 CoroutineScope(coroutineContextProvider.Default).launch {
                     launchedBarrier.withLock {
                         logger.debug("Handling deep link after waiting.")
-                        handleTcTokenUrl(url)
+                        handleTcTokenUrl(url, widgetSessionId)
                     }
                 }
             } else {
                 logger.debug("Handling deep link immediately.")
-                handleTcTokenUrl(url)
+                handleTcTokenUrl(url, widgetSessionId)
             }
         } ?: run {
             logger.info("URL does not contain tcTokenUrl parameter.")
         }
     }
 
-    fun handleTcTokenUrl(url: String) {
+    fun handleTcTokenUrl(url: String, widgetSessionId: String?) {
         navigator.popToRoot()
 
         if (nfcInterfaceManager.nfcAvailability.value != NfcAvailability.Available) {
@@ -95,9 +96,9 @@ class AppCoordinator @Inject constructor(
         }
 
         if (storageManager.firstTimeUser) {
-            offerIdSetup(url)
+            offerIdSetup(url, widgetSessionId)
         } else {
-            identificationCoordinator.startIdentificationProcess(url, false)
+            identificationCoordinator.startIdentificationProcess(url, widgetSessionId, false)
         }
 
         cachedTcTokenUrl = null

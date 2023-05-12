@@ -14,7 +14,7 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdkPreview "UpsideDownCake"
 
     defaultConfig {
         applicationId "de.digitalService.useID"
@@ -194,6 +194,11 @@ dependencies {
     implementation(libs.bundles.aboutlibraries)
     implementation(libs.matomo.sdk.android)
     implementation(libs.unleash)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logginginterceptor)
+    implementation(libs.fido)
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services)
 
     // CVE-2022-42003 (can probably be removed when updating unleash > 0.5.0)
     implementation(libs.jackson.databind)

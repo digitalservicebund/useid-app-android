@@ -15,6 +15,7 @@ import de.digitalService.useID.hilt.ConfigModule
 import de.digitalService.useID.idCardInterface.IdCardManager
 import de.digitalService.useID.ui.UseIDApp
 import de.digitalService.useID.ui.coordinators.AppCoordinatorType
+import de.digitalService.useID.ui.coordinators.IdentificationCoordinator
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.util.AbTestManager
 import de.digitalService.useID.util.NfcInterfaceManagerType
@@ -35,6 +36,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var appCoordinator: AppCoordinatorType
+
+    @Inject
+    lateinit var identificationCoordinator: IdentificationCoordinator
 
     @Inject
     lateinit var appNavigator: Navigator
@@ -71,6 +75,8 @@ class MainActivity : ComponentActivity() {
             val nfcAvailability = nfcInterfaceManager.nfcAvailability.collectAsState()
             UseIDApp(nfcAvailability.value, appNavigator, trackerManager)
         }
+
+        identificationCoordinator.activity = this
     }
 
     override fun onResume() {

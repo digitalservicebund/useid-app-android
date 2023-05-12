@@ -66,6 +66,11 @@ sentry-compose-android = { module = "io.sentry:sentry-compose-android", version.
 slf4j-api = "org.slf4j:slf4j-api:2.0.7"
 unleash = "io.getunleash:unleash-android-proxy-sdk:0.5.0"
 xerces = "xerces:xercesImpl:2.12.2"
+okhttp = "com.squareup.okhttp3:okhttp:4.10.0"
+okhttp-logginginterceptor = "com.squareup.okhttp3:logging-interceptor:4.11.0"
+fido = "com.google.android.gms:play-services-fido:20.0.1"
+credentials = "androidx.credentials:credentials:1.2.0-alpha03"
+credentials-play-services = "androidx.credentials:credentials-play-services-auth:1.2.0-alpha03"
 
 [bundles]
 aboutlibraries = [

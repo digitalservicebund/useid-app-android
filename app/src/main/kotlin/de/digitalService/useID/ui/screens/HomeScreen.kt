@@ -315,7 +315,7 @@ class HomeScreenViewModel @Inject constructor(
 
     override fun setupOnlineId() {
         trackerManager.trackButtonPressed(category = "firstTimeUser", "start")
-        appCoordinator.offerIdSetup(null)
+        appCoordinator.offerIdSetup(null, null)
     }
 
     override fun onQrScanButtonClicked(context: Context) {

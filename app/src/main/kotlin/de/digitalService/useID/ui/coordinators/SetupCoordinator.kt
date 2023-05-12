@@ -23,6 +23,8 @@ class SetupCoordinator @Inject constructor(
 ) {
     private val logger by getLogger()
 
+    private var widgetSessionId: String? = null
+
     private val _stateFlow: MutableStateFlow<SubCoordinatorState> = MutableStateFlow(SubCoordinatorState.FINISHED)
     val stateFlow: StateFlow<SubCoordinatorState>
         get() = _stateFlow
@@ -43,7 +45,7 @@ class SetupCoordinator @Inject constructor(
                         when (val state = eventAndPair.second) {
                             is SetupStateMachine.State.Intro -> navigator.navigate(SetupIntroDestination(state.tcTokenUrl != null))
                             is SetupStateMachine.State.PinManagement -> startPinManagement(state.tcTokenUrl != null)
-                            is SetupStateMachine.State.SkippingToIdentRequested -> identificationCoordinator.startIdentificationProcess(state.tcTokenUrl, true)
+                            is SetupStateMachine.State.SkippingToIdentRequested -> identificationCoordinator.startIdentificationProcess(state.tcTokenUrl, widgetSessionId, true)
                             is SetupStateMachine.State.StartSetup -> navigator.navigate(SetupPinLetterDestination)
                             is SetupStateMachine.State.PinReset -> navigator.navigate(SetupResetPersonalPinDestination)
                             is SetupStateMachine.State.PinManagementFinished -> {
@@ -52,7 +54,7 @@ class SetupCoordinator @Inject constructor(
                             }
                             is SetupStateMachine.State.AlreadySetUpConfirmation -> navigator.navigate(AlreadySetupConfirmationDestination)
                             is SetupStateMachine.State.SetupFinished -> finishSetup()
-                            is SetupStateMachine.State.IdentAfterFinishedSetupRequested -> identificationCoordinator.startIdentificationProcess(state.tcTokenUrl, false)
+                            is SetupStateMachine.State.IdentAfterFinishedSetupRequested -> identificationCoordinator.startIdentificationProcess(state.tcTokenUrl, widgetSessionId, false)
 
                             SetupStateMachine.State.Invalid -> logger.debug("Ignoring transition to state INVALID.")
                         }
@@ -62,8 +64,10 @@ class SetupCoordinator @Inject constructor(
         }
     }
 
-    fun showSetupIntro(tcTokenUrl: String?) {
+    fun showSetupIntro(tcTokenUrl: String?, widgetSessionId: String?) {
         collectStateMachineEvents()
+
+        this.widgetSessionId = widgetSessionId
 
         _stateFlow.value = SubCoordinatorState.ACTIVE
         flowStateMachine.transition(SetupStateMachine.Event.Invalidate)

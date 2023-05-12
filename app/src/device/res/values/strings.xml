@@ -1,3 +1,8 @@
 <resources>
     <string name="appName" translatable="false">BundesIdent</string>
+    <string name="asset_statements" translatable="false">
+  [{
+    \"include\": \"https://useid.dev.ds4g.net/.well-known/assetlinks.json\"
+  }]
+  </string>
 </resources>
