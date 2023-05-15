@@ -241,7 +241,9 @@ class EidInteractionManager @Inject constructor(
     fun cancelTask() {
         logger.debug("Stopping workflow controller.")
         workflowController.unregisterCallbacks(workflowCallbacks)
-        workflowController.stop()
+        if (workflowController.isStarted) {
+            workflowController.stop()
+        }
         workflowControllerStarted.value = false
         _eidFlow.value = EidInteractionEvent.Idle
     }
