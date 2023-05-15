@@ -450,7 +450,7 @@ class IdentificationStateMachineTest {
         }
 
         @ParameterizedTest
-        @SealedClassesSource(names = ["FetchingMetadata", "RequestCertificate", "CertificateDescriptionReceived", "PinInput"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
+        @SealedClassesSource(names = ["StartIdentification", "FetchingMetadata", "RequestCertificate", "CertificateDescriptionReceived", "PinInput"], mode = SealedClassesSource.Mode.EXCLUDE, factoryClass = IdentificationStateFactory::class)
         fun back(oldState: IdentificationStateMachine.State) = runTest {
             val event = IdentificationStateMachine.Event.Back
             val stateMachine = IdentificationStateMachine(oldState, issueTrackerManager)

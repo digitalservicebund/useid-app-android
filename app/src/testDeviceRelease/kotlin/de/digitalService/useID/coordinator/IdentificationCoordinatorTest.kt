@@ -168,9 +168,10 @@ class IdentificationCoordinatorTest {
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Invalidate) }
         }
 
-        @Test
-        fun `start identification`() = runTest {
-            val state = IdentificationStateMachine.State.StartIdentification(false, testTokenUri)
+        @ParameterizedTest
+        @ValueSource(booleans = [true, false])
+        fun `start identification`(backingDownAllowed: Boolean) = runTest {
+            val state = IdentificationStateMachine.State.StartIdentification(backingDownAllowed, testTokenUri)
 
             val identificationCoordinator = IdentificationCoordinator(
                 mockContext,
@@ -191,6 +192,10 @@ class IdentificationCoordinatorTest {
             advanceUntilIdle()
 
             verify { mockEidInteractionManager.identify(mockContext, testTokenUri) }
+
+            verify { mockNavigator.popUpToOrNavigate(any(), false) }
+
+            Assertions.assertEquals(IdentificationFetchMetadataDestination(backingDownAllowed).route, navigationPopUpToOrNavigateDestinationSlot.captured.route)
         }
 
         @ParameterizedTest
@@ -198,10 +203,6 @@ class IdentificationCoordinatorTest {
         fun `fetching metadata`(backingDownAllowed: Boolean) = runTest {
             val state = IdentificationStateMachine.State.FetchingMetadata(backingDownAllowed, testTokenUri)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
-
-            verify { mockNavigator.popUpToOrNavigate(any(), false) }
-
-            Assertions.assertEquals(IdentificationFetchMetadataDestination(backingDownAllowed).route, navigationPopUpToOrNavigateDestinationSlot.captured.route)
         }
 
         @ParameterizedTest

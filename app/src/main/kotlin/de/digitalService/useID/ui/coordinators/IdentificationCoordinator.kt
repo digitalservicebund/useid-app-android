@@ -74,8 +74,16 @@ class IdentificationCoordinator @Inject constructor(
                     }
                 } else {
                     when (val state = eventAndPair.second) {
-                        is IdentificationStateMachine.State.StartIdentification -> executeIdentification(state.tcTokenUrl)
-                        is IdentificationStateMachine.State.FetchingMetadata -> navigator.popUpToOrNavigate(IdentificationFetchMetadataDestination(state.backingDownAllowed), false)
+                        is IdentificationStateMachine.State.StartIdentification -> {
+                            executeIdentification(state.tcTokenUrl)
+                            navigator.popUpToOrNavigate(IdentificationFetchMetadataDestination(state.backingDownAllowed), false)
+                        }
+
+                        is IdentificationStateMachine.State.FetchingMetadata -> {
+                            // this state is currently necessary for proper error handling after onAuthenticationStarted callback
+                            // and should be removed once USEID-1055 is fixed
+                        }
+
                         is IdentificationStateMachine.State.FetchingMetadataFailed -> {
                             eidInteractionManager.cancelTask()
                             navigator.navigate(IdentificationOtherErrorDestination)
@@ -179,6 +187,7 @@ class IdentificationCoordinator @Inject constructor(
     }
 
     private fun executeIdentification(tcTokenUrl: Uri) {
+        eidInteractionManager.cancelTask()
         eIdEventFlowCoroutineScope?.cancel()
         eIdEventFlowCoroutineScope = CoroutineScope(coroutineContextProvider.IO).launch {
             eidInteractionManager.eidFlow.catch { exception ->
@@ -193,14 +202,14 @@ class IdentificationCoordinator @Inject constructor(
                         flowStateMachine.transition(IdentificationStateMachine.Event.StartedFetchingMetadata)
                     }
 
-                    is EidInteractionEvent.CertificateDescriptionReceived -> {
-                        logger.debug("Certificate description received")
-                        flowStateMachine.transition(IdentificationStateMachine.Event.CertificateDescriptionReceived(event.certificateDescription))
-                    }
-
                     is EidInteractionEvent.AuthenticationRequestConfirmationRequested -> {
                         logger.debug("Requesting authentication confirmation")
                         flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(event.request))
+                    }
+
+                    is EidInteractionEvent.CertificateDescriptionReceived -> {
+                        logger.debug("Certificate description received")
+                        flowStateMachine.transition(IdentificationStateMachine.Event.CertificateDescriptionReceived(event.certificateDescription))
                     }
 
                     is EidInteractionEvent.PinRequested -> {

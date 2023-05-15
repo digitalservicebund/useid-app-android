@@ -88,16 +88,16 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
                 }
             }
 
-            is Event.CertificateDescriptionReceived -> {
+            is Event.FrameworkRequestsAttributeConfirmation -> {
                 when (val currentState = state.value.second) {
-                    is State.RequestCertificate -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.request, event.certificateDescription)
+                    is State.FetchingMetadata -> State.RequestCertificate(currentState.backingDownAllowed, event.authenticationRequest)
                     else -> throw IllegalArgumentException()
                 }
             }
 
-            is Event.FrameworkRequestsAttributeConfirmation -> {
+            is Event.CertificateDescriptionReceived -> {
                 when (val currentState = state.value.second) {
-                    is State.FetchingMetadata -> State.RequestCertificate(currentState.backingDownAllowed, event.authenticationRequest)
+                    is State.RequestCertificate -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.request, event.certificateDescription)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -173,7 +173,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
 
             is Event.Back -> {
                 when (val currentState = state.value.second) {
-                    is State.FetchingMetadata, is State.RequestCertificate, is State.CertificateDescriptionReceived -> State.Invalid
+                    is State.StartIdentification, is State.FetchingMetadata, is State.RequestCertificate, is State.CertificateDescriptionReceived -> State.Invalid
                     is State.PinInput -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.authenticationRequest, currentState.certificateDescription)
                     else -> throw IllegalArgumentException()
                 }
