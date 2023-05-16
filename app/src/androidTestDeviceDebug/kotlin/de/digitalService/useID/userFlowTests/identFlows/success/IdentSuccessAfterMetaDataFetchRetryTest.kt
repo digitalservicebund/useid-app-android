@@ -119,7 +119,7 @@ class IdentSuccessAfterMetaDataFetchRetryTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
@@ -130,13 +130,13 @@ class IdentSuccessAfterMetaDataFetchRetryTest {
         errorGeneric.setIdentPending(true).assertIsDisplayed()
         errorGeneric.tryAgainBtn.click()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -190,7 +190,7 @@ class IdentSuccessAfterMetaDataFetchRetryTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

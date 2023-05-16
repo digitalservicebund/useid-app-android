@@ -3,7 +3,7 @@ package de.digitalService.useID.flows
 import android.net.Uri
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.idCardInterface.AuthenticationRequest
+import de.digitalService.useID.idCardInterface.IdentificationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.digitalService.useID.idCardInterface.EidInteractionException
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,9 +31,9 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         class StartIdentification(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : State()
         class FetchingMetadata(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : State()
         class FetchingMetadataFailed(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : State()
-        class RequestCertificate(val backingDownAllowed: Boolean, val request: AuthenticationRequest) : State()
-        class CertificateDescriptionReceived(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
-        class PinInput(val backingDownAllowed: Boolean, val authenticationRequest: AuthenticationRequest, val certificateDescription: CertificateDescription) : State()
+        class RequestCertificate(val backingDownAllowed: Boolean, val request: IdentificationRequest) : State()
+        class CertificateDescriptionReceived(val backingDownAllowed: Boolean, val identificationRequest: IdentificationRequest, val certificateDescription: CertificateDescription) : State()
+        class PinInput(val backingDownAllowed: Boolean, val identificationRequest: IdentificationRequest, val certificateDescription: CertificateDescription) : State()
         object PinInputRetry : State()
         class PinEntered(val pin: String, val firstTime: Boolean) : State()
         class PinRequested(val pin: String) : State()
@@ -51,7 +51,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
         data class Initialize(val backingDownAllowed: Boolean, val tcTokenUrl: Uri) : Event()
         object StartedFetchingMetadata : Event()
         data class CertificateDescriptionReceived(val certificateDescription: CertificateDescription) : Event()
-        data class FrameworkRequestsAttributeConfirmation(val authenticationRequest: AuthenticationRequest) : Event()
+        data class FrameworkRequestsAttributeConfirmation(val identificationRequest: IdentificationRequest) : Event()
         object ConfirmAttributes : Event()
         data class FrameworkRequestsPin(val firstAttempt: Boolean) : Event()
         data class EnterPin(val pin: String) : Event()
@@ -90,7 +90,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
 
             is Event.FrameworkRequestsAttributeConfirmation -> {
                 when (val currentState = state.value.second) {
-                    is State.FetchingMetadata -> State.RequestCertificate(currentState.backingDownAllowed, event.authenticationRequest)
+                    is State.FetchingMetadata -> State.RequestCertificate(currentState.backingDownAllowed, event.identificationRequest)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -104,7 +104,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
 
             is Event.ConfirmAttributes -> {
                 when (val currentState = state.value.second) {
-                    is State.CertificateDescriptionReceived -> State.PinInput(currentState.backingDownAllowed, currentState.authenticationRequest, currentState.certificateDescription)
+                    is State.CertificateDescriptionReceived -> State.PinInput(currentState.backingDownAllowed, currentState.identificationRequest, currentState.certificateDescription)
                     else -> throw IllegalArgumentException()
                 }
             }
@@ -174,7 +174,7 @@ class IdentificationStateMachine(initialState: State, private val issueTrackerMa
             is Event.Back -> {
                 when (val currentState = state.value.second) {
                     is State.StartIdentification, is State.FetchingMetadata, is State.RequestCertificate, is State.CertificateDescriptionReceived -> State.Invalid
-                    is State.PinInput -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.authenticationRequest, currentState.certificateDescription)
+                    is State.PinInput -> State.CertificateDescriptionReceived(currentState.backingDownAllowed, currentState.identificationRequest, currentState.certificateDescription)
                     else -> throw IllegalArgumentException()
                 }
             }

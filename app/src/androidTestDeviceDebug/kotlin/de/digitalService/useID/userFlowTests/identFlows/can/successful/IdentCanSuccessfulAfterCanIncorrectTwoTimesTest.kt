@@ -236,7 +236,7 @@ class IdentCanSuccessfulAfterCanIncorrectTwoTimesTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

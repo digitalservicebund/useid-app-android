@@ -3,7 +3,7 @@ package de.digitalService.useID.stateMachines
 import android.net.Uri
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.IdentificationStateMachine
-import de.digitalService.useID.idCardInterface.AuthenticationRequest
+import de.digitalService.useID.idCardInterface.IdentificationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.digitalService.useID.idCardInterface.EidInteractionException
 import de.digitalService.useID.util.IdentificationStateFactory
@@ -21,7 +21,7 @@ import org.junit.jupiter.params.provider.ValueSource
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class IdentificationStateMachineTest {
-    private val request: AuthenticationRequest = mockk()
+    private val request: IdentificationRequest = mockk()
     val certificateDescription = mockk<CertificateDescription>()
 
     private val issueTrackerManager = mockk<IssueTrackerManagerType>(relaxUnitFun = true)
@@ -105,7 +105,7 @@ class IdentificationStateMachineTest {
         val newState: IdentificationStateMachine.State.PinInput = transition(oldState, event, this)
 
         Assertions.assertEquals(backingDownAllowed, newState.backingDownAllowed)
-        Assertions.assertEquals(request, newState.authenticationRequest)
+        Assertions.assertEquals(request, newState.identificationRequest)
     }
 
     @Test
@@ -340,7 +340,7 @@ class IdentificationStateMachineTest {
             val newState: IdentificationStateMachine.State.CertificateDescriptionReceived = transition(oldState, event, this)
 
             Assertions.assertEquals(backingDownAllowed, newState.backingDownAllowed)
-            Assertions.assertEquals(request, newState.authenticationRequest)
+            Assertions.assertEquals(request, newState.identificationRequest)
             Assertions.assertEquals(certificateDescription, newState.certificateDescription)
         }
     }

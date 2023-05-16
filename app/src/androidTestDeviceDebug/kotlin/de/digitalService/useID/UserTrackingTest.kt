@@ -703,14 +703,14 @@ class UserTrackingTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -774,7 +774,7 @@ class UserTrackingTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -892,7 +892,7 @@ class UserTrackingTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
         composeTestRule.waitForIdle()
 
@@ -930,14 +930,14 @@ class UserTrackingTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -1001,14 +1001,14 @@ class UserTrackingTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -1072,14 +1072,14 @@ class UserTrackingTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
         Assert.assertEquals(identificationFetchMetaData.trackingIdentifier, trackingRouteSlot.captured)
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )

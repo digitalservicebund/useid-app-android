@@ -91,7 +91,7 @@ class IdentificationCoordinator @Inject constructor(
 
                         is IdentificationStateMachine.State.RequestCertificate -> eidInteractionManager.getCertificate()
                         is IdentificationStateMachine.State.CertificateDescriptionReceived ->
-                            navigator.navigatePopping(IdentificationAttributeConsentDestination(IdentificationAttributes(state.authenticationRequest.requiredAttributes, state.certificateDescription), state.backingDownAllowed))
+                            navigator.navigatePopping(IdentificationAttributeConsentDestination(IdentificationAttributes(state.identificationRequest.requiredAttributes, state.certificateDescription), state.backingDownAllowed))
 
                         is IdentificationStateMachine.State.PinInput -> navigator.navigate(IdentificationPersonalPinDestination(false))
                         is IdentificationStateMachine.State.PinInputRetry -> navigator.navigate(IdentificationPersonalPinDestination(true))
@@ -197,12 +197,12 @@ class IdentificationCoordinator @Inject constructor(
                 navigator.navigate(IdentificationOtherErrorDestination)
             }.collect { event ->
                 when (event) {
-                    is EidInteractionEvent.AuthenticationStarted -> {
+                    is EidInteractionEvent.IdentificationStarted -> {
                         logger.debug("Authentication started.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.StartedFetchingMetadata)
                     }
 
-                    is EidInteractionEvent.AuthenticationRequestConfirmationRequested -> {
+                    is EidInteractionEvent.IdentificationRequestConfirmationRequested -> {
                         logger.debug("Requesting authentication confirmation")
                         flowStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(event.request))
                     }
@@ -235,7 +235,7 @@ class IdentificationCoordinator @Inject constructor(
                         _scanInProgress.value = false
                     }
 
-                    is EidInteractionEvent.AuthenticationSucceededWithRedirect -> {
+                    is EidInteractionEvent.IdentificationSucceededWithRedirect -> {
                         logger.debug("Process completed successfully.")
                         flowStateMachine.transition(IdentificationStateMachine.Event.Finish(event.redirectURL))
                     }

@@ -107,7 +107,7 @@ class IdentErrorFetchMetaDataTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
@@ -121,7 +121,7 @@ class IdentErrorFetchMetaDataTest {
         eidFlow.value = EidInteractionEvent.Idle
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()

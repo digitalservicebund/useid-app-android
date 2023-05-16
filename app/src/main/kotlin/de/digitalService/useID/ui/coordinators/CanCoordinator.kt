@@ -156,7 +156,7 @@ class CanCoordinator @Inject constructor(
                 when (event) {
                     is EidInteractionEvent.CanRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsCanForIdent(pin))
                     is EidInteractionEvent.PinRequested -> flowStateMachine.transition(CanStateMachine.Event.FrameworkRequestsPinForIdent(pin))
-                    is EidInteractionEvent.AuthenticationSucceededWithRedirect -> finishCanFlow()
+                    is EidInteractionEvent.IdentificationSucceededWithRedirect -> finishCanFlow()
                     is EidInteractionEvent.PukRequested -> finishCanFlow()
                     is EidInteractionEvent.Error -> finishCanFlow()
                     else -> logger.debug("Ignoring event: $event")

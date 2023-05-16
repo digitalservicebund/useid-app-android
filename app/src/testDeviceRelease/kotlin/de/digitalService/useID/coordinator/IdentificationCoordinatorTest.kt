@@ -70,7 +70,7 @@ class IdentificationCoordinatorTest {
     private val testTokenUrl = "https://token"
     private val testTokenUri = mockk<Uri>()
 
-    private val request: AuthenticationRequest = mockk()
+    private val request: IdentificationRequest = mockk()
     val certificateDescription: CertificateDescription = mockk()
 
     private val stateFlow: MutableStateFlow<Pair<IdentificationStateMachine.Event, IdentificationStateMachine.State>> = MutableStateFlow(
@@ -230,7 +230,7 @@ class IdentificationCoordinatorTest {
             mockkStatic("android.util.Base64")
             every { Base64.encodeToString(any(), any()) } returns "serializedBase64"
 
-            val request = AuthenticationRequest(emptyList(), "")
+            val request = IdentificationRequest(emptyList(), "")
             val certificateDescription = CertificateDescription("", "", "", "", "", "")
             val state = IdentificationStateMachine.State.CertificateDescriptionReceived(backingDownAllowed, request, certificateDescription)
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
@@ -562,7 +562,7 @@ class IdentificationCoordinatorTest {
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
             advanceUntilIdle()
 
-            eIdFlow.value = EidInteractionEvent.AuthenticationStarted
+            eIdFlow.value = EidInteractionEvent.IdentificationStarted
             advanceUntilIdle()
 
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.StartedFetchingMetadata) }
@@ -598,11 +598,11 @@ class IdentificationCoordinatorTest {
             val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
             advanceUntilIdle()
 
-            val request = mockk<AuthenticationRequest>()
+            val request = mockk<IdentificationRequest>()
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
             advanceUntilIdle()
 
-            eIdFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(request)
+            eIdFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(request)
             advanceUntilIdle()
 
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.FrameworkRequestsAttributeConfirmation(request)) }
@@ -664,7 +664,7 @@ class IdentificationCoordinatorTest {
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
             advanceUntilIdle()
 
-            eIdFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+            eIdFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
             advanceUntilIdle()
 
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Finish(redirectUrl)) }

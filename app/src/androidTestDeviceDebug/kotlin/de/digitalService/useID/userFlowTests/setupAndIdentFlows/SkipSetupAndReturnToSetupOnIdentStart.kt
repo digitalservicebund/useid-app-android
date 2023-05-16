@@ -111,7 +111,7 @@ class SkipSetupAndReturnToSetupOnIdentStart {
         advanceUntilIdle()
 
         setupIntro.alreadySetupBtn.click()
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         fetchMetadata.back.click()

@@ -2,14 +2,14 @@ package de.digitalService.useID.util
 
 import android.net.Uri
 import de.digitalService.useID.flows.IdentificationStateMachine
-import de.digitalService.useID.idCardInterface.AuthenticationRequest
+import de.digitalService.useID.idCardInterface.IdentificationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.jodamob.junit5.DefaultTypeFactory
 import io.mockk.mockk
 import kotlin.reflect.KClass
 
 class IdentificationStateFactory : DefaultTypeFactory() {
-    private val request: AuthenticationRequest = mockk()
+    private val request: IdentificationRequest = mockk()
     private val certificateDescription: CertificateDescription = mockk()
     private val tcTokenUrl: Uri = mockk()
 

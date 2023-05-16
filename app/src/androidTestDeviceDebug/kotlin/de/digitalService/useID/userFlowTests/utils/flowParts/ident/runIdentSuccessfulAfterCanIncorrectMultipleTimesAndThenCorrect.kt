@@ -147,6 +147,6 @@ fun runIdentSuccessfulAfterCanIncorrectMultipleTimesAndThenCorrect(testRule: Com
         )
     )
 
-    eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+    eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
     testScope.advanceUntilIdle()
 }

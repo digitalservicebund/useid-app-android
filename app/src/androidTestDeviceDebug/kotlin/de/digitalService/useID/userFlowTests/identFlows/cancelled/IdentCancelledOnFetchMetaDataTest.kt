@@ -105,7 +105,7 @@ class IdentCancelledOnFetchMetaDataTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()

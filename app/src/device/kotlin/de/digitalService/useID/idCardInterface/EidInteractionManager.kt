@@ -48,8 +48,8 @@ class EidInteractionManager @Inject constructor(
             }
 
             if (accessRights.effectiveRights == accessRights.requiredRights) {
-                val authenticationRequest = AuthenticationRequest(accessRights.requiredRights.map { EidAttribute.fromAccessRight(it) }, accessRights.transactionInfo)
-                _eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(authenticationRequest)
+                val identificationRequest = IdentificationRequest(accessRights.requiredRights.map { EidAttribute.fromAccessRight(it) }, accessRights.transactionInfo)
+                _eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(identificationRequest)
             } else {
                 workflowController.setAccessRights(listOf())
             }
@@ -74,7 +74,7 @@ class EidInteractionManager @Inject constructor(
                         result.reason?.let { appendQueryParameter("ResultMessage", it) }
                     }?.build().toString()
                     if (majorCode != "error") {
-                        _eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+                        _eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
                     } else {
                         _eidFlow.value = EidInteractionEvent.Error(EidInteractionException.ProcessFailed(redirectUrl, result.minor, result.reason))
                     }
@@ -87,7 +87,7 @@ class EidInteractionManager @Inject constructor(
         }
 
         override fun onAuthenticationStarted() {
-            _eidFlow.value = EidInteractionEvent.AuthenticationStarted
+            _eidFlow.value = EidInteractionEvent.IdentificationStarted
         }
 
         override fun onBadState(error: String) {

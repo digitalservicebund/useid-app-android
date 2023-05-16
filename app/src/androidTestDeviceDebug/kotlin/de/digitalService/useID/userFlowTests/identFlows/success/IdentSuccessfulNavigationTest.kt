@@ -118,7 +118,7 @@ class IdentSuccessfulNavigationTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
@@ -126,8 +126,8 @@ class IdentSuccessfulNavigationTest {
         identificationFetchMetaData.navigationConfirmDialog.assertIsDisplayed()
         identificationFetchMetaData.navigationConfirmDialog.dismiss()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -217,7 +217,7 @@ class IdentSuccessfulNavigationTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

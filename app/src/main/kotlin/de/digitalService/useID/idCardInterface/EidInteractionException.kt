@@ -10,17 +10,22 @@ sealed class EidInteractionException(message: String? = null) : CancellationExce
     class ProcessFailed(val redirectUrl: String? = null, val resultMinor: String? = null, val resultReason: String? = null) : EidInteractionException()
     object ChangingPinFailed : EidInteractionException()
 
-    val redacted: RedactedIDCardInteractionException?
+    val redacted: RedactedEidInteractionException
         get() = when (this) {
-            is FrameworkError -> RedactedIDCardInteractionException.FrameworkError
-            is UnexpectedReadAttribute -> RedactedIDCardInteractionException.UnexpectedReadAttribute
-            is ProcessFailed -> RedactedIDCardInteractionException.ProcessFailed(resultMinor, resultReason)
-            else -> null
+            is FrameworkError -> RedactedEidInteractionException.FrameworkError
+            is UnexpectedReadAttribute -> RedactedEidInteractionException.UnexpectedReadAttribute
+            CardBlocked -> RedactedEidInteractionException.CardBlocked
+            CardDeactivated -> RedactedEidInteractionException.CardDeactivated
+            is ProcessFailed -> RedactedEidInteractionException.ProcessFailed(resultMinor, resultReason)
+            ChangingPinFailed -> RedactedEidInteractionException.ChangingPinFailed
         }
 }
 
-sealed class RedactedIDCardInteractionException(message: String? = null) : Exception(message) {
-    object FrameworkError : RedactedIDCardInteractionException()
-    object UnexpectedReadAttribute : RedactedIDCardInteractionException()
-    class ProcessFailed(resultMinor: String?, resultReason: String?) : RedactedIDCardInteractionException("process failed(resultMinor: $resultMinor, resultReason: $resultReason)")
+sealed class RedactedEidInteractionException(message: String? = null) : Exception(message) {
+    object FrameworkError : RedactedEidInteractionException()
+    object UnexpectedReadAttribute : RedactedEidInteractionException()
+    object CardBlocked : RedactedEidInteractionException()
+    object CardDeactivated : RedactedEidInteractionException()
+    class ProcessFailed(resultMinor: String?, resultReason: String?) : RedactedEidInteractionException("process failed(resultMinor: $resultMinor, resultReason: $resultReason)")
+    object ChangingPinFailed : RedactedEidInteractionException()
 }

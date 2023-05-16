@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -125,13 +124,13 @@ class IdentSuccessfulAfterBlockingCardTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -270,7 +269,7 @@ class IdentSuccessfulAfterBlockingCardTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         eidFlow.value = EidInteractionEvent.CardRemoved
@@ -278,8 +277,8 @@ class IdentSuccessfulAfterBlockingCardTest {
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -341,7 +340,7 @@ class IdentSuccessfulAfterBlockingCardTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

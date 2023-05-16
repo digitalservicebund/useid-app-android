@@ -119,13 +119,13 @@ class IdentSuccessfulOnSecondAttemptTest {
         appCoordinator.handleDeepLink(deepLink)
         advanceUntilIdle()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationStarted
+        eidFlow.value = EidInteractionEvent.IdentificationStarted
         advanceUntilIdle()
 
         identificationFetchMetaData.assertIsDisplayed()
 
-        eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-            AuthenticationRequest(
+        eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+            IdentificationRequest(
                 TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
                 TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
             )
@@ -204,7 +204,7 @@ class IdentSuccessfulOnSecondAttemptTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }

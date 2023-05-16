@@ -12,10 +12,10 @@ sealed class EidInteractionEvent {
     object NewPinRequested : EidInteractionEvent()
     object PukRequested : EidInteractionEvent()
 
-    object AuthenticationStarted : EidInteractionEvent()
-    class AuthenticationRequestConfirmationRequested(val request: AuthenticationRequest) : EidInteractionEvent()
+    object IdentificationStarted : EidInteractionEvent()
+    class IdentificationRequestConfirmationRequested(val request: IdentificationRequest) : EidInteractionEvent()
     class CertificateDescriptionReceived(val certificateDescription: CertificateDescription) : EidInteractionEvent()
-    class AuthenticationSucceededWithRedirect(val redirectURL: String) : EidInteractionEvent()
+    class IdentificationSucceededWithRedirect(val redirectURL: String) : EidInteractionEvent()
 
     object PinChangeStarted : EidInteractionEvent()
     object PinChangeSucceeded : EidInteractionEvent()
@@ -31,10 +31,10 @@ sealed class EidInteractionEvent {
             is PinRequested -> RedactedEidInteractionEvent.PinRequested
             is NewPinRequested -> RedactedEidInteractionEvent.NewPinRequested
             is PukRequested -> RedactedEidInteractionEvent.PukRequested
-            is AuthenticationStarted -> RedactedEidInteractionEvent.AuthenticationStarted
-            is AuthenticationRequestConfirmationRequested -> RedactedEidInteractionEvent.AuthenticationRequestConfirmationRequested
+            is IdentificationStarted -> RedactedEidInteractionEvent.IdentificationStarted
+            is IdentificationRequestConfirmationRequested -> RedactedEidInteractionEvent.IdentificationRequestConfirmationRequested
             is CertificateDescriptionReceived -> RedactedEidInteractionEvent.CertificateDescriptionReceived
-            is AuthenticationSucceededWithRedirect -> RedactedEidInteractionEvent.AuthenticationSucceededWithRedirect
+            is IdentificationSucceededWithRedirect -> RedactedEidInteractionEvent.IdentificationSucceededWithRedirect
             is PinChangeStarted -> RedactedEidInteractionEvent.PinChangeStarted
             is PinChangeSucceeded -> RedactedEidInteractionEvent.PinChangeSucceeded
         }
@@ -50,10 +50,10 @@ sealed class RedactedEidInteractionEvent : Exception() {
     object PinRequested : RedactedEidInteractionEvent()
     object NewPinRequested : RedactedEidInteractionEvent()
     object PukRequested : RedactedEidInteractionEvent()
-    object AuthenticationStarted : RedactedEidInteractionEvent()
-    object AuthenticationRequestConfirmationRequested : RedactedEidInteractionEvent()
+    object IdentificationStarted : RedactedEidInteractionEvent()
+    object IdentificationRequestConfirmationRequested : RedactedEidInteractionEvent()
     object CertificateDescriptionReceived : RedactedEidInteractionEvent()
-    object AuthenticationSucceededWithRedirect : RedactedEidInteractionEvent()
+    object IdentificationSucceededWithRedirect : RedactedEidInteractionEvent()
     object PinChangeStarted : RedactedEidInteractionEvent()
     object PinChangeSucceeded : RedactedEidInteractionEvent()
 }

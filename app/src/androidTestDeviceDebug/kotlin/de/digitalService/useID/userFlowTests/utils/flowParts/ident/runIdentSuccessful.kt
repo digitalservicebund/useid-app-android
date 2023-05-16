@@ -27,13 +27,13 @@ fun runIdentSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
     val identificationPersonalPin = TestScreen.IdentificationPersonalPin(testRule)
     val identificationScan = TestScreen.Scan(testRule)
 
-    eidFlow.value = EidInteractionEvent.AuthenticationStarted
+    eidFlow.value = EidInteractionEvent.IdentificationStarted
     testScope.advanceUntilIdle()
 
     identificationFetchMetaData.assertIsDisplayed()
 
-    eidFlow.value = EidInteractionEvent.AuthenticationRequestConfirmationRequested(
-        AuthenticationRequest(
+    eidFlow.value = EidInteractionEvent.IdentificationRequestConfirmationRequested(
+        IdentificationRequest(
             TestScreen.IdentificationAttributeConsent.RequestData.requiredAttributes,
             TestScreen.IdentificationAttributeConsent.RequestData.transactionInfo
         )
@@ -87,6 +87,6 @@ fun runIdentSuccessful(testRule: ComposeTestRule, eidFlow: MutableStateFlow<EidI
         )
     )
 
-    eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+    eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
     testScope.advanceUntilIdle()
 }

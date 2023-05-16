@@ -1,6 +1,6 @@
 package de.digitalService.useID.util
 
-import de.digitalService.useID.idCardInterface.AuthenticationRequest
+import de.digitalService.useID.idCardInterface.IdentificationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.EidInteractionException
@@ -19,10 +19,10 @@ class EidInteractionEventTypeFactory: DefaultTypeFactory() {
             EidInteractionEvent.PinRequested::class -> EidInteractionEvent.PinRequested(3)
             EidInteractionEvent.NewPinRequested::class -> EidInteractionEvent.NewPinRequested
             EidInteractionEvent.PukRequested::class -> EidInteractionEvent.PukRequested
-            EidInteractionEvent.AuthenticationStarted::class -> EidInteractionEvent.AuthenticationStarted
-            EidInteractionEvent.AuthenticationRequestConfirmationRequested::class -> EidInteractionEvent.AuthenticationRequestConfirmationRequested(AuthenticationRequest(emptyList(), ""))
+            EidInteractionEvent.IdentificationStarted::class -> EidInteractionEvent.IdentificationStarted
+            EidInteractionEvent.IdentificationRequestConfirmationRequested::class -> EidInteractionEvent.IdentificationRequestConfirmationRequested(IdentificationRequest(emptyList(), ""))
             EidInteractionEvent.CertificateDescriptionReceived::class -> EidInteractionEvent.CertificateDescriptionReceived(CertificateDescription("", "", "", "", "", ""))
-            EidInteractionEvent.AuthenticationSucceededWithRedirect::class -> EidInteractionEvent.AuthenticationSucceededWithRedirect("")
+            EidInteractionEvent.IdentificationSucceededWithRedirect::class -> EidInteractionEvent.IdentificationSucceededWithRedirect("")
             EidInteractionEvent.PinChangeStarted::class -> EidInteractionEvent.PinChangeStarted
             EidInteractionEvent.PinChangeSucceeded::class -> EidInteractionEvent.PinChangeSucceeded
             else -> throw IllegalArgumentException()

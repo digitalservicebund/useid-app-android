@@ -91,6 +91,6 @@ fun runIdentSuccessfulCan(testRule: ComposeTestRule, eidFlow: MutableStateFlow<E
         )
     )
 
-    eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+    eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
     testScope.advanceUntilIdle()
 }

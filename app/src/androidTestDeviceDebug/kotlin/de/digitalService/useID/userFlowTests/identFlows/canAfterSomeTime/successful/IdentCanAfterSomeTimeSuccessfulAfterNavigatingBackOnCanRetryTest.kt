@@ -199,7 +199,7 @@ class IdentCanAfterSomeTimeSuccessfulAfterNavigatingBackOnCanRetryTest {
             )
         )
 
-        eidFlow.value = EidInteractionEvent.AuthenticationSucceededWithRedirect(redirectUrl)
+        eidFlow.value = EidInteractionEvent.IdentificationSucceededWithRedirect(redirectUrl)
         advanceUntilIdle()
     }
 }
