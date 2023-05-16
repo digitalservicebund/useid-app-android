@@ -73,7 +73,7 @@ class ChangePinStateMachine(initialState: State, private val issueTrackerManager
     fun transition(event: Event) {
         val currentStateDescription = state.value.second::class.simpleName
         val eventDescription = event::class.simpleName
-        issueTrackerManager.addInfoBreadcrumb("transition", "Transitioning from $currentStateDescription via $eventDescription.")
+        issueTrackerManager.addInfoBreadcrumb("transition", "Transitioning from $currentStateDescription via $eventDescription in ${this::class.simpleName}.")
         logger.debug("$currentStateDescription  ====$eventDescription===>  ???")
         val nextState = nextState(event)
         logger.debug("$currentStateDescription  ====$eventDescription===>  ${nextState::class.simpleName}")
