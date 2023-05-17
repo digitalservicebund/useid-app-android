@@ -2,6 +2,7 @@ package de.digitalService.useID.ui.coordinators
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.CanStateMachine
 import de.digitalService.useID.flows.ChangePinStateMachine
 import de.digitalService.useID.getLogger
@@ -37,7 +38,8 @@ class ChangePinCoordinator @Inject constructor(
     private val eidInteractionManager: EidInteractionManager,
     private val flowStateMachine: ChangePinStateMachine,
     private val canStateMachine: CanStateMachine,
-    private val coroutineContextProvider: CoroutineContextProviderType
+    private val coroutineContextProvider: CoroutineContextProviderType,
+    private val issueTrackerManager: IssueTrackerManagerType
 ) {
     private val logger by getLogger()
 
@@ -252,11 +254,13 @@ class ChangePinCoordinator @Inject constructor(
 
                     is EidInteractionEvent.PukRequested -> {
                         _scanInProgress.value = false
+                        issueTrackerManager.captureMessage("${EidInteractionException.CardBlocked}")
                         flowStateMachine.transition(ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked))
                     }
 
                     is EidInteractionEvent.Error -> {
                         _scanInProgress.value = false
+                        event.exception.redacted?.let { issueTrackerManager.capture(it) } ?: issueTrackerManager.captureMessage("${event.exception}")
                         flowStateMachine.transition(ChangePinStateMachine.Event.Error(event.exception))
                     }
 

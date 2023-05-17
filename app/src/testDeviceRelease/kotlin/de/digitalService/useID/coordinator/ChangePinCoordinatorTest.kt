@@ -3,6 +3,7 @@ package de.digitalService.useID.coordinator
 import android.content.Context
 import android.net.Uri
 import com.ramcosta.composedestinations.spec.Direction
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.flows.*
 import de.digitalService.useID.idCardInterface.EidInteractionEvent
 import de.digitalService.useID.idCardInterface.EidInteractionManager
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
+import java.lang.Exception
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @ExtendWith(MockKExtension::class)
@@ -54,6 +56,9 @@ class ChangePinCoordinatorTest {
 
     @MockK(relaxUnitFun = true)
     lateinit var mockCoroutineContextProvider: CoroutineContextProvider
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockIssueTrackerManager: IssueTrackerManagerType
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
@@ -97,7 +102,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         changePinCoordinator.startPinChange(false, false)
@@ -121,7 +127,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -157,7 +164,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -336,7 +344,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -359,7 +368,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -417,7 +427,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -445,7 +456,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -468,7 +480,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -493,7 +506,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -518,7 +532,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -543,7 +558,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -555,6 +571,7 @@ class ChangePinCoordinatorTest {
             advanceUntilIdle()
 
             verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(EidInteractionException.CardBlocked)) }
+            verify { mockIssueTrackerManager.captureMessage("${EidInteractionException.CardBlocked}") }
         }
 
         @Test
@@ -566,7 +583,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -578,6 +596,7 @@ class ChangePinCoordinatorTest {
             advanceUntilIdle()
 
             verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(EidInteractionException.CardDeactivated)) }
+            verify { mockIssueTrackerManager.captureMessage("${EidInteractionException.CardDeactivated}") }
         }
 
         @Test
@@ -589,11 +608,13 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
             val exception = EidInteractionException.ProcessFailed()
+            val capturedExceptionSlot = slot<Exception>()
             val eIdFlow = MutableStateFlow(EidInteractionEvent.Error(exception))
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
@@ -602,6 +623,8 @@ class ChangePinCoordinatorTest {
             advanceUntilIdle()
 
             verify { mockChangePinStateMachine.transition(ChangePinStateMachine.Event.Error(exception)) }
+            verify { mockIssueTrackerManager.capture(capture(capturedExceptionSlot)) }
+            Assertions.assertEquals(exception.redacted?.message, capturedExceptionSlot.captured.message)
         }
     }
 
@@ -615,7 +638,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         changePinCoordinator.startPinChange(identificationPending, true)
@@ -634,7 +658,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         val oldPin = "123456"
@@ -652,7 +677,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         val oldPin = "123456"
@@ -670,7 +696,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         val newPin = "000000"
@@ -689,7 +716,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         val newPin = "000000"
@@ -709,7 +737,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         changePinCoordinator.onConfirmPinMismatchError()
@@ -726,7 +755,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         changePinCoordinator.onBack()
@@ -743,7 +773,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         changePinCoordinator.cancelPinManagement()
@@ -762,7 +793,8 @@ class ChangePinCoordinatorTest {
             mockEidInteractionManager,
             mockChangePinStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         changePinCoordinator.confirmCardUnreadableError()
@@ -782,7 +814,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 
@@ -811,7 +844,8 @@ class ChangePinCoordinatorTest {
                 mockEidInteractionManager,
                 mockChangePinStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             changePinCoordinator.startPinChange(false, false)
 

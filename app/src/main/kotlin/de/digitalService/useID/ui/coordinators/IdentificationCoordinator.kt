@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.core.content.ContextCompat
 import dagger.hilt.android.qualifiers.ApplicationContext
 import de.digitalService.useID.StorageManagerType
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.flows.CanStateMachine
 import de.digitalService.useID.flows.IdentificationStateMachine
@@ -44,7 +45,8 @@ class IdentificationCoordinator @Inject constructor(
     private val trackerManager: TrackerManagerType,
     private val flowStateMachine: IdentificationStateMachine,
     private val canStateMachine: CanStateMachine,
-    private val coroutineContextProvider: CoroutineContextProviderType
+    private val coroutineContextProvider: CoroutineContextProviderType,
+    private val issueTrackerManager: IssueTrackerManagerType
 ) {
     private val logger by getLogger()
 
@@ -251,11 +253,13 @@ class IdentificationCoordinator @Inject constructor(
 
                     is EidInteractionEvent.PukRequested -> {
                         logger.debug("PUK requested.")
+                        issueTrackerManager.captureMessage("${EidInteractionException.CardBlocked}")
                         flowStateMachine.transition(IdentificationStateMachine.Event.Error(EidInteractionException.CardBlocked))
                     }
 
                     is EidInteractionEvent.Error -> {
                         logger.error("Identification error: ${event.exception}")
+                        event.exception.redacted?.let { issueTrackerManager.capture(it) } ?: issueTrackerManager.captureMessage("${event.exception}")
                         flowStateMachine.transition(IdentificationStateMachine.Event.Error(event.exception))
                     }
 

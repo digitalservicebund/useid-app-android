@@ -10,6 +10,10 @@ class IssueTrackerManager @Inject constructor() : IssueTrackerManagerType {
         Sentry.captureException(exception)
     }
 
+    override fun captureMessage(message: String) {
+        Sentry.captureMessage(message)
+    }
+
     override fun addInfoBreadcrumb(category: String, message: String) {
         val breadcrumb = Breadcrumb()
         breadcrumb.category = category

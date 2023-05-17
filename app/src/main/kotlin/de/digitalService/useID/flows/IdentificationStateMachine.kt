@@ -3,9 +3,9 @@ package de.digitalService.useID.flows
 import android.net.Uri
 import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
-import de.digitalService.useID.idCardInterface.IdentificationRequest
 import de.digitalService.useID.idCardInterface.CertificateDescription
 import de.digitalService.useID.idCardInterface.EidInteractionException
+import de.digitalService.useID.idCardInterface.IdentificationRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject

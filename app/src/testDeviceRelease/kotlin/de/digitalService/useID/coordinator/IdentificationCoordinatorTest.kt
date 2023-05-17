@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Base64
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManager
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.analytics.TrackerManagerType
 import de.digitalService.useID.flows.*
 import de.digitalService.useID.idCardInterface.*
@@ -59,6 +60,9 @@ class IdentificationCoordinatorTest {
 
     @MockK(relaxUnitFun = true)
     lateinit var mockCoroutineContextProvider: CoroutineContextProvider
+
+    @MockK(relaxUnitFun = true)
+    lateinit var mockIssueTrackerManager: IssueTrackerManagerType
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
@@ -117,7 +121,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
@@ -143,7 +148,8 @@ class IdentificationCoordinatorTest {
                 mockTrackerManager,
                 mockIdentificationStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
 
@@ -182,7 +188,8 @@ class IdentificationCoordinatorTest {
                 mockTrackerManager,
                 mockIdentificationStateMachine,
                 mockCanStateMachine,
-                mockCoroutineContextProvider
+                mockCoroutineContextProvider,
+                mockIssueTrackerManager
             )
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
 
@@ -409,7 +416,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         Assertions.assertEquals(SubCoordinatorState.FINISHED, identificationCoordinator.stateFlow.value)
@@ -433,7 +441,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         identificationCoordinator.confirmAttributesForIdentification()
@@ -452,7 +461,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         val pin = "123456"
@@ -472,7 +482,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
         identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
 
@@ -499,7 +510,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         identificationCoordinator.onBack()
@@ -518,7 +530,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         identificationCoordinator.retryIdentification()
@@ -537,7 +550,8 @@ class IdentificationCoordinatorTest {
             mockTrackerManager,
             mockIdentificationStateMachine,
             mockCanStateMachine,
-            mockCoroutineContextProvider
+            mockCoroutineContextProvider,
+            mockIssueTrackerManager
         )
 
         identificationCoordinator.cancelIdentification()
@@ -556,7 +570,7 @@ class IdentificationCoordinatorTest {
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
@@ -575,7 +589,7 @@ class IdentificationCoordinatorTest {
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             val certificateDescription = mockk<CertificateDescription>()
@@ -595,7 +609,7 @@ class IdentificationCoordinatorTest {
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             val request = mockk<IdentificationRequest>()
@@ -617,7 +631,7 @@ class IdentificationCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
@@ -638,7 +652,7 @@ class IdentificationCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.ACTIVE)
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
@@ -657,7 +671,7 @@ class IdentificationCoordinatorTest {
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             val redirectUrl = ""
@@ -679,7 +693,7 @@ class IdentificationCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
@@ -700,7 +714,7 @@ class IdentificationCoordinatorTest {
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.ACTIVE)
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
@@ -719,7 +733,7 @@ class IdentificationCoordinatorTest {
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
@@ -729,6 +743,7 @@ class IdentificationCoordinatorTest {
             advanceUntilIdle()
 
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Error(EidInteractionException.CardBlocked)) }
+            verify { mockIssueTrackerManager.captureMessage("${EidInteractionException.CardBlocked}") }
         }
 
         @Test
@@ -738,10 +753,11 @@ class IdentificationCoordinatorTest {
             val eIdFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
             every { mockEidInteractionManager.eidFlow } returns eIdFlow
 
-            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider)
+            val identificationCoordinator = IdentificationCoordinator(mockContext, mockCanCoordinator, mockNavigator, mockEidInteractionManager, mockStorageManager, mockTrackerManager, mockIdentificationStateMachine, mockCanStateMachine, mockCoroutineContextProvider, mockIssueTrackerManager)
             advanceUntilIdle()
 
             val exception = EidInteractionException.FrameworkError("message")
+            val capturedExceptionSlot = slot<Exception>()
             identificationCoordinator.startIdentificationProcess(testTokenUrl, false)
             advanceUntilIdle()
 
@@ -749,6 +765,8 @@ class IdentificationCoordinatorTest {
             advanceUntilIdle()
 
             verify { mockIdentificationStateMachine.transition(IdentificationStateMachine.Event.Error(exception)) }
+            verify { mockIssueTrackerManager.capture(capture(capturedExceptionSlot)) }
+            Assertions.assertEquals(exception.redacted, capturedExceptionSlot.captured)
         }
     }
 }

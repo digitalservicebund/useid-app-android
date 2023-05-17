@@ -18,7 +18,7 @@ import de.digitalService.useID.ui.coordinators.AppCoordinatorType
 import de.digitalService.useID.ui.navigation.Navigator
 import de.digitalService.useID.util.AbTestManager
 import de.digitalService.useID.util.NfcInterfaceManagerType
-import io.sentry.Sentry
+import io.sentry.android.core.SentryAndroid
 import kotlinx.coroutines.*
 import java.io.IOException
 import javax.inject.Inject
@@ -60,9 +60,10 @@ class MainActivity : ComponentActivity() {
 
         prepareAppLaunch()
 
-        Sentry.init { options ->
+        SentryAndroid.init(this) { options ->
             options.dsn = sentryDsn
             options.dist = "${BuildConfig.VERSION_CODE}"
+            options.release = BuildConfig.VERSION_NAME
         }
 
         handleNewIntent(intent)

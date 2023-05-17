@@ -3,6 +3,7 @@ package de.digitalService.useID.idCardInterface
 import android.content.Context
 import android.net.Uri
 import android.nfc.Tag
+import de.digitalService.useID.analytics.IssueTrackerManagerType
 import de.digitalService.useID.getLogger
 import de.digitalService.useID.util.CoroutineContextProvider
 import de.governikus.ausweisapp2.sdkwrapper.SDKWrapper.workflowController
@@ -20,19 +21,24 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class EidInteractionManager @Inject constructor(
-    private val coroutineContextProvider: CoroutineContextProvider
+    private val coroutineContextProvider: CoroutineContextProvider,
+    private val issueTrackerManager: IssueTrackerManagerType
 ) {
     private val logger by getLogger()
 
     private val _eidFlow: MutableStateFlow<EidInteractionEvent> = MutableStateFlow(EidInteractionEvent.Idle)
     val eidFlow: Flow<EidInteractionEvent>
-        get() = _eidFlow
+        get() = _eidFlow.onEach {
+            val exception = if (it is EidInteractionEvent.Error) ": ${it.exception::class.simpleName}" else ""
+            issueTrackerManager.addInfoBreadcrumb("eID interaction", "${it::class.simpleName}$exception")
+        }
 
     private val workflowControllerStarted: MutableStateFlow<Boolean> = MutableStateFlow(false)
 

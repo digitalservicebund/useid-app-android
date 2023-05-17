@@ -9,20 +9,17 @@ sealed class EidInteractionException(message: String? = null) : CancellationExce
     class ProcessFailed(val redirectUrl: String? = null, val resultMinor: String? = null, val resultReason: String? = null) : EidInteractionException()
     object ChangingPinFailed : EidInteractionException()
 
-    val redacted: RedactedEidInteractionException
+    val redacted: RedactedEidInteractionException?
         get() = when (this) {
             is FrameworkError -> RedactedEidInteractionException.FrameworkError
-            CardBlocked -> RedactedEidInteractionException.CardBlocked
-            CardDeactivated -> RedactedEidInteractionException.CardDeactivated
             is ProcessFailed -> RedactedEidInteractionException.ProcessFailed(resultMinor, resultReason)
             ChangingPinFailed -> RedactedEidInteractionException.ChangingPinFailed
+            else -> null
         }
 }
 
 sealed class RedactedEidInteractionException(message: String? = null) : Exception(message) {
     object FrameworkError : RedactedEidInteractionException()
-    object CardBlocked : RedactedEidInteractionException()
-    object CardDeactivated : RedactedEidInteractionException()
     class ProcessFailed(resultMinor: String?, resultReason: String?) : RedactedEidInteractionException("process failed(resultMinor: $resultMinor, resultReason: $resultReason)")
     object ChangingPinFailed : RedactedEidInteractionException()
 }

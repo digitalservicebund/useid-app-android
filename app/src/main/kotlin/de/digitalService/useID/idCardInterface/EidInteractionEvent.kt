@@ -19,41 +19,4 @@ sealed class EidInteractionEvent {
 
     object PinChangeStarted : EidInteractionEvent()
     object PinChangeSucceeded : EidInteractionEvent()
-
-    val redacted: RedactedEidInteractionEvent
-        get() = when (this) {
-            is Idle -> RedactedEidInteractionEvent.Idle
-            is Error -> RedactedEidInteractionEvent.Error
-            is CardInsertionRequested -> RedactedEidInteractionEvent.CardInsertionRequested
-            is CardRecognized -> RedactedEidInteractionEvent.CardRecognized
-            is CardRemoved -> RedactedEidInteractionEvent.CardRemoved
-            is CanRequested -> RedactedEidInteractionEvent.CanRequested
-            is PinRequested -> RedactedEidInteractionEvent.PinRequested
-            is NewPinRequested -> RedactedEidInteractionEvent.NewPinRequested
-            is PukRequested -> RedactedEidInteractionEvent.PukRequested
-            is IdentificationStarted -> RedactedEidInteractionEvent.IdentificationStarted
-            is IdentificationRequestConfirmationRequested -> RedactedEidInteractionEvent.IdentificationRequestConfirmationRequested
-            is CertificateDescriptionReceived -> RedactedEidInteractionEvent.CertificateDescriptionReceived
-            is IdentificationSucceededWithRedirect -> RedactedEidInteractionEvent.IdentificationSucceededWithRedirect
-            is PinChangeStarted -> RedactedEidInteractionEvent.PinChangeStarted
-            is PinChangeSucceeded -> RedactedEidInteractionEvent.PinChangeSucceeded
-        }
-}
-
-sealed class RedactedEidInteractionEvent : Exception() {
-    object Idle : RedactedEidInteractionEvent()
-    object Error : RedactedEidInteractionEvent()
-    object CardInsertionRequested : RedactedEidInteractionEvent()
-    object CardRecognized : RedactedEidInteractionEvent()
-    object CardRemoved : RedactedEidInteractionEvent()
-    object CanRequested : RedactedEidInteractionEvent()
-    object PinRequested : RedactedEidInteractionEvent()
-    object NewPinRequested : RedactedEidInteractionEvent()
-    object PukRequested : RedactedEidInteractionEvent()
-    object IdentificationStarted : RedactedEidInteractionEvent()
-    object IdentificationRequestConfirmationRequested : RedactedEidInteractionEvent()
-    object CertificateDescriptionReceived : RedactedEidInteractionEvent()
-    object IdentificationSucceededWithRedirect : RedactedEidInteractionEvent()
-    object PinChangeStarted : RedactedEidInteractionEvent()
-    object PinChangeSucceeded : RedactedEidInteractionEvent()
 }
