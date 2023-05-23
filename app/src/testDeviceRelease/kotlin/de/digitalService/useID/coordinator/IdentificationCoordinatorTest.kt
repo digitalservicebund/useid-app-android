@@ -304,6 +304,7 @@ class IdentificationCoordinatorTest {
             val state = IdentificationStateMachine.State.CanRequested(pin)
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
+            every { mockCanCoordinator.startIdentCanFlow(any()) } returns flow {}
 
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 
@@ -315,6 +316,7 @@ class IdentificationCoordinatorTest {
             val state = IdentificationStateMachine.State.CanRequested(null)
 
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
+            every { mockCanCoordinator.startIdentCanFlow(any()) } returns flow {}
 
             testTransition(IdentificationStateMachine.Event.Invalidate, state, this)
 

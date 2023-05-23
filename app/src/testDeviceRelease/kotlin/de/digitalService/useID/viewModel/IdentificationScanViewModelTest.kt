@@ -6,10 +6,8 @@ import de.digitalService.useID.ui.screens.identification.IdentificationScanViewM
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
-import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.*
 import org.junit.jupiter.api.AfterEach
@@ -27,8 +25,7 @@ class IdentificationScanViewModelTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockTrackerManager: TrackerManagerType
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val dispatcher = StandardTestDispatcher()
+    private val dispatcher = StandardTestDispatcher()
 
     @BeforeEach
     fun setup() {
@@ -61,8 +58,7 @@ class IdentificationScanViewModelTest {
 
     @Test
     fun testOnHelpButtonClicked() = runTest {
-
-        every { mockIdentificationCoordinator.scanInProgress } returns mockk()
+        every { mockIdentificationCoordinator.scanInProgress } returns MutableStateFlow(false)
 
         val viewModel = IdentificationScanViewModel(
             mockIdentificationCoordinator,
@@ -76,8 +72,7 @@ class IdentificationScanViewModelTest {
 
     @Test
     fun testOnNfcButtonClicked() = runTest {
-
-        every { mockIdentificationCoordinator.scanInProgress } returns mockk()
+        every { mockIdentificationCoordinator.scanInProgress } returns MutableStateFlow(false)
 
         val viewModel = IdentificationScanViewModel(
             mockIdentificationCoordinator,
@@ -91,8 +86,7 @@ class IdentificationScanViewModelTest {
 
     @Test
     fun testOnCancelIdentification() = runTest {
-
-        every { mockIdentificationCoordinator.scanInProgress } returns mockk()
+        every { mockIdentificationCoordinator.scanInProgress } returns MutableStateFlow(false)
 
         val viewModel = IdentificationScanViewModel(
             mockIdentificationCoordinator,

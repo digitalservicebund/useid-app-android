@@ -154,6 +154,8 @@ class SetupCoordinatorTest {
 
         @Test
         fun `PIN management with ident`() = runTest {
+            every { mockPinManagementCoordinator.startPinChange(any(), any()) } returns flow {}
+
             val newState = SetupStateMachine.State.PinManagement("tcTokenUrl")
 
             testTransition(SetupStateMachine.Event.Invalidate, newState, this)
@@ -164,6 +166,8 @@ class SetupCoordinatorTest {
 
         @Test
         fun `PIN management without ident`() = runTest {
+            every { mockPinManagementCoordinator.startPinChange(any(), any()) } returns flow {}
+
             val newState = SetupStateMachine.State.PinManagement(null)
 
             testTransition(SetupStateMachine.Event.Invalidate, newState, this)

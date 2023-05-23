@@ -60,7 +60,6 @@ class ChangePinCoordinatorTest {
     @MockK(relaxUnitFun = true)
     lateinit var mockIssueTrackerManager: IssueTrackerManagerType
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     val dispatcher = StandardTestDispatcher()
 
     private val navigationDestinationSlot = slot<Direction>()
@@ -214,6 +213,8 @@ class ChangePinCoordinatorTest {
 
         @Test
         fun `start id card interaction`() = runTest {
+            every { mockEidInteractionManager.eidFlow } returns MutableStateFlow(EidInteractionEvent.CardRecognized)
+
             val state = ChangePinStateMachine.State.StartIdCardInteraction(false, true, "12345", "000000")
             testTransition(ChangePinStateMachine.Event.Invalidate, state, this)
             advanceUntilIdle()
@@ -268,6 +269,7 @@ class ChangePinCoordinatorTest {
             val oldPin = "123456"
             val newPin = "000000"
 
+            every { mockCanCoordinator.startPinChangeCanFlow(any(), any(), any(), any()) } returns flow {}
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
 
             val state = ChangePinStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, true)
@@ -283,6 +285,7 @@ class ChangePinCoordinatorTest {
             val oldPin = "123456"
             val newPin = "000000"
 
+            every { mockCanCoordinator.startPinChangeCanFlow(any(), any(), any(), any()) } returns flow {}
             every { mockCanCoordinator.stateFlow } returns MutableStateFlow(SubCoordinatorState.FINISHED)
 
             val state = ChangePinStateMachine.State.CanRequested(identificationPending, true, oldPin, newPin, false)
