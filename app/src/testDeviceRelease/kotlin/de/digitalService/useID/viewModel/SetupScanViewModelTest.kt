@@ -36,8 +36,9 @@ class SetupScanViewModelTest {
     @MockK
     lateinit var mockNavArgs: SetupScanNavArgs
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val dispatcher = StandardTestDispatcher()
+    private val dispatcher = StandardTestDispatcher()
+
+    private val scanInProgressFlow = MutableStateFlow(false)
 
     @BeforeEach
     fun setup() {
@@ -47,6 +48,8 @@ class SetupScanViewModelTest {
         every { SetupScanDestination.argsFrom(mockSaveStateHandle) } returns mockNavArgs
         every { mockNavArgs.identificationPending } returns true
         every { mockNavArgs.backAllowed } returns true
+        every { mockChangePinCoordinator.scanInProgress } returns scanInProgressFlow
+
     }
 
     @AfterEach
@@ -72,9 +75,6 @@ class SetupScanViewModelTest {
 
     @Test
     fun testProgressEventCollection() = runTest {
-        val scanInProgressFlow = MutableStateFlow(false)
-        every { mockChangePinCoordinator.scanInProgress } returns scanInProgressFlow
-
         val viewModel = SetupScanViewModel(
             mockChangePinCoordinator,
             mockTrackerManager,
@@ -92,9 +92,6 @@ class SetupScanViewModelTest {
 
     @Test
     fun testOnHelpButtonClicked() = runTest {
-
-        every { mockChangePinCoordinator.scanInProgress } returns mockk()
-
         val viewModel = SetupScanViewModel(
             mockChangePinCoordinator,
             mockTrackerManager,
@@ -108,9 +105,6 @@ class SetupScanViewModelTest {
 
     @Test
     fun testOnNfcButtonClicked() = runTest {
-
-        every { mockChangePinCoordinator.scanInProgress } returns mockk()
-
         val viewModel = SetupScanViewModel(
             mockChangePinCoordinator,
             mockTrackerManager,
@@ -124,8 +118,6 @@ class SetupScanViewModelTest {
 
     @Test
     fun testOnNavigationButtonClickedBackAllowed() = runTest {
-
-        every { mockChangePinCoordinator.scanInProgress } returns mockk()
         every { mockNavArgs.backAllowed } returns true
 
         val viewModel = SetupScanViewModel(
@@ -141,8 +133,6 @@ class SetupScanViewModelTest {
 
     @Test
     fun testOnNavigationButtonClickedBackNotAllowed() = runTest {
-
-        every { mockChangePinCoordinator.scanInProgress } returns mockk()
         every { mockNavArgs.backAllowed } returns false
 
         val viewModel = SetupScanViewModel(
