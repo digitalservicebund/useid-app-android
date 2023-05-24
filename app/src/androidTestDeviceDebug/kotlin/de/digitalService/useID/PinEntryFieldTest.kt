@@ -5,6 +5,7 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import de.digitalService.useID.ui.components.pin.InputType
 import de.digitalService.useID.ui.components.pin.NumberEntryTextField
 import de.digitalService.useID.util.setContentUsingUseIdTheme
 import io.mockk.mockk
@@ -35,6 +36,7 @@ class PinEntryFieldTest {
         composeTestRule.activity.setContentUsingUseIdTheme {
             NumberEntryTextField(
                 digitCount = digitCount,
+                inputType = InputType.Pin,
                 obfuscation = true,
                 spacerPosition = null,
                 focusRequester = focusRequester,
@@ -62,6 +64,7 @@ class PinEntryFieldTest {
         composeTestRule.activity.setContentUsingUseIdTheme {
             NumberEntryTextField(
                 digitCount = digitCount,
+                inputType = InputType.Pin,
                 obfuscation = false,
                 spacerPosition = null,
                 focusRequester = focusRequester,
@@ -88,6 +91,7 @@ class PinEntryFieldTest {
         composeTestRule.activity.setContentUsingUseIdTheme {
             NumberEntryTextField(
                 digitCount = digitCount,
+                inputType = InputType.Pin,
                 obfuscation = true,
                 spacerPosition = 2,
                 focusRequester = focusRequester,
@@ -109,6 +113,7 @@ class PinEntryFieldTest {
         composeTestRule.activity.setContentUsingUseIdTheme {
             NumberEntryTextField(
                 digitCount = digitCount,
+                inputType = InputType.Pin,
                 obfuscation = true,
                 spacerPosition = null,
                 focusRequester = focusRequester,
@@ -130,6 +135,7 @@ class PinEntryFieldTest {
         composeTestRule.activity.setContentUsingUseIdTheme {
             NumberEntryTextField(
                 digitCount = digitCount,
+                inputType = InputType.Pin,
                 obfuscation = false,
                 spacerPosition = null,
                 focusRequester = focusRequester,
@@ -158,6 +164,7 @@ class PinEntryFieldTest {
         composeTestRule.activity.setContentUsingUseIdTheme {
             NumberEntryTextField(
                 digitCount = digitCount,
+                inputType = InputType.Pin,
                 obfuscation = false,
                 spacerPosition = null,
                 focusRequester = focusRequester,

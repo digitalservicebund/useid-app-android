@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import de.digitalService.useID.ui.coordinators.CanCoordinator
-import de.digitalService.useID.ui.screens.setup.ResetPersonalPin
+import de.digitalService.useID.ui.screens.ResetPersonalPin
 import javax.inject.Inject
 
 @Destination

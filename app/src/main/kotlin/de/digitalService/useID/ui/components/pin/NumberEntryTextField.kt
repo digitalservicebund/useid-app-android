@@ -28,6 +28,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 @Composable
 fun NumberEntryTextField(
     digitCount: Int,
+    inputType: InputType,
     obfuscation: Boolean = false,
     spacerPosition: Int?,
     focusRequester: FocusRequester,
@@ -74,17 +75,28 @@ fun NumberEntryTextField(
                 .defaultMinSize(minWidth = (digitCount * 40).dp, minHeight = 50.dp)
         )
 
-        PinDigitRow(
-            input = number,
-            digitCount = digitCount,
-            obfuscation = obfuscation,
-            placeholder = false,
-            spacerPosition = spacerPosition,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .focusable(false)
-                .padding(vertical = 10.dp, horizontal = 10.dp)
-        )
+        if (inputType != InputType.Puk) {
+            PinDigitRow(
+                input = number,
+                digitCount = digitCount,
+                obfuscation = obfuscation,
+                placeholder = false,
+                spacerPosition = spacerPosition,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .focusable(false)
+                    .padding(vertical = 10.dp, horizontal = 10.dp)
+            )
+        } else {
+            PukDigitRow(
+                input = number,
+                digitCount = digitCount,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .focusable(false)
+                    .padding(vertical = 10.dp, horizontal = 10.dp)
+            )
+        }
     }
 }
 
@@ -98,6 +110,7 @@ fun PreviewPinEntryTextField() {
             }
 
             NumberEntryTextField(
+                inputType = InputType.Pin,
                 digitCount = 6,
                 obfuscation = false,
                 spacerPosition = 3,
@@ -119,9 +132,31 @@ fun PreviewPinEntryTextFieldWide() {
             }
 
             NumberEntryTextField(
+                inputType = InputType.Pin,
                 digitCount = 6,
                 obfuscation = false,
                 spacerPosition = 3,
+                focusRequester = focusRequester,
+                modifier = Modifier.fillMaxWidth(),
+                onDone = { }
+            )
+        }
+    }
+}
+@Preview
+@Composable
+fun PreviewPinEntryTextField10Digits() {
+    UseIdTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            val focusRequester = remember {
+                FocusRequester()
+            }
+
+            NumberEntryTextField(
+                inputType = InputType.Puk,
+                digitCount = 10,
+                obfuscation = false,
+                spacerPosition = null,
                 focusRequester = focusRequester,
                 modifier = Modifier.fillMaxWidth(),
                 onDone = { }

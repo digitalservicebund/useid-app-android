@@ -1,4 +1,4 @@
-package de.digitalService.useID.ui.screens.setup
+package de.digitalService.useID.ui.screens
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable

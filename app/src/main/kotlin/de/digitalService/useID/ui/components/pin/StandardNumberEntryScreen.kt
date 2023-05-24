@@ -15,7 +15,6 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import de.digitalService.useID.R
 import de.digitalService.useID.ui.components.NavigationButton
 import de.digitalService.useID.ui.components.ScreenWithTopBar
@@ -23,7 +22,7 @@ import de.digitalService.useID.ui.theme.UseIdTheme
 import kotlinx.coroutines.delay
 
 enum class InputType {
-    TransportPin, Pin, Can
+    TransportPin, Pin, Can, Puk
 }
 
 @Composable
@@ -36,7 +35,8 @@ fun StandardNumberEntryScreen(
     navigationButton: NavigationButton? = null,
     inputType: InputType,
     onDone: (String) -> Unit,
-    delayFocusRequest: Boolean = true
+    delayFocusRequest: Boolean = true,
+    content: (@Composable () -> Unit)? = null
 ) {
     val resources = LocalContext.current.resources
 
@@ -93,9 +93,9 @@ fun StandardNumberEntryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
 
                 if (errorMessage != null) {
+                    Spacer(modifier = Modifier.height(UseIdTheme.spaces.s))
                     Text(
                         errorMessage,
                         color = UseIdTheme.colors.red900,
@@ -122,6 +122,9 @@ fun StandardNumberEntryScreen(
                         textAlign = TextAlign.Center
                     )
                 }
+
+                content?.invoke()
+
             }
 
             Spacer(modifier = Modifier.weight(1f))

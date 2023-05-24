@@ -44,6 +44,7 @@ fun NumberEntryField(
                 )
                 NumberEntryTextField(
                     digitCount = 5,
+                    inputType = inputType,
                     obfuscation = false,
                     spacerPosition = null,
                     focusRequester = focusRequester,
@@ -58,6 +59,7 @@ fun NumberEntryField(
         InputType.Pin, InputType.Can ->
             NumberEntryTextField(
                 digitCount = 6,
+                inputType = inputType,
                 obfuscation = inputType == InputType.Pin,
                 spacerPosition = 3,
                 onDone = onDone,
@@ -65,6 +67,20 @@ fun NumberEntryField(
                 backgroundColor = UseIdTheme.colors.neutrals100,
                 modifier = modifier
                     .defaultMinSize(minHeight = 56.dp)
+                    .clip(UseIdTheme.shapes.roundedMedium)
+                    .fillMaxWidth()
+            )
+
+        InputType.Puk ->
+            NumberEntryTextField(
+                digitCount = 10,
+                inputType = inputType,
+                obfuscation = false,
+                spacerPosition = null,
+                onDone = onDone,
+                focusRequester = focusRequester,
+                backgroundColor = UseIdTheme.colors.neutrals100,
+                modifier = modifier
                     .clip(UseIdTheme.shapes.roundedMedium)
                     .fillMaxWidth()
             )
@@ -101,6 +117,18 @@ private fun PreviewCanEntryField() {
     UseIdTheme {
         NumberEntryField(
             inputType = InputType.Can,
+            onDone = { },
+            focusRequester = FocusRequester()
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewPukEntryField() {
+    UseIdTheme {
+        NumberEntryField(
+            inputType = InputType.Puk,
             onDone = { },
             focusRequester = FocusRequester()
         )

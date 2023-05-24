@@ -504,4 +504,25 @@
 \n
 \nMit dieser PIN können Sie sich jetzt ausweisen.</string>
     <string name="firstTimeUser_can_alreadySetup_personalPINNotAvailable">Persönliche PIN nicht vorhanden?</string>
+    <string name="puk_pinForgotten_title">Haben Sie Ihre persönliche Ausweis-PIN vielleicht vergessen?</string>
+    <string name="puk_pinForgotten_body">Sie haben Ihre PIN dreimal falsch eingegeben.</string>
+    <string name="puk_pinForgotten_orderNewPin">Ja, ich möchte eine neue PIN</string>
+    <string name="puk_pinForgotten_retry">Nein, erneut versuchen</string>
+    <string name="puk_intro_title">Geben Sie zuerst die PUK von Ihrem PIN-Brief ein.</string>
+    <string name="puk_intro_body">Den PIN-Brief haben Sie nach der Beantragung des Ausweises per Post erhalten.</string>
+    <string name="puk_intro_pukAvailable">PUK vorhanden</string>
+    <string name="puk_intro_pukUnavailable">PUK nicht vorhanden</string>
+    <string name="puk_unavailable_title">Sie brauchen eine neue persönliche Ausweis-PIN.</string>
+    <string name="puk_unavailable_body">**Hinweis:** Falls die PUK nicht vorliegt, müssen Sie eine neue PIN bestellen. Somit bleiben sie vor einem möglichen Missbrauch geschützt.</string>
+    <string name="puk_usedTenTimes_title">Sie brauchen eine neue persönliche Ausweis-PIN.</string>
+    <string name="puk_usedTenTimes_body">**Hinweis:** Da Sie die PUK bereits 10 Mal benutzt haben, müssen Sie eine neue PIN bestellen. Somit bleiben sie vor einem möglichen Missbrauch geschützt.</string>
+    <string name="puk_orderNewPin">Neue PIN bestellen</string>
+    <string name="puk_success_title">Sie haben nochmal drei Versuche, Ihre PIN einzugeben.</string>
+    <string name="puk_success_body">**Hinweis:** Sie können die PUK insgesamt 10 Mal nutzen, um die Versuche zurückzusetzen. Danach brauchen Sie eine neue Ausweis-PIN. </string>
+    <string name="puk_success_enterPinButton">PIN nochmal eingeben</string>
+    <string name="puk_input_title">Geben Sie die 10-stellige PUK ein.</string>
+    <string name="puk_input_body">Die 10-stellige PUK finden Sie in Ihrem PIN-Brief.</string>
+    <string name="puk_input_retryError">Inkorrekte PUK</string>
+    <string name="puk_input_pukUnavailable">PUK nicht vorhanden?</string>
+    <string name="puk_input_label">Eingabefeld PUK</string>
 </resources>
