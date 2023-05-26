@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.sentry.android)
     alias(libs.plugins.aboutlibraries)
+    id 'kotlin-parcelize'
 }
 
 android {

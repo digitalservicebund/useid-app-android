@@ -3,6 +3,7 @@ package de.digitalService.useID.coordinator
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Parcel
 import android.util.Base64
 import com.ramcosta.composedestinations.spec.Direction
 import de.digitalService.useID.StorageManager
@@ -233,9 +234,18 @@ class IdentificationCoordinatorTest {
 
         @ParameterizedTest
         @ValueSource(booleans = [true, false])
-        fun `request certificate description received`(backingDownAllowed: Boolean) = runTest {
+        fun `certificate description received`(backingDownAllowed: Boolean) = runTest {
             mockkStatic("android.util.Base64")
             every { Base64.encodeToString(any(), any()) } returns "serializedBase64"
+
+            val mockParcel = mockk<Parcel> {
+                every { writeInt(any()) } returns Unit
+                every { writeString(any()) } returns Unit
+                every { marshall() } returns byteArrayOf()
+                every { recycle() } returns Unit
+            }
+            mockkStatic(Parcel::class)
+            every { Parcel.obtain() } returns mockParcel
 
             val request = IdentificationRequest(emptyList(), "")
             val certificateDescription = CertificateDescription("", "", "", "", "", "")

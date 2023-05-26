@@ -1,8 +1,9 @@
 package de.digitalService.useID.idCardInterface
 
-import kotlinx.serialization.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
-@Serializable
+@Parcelize
 data class CertificateDescription(
     val issuerName: String,
     val issuerUrl: String?,
@@ -10,4 +11,4 @@ data class CertificateDescription(
     val subjectName: String,
     val subjectUrl: String?,
     val termsOfUsage: String
-)
+) : Parcelable
