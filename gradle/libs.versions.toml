@@ -87,6 +87,7 @@ android-junit5 = "de.mannodermaus.android-junit5:1.8.2.1"
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-parcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin"}
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinter = "org.jmailen.kotlinter:3.14.0"
 ksp = "com.google.devtools.ksp:1.8.10-1.0.9"
