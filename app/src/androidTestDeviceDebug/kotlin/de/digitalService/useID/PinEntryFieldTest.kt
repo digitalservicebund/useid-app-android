@@ -1,5 +1,6 @@
 package de.digitalService.useID
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -41,7 +42,9 @@ class PinEntryFieldTest {
                 onDone = mockOnDone
             )
 
-            focusRequester.requestFocus()
+            LaunchedEffect(true){
+                focusRequester.requestFocus()
+            }
         }
 
         composeTestRule.onAllNodesWithTag(pinDigitFieldTestTag).assertCountEquals(6)
@@ -68,7 +71,9 @@ class PinEntryFieldTest {
                 onDone = mockOnDone
             )
 
-            focusRequester.requestFocus()
+            LaunchedEffect(true){
+                focusRequester.requestFocus()
+            }
         }
 
         composeTestRule.onAllNodesWithTag(pinDigitFieldTestTag).assertCountEquals(6)
@@ -94,7 +99,9 @@ class PinEntryFieldTest {
                 onDone = mockOnDone
             )
 
-            focusRequester.requestFocus()
+            LaunchedEffect(true){
+                focusRequester.requestFocus()
+            }
         }
 
         composeTestRule.onNodeWithTag(spacerTag).assertExists()
@@ -115,7 +122,9 @@ class PinEntryFieldTest {
                 onDone = mockOnDone
             )
 
-            focusRequester.requestFocus()
+            LaunchedEffect(true){
+                focusRequester.requestFocus()
+            }
         }
 
         composeTestRule.onNodeWithTag(spacerTag).assertDoesNotExist()
@@ -136,7 +145,9 @@ class PinEntryFieldTest {
                 onDone = mockOnDone
             )
 
-            focusRequester.requestFocus()
+            LaunchedEffect(true){
+                focusRequester.requestFocus()
+            }
         }
 
         composeTestRule.onAllNodesWithTag(pinDigitFieldTestTag).assertCountEquals(6)
@@ -164,7 +175,9 @@ class PinEntryFieldTest {
                 onDone = mockOnDone
             )
 
-            focusRequester.requestFocus()
+            LaunchedEffect(true){
+                focusRequester.requestFocus()
+            }
         }
 
         composeTestRule.onAllNodesWithTag(pinDigitFieldTestTag).assertCountEquals(6)

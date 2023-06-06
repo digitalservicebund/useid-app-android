@@ -1,12 +1,12 @@
 [versions]
-aboutlibraries = "10.6.1"
+aboutlibraries = "10.7.0"
 # @keep compose-compiler is not referenced by any dependency so needs to be kept explicitly
-compose-compiler = "1.4.3"
+compose-compiler = "1.4.7"
 compose-destinations = "1.7.22-beta"
 espresso = "3.5.1"
-hilt = "2.45"
-junit-jupiter = "5.9.2"
-kotlin = "1.8.10"
+hilt = "2.46.1"
+junit-jupiter = "5.9.3"
+kotlin = "1.8.21"
 # @pin latest version triggers IncompatibleClassChangeError
 mockk = "1.12.5"
 sentry = "6.20.0"
@@ -14,12 +14,12 @@ sentry = "6.20.0"
 [libraries]
 aboutlibraries-compose = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutlibraries" }
 aboutlibraries-core = { module = "com.mikepenz:aboutlibraries-core", version.ref = "aboutlibraries" }
-androidx-activity-compose = "androidx.activity:activity-compose:1.6.1"
+androidx-activity-compose = "androidx.activity:activity-compose:1.7.1"
 androidx-constraintlayout-compose = "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 androidx-core-ktx = "androidx.core:core-ktx:1.9.0"
-androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.0"
+androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.1"
 androidx-hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
-androidx-lifecycle-runtime-ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
+androidx-lifecycle-runtime-ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.6.1"
 androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.3"
 androidx-security-crypto-ktx = "androidx.security:security-crypto-ktx:1.1.0-alpha03"
 androidx-test-core = "androidx.test:core:1.5.0"
@@ -28,38 +28,38 @@ androidx-test-espresso-intents = { module = "androidx.test.espresso:espresso-int
 androidx-test-ext-junit = "androidx.test.ext:junit:1.1.5"
 androidx-test-orchestrator = "androidx.test:orchestrator:1.4.2"
 androidx-test-runner = "androidx.test:runner:1.5.2"
-compose-bom = "androidx.compose:compose-bom:2023.01.00"
+ausweisapp2sdk-wrapper = "de.governikus.ausweisapp2:sdkwrapper:1.26.3.0"
+compose-bom = "androidx.compose:compose-bom:2023.05.01"
 compose-destinations-core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "compose-destinations" }
 compose-destinations-ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "compose-destinations" }
 # @pin TODO (ticket) Update compose-markdown
 compose-markdown = "com.github.jeziellago:compose-markdown:0.3.0"
 compose-material = { module = "androidx.compose.material:material" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
-compose-material3 = "androidx.compose.material3:material3:1.0.1"
+compose-material3 = "androidx.compose.material3:material3:1.1.0"
 compose-ui = { module = "androidx.compose.ui:ui" }
-compose-ui-test-junit4 = "androidx.compose.ui:ui-test-junit4:1.3.3"
+compose-ui-test-junit4 = "androidx.compose.ui:ui-test-junit4:1.4.3"
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
-exoplayer = "com.google.android.exoplayer:exoplayer:2.18.3"
+exoplayer = "com.google.android.exoplayer:exoplayer:2.18.7"
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
-jackson-databind = "com.fasterxml.jackson.core:jackson-databind:2.14.2"
+jackson-databind = "com.fasterxml.jackson.core:jackson-databind:2.15.1"
 jodamob-junit5-kotlin = "de.jodamob.junit5:junit5-kotlin:0.0.3"
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit-jupiter" }
-kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
-kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0"
+kotlinx-coroutines-test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
 logback-android = "com.github.tony19:logback-android:3.0.0"
 lottie-compose = "com.airbnb.android:lottie-compose:6.0.0"
 matomo-sdk-android = "com.github.matomo-org:matomo-sdk-android:5c6b715"
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-agent-jvm = { module = "io.mockk:mockk-agent-jvm", version.ref = "mockk" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
-ausweisapp2sdk-wrapper = "de.governikus.ausweisapp2:sdkwrapper:1.26.3.0"
 sentry-android = { module = "io.sentry:sentry-android", version.ref = "sentry" }
 sentry-compose-android = { module = "io.sentry:sentry-compose-android", version.ref = "sentry" }
 slf4j-api = "org.slf4j:slf4j-api:2.0.7"
@@ -81,16 +81,16 @@ sentry = [
 ]
 
 [plugins]
-aboutlibraries = "com.mikepenz.aboutlibraries.plugin:10.6.1"
-android-application = "com.android.application:7.4.2"
-android-junit5 = "de.mannodermaus.android-junit5:1.8.2.1"
+aboutlibraries = "com.mikepenz.aboutlibraries.plugin:10.7.0"
+android-application = "com.android.application:8.0.1"
+android-junit5 = "de.mannodermaus.android-junit5:1.9.3.0"
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kotlin-parcelize = {id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin"}
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinter = "org.jmailen.kotlinter:3.14.0"
-ksp = "com.google.devtools.ksp:1.8.10-1.0.9"
-sentry-android = "io.sentry.android.gradle:3.4.2"
-version-catalog-update = "nl.littlerobots.version-catalog-update:0.7.0"
+ksp = "com.google.devtools.ksp:1.8.21-1.0.11"
+sentry-android = "io.sentry.android.gradle:3.7.0"
+version-catalog-update = "nl.littlerobots.version-catalog-update:0.8.0"
 versions = "com.github.ben-manes.versions:0.46.0"
